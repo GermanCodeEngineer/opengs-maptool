@@ -1,8 +1,10 @@
+import config
 from PIL import Image
 from PyQt6.QtWidgets import QFileDialog
 
 
 def import_image(layout, text, image_display):
+    Image.MAX_IMAGE_PIXELS = config.MAX_IMAGE_PIXELS
     path, _ = QFileDialog.getOpenFileName(
         layout,
         text,

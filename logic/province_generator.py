@@ -17,10 +17,17 @@ def generate_province_map(main_layout):
     # BOUNDARY MASK
     if boundary_image is not None:
         b_arr = np.array(boundary_image, copy=False)
+
         if b_arr.ndim == 3:
-            boundary_mask = b_arr[..., 0] < 128
+            r, g, b = config.BOUNDARY_COLOR
+            boundary_mask = (
+                (b_arr[..., 0] == r) &
+                (b_arr[..., 1] == g) &
+                (b_arr[..., 2] == b))
+
         else:
-            boundary_mask = b_arr < 128
+            (val,) = config.BOUNDARY_COLOR[:1]  # use the R component
+            boundary_mask = (b_arr == val)
 
         map_h, map_w = boundary_mask.shape
 
