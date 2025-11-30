@@ -23,6 +23,10 @@ class ImageDisplay(QLabel):
             QImage.Format.Format_RGBA8888
         )
         pixmap = QPixmap.fromImage(qimage)
+        pixmap = pixmap.scaled(
+            self.size(),
+            Qt.AspectRatioMode.KeepAspectRatio)
+
         self.setPixmap(pixmap)
 
     def get_image(self):

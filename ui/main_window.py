@@ -1,5 +1,5 @@
 import config
-from PyQt6.QtWidgets import QWidget, QVBoxLayout, QHBoxLayout, QProgressBar, QTabWidget
+from PyQt6.QtWidgets import QWidget, QVBoxLayout, QHBoxLayout, QProgressBar, QTabWidget, QLabel
 from logic.province_generator import generate_province_map
 from logic.import_module import import_image
 from logic.export_module import export_image, export_provinces_csv
@@ -24,6 +24,12 @@ class MainWindow(QWidget):
         self.progress = QProgressBar()
         self.progress.setVisible(False)
         main_layout.addWidget(self.progress)
+        self.progress.setMinimum(0)
+        self.progress.setMaximum(100)
+        self.progress.setValue(0)
+
+        self.label_version = QLabel("Version "+config.VERSION)
+        main_layout.addWidget(self.label_version)
 
         # TAB1 LAND IMAGE
         self.land_tab = QWidget()
@@ -79,16 +85,19 @@ class MainWindow(QWidget):
                                           config.OCEAN_PROVINCES_TICK,
                                           config.OCEAN_PROVINCES_STEP)
 
-        create_button(province_tab_layout,
-                      "Generate Provinces",
-                      lambda: generate_province_map(self))
+        self.button_gen_prov = create_button(province_tab_layout,
+                                             "Generate Provinces",
+                                             lambda: generate_province_map(self))
+        self.button_gen_prov.setEnabled(False)
 
-        create_button(button_row,
-                      "Export Province Map",
-                      lambda: export_image(self,
-                                           self.province_image_display.get_image(),
-                                           "Export Province Map"))
+        self.button_exp_prov_img = create_button(button_row,
+                                                 "Export Province Map",
+                                                 lambda: export_image(self,
+                                                                      self.province_image_display.get_image(),
+                                                                      "Export Province Map"))
+        self.button_exp_prov_img.setEnabled(False)
 
-        create_button(button_row,
-                      "Export Province CSV",
-                      lambda: export_provinces_csv(self))
+        self.button_exp_prov_csv = create_button(button_row,
+                                                 "Export Province CSV",
+                                                 lambda: export_provinces_csv(self))
+        self.button_exp_prov_csv.setEnabled(False)
