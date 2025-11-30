@@ -6,6 +6,8 @@ from scipy.ndimage import distance_transform_edt
 
 
 def generate_province_map(main_layout):
+    main_layout.progress.setVisible(True)
+    main_layout.progress.setValue(10)
     boundary_image = main_layout.boundary_image_display.get_image()
     land_image = main_layout.land_image_display.get_image()
 
@@ -71,7 +73,7 @@ def generate_province_map(main_layout):
     land_map, land_meta, next_id = create_province_map(
         land_fill, land_border, land_points, start_id, "land"
     )
-
+    main_layout.progress.setValue(50)
     if sea_points > 0 and land_image is not None:
         sea_map, sea_meta, _ = create_province_map(
             sea_fill, sea_border, sea_points, next_id, "ocean"
@@ -85,10 +87,12 @@ def generate_province_map(main_layout):
     province_image = combine_maps(
         land_map, sea_map, metadata, land_mask, sea_mask
     )
-
     main_layout.province_image_display.set_image(province_image)
     main_layout.province_data = metadata
 
+    main_layout.progress.setValue(100)
+    main_layout.button_exp_prov_img.setEnabled(True)
+    main_layout.button_exp_prov_csv.setEnabled(True)
     return province_image, metadata
 
 
@@ -121,7 +125,7 @@ def generate_jitter_seeds(mask: np.ndarray, num_points: int):
     cell_h = h / grid
     cell_w = w / grid
 
-    rng = np.random.default_rng(12345)
+    rng = np.random.default_rng()  # Consider a get and set
     seeds = []
 
     for gy in range(grid):

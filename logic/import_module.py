@@ -16,3 +16,4 @@ def import_image(layout, text, image_display):
 
     imported_image = Image.open(path)
     image_display.set_image(imported_image)
+    layout.button_gen_prov.setEnabled(True)
