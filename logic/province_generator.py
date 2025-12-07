@@ -4,6 +4,8 @@ from collections import deque
 from PIL import Image
 from scipy.ndimage import distance_transform_edt
 
+used_colors = set()
+
 
 def generate_province_map(main_layout):
     main_layout.progress.setVisible(True)
@@ -102,17 +104,20 @@ def is_sea_color(arr):
     return (arr[..., 0] == r) & (arr[..., 1] == g) & (arr[..., 2] == b)
 
 
-def _color_from_id(pid: int):
+def _color_from_id(pid: int, ptype: str, used_colors=used_colors):
     rng = np.random.default_rng(pid + 1)
-    r, g, b = map(int, rng.integers(1, 256, 3))
+    while True:
+        if ptype == "ocean":
+            r = rng.integers(0, 60)
+            g = rng.integers(0, 80)
+            b = rng.integers(100, 180)
+        else:
+            r, g, b = map(int, rng.integers(0, 256, 3))
 
-    # Avoid extremely dark colors
-    if r < 20 and g < 20 and b < 20:
-        r = (r + 50) % 256
-        g = (g + 50) % 256
-        b = (b + 50) % 256
-
-    return r, g, b
+        color = (int(r), int(g), int(b))
+        if color not in used_colors:
+            used_colors.add(color)
+            return color
 
 
 def generate_jitter_seeds(mask: np.ndarray, num_points: int):
@@ -176,13 +181,12 @@ def flood_fill(fill_mask, seeds, start_id, ptype):
     q = deque()
 
     neighbors = [(1, 0), (-1, 0), (0, 1), (0, -1)]
-    _color = _color_from_id
 
     for i, (sx, sy) in enumerate(seeds):
         pid = start_id + i
         pmap[sy, sx] = pid
 
-        r, g, b = _color(pid)
+        r, g, b = _color_from_id(pid, ptype)
         metadata[pid] = {
             "province_id": pid,
             "province_type": ptype,
