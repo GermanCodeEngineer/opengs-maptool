@@ -1,11 +1,14 @@
 <img width="350" height="350" alt="ogs-mt-logo" src="https://github.com/user-attachments/assets/d03854c8-c2e1-468f-9f8a-269f498d169c" />
 
 # Open Grand Strategy - Map Tool 
-The OpenGS Map Tool is a specialized utility designed to streamline the creation of province maps for use in grand strategy games. Province maps form the backbone of these games, defining the geographical regions that players interact with.
+The OpenGS Map Tool is a specialized utility designed to streamline the creation of map data for use in grand strategy games. 
+Province and territory maps form the backbone of these games, defining the geographical regions that players interact with.
 
 ## Features
 - Generate and Export province maps
 - Generate and Export province data
+- Generate and Export territory maps
+- Generate and Export territory data
 
 ## Showcase
 <img width="3021" height="1970" alt="image" src="https://github.com/user-attachments/assets/5b9c6ac4-cebf-440c-9020-2d7771d9c493" />
@@ -42,6 +45,15 @@ Both input images must have the same dimensions/size for a good result.
 Use the sliders to adjust the number of provinces on land and ocean.
 
 Province map and the file containing province information(id,rgb,type,coordinates) can be exported after generation.
+
+### Territory Image
+The fourt tab generates the territory map, based on the generated provinces.
+NB! You need to generate provinces before you can generate territories.
+
+Use the sliders to adjust the number of territories on land and ocean.
+
+Territory map and the file containing province information(id,rgb,type,coordinates) can be exported after generation.
+Terriroity json files (One file per territory, defining the belonging provinces) can be exported after generation.
 
 ## Contributions
 Contributions can come in many forms and all are appreciated:
