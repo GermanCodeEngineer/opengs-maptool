@@ -1,4 +1,4 @@
-from PyQt6.QtWidgets import QHBoxLayout, QLabel, QSlider, QPushButton
+from PyQt6.QtWidgets import QHBoxLayout, QLabel, QSlider, QPushButton, QCheckBox
 from PyQt6.QtCore import Qt
 
 
@@ -38,5 +38,14 @@ def create_button(
 ):
     button = QPushButton(label_text)
     button.clicked.connect(callback_function)
+    parent_layout.addWidget(button)
+    return button
+
+
+def create_checkbox(
+    parent_layout,
+    label_text: str
+):
+    button = QCheckBox(label_text)
     parent_layout.addWidget(button)
     return button

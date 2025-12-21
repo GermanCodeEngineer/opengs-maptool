@@ -1,8 +1,9 @@
 import config
 from PyQt6.QtWidgets import QWidget, QVBoxLayout, QHBoxLayout, QProgressBar, QTabWidget, QLabel
 from logic.province_generator import generate_province_map
+from logic.territory_generator import generate_territory_map
 from logic.import_module import import_image
-from logic.export_module import export_image, export_provinces_csv
+from logic.export_module import export_image, export_provinces_csv, export_territories_csv, export_territories_json
 from ui.buttons import create_slider, create_button
 from ui.image_display import ImageDisplay
 
@@ -70,7 +71,7 @@ class MainWindow(QWidget):
 
         # Buttons
         self.land_slider = create_slider(province_tab_layout,
-                                         "Land province density:",
+                                         "Land province Density:",
                                          config.LAND_PROVINCES_MIN,
                                          config.LAND_PROVINCES_MAX,
                                          config.LAND_PROVINCES_DEFAULT,
@@ -78,7 +79,7 @@ class MainWindow(QWidget):
                                          config.LAND_PROVINCES_STEP)
 
         self.ocean_slider = create_slider(province_tab_layout,
-                                          "Ocean province density",
+                                          "Ocean province Density",
                                           config.OCEAN_PROVINCES_MIN,
                                           config.OCEAN_PROVINCES_MAX,
                                           config.OCEAN_PROVINCES_DEFAULT,
@@ -101,3 +102,51 @@ class MainWindow(QWidget):
                                                  "Export Province CSV",
                                                  lambda: export_provinces_csv(self))
         self.button_exp_prov_csv.setEnabled(False)
+
+        # TAB4 TERRITORY IMAGE
+        self.territory_tab = QWidget()
+        self.territory_image_display = ImageDisplay()
+        territory_tab_layout = QVBoxLayout(self.territory_tab)
+        territory_tab_layout.addWidget(self.territory_image_display)
+        self.tabs.addTab(self.territory_tab, "Territory Image")
+        button_territory_row = QHBoxLayout()
+        territory_tab_layout.addLayout(button_territory_row)
+
+        # Buttons
+        self.territory_land_slider = create_slider(territory_tab_layout,
+                                                   "Territory Land Density:",
+                                                   config.LAND_TERRITORIES_MIN,
+                                                   config.LAND_TERRITORIES_MAX,
+                                                   config.LAND_TERRITORIES_DEFAULT,
+                                                   config.LAND_TERRITORIES_TICK,
+                                                   config.LAND_TERRITORIES_STEP)
+
+        self.territory_ocean_slider = create_slider(territory_tab_layout,
+                                                    "Territory Ocean Density:",
+                                                    config.OCEAN_TERRITORIES_MIN,
+                                                    config.OCEAN_TERRITORIES_MAX,
+                                                    config.OCEAN_TERRITORIES_DEFAULT,
+                                                    config.OCEAN_TERRITORIES_TICK,
+                                                    config.OCEAN_TERRITORIES_STEP)
+
+        self.button_gen_territories = create_button(territory_tab_layout,
+                                                    "Generate Territories",
+                                                    lambda: generate_territory_map(self))
+        self.button_gen_territories.setEnabled(False)
+
+        self.button_exp_terr_img = create_button(button_territory_row,
+                                                 "Export Territory Map",
+                                                 lambda: export_image(self,
+                                                                      self.territory_image_display.get_image(),
+                                                                      "Export Territory Map"))
+        self.button_exp_terr_img.setEnabled(False)
+
+        self.button_exp_terr_csv = create_button(button_territory_row,
+                                                 "Export Territory CSV",
+                                                 lambda: export_territories_csv(self))
+        self.button_exp_terr_csv.setEnabled(False)
+
+        self.button_exp_terr_json = create_button(button_territory_row,
+                                                  "Export Territory JSON",
+                                                  lambda: export_territories_json(self))
+        self.button_exp_terr_json.setEnabled(False)
