@@ -14,6 +14,6 @@ def import_image(layout, text, image_display):
     if not path:
         return
 
-    imported_image = Image.open(path)
+    imported_image = Image.open(path).convert("RGBA")
     image_display.set_image(imported_image)
     layout.button_gen_prov.setEnabled(True)
