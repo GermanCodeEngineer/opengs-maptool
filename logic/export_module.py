@@ -15,6 +15,15 @@ def export_image(parent_layout, image, text):
             print(f"Error saving image: {error}")
 
 
+def _export_provinces_csv_to(metadata, path: str) -> None:
+    with open(path, "w", newline="") as f:
+        w = csv.writer(f, delimiter=';')
+        w.writerow(["province_id", "R", "G", "B",
+                    "province_type", "x", "y"])
+        for d in metadata:
+            w.writerow([d["province_id"], d["R"], d["G"], d["B"],
+                        d["province_type"], round(d["x"], 2), round(d["y"], 2)])
+
 def export_provinces_csv(main_layout):
     metadata = getattr(main_layout, "province_data", None)
     if not metadata:
@@ -27,16 +36,19 @@ def export_provinces_csv(main_layout):
         return
 
     try:
-        with open(path, "w", newline="") as f:
-            w = csv.writer(f, delimiter=';')
-            w.writerow(["province_id", "R", "G", "B",
-                       "province_type", "x", "y"])
-            for d in metadata:
-                w.writerow([d["province_id"], d["R"], d["G"], d["B"],
-                            d["province_type"], round(d["x"], 2), round(d["y"], 2)])
+        _export_provinces_csv_to(metadata, path)
     except Exception as e:
         print("Error saving province data:", e)
 
+
+def _export_territories_csv_to(metadata, path: str) -> None:
+    with open(path, "w", newline="") as f:
+        w = csv.writer(f, delimiter=';')
+        w.writerow(["territory_id", "R", "G", "B",
+                    "territory_type", "x", "y"])
+        for d in metadata:
+            w.writerow([d["territory_id"], d["R"], d["G"], d["B"],
+                        d["territory_type"], round(d["x"], 2), round(d["y"], 2)])
 
 def export_territories_csv(main_layout):
     metadata = getattr(main_layout, "territory_data", None)
@@ -50,16 +62,24 @@ def export_territories_csv(main_layout):
         return
 
     try:
-        with open(path, "w", newline="") as f:
-            w = csv.writer(f, delimiter=';')
-            w.writerow(["territory_id", "R", "G", "B",
-                       "territory_type", "x", "y"])
-            for d in metadata:
-                w.writerow([d["territory_id"], d["R"], d["G"], d["B"],
-                            d["territory_type"], round(d["x"], 2), round(d["y"], 2)])
+        _export_territories_csv_to(metadata, path)
     except Exception as e:
         print("Error saving territory data:", e)
 
+def _export_territories_json_to(territories: list[dict], export_dir: str) -> None:
+    for terr in territories:
+        tid = terr["territory_id"]
+        provinces = terr.get("province_ids", [])
+
+        data = {
+            "territory_id": tid,
+            "provinces": provinces
+        }
+
+        filename = os.path.join(export_dir, f"{tid}.json")
+
+        with open(filename, "w", encoding="utf-8") as f:
+            json.dump(data, f, indent=4)
 
 def export_territories_json(main_layout):
 
@@ -77,18 +97,6 @@ def export_territories_json(main_layout):
 
     territories = main_layout.territory_data
 
-    for terr in territories:
-        tid = terr["territory_id"]
-        provinces = terr.get("province_ids", [])
-
-        data = {
-            "territory_id": tid,
-            "provinces": provinces
-        }
-
-        filename = os.path.join(export_dir, f"{tid}.json")
-
-        with open(filename, "w", encoding="utf-8") as f:
-            json.dump(data, f, indent=4)
+    _export_territories_json_to(territories, export_dir)
 
     print(f"Exported {len(territories)} territories to: {export_dir}")
