@@ -1,7 +1,6 @@
-import os
+import csv
 import json
 from PyQt6.QtWidgets import QFileDialog
-import csv
 
 
 def export_image(parent_layout, image, text):
@@ -17,7 +16,7 @@ def export_image(parent_layout, image, text):
 
 def _export_provinces_csv_to(metadata, path: str) -> None:
     with open(path, "w", newline="") as f:
-        w = csv.writer(f, delimiter=';')
+        w = csv.writer(f, delimiter=";")
         w.writerow(["province_id", "R", "G", "B",
                     "province_type", "x", "y"])
         for d in metadata:
@@ -43,10 +42,12 @@ def export_provinces_csv(main_layout):
 
 def _export_territories_csv_to(metadata, path: str) -> None:
     with open(path, "w", newline="") as f:
-        w = csv.writer(f, delimiter=';')
+        w = csv.writer(f, delimiter=";")
         w.writerow(["territory_id", "R", "G", "B",
                     "territory_type", "x", "y"])
         for d in metadata:
+            if "x" not in d:
+                breakpoint()
             w.writerow([d["territory_id"], d["R"], d["G"], d["B"],
                         d["territory_type"], round(d["x"], 2), round(d["y"], 2)])
 

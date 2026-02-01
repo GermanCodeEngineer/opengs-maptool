@@ -1,34 +1,163 @@
 import config
 import numpy as np
+from collections import defaultdict, deque
 from PIL import Image
-from logic.utils import NumberSeries, is_sea_color, combine_maps, create_region_map
+from logic.utils import NumberSeries, is_sea_color
 
 territory_colors: set[tuple[int, int, int]] = set()
 
 
-def _pick_territory_color(t_arr: np.ndarray, x: float, y: float, radius: int = 2) -> tuple[int, int, int] | None:
-    h, w, _ = t_arr.shape
-    ix = int(round(x))
-    iy = int(round(y))
+def _build_province_adjacency(province_image: Image.Image, province_data: list, boundary_image: Image.Image | None) -> dict:
+    """Build adjacency graph of provinces that aren't separated by boundaries."""
+    
+    p_arr = np.array(province_image, copy=False)
+    h, w, _ = p_arr.shape
+    
+    # Build color to province_id mapping
+    color_to_pid = {}
+    for p in province_data:
+        color_to_pid[(p["R"], p["G"], p["B"])] = p["province_id"]
+    
+    # Build boundary mask if available
+    if boundary_image is not None:
+        b_arr = np.array(boundary_image, copy=False)
+        if b_arr.ndim == 3:
+            r, g, b = config.BOUNDARY_COLOR
+            boundary_mask = (
+                (b_arr[..., 0] == r) &
+                (b_arr[..., 1] == g) &
+                (b_arr[..., 2] == b)
+            )
+        else:
+            (val,) = config.BOUNDARY_COLOR[:1]
+            boundary_mask = (b_arr == val)
+    else:
+        boundary_mask = np.zeros((h, w), dtype=bool)
+    
+    # Find adjacent provinces (not separated by boundaries)
+    adjacency = defaultdict(set)
+    neighbors = [(1, 0), (-1, 0), (0, 1), (0, -1)]
+    
+    for y in range(h):
+        for x in range(w):
+            if boundary_mask[y, x]:
+                continue
+                
+            current_color = tuple(p_arr[y, x])
+            current_pid = color_to_pid.get(current_color)
+            if current_pid is None:
+                continue
+            
+            for dx, dy in neighbors:
+                nx, ny = x + dx, y + dy
+                if 0 <= nx < w and 0 <= ny < h:
+                    if boundary_mask[ny, nx]:
+                        continue
+                    
+                    neighbor_color = tuple(p_arr[ny, nx])
+                    neighbor_pid = color_to_pid.get(neighbor_color)
+                    
+                    if neighbor_pid and neighbor_pid != current_pid:
+                        adjacency[current_pid].add(neighbor_pid)
+    
+    return adjacency
 
-    if ix < 0 or iy < 0 or ix >= w or iy >= h:
-        return None
 
-    x0 = max(0, ix - radius)
-    x1 = min(w - 1, ix + radius)
-    y0 = max(0, iy - radius)
-    y1 = min(h - 1, iy + radius)
+def _assign_provinces_to_territories(province_data: list, num_territories: int, adjacency: dict, series: NumberSeries, used_colors: set, ptype: str) -> dict:
+    """Group provinces into territories using region growing, respecting boundaries."""
+    
+    if num_territories <= 0:
+        return {}
+    
+    # Filter provinces by type
+    typed_provinces = [p for p in province_data if p["province_type"] == ptype]
+    if not typed_provinces:
+        return {}
+    
+    num_territories = min(num_territories, len(typed_provinces))
+    
+    # Pick seed provinces
+    rng = np.random.default_rng(config.RNG_SEED)
+    seed_provinces = list(rng.choice(typed_provinces, num_territories, replace=False))
+    
+    # Initialize territories
+    province_to_territory = {}
+    territory_metadata = {}
+    
+    queue = deque()
+    for i, seed_prov in enumerate(seed_provinces):
+        tid = series.get_id()
+        if tid is None:
+            continue
+        
+        r, g, b = color_from_id(i, ptype, used_colors)
+        territory_metadata[tid] = {
+            "territory_id": tid,
+            "territory_type": ptype,
+            "R": r, "G": g, "B": b,
+            "province_ids": []
+        }
+        
+        province_to_territory[seed_prov["province_id"]] = tid
+        territory_metadata[tid]["province_ids"].append(seed_prov["province_id"])
+        queue.append(seed_prov["province_id"])
+    
+    # Grow territories by adding adjacent unassigned provinces
+    while queue:
+        current_pid = queue.popleft()
+        current_tid = province_to_territory[current_pid]
+        
+        # Check all adjacent provinces
+        for neighbor_pid in adjacency.get(current_pid, []):
+            if neighbor_pid not in province_to_territory:
+                # Find the province data
+                neighbor_prov = next((p for p in province_data if p["province_id"] == neighbor_pid), None)
+                if neighbor_prov and neighbor_prov["province_type"] == ptype:
+                    province_to_territory[neighbor_pid] = current_tid
+                    territory_metadata[current_tid]["province_ids"].append(neighbor_pid)
+                    queue.append(neighbor_pid)
+    
+    # Calculate territory centers (most central province)
+    for tid, terr_data in territory_metadata.items():
+        province_ids = terr_data["province_ids"]
+        if not province_ids:
+            continue
+        
+        # Get all provinces in this territory
+        terr_provinces = [p for p in province_data if p["province_id"] in province_ids]
+        
+        # Calculate centroid of all provinces
+        avg_x = sum(p["x"] for p in terr_provinces) / len(terr_provinces)
+        avg_y = sum(p["y"] for p in terr_provinces) / len(terr_provinces)
+        
+        # Find the province closest to the centroid
+        closest_prov = min(
+            terr_provinces,
+            key=lambda p: (p["x"] - avg_x) ** 2 + (p["y"] - avg_y) ** 2
+        )
+        
+        # Store the center coordinates
+        terr_data["x"] = closest_prov["x"]
+        terr_data["y"] = closest_prov["y"]
+    
+    return territory_metadata
 
-    window = t_arr[y0:y1 + 1, x0:x1 + 1]
-    if window.size == 0:
-        return None
 
-    colors, counts = np.unique(window.reshape(-1, 3), axis=0, return_counts=True)
-    if colors.size == 0:
-        return None
+def color_from_id(index: int, ptype: str, used_colors: set) -> tuple[int, int, int]:
+    rng = np.random.default_rng(index + 1)
 
-    r, g, b = colors[counts.argmax()]
-    return int(r), int(g), int(b)
+    while True:
+        if ptype == "ocean":
+            r = rng.integers(0, 60)
+            g = rng.integers(0, 80)
+            b = rng.integers(100, 180)
+        else:
+            r, g, b = map(int, rng.integers(0, 256, 3))
+
+        color = (int(r), int(g), int(b))
+        if color not in used_colors:
+            used_colors.add(color)
+            return color
 
 
 def generate_territory_map(main_layout):
@@ -78,19 +207,6 @@ def generate_territory_map(main_layout):
         sea_mask = np.zeros((map_h, map_w), dtype=bool)
         land_mask = np.ones((map_h, map_w), dtype=bool)
 
-    if boundary_mask is None:
-        land_fill = land_mask
-        land_border = sea_mask
-
-        sea_fill = sea_mask
-        sea_border = land_mask
-    else:
-        land_fill = land_mask & ~boundary_mask
-        land_border = boundary_mask | sea_mask
-
-        sea_fill = sea_mask & ~boundary_mask
-        sea_border = boundary_mask | land_mask
-
     # NUMBER SERIES FOR TERRITORIES
     series = NumberSeries(
         config.TERRITORY_ID_PREFIX,
@@ -98,66 +214,38 @@ def generate_territory_map(main_layout):
         config.TERRITORY_ID_END
     )
 
-    # GENERATE TERRITORIES
+    # GENERATE TERRITORIES by grouping provinces
     land_points = main_layout.territory_land_slider.value()
     sea_points = main_layout.territory_ocean_slider.value()
 
-    start_index = 0
+    province_image = main_layout.province_image_display.get_image()
+    province_data = main_layout.province_data
 
-    land_map, land_meta, next_index = create_region_map(
-        land_fill, land_border, land_points, start_index, "land", series, territory_colors, is_territory=True,
+    # Build province adjacency graph (respecting boundaries)
+    adjacency = _build_province_adjacency(province_image, province_data, boundary_image)
+
+    main_layout.progress.setValue(30)
+
+    # Generate territories by grouping provinces
+    land_territories = _assign_provinces_to_territories(
+        province_data, land_points, adjacency, series, territory_colors, "land"
     )
 
     main_layout.progress.setValue(50)
 
-    if sea_points > 0 and land_image is not None:
-        sea_map, sea_meta, _ = create_region_map(
-            sea_fill, sea_border, sea_points, next_index, "ocean", series, territory_colors, is_territory=True,
-        )
-    else:
-        sea_map = np.full((map_h, map_w), -1, np.int32)
-        sea_meta = []
-
-    metadata = land_meta + sea_meta
-
-    # Build raw territory image (not displayed)
-    territory_image = combine_maps(
-        land_map, sea_map, metadata, land_mask, sea_mask
+    sea_territories = _assign_provinces_to_territories(
+        province_data, sea_points, adjacency, series, territory_colors, "ocean"
     )
 
-    # Build lookup from color -> territory_id
-    color_to_id = {}
-    for d in metadata:
-        color_to_id[(d["R"], d["G"], d["B"])] = d["territory_id"]
+    # Combine metadata
+    metadata = list(land_territories.values()) + list(sea_territories.values())
 
-    # Build territory -> province list
+    # Build terrain_province_map
     terrain_province_map = {}
-
-    province_data = main_layout.province_data
-    t_arr = np.array(territory_image, copy=False)
-
-    for province in province_data:
-        x = province["x"]
-        y = province["y"]
-
-        tcolor = _pick_territory_color(t_arr, x, y)
-        if tcolor is None:
-            continue
-
-        tid = color_to_id.get(tcolor)
-        if tid is None:
-            continue
-
-        terrain_province_map.setdefault(
-            tid, []).append(province["province_id"])
-
-    # Attach province_ids to territory metadata
-    for d in metadata:
-        tid = d["territory_id"]
-        d["province_ids"] = terrain_province_map.get(tid, [])
+    for terr in metadata:
+        terrain_province_map[terr["territory_id"]] = terr["province_ids"]
 
     # Build province-based territory image
-    province_image = main_layout.province_image_display.get_image()
     territory_province_image = build_province_based_territory_image(
         province_image,
         province_data,

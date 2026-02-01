@@ -153,33 +153,9 @@ def assign_borders(pmap: np.ndarray, border_mask: np.ndarray) -> None:
     if not valid.any() or not border_mask.any():
         return
 
-    # Use flood fill to assign border pixels to nearest region WITHOUT crossing boundaries
-    h, w = pmap.shape
-    q = deque()
-    
-    # Find all border pixels that need assignment
-    border_positions = np.argwhere(border_mask)
-    
-    # Start from all filled pixels and flood outward (respecting boundaries)
-    for y in range(h):
-        for x in range(w):
-            if pmap[y, x] >= 0:
-                q.append((x, y, pmap[y, x]))
-    
-    visited = pmap.copy()
-    neighbors = [(1, 0), (-1, 0), (0, 1), (0, -1)]
-    
-    while q:
-        x, y, region_id = q.popleft()
-        
-        for dx, dy in neighbors:
-            nx, ny = x + dx, y + dy
-            
-            if 0 <= nx < w and 0 <= ny < h:
-                if visited[ny, nx] == -1 and border_mask[ny, nx]:
-                    visited[ny, nx] = region_id
-                    pmap[ny, nx] = region_id
-                    q.append((nx, ny, region_id))
+    _, (ny, nx) = distance_transform_edt(~valid, return_indices=True)
+    bm = border_mask
+    pmap[bm] = pmap[ny[bm], nx[bm]]
 
 
 def finalize_metadata(metadata: dict) -> None:
