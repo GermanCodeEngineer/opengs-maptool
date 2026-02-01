@@ -6,6 +6,31 @@ from logic.utils import NumberSeries, is_sea_color, combine_maps, create_region_
 territory_colors: set[tuple[int, int, int]] = set()
 
 
+def _pick_territory_color(t_arr: np.ndarray, x: float, y: float, radius: int = 2) -> tuple[int, int, int] | None:
+    h, w, _ = t_arr.shape
+    ix = int(round(x))
+    iy = int(round(y))
+
+    if ix < 0 or iy < 0 or ix >= w or iy >= h:
+        return None
+
+    x0 = max(0, ix - radius)
+    x1 = min(w - 1, ix + radius)
+    y0 = max(0, iy - radius)
+    y1 = min(h - 1, iy + radius)
+
+    window = t_arr[y0:y1 + 1, x0:x1 + 1]
+    if window.size == 0:
+        return None
+
+    colors, counts = np.unique(window.reshape(-1, 3), axis=0, return_counts=True)
+    if colors.size == 0:
+        return None
+
+    r, g, b = colors[counts.argmax()]
+    return int(r), int(g), int(b)
+
+
 def generate_territory_map(main_layout):
     territory_colors.clear()
     main_layout.progress.setVisible(True)
@@ -109,14 +134,17 @@ def generate_territory_map(main_layout):
     terrain_province_map = {}
 
     province_data = main_layout.province_data
-    territory_pixels = territory_image.load()
+    t_arr = np.array(territory_image, copy=False)
 
     for province in province_data:
         x = province["x"]
         y = province["y"]
 
-        r, g, b = territory_pixels[x, y]
-        tid = color_to_id.get((r, g, b))
+        tcolor = _pick_territory_color(t_arr, x, y)
+        if tcolor is None:
+            continue
+
+        tid = color_to_id.get(tcolor)
         if tid is None:
             continue
 

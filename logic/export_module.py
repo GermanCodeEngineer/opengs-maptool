@@ -66,37 +66,25 @@ def export_territories_csv(main_layout):
     except Exception as e:
         print("Error saving territory data:", e)
 
-def _export_territories_json_to(territories: list[dict], export_dir: str) -> None:
-    for terr in territories:
-        tid = terr["territory_id"]
-        provinces = terr.get("province_ids", [])
+def _export_territories_json_to(territories: list[dict], export_path: str) -> None:
+    territories = [{
+        "territory_id": t["territory_id"],
+        "provinces": t.get("province_ids", [])
+    } for t in territories]
 
-        data = {
-            "territory_id": tid,
-            "provinces": provinces
-        }
-
-        filename = os.path.join(export_dir, f"{tid}.json")
-
-        with open(filename, "w", encoding="utf-8") as f:
-            json.dump(data, f, indent=4)
+    with open(export_path, "w", encoding="utf-8") as f:
+        json.dump(territories, f, indent=4)
 
 def export_territories_json(main_layout):
 
     # Ask user for export directory
-    export_dir = QFileDialog.getExistingDirectory(
-        main_layout,
-        "Select Territory Export Folder",
-        "",
-        QFileDialog.Option.ShowDirsOnly | QFileDialog.Option.DontResolveSymlinks
-    )
+    path, _ = QFileDialog.getSaveFileName(
+        main_layout, "Export Territories JSON", "", "JSON Files (*.json)")
 
-    if not export_dir:
+    if not path:
         print("Territory export cancelled.")
         return
 
-    territories = main_layout.territory_data
+    _export_territories_json_to(main_layout.territory_data, path)
 
-    _export_territories_json_to(territories, export_dir)
-
-    print(f"Exported {len(territories)} territories to: {export_dir}")
+    print(f"Exported territories to: {path}")
