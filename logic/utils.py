@@ -188,17 +188,17 @@ def combine_maps(land_map: np.ndarray | None, sea_map: np.ndarray | None, metada
         missing = combined < 0
         combined[missing] = combined[ny[missing], nx[missing]]
 
-    out = np.zeros((h, w, 3), np.uint8)
+    out = np.zeros((h, w, 4), np.uint8)
 
     if not metadata:
-        return Image.fromarray(out)
+        return Image.fromarray(out, mode="RGBA")
 
-    color_lut = np.zeros((len(metadata), 3), np.uint8)
+    color_lut = np.zeros((len(metadata), 4), np.uint8)
 
     for index, d in enumerate(metadata):
-        color_lut[index] = (d["R"], d["G"], d["B"])
+        color_lut[index] = (d["R"], d["G"], d["B"], 255)
 
     valid = combined >= 0
     out[valid] = color_lut[combined[valid]]
 
-    return Image.fromarray(out)
+    return Image.fromarray(out, mode="RGBA")

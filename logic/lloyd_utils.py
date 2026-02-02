@@ -2,7 +2,6 @@ import config
 import numpy as np
 from scipy.ndimage import distance_transform_edt
 from scipy.spatial import cKDTree
-from PIL import Image
 from logic.utils import color_from_id, NumberSeries
 
 
@@ -11,31 +10,32 @@ def is_sea_color(arr: np.ndarray) -> np.ndarray:
     return (arr[..., 0] == r) & (arr[..., 1] == g) & (arr[..., 2] == b)
 
 
-def build_masks(boundary_image: Image.Image | None, land_image: Image.Image | None):
+def build_masks(
+    boundary_image: np.typing.NDArray[np.uint8] | None,
+    land_image: np.typing.NDArray[np.uint8] | None,
+):
     if boundary_image is None and land_image is None:
         raise ValueError("Need at least boundary OR ocean image to determine map size.")
 
     # Boundary mask
     if boundary_image is not None:
-        b_arr = np.array(boundary_image, copy=False)
-        if b_arr.ndim == 3:
+        if boundary_image.ndim == 3:
             r, g, b = config.BOUNDARY_COLOR
             boundary_mask = (
-                (b_arr[..., 0] == r) &
-                (b_arr[..., 1] == g) &
-                (b_arr[..., 2] == b)
+                (boundary_image[..., 0] == r) &
+                (boundary_image[..., 1] == g) &
+                (boundary_image[..., 2] == b)
             )
         else:
             (val,) = config.BOUNDARY_COLOR[:1]
-            boundary_mask = (b_arr == val)
+            boundary_mask = (boundary_image == val)
         map_h, map_w = boundary_mask.shape
     else:
         boundary_mask = None
 
     # Land / sea mask
     if land_image is not None:
-        o_arr = np.array(land_image, copy=False)
-        sea_mask = is_sea_color(o_arr)
+        sea_mask = is_sea_color(land_image)
         land_mask = ~sea_mask
         if boundary_mask is None:
             map_h, map_w = sea_mask.shape
