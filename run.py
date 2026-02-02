@@ -9,7 +9,7 @@ from PIL import Image
 from PyQt6.QtWidgets import QApplication
 from ui.main_window import MainWindow
 from logic.export_module import _export_provinces_csv_to, _export_territories_csv_to, _export_territories_json_to
-from logic.lloyd_province_generator import generate_province_map_lloyd_all_colors
+from logic.grid_province_generator import generate_provinces_grid_based
 from logic.boundaries_to_cont import convert_boundaries_to_cont_areas
 
 
@@ -115,12 +115,11 @@ def generate_map(
     if land_image_arr is None:
         raise FileNotFoundError(f"Land image not found: {land_image_path}")
 
-    province_image, metadata = generate_province_map_lloyd_all_colors(
+    province_image, metadata = generate_provinces_grid_based(
         boundary_image=boundary_image_arr,
         land_image=land_image_arr,
-        points_per_color=ilerp(config.LAND_PROVINCES_MIN, config.LAND_PROVINCES_MAX, land_provinces_ratio),
-        sea_points=ilerp(config.OCEAN_PROVINCES_MIN, config.OCEAN_PROVINCES_MAX, ocean_provinces_ratio),
-        iterations=1,  # Reduced from 3 - saves ~100s per run
+        num_provinces=ilerp(config.LAND_PROVINCES_MIN, config.LAND_PROVINCES_MAX, land_provinces_ratio),
+        num_sea_provinces=ilerp(config.OCEAN_PROVINCES_MIN, config.OCEAN_PROVINCES_MAX, ocean_provinces_ratio),
     )
 
     # Export territories

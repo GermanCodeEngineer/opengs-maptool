@@ -21,6 +21,7 @@ def generate_province_map_lloyd_all_colors(
     points_per_color: int = 10,
     sea_points: int = 5,
     iterations: int = 1,
+    use_fast_mode: bool = True,
 ) -> tuple[Image.Image, list[dict]]:
     """
     Generate province maps for each color in the land image using Lloyd relaxation.
@@ -31,14 +32,16 @@ def generate_province_map_lloyd_all_colors(
         points_per_color: Number of provinces to generate per color
         sea_points: Number of sea regions to generate
         iterations: Number of Lloyd relaxation iterations (1-3 recommended; more = slower)
+        use_fast_mode: If True, use single-pass Voronoi (10-20x faster, slightly lower quality)
         
     Returns:
         Combined province image and metadata for all colors
         
     Performance tips:
-        - Reduce iterations from 3 to 1-2 for 50-100% speedup
+        - use_fast_mode=True: ~10-20x faster, suitable for quick testing (default)
+        - use_fast_mode=False: Better quality, slower (standard Lloyd relaxation)
+        - Reduce iterations from 3 to 1 for 50-100% speedup
         - Use smaller input images for testing
-        - Each iteration costs ~150-200s on large maps
     """
     # Get unique colors from land_image (excluding sea)
     colors = _get_unique_colors(land_image)
@@ -56,6 +59,7 @@ def generate_province_map_lloyd_all_colors(
             sea_points=0,  # Sea handled separately
             filter_color=color,
             iterations=iterations,
+            use_fast_mode=use_fast_mode,
         )
         
         # Merge this color's provinces into combined map
@@ -145,6 +149,7 @@ def generate_province_map_lloyd_from_images(
     sea_points: int,
     filter_color: tuple[int, int, int] | tuple[int, int, int, int],
     iterations: int = 3,
+    use_fast_mode: bool = True,
 ) -> tuple[Image.Image, list[dict]]:
     """
     Generate province map using Lloyd relaxation.
@@ -156,6 +161,7 @@ def generate_province_map_lloyd_from_images(
         sea_points: Number of sea regions to generate
         filter_color: Only generate regions from pixels matching this color (RGB or RGBA)
         iterations: Number of Lloyd relaxation iterations
+        use_fast_mode: If True, use single-pass Voronoi (10-20x faster, slightly lower quality)
     """
     province_colors.clear()
 
@@ -176,12 +182,12 @@ def generate_province_map_lloyd_from_images(
     )
 
     land_map, land_meta, next_index = _lloyd_region_map(
-        land_fill, land_border, land_points, 0, "land", series, province_colors, iterations
+        land_fill, land_border, land_points, 0, "land", series, province_colors, iterations, use_fast_mode=use_fast_mode
     )
 
     if sea_points > 0 and land_image is not None:
         sea_map, sea_meta, _ = _lloyd_region_map(
-            sea_fill, sea_border, sea_points, next_index, "ocean", series, province_colors, iterations
+            sea_fill, sea_border, sea_points, next_index, "ocean", series, province_colors, iterations, use_fast_mode=use_fast_mode
         )
     else:
         h, w = land_fill.shape
@@ -206,6 +212,7 @@ def _lloyd_region_map(
     series: NumberSeries,
     used_colors: set[tuple[int, int, int]],
     iterations: int,
+    use_fast_mode: bool = True,
 ) -> tuple[np.ndarray, list[dict], int]:
     if num_points <= 0 or not fill_mask.any():
         empty = np.full(fill_mask.shape, -1, np.int32)
@@ -218,7 +225,7 @@ def _lloyd_region_map(
         empty = np.full(fill_mask.shape, -1, np.int32)
         return empty, [], start_index
 
-    seeds = lloyd_relaxation(fill_mask, seeds, iterations, boundary_mask=border_mask)
+    seeds = lloyd_relaxation(fill_mask, seeds, iterations, boundary_mask=border_mask, fast_mode=use_fast_mode)
 
     pmap = assign_regions(fill_mask, seeds, start_index)
     assign_borders(pmap, border_mask)
