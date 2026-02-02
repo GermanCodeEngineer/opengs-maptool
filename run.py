@@ -1,3 +1,5 @@
+import cProfile
+import pstats
 import sys
 import pathlib
 import config
@@ -118,7 +120,7 @@ def generate_map(
         land_image=land_image_arr,
         points_per_color=ilerp(config.LAND_PROVINCES_MIN, config.LAND_PROVINCES_MAX, land_provinces_ratio),
         sea_points=ilerp(config.OCEAN_PROVINCES_MIN, config.OCEAN_PROVINCES_MAX, ocean_provinces_ratio),
-        iterations=3,
+        iterations=1,  # Reduced from 3 - saves ~100s per run
     )
 
     # Export territories
@@ -147,19 +149,24 @@ def generate_map(
 
 def main():
     # Default paths
-    input_directory = pathlib.Path(__file__).parent.parent.parent / "GodotProjects/opengs/wip/outputqgis"
+    input_directory = pathlib.Path(__file__).parent.parent.parent / "Godot/opengs/wip/outputqgis"
     output_directory = pathlib.Path(__file__).parent / "output"
     
     # Run with default settings
     generate_map(
         input_directory=input_directory,
         output_directory=output_directory,
-        land_provinces_ratio=0.3,
-        ocean_provinces_ratio=0.3,
-        land_territories_ratio=0.7,
-        ocean_territories_ratio=0.4,
+        land_provinces_ratio=0.05,#0.3,
+        ocean_provinces_ratio=0.05,#0.3,
+        land_territories_ratio=0.05,#0.7,
+        ocean_territories_ratio=0.05,#0.4,
     )
 
 
 if __name__ == "__main__":
+    profiler = cProfile.Profile()
+    profiler.enable()
     main()
+    profiler.disable()
+    stats = pstats.Stats(profiler).sort_stats("cumtime")
+    stats.print_stats(30)

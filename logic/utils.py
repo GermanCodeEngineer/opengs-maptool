@@ -182,10 +182,12 @@ def combine_maps(land_map: np.ndarray | None, sea_map: np.ndarray | None, metada
         sm = (sea_map >= 0) & sea_mask
         combined[sm] = sea_map[sm]
 
-    if (combined >= 0).any():
-        valid = combined >= 0
+    # Only fill missing pixels if there are gaps - avoid expensive distance_transform when not needed
+    missing = combined < 0
+    if missing.any() and (combined >= 0).any():
+        # Cache: reuse valid mask to avoid recomputation
+        valid = ~missing
         _, (ny, nx) = distance_transform_edt(~valid, return_indices=True)
-        missing = combined < 0
         combined[missing] = combined[ny[missing], nx[missing]]
 
     out = np.zeros((h, w, 4), np.uint8)
@@ -193,10 +195,8 @@ def combine_maps(land_map: np.ndarray | None, sea_map: np.ndarray | None, metada
     if not metadata:
         return Image.fromarray(out, mode="RGBA")
 
-    color_lut = np.zeros((len(metadata), 4), np.uint8)
-
-    for index, d in enumerate(metadata):
-        color_lut[index] = (d["R"], d["G"], d["B"], 255)
+    # Vectorized color LUT creation - faster than loop
+    color_lut = np.array([[d["R"], d["G"], d["B"], 255] for d in metadata], dtype=np.uint8)
 
     valid = combined >= 0
     out[valid] = color_lut[combined[valid]]

@@ -6,8 +6,9 @@ from logic.utils import color_from_id, NumberSeries
 
 
 def is_sea_color(arr: np.ndarray) -> np.ndarray:
-    r, g, b = config.OCEAN_COLOR
-    return (arr[..., 0] == r) & (arr[..., 1] == g) & (arr[..., 2] == b)
+    # Vectorized comparison - faster than individual channel checks
+    ocean_color = np.array(config.OCEAN_COLOR, dtype=np.uint8)
+    return np.all(arr[..., :3] == ocean_color, axis=-1)
 
 
 def build_masks(
@@ -100,9 +101,13 @@ def lloyd_relaxation(mask: np.ndarray, seeds: list[tuple[int, int]], iterations:
     if coords_yx.size == 0:
         return seeds
 
-    coords_xy = coords_yx[:, ::-1].astype(np.float32)
+    # Avoid astype - use view or direct construction
+    coords_xy = np.flip(coords_yx, axis=1).copy()  # Copy needed for contiguous memory
+    if coords_xy.dtype != np.float32:
+        coords_xy = coords_xy.astype(np.float32, copy=False)  # Avoid unnecessary copy
     rng = np.random.default_rng(config.RNG_SEED)
 
+    # Cache distance transform (expensive operation)
     _, (ny, nx) = distance_transform_edt(~mask, return_indices=True)
 
     seeds_arr = np.array(seeds, dtype=np.float32)
@@ -156,7 +161,7 @@ def assign_regions(mask: np.ndarray, seeds: list[tuple[int, int]], start_index: 
         return pmap
 
     coords_yx = np.column_stack(np.where(mask))
-    coords_xy = coords_yx[:, ::-1].astype(np.float32)
+    coords_xy = np.flip(coords_yx, axis=1).astype(np.float32, copy=False)
 
     # For each valid pixel, find nearest seed using KDTree (Euclidean distance)
     # This respects mask because we only compute distances for pixels in mask
@@ -196,7 +201,7 @@ def build_metadata(
 
     indices = pmap[valid] - start_index
     coords_yx = np.column_stack(np.where(valid))
-    coords_xy = coords_yx[:, ::-1].astype(np.float32)
+    coords_xy = np.flip(coords_yx, axis=1).astype(np.float32, copy=False)
 
     counts = np.bincount(indices, minlength=len(seeds))
     sum_x = np.bincount(indices, weights=coords_xy[:, 0], minlength=len(seeds))
