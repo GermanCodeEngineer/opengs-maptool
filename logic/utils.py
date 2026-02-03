@@ -1,5 +1,6 @@
 import config
 import numpy as np
+from numpy.typing import NDArray
 from PIL import Image
 from collections import deque
 from scipy.ndimage import distance_transform_edt
@@ -74,6 +75,121 @@ def generate_jitter_seeds(mask: np.ndarray, num_points: int) -> list[tuple[int, 
             seeds.append((x0 + xs[i], y0 + ys[i]))
 
     return seeds
+
+
+def poisson_disk_samples(
+    mask: NDArray[np.bool],
+    num_points: int,
+    min_dist: float | None = None,
+    k: int = 30,
+    border_margin: float = 0.0,
+) -> list[tuple[int, int]]:
+    """
+    Generate roughly evenly spaced points within a mask using Bridson's Poisson-disk sampling.
+
+    Args:
+        mask: 2D boolean mask of valid area.
+        num_points: Target number of points.
+        min_dist: Minimum distance between points. If None, estimated from mask area.
+        k: Attempts per active point.
+        border_margin: Optional distance (in pixels) to keep away from mask edges.
+
+    Returns:
+        List of (x, y) points.
+    """
+    if num_points <= 0:
+        return []
+
+    if mask is None or not mask.any():
+        return []
+
+    mask = mask.astype(bool)
+
+    if border_margin > 0:
+        dist = distance_transform_edt(mask)
+        mask = mask & (dist >= border_margin)
+        if not mask.any():
+            return []
+
+    area = int(mask.sum())
+    if area == 0:
+        return []
+
+    if min_dist is None:
+        min_dist = np.sqrt(area / (num_points * np.pi))
+    r = float(max(1.0, min_dist))
+    r2 = r * r
+
+    h, w = mask.shape
+    cell_size = r / np.sqrt(2)
+    grid_w = int(np.ceil(w / cell_size))
+    grid_h = int(np.ceil(h / cell_size))
+    grid = -np.ones((grid_h, grid_w), dtype=np.int32)
+
+    rng = np.random.default_rng(config.RNG_SEED)
+
+    ys, xs = np.where(mask)
+    if xs.size == 0:
+        return []
+
+    first_idx = rng.integers(xs.size)
+    first = (int(xs[first_idx]), int(ys[first_idx]))
+
+    samples: list[tuple[int, int]] = [first]
+    active: list[int] = [0]
+
+    gx0 = int(first[0] / cell_size)
+    gy0 = int(first[1] / cell_size)
+    grid[gy0, gx0] = 0
+
+    while active and len(samples) < num_points:
+        active_i = int(rng.integers(len(active)))
+        s_idx = active[active_i]
+        sx, sy = samples[s_idx]
+        found = False
+
+        for _ in range(k):
+            radius = rng.uniform(r, 2 * r)
+            angle = rng.uniform(0.0, 2 * np.pi)
+            x = int(round(sx + radius * np.cos(angle)))
+            y = int(round(sy + radius * np.sin(angle)))
+
+            if x < 0 or y < 0 or x >= w or y >= h:
+                continue
+            if not mask[y, x]:
+                continue
+
+            gx = int(x / cell_size)
+            gy = int(y / cell_size)
+
+            y0 = max(0, gy - 2)
+            y1 = min(grid_h, gy + 3)
+            x0 = max(0, gx - 2)
+            x1 = min(grid_w, gx + 3)
+
+            ok = True
+            for ny in range(y0, y1):
+                for nx in range(x0, x1):
+                    s2_idx = grid[ny, nx]
+                    if s2_idx != -1:
+                        px, py = samples[s2_idx]
+                        if (px - x) ** 2 + (py - y) ** 2 < r2:
+                            ok = False
+                            break
+                if not ok:
+                    break
+
+            if ok:
+                samples.append((x, y))
+                grid[gy, gx] = len(samples) - 1
+                active.append(len(samples) - 1)
+                found = True
+                break
+
+        if not found:
+            active.pop(active_i)
+
+    return samples
 
 
 def create_region_map(

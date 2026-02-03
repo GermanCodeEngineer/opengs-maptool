@@ -10,7 +10,7 @@ from ui.main_window import MainWindow
 from logic.export_module import _export_provinces_csv_to, _export_territories_csv_to, _export_territories_json_to
 from logic.grid_province_generator import generate_provinces_grid_based
 from logic.boundaries_to_cont import convert_boundaries_to_cont_areas, classify_pixels_by_color
-from logic.cont_to_territories import convert_cont_areas_to_territories
+from logic.cont_to_regions import convert_all_cont_areas_to_regions
 
 
 def generate_map(
@@ -64,19 +64,24 @@ def generate_map(
     
     land_image_path = input_directory / land_image_name
     boundary_image_path = input_directory / boundary_image_name
+
     cont_areas_image_path = output_directory / "contareasimage.png"
+    cont_areas_data_path = output_directory / "contareasdata.json"
     type_image_path = output_directory / "typeimage.png"
     type_counts_path = output_directory / "typecounts.json"
-    territory_viz_image_path = output_directory / "territoryvizimage.png"
+    territory_image_path = output_directory / "territoryimage.png"
+    territory_data_path = output_directory / "territorydata.json"
     
     
     # Create helper images if necessary
-    if cont_areas_image_path.exists():
+    if cont_areas_image_path.exists() and cont_areas_data_path.exists():
         cont_areas_image = np.array(Image.open(cont_areas_image_path))
+        cont_areas_data = json.loads(cont_areas_data_path.read_text())
     else:
-        cont_areas_image = convert_boundaries_to_cont_areas(np.array(Image.open(boundary_image_path)))
+        cont_areas_image, cont_areas_data = convert_boundaries_to_cont_areas(np.array(Image.open(boundary_image_path)))
         Image.fromarray(cont_areas_image).save(cont_areas_image_path)
-
+        cont_areas_data_path.write_text(json.dumps(cont_areas_data))
+    
     if type_image_path.exists() and type_counts_path.exists():
         type_image = np.array(Image.open(type_image_path))
         type_counts = json.loads(type_counts_path.read_text())
@@ -86,17 +91,20 @@ def generate_map(
         type_counts_path.write_text(json.dumps(type_counts))
 
     # Create territory visualization image if necessary
-    if territory_viz_image_path.exists():
-        viz_image = np.array(Image.open(territory_viz_image_path))
+    if territory_image_path.exists() and territory_data_path.exists():
+        territory_image = np.array(Image.open(territory_image_path))
+        territory_data = json.loads(territory_data_path.read_text())
     else:
-        viz_image = convert_cont_areas_to_territories(
-            cont_areas_image,
-            type_image,
-            type_counts,
-            total_num_territories=1000,
+        territory_image, territory_data = convert_all_cont_areas_to_regions(
+            cont_areas_image=cont_areas_image,
+            cont_areas_metadata=cont_areas_data,
+            type_image=type_image,
+            type_counts=type_counts,
+            total_num_regions=1500,
             #ilerp(config.LAND_TERRITORIES_MIN, config.LAND_TERRITORIES_MAX, land_territories_ratio),
         )
-        Image.fromarray(viz_image).save(territory_viz_image_path)
+        Image.fromarray(territory_image).save(territory_image_path)
+        territory_data_path.write_text(json.dumps(territory_data))
         
 
 

@@ -1,6 +1,7 @@
 import numpy as np
 from numpy.typing import NDArray
 from scipy import ndimage
+from tqdm import tqdm
 from logic.utils import color_from_id
 import config
 
@@ -63,9 +64,14 @@ def classify_pixels_by_color(
     }
     return result, counts
 
-def convert_boundaries_to_cont_areas(boundaries_image: np.typing.NDArray[np.uint8]) -> np.typing.NDArray[np.uint8]:
+def convert_boundaries_to_cont_areas(boundaries_image: np.typing.NDArray[np.uint8]) -> tuple[np.typing.NDArray[np.uint8], list[dict]]:
     """
     Convert the boundary image into an image of continous areas(usually countries).
+    
+    Returns:
+        Tuple of (cont_areas_image, metadata) where metadata contains:
+        - area_id: Region ID (1-indexed)
+        - R, G, B: Area color
     """
 
     # Vectorized mask creation
@@ -84,9 +90,19 @@ def convert_boundaries_to_cont_areas(boundaries_image: np.typing.NDArray[np.uint
     regions_image = np.full((*boundaries_image.shape[:2], 4), [0, 0, 0, 255], dtype=np.uint8)
     colors = {(0, 0, 0)} # Forbid black
     region_to_color = {}
+    metadata = []
     
     # Vectorized color assignment
-    for region_id in range(1, num_features + 1):
-        region_to_color[region_id] = (*color_from_id(region_id, "land", colors), 255)
+    for region_id in tqdm(range(1, num_features + 1), desc="Processing regions", unit="region"):
+        r, g, b = color_from_id(region_id, "land", colors)
+        region_to_color[region_id] = (r, g, b, 255)
         regions_image[labeled_array == region_id] = region_to_color[region_id]
-    return regions_image
+        
+        metadata.append({
+            "area_id": region_id,
+            "R": int(r),
+            "G": int(g),
+            "B": int(b),
+        })
+    
+    return regions_image, metadata

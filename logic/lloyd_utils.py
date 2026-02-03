@@ -1,5 +1,6 @@
 import config
 import numpy as np
+from typing import Any
 from scipy.ndimage import distance_transform_edt
 from scipy.spatial import cKDTree
 from logic.utils import color_from_id, NumberSeries
@@ -231,7 +232,7 @@ def build_metadata(
     series: NumberSeries,
     used_colors: set[tuple[int, int, int]],
     is_territory: bool,
-) -> list[dict]:
+) -> list[dict[str, Any]]:
     if pmap.size == 0 or not seeds:
         return []
 
