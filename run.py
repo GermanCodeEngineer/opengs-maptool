@@ -100,7 +100,8 @@ def generate_map(
             cont_areas_metadata=cont_areas_data,
             type_image=type_image,
             type_counts=type_counts,
-            total_num_regions=1500,
+            total_num_land_regions=1500,
+            total_num_ocean_regions=300,
             #ilerp(config.LAND_TERRITORIES_MIN, config.LAND_TERRITORIES_MAX, land_territories_ratio),
         )
         Image.fromarray(territory_image).save(territory_image_path)
