@@ -135,35 +135,67 @@ def _assign_to_seeds(
     num_expected: int,
 ) -> tuple[np.ndarray, list[dict]]:
     """
-    Assign pixels to nearest seed using KDTree (single pass, very fast).
+    Assign pixels to nearest seed using chunked processing (optimized for large images).
     """
     pmap = np.full((h, w), -1, np.int32)
     
     if not seeds or not region_mask.any():
         return pmap, []
     
-    # Get all valid pixels
-    ys, xs = np.where(region_mask & ~boundary_mask)
-    if len(xs) == 0:
-        return pmap, []
+    seeds_array = np.array(seeds, dtype=np.float32)
+    valid_region = region_mask & ~boundary_mask
     
-    coords_xy = np.column_stack([xs, ys]).astype(np.float32)
+    # Process image in chunks to avoid memory issues and improve cache efficiency
+    chunk_size = 256  # Process 256x256 tiles at a time
     
-    # Find nearest seed for each pixel (KDTree is O(n log n))
-    tree = cKDTree(np.array(seeds, dtype=np.float32))
-    _, labels = tree.query(coords_xy, k=1)
+    for y_start in range(0, h, chunk_size):
+        y_end = min(y_start + chunk_size, h)
+        for x_start in range(0, w, chunk_size):
+            x_end = min(x_start + chunk_size, w)
+            
+            # Extract chunk
+            chunk_valid = valid_region[y_start:y_end, x_start:x_end]
+            if not chunk_valid.any():
+                continue
+            
+            # Create coordinate grids for this chunk
+            chunk_h = y_end - y_start
+            chunk_w = x_end - x_start
+            yy, xx = np.mgrid[y_start:y_end, x_start:x_end]
+            
+            # Compute distances from all seeds to all pixels in chunk (vectorized)
+            # Shape: (num_seeds, chunk_h, chunk_w)
+            dx = xx[None, :, :] - seeds_array[:, 0, None, None]
+            dy = yy[None, :, :] - seeds_array[:, 1, None, None]
+            distances = dx * dx + dy * dy
+            
+            # Find nearest seed for each pixel
+            nearest_seed_idx = np.argmin(distances, axis=0)
+            
+            # Assign to pmap only for valid pixels
+            pmap[y_start:y_end, x_start:x_end][chunk_valid] = start_index + nearest_seed_idx[chunk_valid]
     
-    # Assign regions
-    pmap[ys, xs] = start_index + labels
-    
-    # Handle boundaries - assign to nearest valid region
+    # Handle boundaries - assign to nearest valid region (optimized)
     if boundary_mask.any():
-        from scipy.ndimage import distance_transform_edt
-        valid = pmap >= 0
-        if valid.any():
-            _, (ny, nx) = distance_transform_edt(~valid, return_indices=True)
-            bm = boundary_mask
-            pmap[bm] = pmap[ny[bm], nx[bm]]
+        # Use a simpler dilation approach instead of distance_transform_edt
+        from scipy.ndimage import binary_dilation
+        
+        boundary_pixels = boundary_mask & (pmap == -1)
+        if boundary_pixels.any():
+            # Dilate valid regions to fill boundaries (much faster than distance transform)
+            temp = pmap.copy()
+            for _ in range(10):  # Usually boundaries are narrow
+                valid = temp >= 0
+                dilated = binary_dilation(valid)
+                newly_filled = dilated & ~valid & boundary_pixels
+                if not newly_filled.any():
+                    break
+                
+                # Assign from neighbors
+                from scipy.ndimage import maximum_filter
+                temp[newly_filled] = maximum_filter(temp, size=3)[newly_filled]
+            
+            pmap[boundary_pixels] = temp[boundary_pixels]
     
     # Build metadata
     metadata = []
@@ -174,6 +206,18 @@ def _assign_to_seeds(
         config.PROVINCE_ID_END,
     )
     
+    # Compute all centroids at once (MUCH faster)
+    centroids = {}
+    ys_all, xs_all = np.where(pmap >= 0)
+    labels_all = pmap[ys_all, xs_all]
+    
+    for province_idx in range(start_index, start_index + len(seeds)):
+        mask = labels_all == province_idx
+        if mask.any():
+            xs_prov = xs_all[mask]
+            ys_prov = ys_all[mask]
+            centroids[province_idx] = (float(np.mean(xs_prov)), float(np.mean(ys_prov)))
+    
     for i, seed in enumerate(seeds):
         rid = series.get_id()
         if rid is None:
@@ -182,13 +226,10 @@ def _assign_to_seeds(
         from logic.utils import color_from_id
         r, g, b = color_from_id(start_index + i, region_type, used_colors)
         
-        # Calculate centroid
-        region_mask_i = pmap == (start_index + i)
-        ys_i, xs_i = np.where(region_mask_i)
-        
-        if len(xs_i) > 0:
-            cx = float(np.mean(xs_i))
-            cy = float(np.mean(ys_i))
+        # Get pre-computed centroid
+        province_idx = start_index + i
+        if province_idx in centroids:
+            cx, cy = centroids[province_idx]
         else:
             cx, cy = float(seed[0]), float(seed[1])
         

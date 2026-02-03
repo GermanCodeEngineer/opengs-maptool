@@ -1,6 +1,5 @@
-import cProfile
-import pstats
 import sys
+import json
 import pathlib
 import config
 import numpy as np
@@ -10,7 +9,8 @@ from PyQt6.QtWidgets import QApplication
 from ui.main_window import MainWindow
 from logic.export_module import _export_provinces_csv_to, _export_territories_csv_to, _export_territories_json_to
 from logic.grid_province_generator import generate_provinces_grid_based
-from logic.boundaries_to_cont import convert_boundaries_to_cont_areas
+from logic.boundaries_to_cont import convert_boundaries_to_cont_areas, classify_pixels_by_color
+from logic.cont_to_territories import convert_cont_areas_to_territories
 
 
 def generate_map(
@@ -56,105 +56,61 @@ def generate_map(
         return round(a + t * (b - a))
     
     # Create QApplication and window
-    app = QApplication(sys.argv[:1])
-    window = MainWindow()
-    window.show()
+    #app = QApplication(sys.argv[:1])
+    #window = MainWindow()
+    #window.show()
     
     # Load input images
+    
     land_image_path = input_directory / land_image_name
     boundary_image_path = input_directory / boundary_image_name
-    convert_boundaries_to_cont_areas(np.array(Image.open(boundary_image_path)))    
+    cont_areas_image_path = output_directory / "contareasimage.png"
+    type_image_path = output_directory / "typeimage.png"
+    type_counts_path = output_directory / "typecounts.json"
+    territory_viz_image_path = output_directory / "territoryvizimage.png"
+    
+    
+    # Create helper images if necessary
+    if cont_areas_image_path.exists():
+        cont_areas_image = np.array(Image.open(cont_areas_image_path))
+    else:
+        cont_areas_image = convert_boundaries_to_cont_areas(np.array(Image.open(boundary_image_path)))
+        Image.fromarray(cont_areas_image).save(cont_areas_image_path)
 
-    
-    if land_image_path.exists():
-        window.land_image_display.set_image(Image.open(land_image_path))
-    if boundary_image_path.exists():
-        window.boundary_image_display.set_image(Image.open(boundary_image_path))
-    
-    window.button_gen_prov.setEnabled(True)
-    
-    
-    
-    # Set province and territory counts
-    window.land_slider.setValue(
-        ilerp(config.LAND_PROVINCES_MIN, config.LAND_PROVINCES_MAX, land_provinces_ratio)
-    )
-    window.ocean_slider.setValue(
-        ilerp(config.OCEAN_PROVINCES_MIN, config.OCEAN_PROVINCES_MAX, ocean_provinces_ratio)
-    )
-    window.territory_land_slider.setValue(
-        ilerp(config.LAND_TERRITORIES_MIN, config.LAND_TERRITORIES_MAX, land_territories_ratio)
-    )
-    window.territory_ocean_slider.setValue(
-        ilerp(config.OCEAN_TERRITORIES_MIN, config.OCEAN_TERRITORIES_MAX, ocean_territories_ratio)
-    )
-    
-    # Create output directory
-    output_directory.mkdir(parents=True, exist_ok=True)
-    
-    
-    # Generate provinces
-    #window.button_gen_prov.click()
-    #province_image = window.province_image_display.get_image()
-    #province_data = window.province_data
-     
-    # Export provinces
-    #if "png" in export_formats:
-    #    province_image.save(output_directory / "provinceimage.png")
-    #if "csv" in export_formats:
-    #    _export_provinces_csv_to(province_data, str(output_directory / "provincedata.csv"))
-    
-    # Generate territories
-    #window.button_gen_territories.click()
-    #territory_image = window.territory_image_display.get_image()
-    #territory_data = window.territory_data
-    
-    land_image_arr = np.array(Image.open(land_image_path)) if land_image_path.exists() else None
-    boundary_image_arr = np.array(Image.open(boundary_image_path)) if boundary_image_path.exists() else None
+    if type_image_path.exists() and type_counts_path.exists():
+        type_image = np.array(Image.open(type_image_path))
+        type_counts = json.loads(type_counts_path.read_text())
+    else:
+        type_image, type_counts = classify_pixels_by_color(np.array(Image.open(land_image_path)), export_colors=True)
+        Image.fromarray(type_image).save(type_image_path)
+        type_counts_path.write_text(json.dumps(type_counts))
 
-    if land_image_arr is None:
-        raise FileNotFoundError(f"Land image not found: {land_image_path}")
-
-    province_image, metadata = generate_provinces_grid_based(
-        boundary_image=boundary_image_arr,
-        land_image=land_image_arr,
-        num_provinces=ilerp(config.LAND_PROVINCES_MIN, config.LAND_PROVINCES_MAX, land_provinces_ratio),
-        num_sea_provinces=ilerp(config.OCEAN_PROVINCES_MIN, config.OCEAN_PROVINCES_MAX, ocean_provinces_ratio),
-    )
-
-    # Export territories
-    if "png" in export_formats:
-        #territory_image.save(output_directory / "territoryimage.png")
-        province_image.save(output_directory / "provinceimage.png")
-
-    #if "csv" in export_formats:
-    #    _export_territories_csv_to(territory_data, str(output_directory / "territorydata.csv"))
-    #if "json" in export_formats:
-    #    _export_territories_json_to(territory_data, str(output_directory / "territorydata.json"))
-    
-    
-    # Cleanup
-    window.close()
-    app.quit()
-    
-    #return {
-    #    "province_data": province_data,
-    #    "territory_data": territory_data,
-    #    "province_image": province_image,
-    #    "territory_image": territory_image,
-    #}
-    
+    # Create territory visualization image if necessary
+    if territory_viz_image_path.exists():
+        viz_image = np.array(Image.open(territory_viz_image_path))
+    else:
+        viz_image = convert_cont_areas_to_territories(
+            cont_areas_image,
+            type_image,
+            type_counts,
+            total_num_territories=1000,
+            #ilerp(config.LAND_TERRITORIES_MIN, config.LAND_TERRITORIES_MAX, land_territories_ratio),
+        )
+        Image.fromarray(viz_image).save(territory_viz_image_path)
+        
 
 
 def main():
     # Default paths
-    input_directory = pathlib.Path(__file__).parent.parent.parent / "Godot/opengs/wip/outputqgis"
+    input_directory = pathlib.Path(__file__).parent / "example_input"
     output_directory = pathlib.Path(__file__).parent / "output"
     
     # Run with default settings
     generate_map(
         input_directory=input_directory,
         output_directory=output_directory,
+        boundary_image_name="bound2.png",
+        land_image_name="land2.png",
         land_provinces_ratio=0.05,#0.3,
         ocean_provinces_ratio=0.05,#0.3,
         land_territories_ratio=0.05,#0.7,
@@ -163,6 +119,8 @@ def main():
 
 
 if __name__ == "__main__":
+    import cProfile
+    import pstats
     profiler = cProfile.Profile()
     profiler.enable()
     main()

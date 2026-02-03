@@ -34,6 +34,8 @@ OCEAN_TERRITORIES_STEP = 10
 
 # Land Map Color Code
 OCEAN_COLOR = (5, 20, 18)  # RGB
+LAND_COLOR = (150, 68, 192)  # RGB
+LAKE_COLOR = (0, 255, 0)  # RGB
 
 # Boundary Map Color Code
 BOUNDARY_COLOR = (0, 0, 0)
