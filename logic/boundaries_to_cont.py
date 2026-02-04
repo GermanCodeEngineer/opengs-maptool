@@ -2,7 +2,7 @@ import numpy as np
 from numpy.typing import NDArray
 from scipy import ndimage
 from tqdm import tqdm
-from logic.utils import color_from_string
+from logic.utils import color_from_id
 import config
 
 NEIGHBOR_OFFSETS = [(-1, 0), (1, 0), (0, -1), (0, 1)]
@@ -94,7 +94,7 @@ def convert_boundaries_to_cont_areas(boundaries_image: np.typing.NDArray[np.uint
     
     # Vectorized color assignment
     for region_id in tqdm(range(1, num_features + 1), desc="Processing regions", unit="region"):
-        r, g, b = color_from_string(str(region_id), "land", colors)
+        r, g, b = color_from_id(region_id, "land", colors)
         region_to_color[region_id] = (r, g, b, 255)
         regions_image[labeled_array == region_id] = region_to_color[region_id]
         

@@ -1,10 +1,27 @@
 import config
 import numpy as np
-from hashlib import sha256
 from numpy.typing import NDArray
 from typing import Any
 from scipy.ndimage import distance_transform_edt
 from scipy.spatial import cKDTree
+
+
+class NumberSeries:
+    def __init__(self, PREFIX: str, NUMBER_START: int, NUMBER_END: int) -> None:
+        self.PREFIX: str = PREFIX
+        self.NUMBER_END: int = NUMBER_END
+        self.ID_LENGTH: int = len(str(NUMBER_END))
+        self.number_next: int = NUMBER_START
+
+    def get_id(self) -> str:
+        if self.number_next > self.NUMBER_END:
+            print("ERROR: No more available numbers!")
+            return None
+
+        formatted_number: str = self.PREFIX + \
+            str(self.number_next).zfill(self.ID_LENGTH)
+        self.number_next += 1
+        return formatted_number
 
 
 def is_sea_color(arr: np.ndarray) -> np.ndarray:
@@ -226,7 +243,7 @@ def build_metadata(
         if rid is None:
             continue
 
-        r, g, b = color_from_string(rid, ptype, used_colors)
+        r, g, b = color_from_id(start_index + i, ptype, used_colors)
         if counts[i] <= 0:
             sx, sy = seeds[i]
             cx, cy = float(sx), float(sy)
@@ -245,25 +262,7 @@ def build_metadata(
     return metadata
 
 
-class NumberSeries:
-    def __init__(self, PREFIX: str, NUMBER_START: int, NUMBER_END: int) -> None:
-        self.PREFIX: str = PREFIX
-        self.NUMBER_END: int = NUMBER_END
-        self.ID_LENGTH: int = len(str(NUMBER_END))
-        self.number_next: int = NUMBER_START
-
-    def get_id(self) -> str:
-        if self.number_next > self.NUMBER_END:
-            print("ERROR: No more available numbers!")
-            return None
-
-        formatted_number: str = self.PREFIX + \
-            str(self.number_next).zfill(self.ID_LENGTH)
-        self.number_next += 1
-        return formatted_number
-
-
-def _color_from_id(index: int, ptype: str, used_colors: set) -> tuple[int, int, int]:
+def color_from_id(index: int, ptype: str, used_colors: set) -> tuple[int, int, int]:
     rng = np.random.default_rng(index + 1)
 
     while True:
@@ -278,11 +277,6 @@ def _color_from_id(index: int, ptype: str, used_colors: set) -> tuple[int, int, 
         if color not in used_colors:
             used_colors.add(color)
             return color
-
-
-def color_from_string(s: str, ptype: str, used_colors: set) -> tuple[int, int, int]:
-    """Generate a color from a string (deterministic)."""
-    return _color_from_id(abs(int(sha256(s.encode()).hexdigest(), 16)) % 1000000, ptype, used_colors)
 
 
 def poisson_disk_samples(

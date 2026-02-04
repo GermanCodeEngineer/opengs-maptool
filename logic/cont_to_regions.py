@@ -4,7 +4,7 @@ from typing import Any
 from tqdm import tqdm
 from multiprocessing import Pool, cpu_count
 from logic.utils import (
-    NumberSeries, poisson_disk_samples, color_from_string, lloyd_relaxation, assign_regions, build_metadata,
+    NumberSeries, poisson_disk_samples, color_from_id, lloyd_relaxation, assign_regions, build_metadata,
 )
 import config
 
@@ -176,8 +176,9 @@ def convert_cont_area_to_regions(
         used_colors = set()
         
         region_id = series.get_id()
-        r, g, b = color_from_string(region_id, area_type, used_colors)
-        
+        region_index = int(region_id.replace(series.PREFIX, ""))
+        r, g, b = color_from_id(region_index, area_type, used_colors)
+                
         # Compute centroid of entire area
         cx = float(np.mean(cols))
         cy = float(np.mean(rows))
