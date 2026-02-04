@@ -1,0 +1,3 @@
+- fix sea and land provinces being confused
+- assign borders to territories
+- assert global unique colors

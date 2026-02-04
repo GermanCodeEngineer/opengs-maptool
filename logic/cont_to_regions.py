@@ -2,12 +2,12 @@ import numpy as np
 from numpy.typing import NDArray
 from typing import Any
 from tqdm import tqdm
-from PIL import Image
 from multiprocessing import Pool, cpu_count
-from functools import partial
-from logic.lloyd_utils import lloyd_relaxation, assign_regions, build_metadata
-from logic.utils import NumberSeries, poisson_disk_samples, color_from_id
+from logic.utils import (
+    NumberSeries, poisson_disk_samples, color_from_string, lloyd_relaxation, assign_regions, build_metadata,
+)
 import config
+
 
 def _process_single_area(args: tuple) -> tuple[NDArray[np.uint8], list[dict[str, Any]], tuple[int, int, int, int] | None, dict[str, Any]]:
     """
@@ -20,9 +20,7 @@ def _process_single_area(args: tuple) -> tuple[NDArray[np.uint8], list[dict[str,
     Returns:
         Tuple of (region_image, region_metadata, bbox, area_meta)
     """
-    area_meta, cont_areas_image, type_image, type_counts, total_num_land_regions, total_num_ocean_regions = args
-    
-    filter_color = (area_meta["R"], area_meta["G"], area_meta["B"], 255)
+    area_meta, cont_areas_image, type_image, type_counts, total_num_land_regions, total_num_ocean_regions, region_id_prefix = args
     
     region_image, region_metadata, bbox = convert_cont_area_to_regions(
         cont_areas_image=cont_areas_image,
@@ -30,7 +28,8 @@ def _process_single_area(args: tuple) -> tuple[NDArray[np.uint8], list[dict[str,
         type_counts=type_counts,
         total_num_land_regions=total_num_land_regions,
         total_num_ocean_regions=total_num_ocean_regions,
-        filter_color=filter_color,
+        filter_color=(area_meta["R"], area_meta["G"], area_meta["B"], 255),
+        region_id_prefix=region_id_prefix,
     )
     
     return region_image, region_metadata, bbox, area_meta
@@ -43,6 +42,7 @@ def convert_all_cont_areas_to_regions(
         type_counts: dict[str, int],
         total_num_land_regions: int,
         total_num_ocean_regions: int,
+        region_id_prefix: str,
         num_processes: int | None = None,
     ) -> tuple[NDArray[np.uint8], list[dict[str, Any]]]:
     """
@@ -56,6 +56,7 @@ def convert_all_cont_areas_to_regions(
         type_counts: Pixel counts per type
         total_num_land_regions: Total regions to generate for land areas
         total_num_ocean_regions: Total regions to generate for ocean/lake areas
+        region_id_prefix: Prefix for region IDs (e.g., "reg-")
         num_processes: Number of processes to use. If None, uses number of CPU cores.
     
     Returns:
@@ -72,8 +73,10 @@ def convert_all_cont_areas_to_regions(
     
     # Prepare arguments for each area
     task_args = [
-        (area_meta, cont_areas_image, type_image, type_counts, total_num_land_regions, total_num_ocean_regions)
-        for area_meta in cont_areas_metadata
+        (
+            area_meta, cont_areas_image, type_image, type_counts,
+            total_num_land_regions, total_num_ocean_regions, f"{region_id_prefix}-{area_meta['area_id']}-",
+        ) for area_meta in cont_areas_metadata
     ]
     
     # Process areas in parallel with progress bar
@@ -103,6 +106,7 @@ def convert_cont_area_to_regions(
         total_num_land_regions: int,
         total_num_ocean_regions: int,
         filter_color: tuple[int, int, int, int],
+        region_id_prefix: str,
     ) -> tuple[NDArray[np.uint8], list[dict[str, Any]], tuple[int, int, int, int] | None]:
     """
     Convert a single continous area(usually a country) into an image of regions.
@@ -114,6 +118,7 @@ def convert_cont_area_to_regions(
         total_num_land_regions: Total regions to generate for land areas
         total_num_ocean_regions: Total regions to generate for ocean/lake areas
         filter_color: RGBA color to filter for (default: Germany blue-green)
+        region_id_prefix: Prefix for region IDs (e.g., "reg-")
     
     Returns:
         Tuple of (region_image, region_metadata, bbox) where:
@@ -167,12 +172,11 @@ def convert_cont_area_to_regions(
     
     # Optimization: if only one region, assign entire area to it
     if num_area_regions == 1:
-        series = NumberSeries(config.TERRITORY_ID_PREFIX, config.TERRITORY_ID_START, config.TERRITORY_ID_END)
+        series = NumberSeries(region_id_prefix, config.SERIES_ID_START, config.SERIES_ID_END)
         used_colors = set()
         
         region_id = series.get_id()
-        region_index = int(region_id.replace(config.TERRITORY_ID_PREFIX, ""))
-        r, g, b = color_from_id(region_index, area_type, used_colors)
+        r, g, b = color_from_string(region_id, area_type, used_colors)
         
         # Compute centroid of entire area
         cx = float(np.mean(cols))
@@ -214,7 +218,7 @@ def convert_cont_area_to_regions(
         fast_mode=False,
     )
     
-    series = NumberSeries(config.TERRITORY_ID_PREFIX, config.TERRITORY_ID_START, config.TERRITORY_ID_END)
+    series = NumberSeries(config.TERRITORY_ID_PREFIX, config.SERIES_ID_START, config.SERIES_ID_END)
     used_colors = set()
     
     pmap = assign_regions(cropped_mask, seeds, start_index=0)

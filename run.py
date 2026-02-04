@@ -5,10 +5,8 @@ import config
 import numpy as np
 from pathlib import Path
 from PIL import Image
-from PyQt6.QtWidgets import QApplication
-from ui.main_window import MainWindow
-from logic.export_module import _export_provinces_csv_to, _export_territories_csv_to, _export_territories_json_to
-from logic.grid_province_generator import generate_provinces_grid_based
+#from PyQt6.QtWidgets import QApplication
+#from ui.main_window import MainWindow
 from logic.boundaries_to_cont import convert_boundaries_to_cont_areas, classify_pixels_by_color
 from logic.cont_to_regions import convert_all_cont_areas_to_regions
 
@@ -102,6 +100,7 @@ def generate_map(
             type_counts=type_counts,
             total_num_land_regions=1500,
             total_num_ocean_regions=300,
+            region_id_prefix=config.TERRITORY_ID_PREFIX,
             #ilerp(config.LAND_TERRITORIES_MIN, config.LAND_TERRITORIES_MAX, land_territories_ratio),
         )
         Image.fromarray(territory_image).save(territory_image_path)

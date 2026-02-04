@@ -47,11 +47,10 @@ DISPLAY_SIZE_HEIGHT = 900
 
 # Number Series
 PROVINCE_ID_PREFIX = "prv-"
-PROVINCE_ID_START = 1
-PROVINCE_ID_END = 999999
+
 TERRITORY_ID_PREFIX = "ter-"
-TERRITORY_ID_START = 1
-TERRITORY_ID_END = 999999
+SERIES_ID_START = 1
+SERIES_ID_END = 999999
 
 # RNG
 # Set to an int for deterministic results, or None for non-deterministic.
