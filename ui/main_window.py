@@ -14,6 +14,7 @@ class MainWindow(QWidget):
 
         # MAIN LAYOUT
         self.setWindowTitle(config.TITLE)
+        self.setMinimumSize(800, 600)
         self.resize(config.WINDOW_SIZE_WIDTH,
                     config.WINDOW_SIZE_HEIGHT)
         main_layout = QVBoxLayout(self)
@@ -92,14 +93,14 @@ class MainWindow(QWidget):
         self.button_gen_prov.setEnabled(False)
 
         self.button_exp_prov_img = create_button(button_row,
-                                                 "Export Province Map",
+                                                 "Export Province Image",
                                                  lambda: export_image(self,
                                                                       self.province_image_display.get_image(),
-                                                                      "Export Province Map"))
+                                                                      "Export Province Image"))
         self.button_exp_prov_img.setEnabled(False)
 
         self.button_exp_prov_csv = create_button(button_row,
-                                                 "Export Province CSV",
+                                                 "Export Province Definitions",
                                                  lambda: export_provinces_csv(self))
         self.button_exp_prov_csv.setEnabled(False)
 
@@ -135,18 +136,18 @@ class MainWindow(QWidget):
         self.button_gen_territories.setEnabled(False)
 
         self.button_exp_terr_img = create_button(button_territory_row,
-                                                 "Export Territory Map",
+                                                 "Export Territory Image",
                                                  lambda: export_image(self,
                                                                       self.territory_image_display.get_image(),
-                                                                      "Export Territory Map"))
+                                                                      "Export Territory Image"))
         self.button_exp_terr_img.setEnabled(False)
 
         self.button_exp_terr_csv = create_button(button_territory_row,
-                                                 "Export Territory CSV",
+                                                 "Export Territory Definitions",
                                                  lambda: export_territories_csv(self))
         self.button_exp_terr_csv.setEnabled(False)
 
         self.button_exp_terr_json = create_button(button_territory_row,
-                                                  "Export Territory JSON",
+                                                  "Export Territory History",
                                                   lambda: export_territories_json(self))
         self.button_exp_terr_json.setEnabled(False)
