@@ -9,6 +9,7 @@ from PIL import Image
 #from ui.main_window import MainWindow
 from logic.boundaries_to_cont import convert_boundaries_to_cont_areas, classify_pixels_by_color
 from logic.cont_to_regions import convert_all_cont_areas_to_regions
+from logic.utils import NumberSeries, NumberSubSeries
 
 
 def generate_map(
@@ -93,6 +94,7 @@ def generate_map(
         territory_image = np.array(Image.open(territory_image_path))
         territory_data = json.loads(territory_data_path.read_text())
     else:
+        number_superseries = NumberSeries(config.AREA_ID_PREFIX, config.SERIES_ID_START, config.SERIES_ID_END)
         territory_image, territory_data = convert_all_cont_areas_to_regions(
             cont_areas_image=cont_areas_image,
             cont_areas_metadata=cont_areas_data,
@@ -100,8 +102,9 @@ def generate_map(
             type_counts=type_counts,
             total_num_land_regions=1500,
             total_num_ocean_regions=300,
-            region_id_prefix=config.TERRITORY_ID_PREFIX,
-            #ilerp(config.LAND_TERRITORIES_MIN, config.LAND_TERRITORIES_MAX, land_territories_ratio),
+            fn_new_number_series=lambda: NumberSubSeries(
+                number_superseries, config.TERRITORY_ID_PREFIX, config.SERIES_ID_START, config.SERIES_ID_END
+            ),
         )
         Image.fromarray(territory_image).save(territory_image_path)
         territory_data_path.write_text(json.dumps(territory_data))

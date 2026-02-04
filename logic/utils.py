@@ -1,27 +1,88 @@
 import config
 import numpy as np
 from numpy.typing import NDArray
-from typing import Any
+from typing import Any, Iterable
 from scipy.ndimage import distance_transform_edt
 from scipy.spatial import cKDTree
 
 
-class NumberSeries:
-    def __init__(self, PREFIX: str, NUMBER_START: int, NUMBER_END: int) -> None:
-        self.PREFIX: str = PREFIX
-        self.NUMBER_END: int = NUMBER_END
-        self.ID_LENGTH: int = len(str(NUMBER_END))
-        self.number_next: int = NUMBER_START
+def rgb_to_hex(rgb: tuple[int, int, int]) -> str:
+    """Convert RGB values to hex color string (e.g., '#aabbcc')"""
+    r, g, b = rgb
+    return f"#{r:02x}{g:02x}{b:02x}"
 
-    def get_id(self) -> str:
-        if self.number_next > self.NUMBER_END:
+
+def hex_to_rgb(hex_color: str) -> tuple[int, int, int]:
+    """Convert hex color string (e.g., '#aabbcc') to RGB tuple"""
+    hex_color = hex_color.lstrip('#')
+    return tuple(int(hex_color[i:i+2], 16) for i in (0, 2, 4))
+
+
+class NumberSeries:
+    def __init__(self, prefix: str, number_start: int, number_end: int) -> None:
+        self.prefix: str = prefix
+        self.number_end: int = number_end
+        self.id_length: int = len(str(number_end))
+        self.number_next: int = number_start
+
+    def get_id(self) -> str | None:
+        if self.number_next > self.number_end:
             print("ERROR: No more available numbers!")
             return None
 
-        formatted_number: str = self.PREFIX + \
-            str(self.number_next).zfill(self.ID_LENGTH)
+        formatted_number: str = self.prefix + \
+            str(self.number_next).zfill(self.id_length)
         self.number_next += 1
         return formatted_number
+
+
+class NumberSubSeries:
+    """Generates hierarchical IDs like 'parent-prefix-1-sub-prefix-1'"""
+    def __init__(self, parent_series: NumberSeries, sub_prefix: str, number_start: int, number_end: int) -> None:
+        self.parent_series: NumberSeries = parent_series
+        self.parent_id = parent_series.get_id()
+        self.sub_prefix: str = sub_prefix
+        self.sub_number_end: int = number_end
+        self.sub_id_length: int = len(str(number_end))
+        self.sub_number_next: int = number_start
+
+    def get_id(self) -> str | None:
+        if self.sub_number_next > self.sub_number_end:
+            print("ERROR: No more available sub numbers!")
+            return None
+
+        formatted_sub_number: str = self.sub_prefix + \
+            str(self.sub_number_next).zfill(self.sub_id_length)
+        self.sub_number_next += 1
+        
+        return f"{self.parent_id}-{formatted_sub_number}"
+
+
+class ColorSeries:
+    def __init__(self, rng_seed: int, exclude_values: Iterable[tuple[int, int, int]] | None = None) -> None:
+        self.rng = np.random.default_rng(rng_seed)
+        self.used_values = set() if exclude_values is None else set(exclude_values) 
+
+    def get_color_rgb(self, is_water: bool) -> tuple[int, int, int]:
+        while True:
+            if is_water:
+                r = self.rng.integers(0, 60)
+                g = self.rng.integers(0, 80)
+                b = self.rng.integers(100, 180)
+            else:
+                r, g, b = map(int, self.rng.integers(0, 256, 3))
+
+            color = (int(r), int(g), int(b))
+            if color not in self.used_values:
+                self.used_values.add(color)
+                return color
+    
+    def get_color_hex(self, is_water: bool) -> str:
+        return rgb_to_hex(self.get_color_rgb(is_water=is_water))
+
+    def get_color_rgb_hex(self, is_water: bool) -> tuple[tuple[int, int, int], str]:
+        rgb = self.get_color_rgb(is_water=is_water)
+        return (rgb, rgb_to_hex(rgb))
 
 
 def is_sea_color(arr: np.ndarray) -> np.ndarray:
@@ -213,9 +274,9 @@ def build_metadata(
     pmap: np.ndarray,
     seeds: list[tuple[int, int]],
     start_index: int,
-    ptype: str,
+    region_type: str,
     series: NumberSeries,
-    used_colors: set[tuple[int, int, int]],
+    color_series: ColorSeries,
     is_territory: bool,
 ) -> list[dict[str, Any]]:
     if pmap.size == 0 or not seeds:
@@ -243,7 +304,7 @@ def build_metadata(
         if rid is None:
             continue
 
-        r, g, b = color_from_id(start_index + i, ptype, used_colors)
+        color_hex = color_series.get_color_hex(is_water=(region_type != "land"))
         if counts[i] <= 0:
             sx, sy = seeds[i]
             cx, cy = float(sx), float(sy)
@@ -253,30 +314,13 @@ def build_metadata(
 
         metadata.append({
             ("territory_id" if is_territory else "province_id"): rid,
-            ("territory_type" if is_territory else "province_type"): ptype,
-            "R": r, "G": g, "B": b,
+            ("territory_type" if is_territory else "province_type"): (region_type),
+            "color": color_hex,
             "x": cx,
             "y": cy,
         })
 
     return metadata
-
-
-def color_from_id(index: int, ptype: str, used_colors: set) -> tuple[int, int, int]:
-    rng = np.random.default_rng(index + 1)
-
-    while True:
-        if ptype == "ocean":
-            r = rng.integers(0, 60)
-            g = rng.integers(0, 80)
-            b = rng.integers(100, 180)
-        else:
-            r, g, b = map(int, rng.integers(0, 256, 3))
-
-        color = (int(r), int(g), int(b))
-        if color not in used_colors:
-            used_colors.add(color)
-            return color
 
 
 def poisson_disk_samples(

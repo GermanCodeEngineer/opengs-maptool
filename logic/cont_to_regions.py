@@ -1,26 +1,22 @@
 import numpy as np
 from numpy.typing import NDArray
-from typing import Any
+from typing import Any, Callable
 from tqdm import tqdm
 from multiprocessing import Pool, cpu_count
 from logic.utils import (
-    NumberSeries, poisson_disk_samples, color_from_id, lloyd_relaxation, assign_regions, build_metadata,
+    NumberSeries, NumberSubSeries, ColorSeries,
+    poisson_disk_samples, lloyd_relaxation, assign_regions, build_metadata, hex_to_rgb,
 )
 import config
 
 
-def _process_single_area(args: tuple) -> tuple[NDArray[np.uint8], list[dict[str, Any]], tuple[int, int, int, int] | None, dict[str, Any]]:
+def _process_single_area(args: tuple) -> tuple[NDArray[np.uint8], list[dict[str, Any]], tuple[int, int, int, int] | None, ColorSeries]:
     """
-    Helper function for multiprocessing. Processes a single continuous area.
-    Must be at module level to be picklable.
-    
-    Args:
-        args: Tuple of (area_meta, cont_areas_image, type_image, type_counts, total_num_land_regions, total_num_ocean_regions)
-    
-    Returns:
-        Tuple of (region_image, region_metadata, bbox, area_meta)
+    Helper function for multiprocessing.
     """
-    area_meta, cont_areas_image, type_image, type_counts, total_num_land_regions, total_num_ocean_regions, region_id_prefix = args
+    area_meta, cont_areas_image, type_image, type_counts, total_num_land_regions, total_num_ocean_regions, number_subseries, color_series = args
+    
+    r, g, b = hex_to_rgb(area_meta["color"])
     
     region_image, region_metadata, bbox = convert_cont_area_to_regions(
         cont_areas_image=cont_areas_image,
@@ -28,11 +24,12 @@ def _process_single_area(args: tuple) -> tuple[NDArray[np.uint8], list[dict[str,
         type_counts=type_counts,
         total_num_land_regions=total_num_land_regions,
         total_num_ocean_regions=total_num_ocean_regions,
-        filter_color=(area_meta["R"], area_meta["G"], area_meta["B"], 255),
-        region_id_prefix=region_id_prefix,
+        filter_color=(r, g, b, 255),
+        number_series=number_subseries,
+        color_series=color_series,
     )
     
-    return region_image, region_metadata, bbox, area_meta
+    return region_image, region_metadata, bbox, color_series
 
 
 def convert_all_cont_areas_to_regions(
@@ -42,12 +39,13 @@ def convert_all_cont_areas_to_regions(
         type_counts: dict[str, int],
         total_num_land_regions: int,
         total_num_ocean_regions: int,
-        region_id_prefix: str,
+        fn_new_number_series: Callable[[], NumberSeries | NumberSubSeries],
         num_processes: int | None = None,
     ) -> tuple[NDArray[np.uint8], list[dict[str, Any]]]:
     """
     Convert all continuous areas into regions and combine into a single image.
     Uses multiprocessing to parallelize processing of independent areas.
+    Each process gets its own ColorSeries instance seeded uniquely to avoid color collisions.
     
     Args:
         cont_areas_image: Continuous areas image (from convert_boundaries_to_cont_areas)
@@ -56,27 +54,24 @@ def convert_all_cont_areas_to_regions(
         type_counts: Pixel counts per type
         total_num_land_regions: Total regions to generate for land areas
         total_num_ocean_regions: Total regions to generate for ocean/lake areas
-        region_id_prefix: Prefix for region IDs (e.g., "reg-")
-        num_processes: Number of processes to use. If None, uses number of CPU cores.
+        get_new_number_series: A function to produce a new number series
+        num_processes: Number of processes to use. If None, uses number of CPU cores
     
     Returns:
         Tuple of (combined_image, combined_metadata) where:
         - combined_image: Full-size region image (same dimensions as input)
         - combined_metadata: Flattened list of all region metadata
-    """
-    h, w = cont_areas_image.shape[:2]
-    combined_image = np.zeros((h, w, 4), dtype=np.uint8)
-    combined_metadata = []
-    
+    """    
     if num_processes is None:
         num_processes = cpu_count()
-    
+        
     # Prepare arguments for each area
     task_args = [
         (
             area_meta, cont_areas_image, type_image, type_counts,
-            total_num_land_regions, total_num_ocean_regions, f"{region_id_prefix}-{area_meta['area_id']}-",
-        ) for area_meta in cont_areas_metadata
+            total_num_land_regions, total_num_ocean_regions, fn_new_number_series(),
+            ColorSeries(rng_seed=i),
+        ) for i, area_meta in enumerate(cont_areas_metadata)
     ]
     
     # Process areas in parallel with progress bar
@@ -88,14 +83,43 @@ def convert_all_cont_areas_to_regions(
             unit="area"
         ))
     
+
+    h, w = cont_areas_image.shape[:2]
+    combined_image = np.zeros((h, w, 4), dtype=np.uint8)
+    combined_metadata = []
+    existing_colors = set()
+
     # Combine results
-    for region_image, region_metadata, bbox, area_meta in results:
+    for region_image, region_metadata, bbox, color_series in results:
         if bbox is not None and len(region_metadata) > 0:
             y_min, y_max, x_min, x_max = bbox
+            
+            # Check for color collisions and replace with new colors
+            updated_region_metadata = []
+            for region in region_metadata:
+                color_hex = region["color"]
+                
+                # If color collision detected, find a new color
+                if color_hex in existing_colors:
+                    new_color_rgb, new_color_hex = color_series.get_color_rgb_hex(is_water=(region["region_type"] != "land"))
+                    r_old, g_old, b_old = hex_to_rgb(color_hex)
+                    r_new, g_new, b_new = new_color_rgb
+                    region["color"] = new_color_hex
+                    
+                    # Update region_image pixels with new color
+                    old_rgb = np.array([r_old, g_old, b_old], dtype=np.uint8)
+                    mask_old = np.all(region_image[:, :, :3] == old_rgb, axis=2)
+                    region_image[mask_old] = [r_new, g_new, b_new, 255]
+
+                    color_hex = new_color_hex
+                
+                existing_colors.add(color_hex)
+                updated_region_metadata.append(region)
+            
             # Only copy pixels with alpha > 0 to avoid overwriting with transparency
             alpha_mask = region_image[:, :, 3] > 0
             combined_image[y_min:y_max, x_min:x_max][alpha_mask] = region_image[alpha_mask]
-            combined_metadata.extend(region_metadata)
+            combined_metadata.extend(updated_region_metadata)
     
     return combined_image, combined_metadata
 
@@ -106,10 +130,11 @@ def convert_cont_area_to_regions(
         total_num_land_regions: int,
         total_num_ocean_regions: int,
         filter_color: tuple[int, int, int, int],
-        region_id_prefix: str,
+        number_series: NumberSeries | NumberSubSeries,
+        color_series: ColorSeries,
     ) -> tuple[NDArray[np.uint8], list[dict[str, Any]], tuple[int, int, int, int] | None]:
     """
-    Convert a single continous area(usually a country) into an image of regions.
+    Convert a single continuous area (usually a country) into an image of regions.
     
     Args:
         cont_areas_image: Continuous areas image
@@ -117,13 +142,14 @@ def convert_cont_area_to_regions(
         type_counts: Pixel counts per type
         total_num_land_regions: Total regions to generate for land areas
         total_num_ocean_regions: Total regions to generate for ocean/lake areas
-        filter_color: RGBA color to filter for (default: Germany blue-green)
-        region_id_prefix: Prefix for region IDs (e.g., "reg-")
+        filter_color: RGBA color to filter for
+        number_series: NumberSeries or NumberSubSeries for generating region IDs
+        color_series: ColorSeries instance for generating unique colors per process
     
     Returns:
         Tuple of (region_image, region_metadata, bbox) where:
-        - region_image: Cropped region image
-        - region_metadata: List of region data
+        - region_image: Cropped region image with colored regions
+        - region_metadata: List of region metadata dictionaries with id, color, location
         - bbox: (y_min, y_max, x_min, x_max) for pasting back into full image, or None if empty
     """
     # Mask a single country based on filter color
@@ -172,12 +198,8 @@ def convert_cont_area_to_regions(
     
     # Optimization: if only one region, assign entire area to it
     if num_area_regions == 1:
-        series = NumberSeries(region_id_prefix, config.SERIES_ID_START, config.SERIES_ID_END)
-        used_colors = set()
-        
-        region_id = series.get_id()
-        region_index = int(region_id.replace(series.PREFIX, ""))
-        r, g, b = color_from_id(region_index, area_type, used_colors)
+        region_id = number_series.get_id()
+        color_rgb, color_hex = color_series.get_color_rgb_hex(is_water=(area_type != "land"))
                 
         # Compute centroid of entire area
         cx = float(np.mean(cols))
@@ -189,9 +211,7 @@ def convert_cont_area_to_regions(
         
         metadata = [{
             "region_id": region_id,
-            "R": int(r),
-            "G": int(g),
-            "B": int(b),
+            "color": color_hex,
             "x": cx_cropped,
             "y": cy_cropped,
             "region_type": area_type,
@@ -200,7 +220,7 @@ def convert_cont_area_to_regions(
         # Fill only masked pixels with single region color
         h, w = cropped_mask.shape
         cropped_image = np.zeros((h, w, 4), dtype=np.uint8)
-        cropped_image[cropped_mask] = [r, g, b, 255]
+        cropped_image[cropped_mask] = [*color_rgb, 255]
         
         return cropped_image, metadata, bbox
     
@@ -219,18 +239,15 @@ def convert_cont_area_to_regions(
         fast_mode=False,
     )
     
-    series = NumberSeries(config.TERRITORY_ID_PREFIX, config.SERIES_ID_START, config.SERIES_ID_END)
-    used_colors = set()
-    
     pmap = assign_regions(cropped_mask, seeds, start_index=0)
-    metadata = build_metadata(pmap, seeds, 0, area_type, series, used_colors, is_territory=True)
+    metadata = build_metadata(pmap, seeds, 0, area_type, number_series, color_series, is_territory=True)
     
     # Convert province map to colored image
     h, w = cropped_mask.shape
     cropped_image = np.zeros((h, w, 4), dtype=np.uint8)
     
     if metadata:
-        color_lut = np.array([[d["R"], d["G"], d["B"], 255] for d in metadata], dtype=np.uint8)
+        color_lut = np.array([[*hex_to_rgb(d["color"]), 255] for d in metadata], dtype=np.uint8)
         valid = pmap >= 0
         cropped_image[valid] = color_lut[pmap[valid]]
     

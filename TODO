@@ -1,3 +1,4 @@
 - fix sea and land provinces being confused
+    - also cont area creation using const land
 - assign borders to territories
 - assert global unique colors
