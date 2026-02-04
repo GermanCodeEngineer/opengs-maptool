@@ -172,7 +172,7 @@ def build_province_based_territory_image(province_image, province_data, territor
 
     for y in range(h):
         for x in range(w):
-            rgb = tuple(p_arr[y, x])
+            rgb = tuple(p_arr[y, x, :3])
             pid = color_to_pid.get(rgb)
             if pid is None:
                 continue

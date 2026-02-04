@@ -9,6 +9,10 @@ def export_image(parent_layout, image, text):
         try:
             path, _ = QFileDialog.getSaveFileName(
                 parent_layout, text, "", "PNG Files (*.png)")
+            if not path:
+                return
+            if not path.lower().endswith(".png"):
+                path += ".png"
             image.save(path)
 
         except Exception as error:
@@ -25,6 +29,8 @@ def export_provinces_csv(main_layout):
         main_layout, "Export Province CSV", "", "CSV Files (*.csv)")
     if not path:
         return
+    if not path.lower().endswith(".csv"):
+        path += ".csv"
 
     try:
         with open(path, "w", newline="") as f:
@@ -48,6 +54,8 @@ def export_territories_csv(main_layout):
         main_layout, "Export territory CSV", "", "CSV Files (*.csv)")
     if not path:
         return
+    if not path.lower().endswith(".csv"):
+        path += ".csv"
 
     try:
         with open(path, "w", newline="") as f:

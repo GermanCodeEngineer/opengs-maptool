@@ -1,0 +1,14 @@
+# Python
+__pycache__/
+*.pyc
+
+# IDE
+.idea/
+.vscode/
+*.iml
+
+# Virtual environment
+.venv/
+
+# Windows Zone.Identifier files
+*:Zone.Identifier

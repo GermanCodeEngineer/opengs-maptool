@@ -1,5 +1,4 @@
-import config
-from PyQt6.QtWidgets import QLabel
+from PyQt6.QtWidgets import QLabel, QSizePolicy
 from PyQt6.QtGui import QPixmap, QImage
 from PyQt6.QtCore import Qt
 
@@ -7,14 +6,15 @@ from PyQt6.QtCore import Qt
 class ImageDisplay(QLabel):
     def __init__(self, parent=None):
         super().__init__(parent)
-        self.setMinimumSize(config.DISPLAY_SIZE_WIDTH,
-                            config.DISPLAY_SIZE_HEIGHT)
         self.setAlignment(Qt.AlignmentFlag.AlignCenter)
         self.setStyleSheet("background-color: #333")
+        self.setSizePolicy(QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Expanding)
 
         self._image = None
 
     def set_image(self, image):
+        if image.mode != "RGBA":
+            image = image.convert("RGBA")
         self._image = image
         qimage = QImage(
             image.tobytes("raw", "RGBA"),
