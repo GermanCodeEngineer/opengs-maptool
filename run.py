@@ -7,7 +7,7 @@ from pathlib import Path
 from PIL import Image
 #from PyQt6.QtWidgets import QApplication
 #from ui.main_window import MainWindow
-from logic.boundaries_to_cont import convert_boundaries_to_cont_areas, classify_pixels_by_color
+from logic.boundaries_to_cont import convert_boundaries_to_cont_areas, assign_borders_to_areas, classify_pixels_by_color
 from logic.cont_to_regions import convert_all_cont_areas_to_regions
 from logic.utils import NumberSeries, NumberSubSeries
 
@@ -77,7 +77,8 @@ def generate_map(
         cont_areas_image = np.array(Image.open(cont_areas_image_path))
         cont_areas_data = json.loads(cont_areas_data_path.read_text())
     else:
-        cont_areas_image, cont_areas_data = convert_boundaries_to_cont_areas(np.array(Image.open(boundary_image_path)))
+        areas_with_borders_image, cont_areas_data = convert_boundaries_to_cont_areas(np.array(Image.open(boundary_image_path)))
+        cont_areas_image = assign_borders_to_areas(areas_with_borders_image)
         Image.fromarray(cont_areas_image).save(cont_areas_image_path)
         cont_areas_data_path.write_text(json.dumps(cont_areas_data))
     

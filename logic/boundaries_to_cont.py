@@ -93,7 +93,7 @@ def convert_boundaries_to_cont_areas(boundaries_image: np.typing.NDArray[np.uint
     metadata = []
     
     # Vectorized color assignment
-    for region_id in tqdm(range(1, num_features + 1), desc="Processing regions", unit="region"):
+    for region_id in tqdm(range(1, num_features + 1), desc="Processing boundaries into areas", unit="areas"):
         color_rgb, color_hex = color_series.get_color_rgb_hex(is_water=False)
         region_to_color[region_id] = (*color_rgb, 255)
         regions_image[labeled_array == region_id] = region_to_color[region_id]
@@ -104,3 +104,74 @@ def convert_boundaries_to_cont_areas(boundaries_image: np.typing.NDArray[np.uint
         })
     
     return regions_image, metadata
+
+def assign_borders_to_areas(
+    regions_image: NDArray[np.uint8],
+    max_iters: int = 50,
+) -> NDArray[np.uint8]:
+    """
+    Assign black pixels to neighboring areas by 4-neighbor majority vote.
+
+    Args:
+        regions_image: RGBA image where non-black pixels represent area colors.
+        max_iters: Max number of propagation iterations.
+
+    Returns:
+        Updated RGBA image with black pixels filled when possible.
+    """
+
+    result = regions_image.copy()
+    rgb = result[:, :, :3]
+    alpha = result[:, :, 3]
+
+    black_mask = (alpha > 0) & (rgb == 0).all(axis=2)
+
+    if not np.any(black_mask):
+        return result
+
+    color_code = (
+        rgb[:, :, 0].astype(np.int32) << 16
+    ) | (
+        rgb[:, :, 1].astype(np.int32) << 8
+    ) | rgb[:, :, 2].astype(np.int32)
+    color_code[black_mask] = 0
+
+    for _ in range(max_iters):
+        if not np.any(black_mask):
+            break
+
+        padded = np.pad(color_code, pad_width=1, mode="constant", constant_values=0)
+        n0 = padded[:-2, 1:-1]
+        n1 = padded[2:, 1:-1]
+        n2 = padded[1:-1, :-2]
+        n3 = padded[1:-1, 2:]
+
+        v0 = n0 != 0
+        v1 = n1 != 0
+        v2 = n2 != 0
+        v3 = n3 != 0
+
+        c0 = v0 * (1 + (n0 == n1) + (n0 == n2) + (n0 == n3))
+        c1 = v1 * (1 + (n1 == n0) + (n1 == n2) + (n1 == n3))
+        c2 = v2 * (1 + (n2 == n0) + (n2 == n1) + (n2 == n3))
+        c3 = v3 * (1 + (n3 == n0) + (n3 == n1) + (n3 == n2))
+
+        counts = np.stack([c0, c1, c2, c3], axis=0)
+        max_count = counts.max(axis=0)
+
+        update_mask = black_mask & (max_count > 0)
+        if not np.any(update_mask):
+            break
+
+        idx = counts.argmax(axis=0)
+        best = np.where(idx == 0, n0, np.where(idx == 1, n1, np.where(idx == 2, n2, n3)))
+
+        color_code[update_mask] = best[update_mask]
+        black_mask = color_code == 0
+
+    result[:, :, 0] = (color_code >> 16) & 255
+    result[:, :, 1] = (color_code >> 8) & 255
+    result[:, :, 2] = color_code & 255
+    result[:, :, 3] = 255
+
+    return result
