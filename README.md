@@ -27,15 +27,39 @@ inside the project directory
 3. Start project by running "python main.py"
 
 ## How to use the tool
-### Land Image
-The first tab takes a image that specifies the ocean area of the map,
-the color defining the ocean must be RGB color (5,20,18), see example in the folder "example_input".
-Everything else is considered land. 
-
 ### Boundary Image
-The second tab defines the bounds that the provinces needs to adhere to.
+The first tab defines the bounds that the provinces needs to adhere to.
 Typical use would be borders for countries, states or other administrative units.
 The boundery borders must be pure black, RGB (0,0,0), everything else will be ignored.
+<br>**Examples:**
+![](example_input/bound.png)
+![](example_input/bound2_orig.png)
+
+### Adapted Boundary Images
+1. You should devide up large oceans and countries for a better result, especially if they are a weird shape (like Earth's ocean is).
+2. Moreover you most like want to **reduce region density in some areas** (e.g. Siberia's regions should be huge and there should be only a few) and increase it in other very populated. Assigning different densities requires splitting that country.
+
+<br>**Boundary Image with divided oceans and big contries:**
+![](example_input/bound2_borders.png)
+
+### Colored Boundary Images
+Your boundary image will then be edited, so that the Blue channel of the RGB pixels is `128`:
+![](example_input/bound2_yellow.png)
+Now you can use an image editor (like PAINT.NET) to **change the blue channel** to e.g.
+- B=255 (high blue -> white) -> **2x more regions**
+- B=128 (mid blue -> light yellow) -> **normal**
+- B=0 (low blue -> dark yellow) -> **2x fewer regions**
+
+<br>**After Editing:**
+![](example_input/bound2_density.png)
+
+### Land Image
+The second tab takes a image that specifies the ocean area of the map,
+the color defining the ocean should be close to the RGB color (5,20,18), see example in the folder "example_input".
+Everything else is considered land.
+<br>**Examples:**
+![](example_input/land.png)
+![](example_input/land2.png)
 
 ### Province Image
 The third third tab generates the province map, based on the input in tab 1 and 2.

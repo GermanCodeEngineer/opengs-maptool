@@ -4,7 +4,7 @@ import config
 import numpy as np
 from pathlib import Path
 from PIL import Image
-from logic.boundaries_to_cont import convert_boundaries_to_cont_areas, assign_borders_to_areas, classify_pixels_by_color
+from logic.boundaries_to_cont import normalize_area_density, convert_boundaries_to_cont_areas, assign_borders_to_areas, classify_pixels_by_color
 from logic.cont_to_regions import convert_all_cont_areas_to_regions
 from logic.utils import NumberSeries
 
@@ -70,7 +70,6 @@ def generate_map(
     province_image_path = output_directory / "provinceimage.png"
     province_data_path = output_directory / "provincedata.json"
     
-    
     # Create helper images if necessary
     if cont_areas_image_path.exists() and cont_areas_data_path.exists():
         cont_areas_image = np.array(Image.open(cont_areas_image_path).convert("RGBA"))
@@ -80,7 +79,7 @@ def generate_map(
         areas_with_borders_image, cont_areas_data = convert_boundaries_to_cont_areas(
             boundary_image, 
             config.CONT_AREAS_RNG_SEED,
-            min_area_pixels=100  # Filter out tiny areas < 100 pixels
+            min_area_pixels=50  # Filter out tiny areas & islands
         )
         cont_areas_image = assign_borders_to_areas(areas_with_borders_image)
         Image.fromarray(cont_areas_image).save(cont_areas_image_path)
@@ -111,7 +110,7 @@ def generate_map(
                 f"{area_meta['region_id']}-{config.TERRITORY_ID_PREFIX}", config.SERIES_ID_START, config.SERIES_ID_END
             ),
             rng_seed=config.TERRITORIES_RNG_SEED,
-            lloyd_iterations=2,
+            lloyd_iterations=3,
         )
 
         # Replace ids with correct format
@@ -121,6 +120,7 @@ def generate_map(
         Image.fromarray(territory_image).save(territory_image_path)
         territory_data_path.write_text(json.dumps(territory_data))
 
+    """
     # Create province visualization image if necessary
     if province_image_path.exists() and province_data_path.exists():
         province_image = np.array(Image.open(province_image_path).convert("RGBA"))
@@ -142,7 +142,7 @@ def generate_map(
         )
         Image.fromarray(province_image).save(province_image_path)
         province_data_path.write_text(json.dumps(province_data))
-        
+    """
 
 
 def main():
@@ -150,11 +150,15 @@ def main():
     input_directory = pathlib.Path(__file__).parent / "example_input"
     output_directory = pathlib.Path(__file__).parent / "output"
     
+    #boundary_image = np.array(Image.open(input_directory / "bound2_borders.png").convert("RGBA"))
+    #boundary_image = normalize_area_density(boundary_image)
+    #Image.fromarray(boundary_image).save(input_directory / "bound2_yellow.png")
+
     # Run with default settings
     generate_map(
         input_directory=input_directory,
         output_directory=output_directory,
-        boundary_image_name="bound2.png",
+        boundary_image_name="bound2_density.png",
         land_image_name="land2.png",
         land_provinces_ratio=0.05,#0.3,
         ocean_provinces_ratio=0.05,#0.3,

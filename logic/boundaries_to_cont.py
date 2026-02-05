@@ -64,6 +64,27 @@ def classify_pixels_by_color(
     }
     return result, counts
 
+def normalize_area_density(boundary_image: NDArray[np.uint8]) -> NDArray[np.uint8]:
+    """
+    Set the B channel to 128 (normal density) for all white areas in a boundary image.
+    Black borders (R+G < 100) are left unchanged.
+    
+    Args:
+        boundary_image: RGBA boundary image where R+G channels define borders/areas
+        
+    Returns:
+        New RGBA image with B channel normalized to 128 for all areas
+    """
+    result = boundary_image.copy()
+    
+    # Identify white areas (R and G are both bright, indicating non-border pixels)
+    is_area = (result[:, :, 0] > 100) & (result[:, :, 1] > 100)
+    
+    # Set B channel to 128 (normal density) for all areas
+    result[is_area, 2] = 128
+    
+    return result
+
 def convert_boundaries_to_cont_areas(boundaries_image: NDArray[np.uint8], rng_seed: int, min_area_pixels: int = 50) -> tuple[NDArray[np.uint8], list[dict]]:
     """
     Convert the boundary image into an image of continous areas(usually countries).
@@ -79,12 +100,12 @@ def convert_boundaries_to_cont_areas(boundaries_image: NDArray[np.uint8], rng_se
         - R, G, B: Area color
     """
 
-    # Vectorized mask creation
+    # Vectorized mask creation - use only R and G channels for border/area detection
+    # Area detection: R and G channels are bright (ignore B channel)
     is_white: np.ndarray = (
         (boundaries_image[:, :, 3] == 255) &
-        (boundaries_image[:, :, 0] == boundaries_image[:, :, 1]) &
-        (boundaries_image[:, :, 1] == boundaries_image[:, :, 2]) &
-        (boundaries_image[:, :, :3].sum(axis=2) > 180 * 3)
+        (boundaries_image[:, :, 0] > 180) &
+        (boundaries_image[:, :, 1] > 180)
     )
 
     # Use scipy's label function for connected component analysis (rel. fast)
@@ -109,7 +130,7 @@ def convert_boundaries_to_cont_areas(boundaries_image: NDArray[np.uint8], rng_se
 
     # Create image from regions using the labeled array
     regions_image = np.full((*boundaries_image.shape[:2], 4), [0, 0, 0, 255], dtype=np.uint8)
-    color_series = ColorSeries(rng_seed)
+    color_series = ColorSeries(rng_seed, exclude_values=[(0, 0, 0)])
     region_to_color = {}
     metadata = []
     
@@ -119,9 +140,43 @@ def convert_boundaries_to_cont_areas(boundaries_image: NDArray[np.uint8], rng_se
         region_to_color[region_id] = (*color_rgb, 255)
         regions_image[labeled_array == region_id] = region_to_color[region_id]
         
+        # Calculate density multiplier from B channel (0-255)
+        # Sample B value from representative points in the region (center and nearby)
+        region_mask = labeled_array == region_id
+        rows, cols = np.where(region_mask)
+        
+        if len(rows) > 0:
+            # Get center and nearby sample points
+            center_row, center_col = int(np.median(rows)), int(np.median(cols))
+            sample_points = [
+                (center_row, center_col),
+                (center_row, max(0, center_col - 5)),
+                (center_row, min(boundaries_image.shape[1] - 1, center_col + 5)),
+                (max(0, center_row - 5), center_col),
+                (min(boundaries_image.shape[0] - 1, center_row + 5), center_col),
+            ]
+            
+            # Sample B channel from these points (avoid out of bounds)
+            blue_samples = []
+            for r, c in sample_points:
+                if 0 <= r < boundaries_image.shape[0] and 0 <= c < boundaries_image.shape[1]:
+                    blue_samples.append(boundaries_image[r, c, 2])
+            
+            avg_blue = float(np.mean(blue_samples)) if blue_samples else 128.0
+        else:
+            avg_blue = 128.0
+        
+        # Convert B channel to density multiplier
+        # B=255 (high blue) -> 0.5 (2x more regions)
+        # B=128 (mid blue) -> 1.0 (normal)
+        # B=0 (low blue) -> 2.0 (2x fewer regions)
+        density_multiplier = 2.0 - (avg_blue / 128.0)
+        density_multiplier = max(0.25, min(4.0, density_multiplier))  # Clamp to reasonable range
+        
         metadata.append({
             "region_id": region_id,
             "color": color_hex,
+            "density_multiplier": density_multiplier,
         })
     
     return regions_image, metadata

@@ -94,7 +94,7 @@ def convert_all_cont_areas_to_regions(
             pixels_per_water_region=pixels_per_water_region,
             filter_color=(*hex_to_rgb(area_meta["color"]), 255),
             number_series=fn_new_number_series(area_meta),
-            color_series=ColorSeries(color_seed),
+            color_series=ColorSeries(color_seed, exclude_values=[(0, 0, 0)]),
             poisson_rng_seed=poisson_seed,
             lloyd_rng_seed=lloyd_seed,
             lloyd_iterations=lloyd_iterations,
@@ -198,12 +198,15 @@ def convert_cont_area_to_regions(args: AreaProcessingArgs) -> tuple[
         pixels_per_region = args.pixels_per_water_region
         pixel_count = water_pixels
     
-    # Calculate regions: areas smaller than 0.5 regions get 0 territories (skip them)
-    num_area_regions = max(1, round(pixel_count / pixels_per_region))
+    # Apply density multiplier from boundary metadata
+    density_multiplier = args.area_meta.get("density_multiplier", 1.0)
+    adjusted_pixels_per_region = pixels_per_region * density_multiplier
     
-    # Debug output for ocean areas
-    if area_type == "ocean":
-        print(f"[DEBUG] {area_type.upper()} area: {pixel_count:,} pixels -> {num_area_regions} territories (pixels_per_region={pixels_per_region:,})")
+    # Calculate regions: areas smaller than 0.5 regions get 0 territories (skip them)
+    num_area_regions = max(1, round(pixel_count / adjusted_pixels_per_region))
+    
+    # Debug output
+    print(f"[DEBUG] {area_type.upper()} area: {pixel_count:,} pixels -> {num_area_regions} territories (pixels_per_region={pixels_per_region:,}, density_multiplier={density_multiplier:.2f})")
     
     # Skip this area if it's too small to warrant any regions
     if num_area_regions == 0:
