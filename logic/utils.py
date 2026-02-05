@@ -92,8 +92,8 @@ def is_sea_color(arr: np.ndarray) -> np.ndarray:
 
 
 def build_masks(
-    boundary_image: np.typing.NDArray[np.uint8] | None,
-    land_image: np.typing.NDArray[np.uint8] | None,
+    boundary_image: NDArray[np.uint8] | None,
+    land_image: NDArray[np.uint8] | None,
 ):
     if boundary_image is None and land_image is None:
         raise ValueError("Need at least boundary OR ocean image to determine map size.")
@@ -140,64 +140,37 @@ def build_masks(
     return land_fill, land_border, sea_fill, sea_border, land_mask, sea_mask
 
 
-def lloyd_relaxation(mask: np.ndarray, seeds: list[tuple[int, int]], iterations: int, boundary_mask: np.ndarray | None = None, fast_mode: bool = False) -> list[tuple[int, int]]:
+def lloyd_relaxation(
+        mask: np.ndarray, point_seeds: list[tuple[int, int]], 
+        rng_seed: int, iterations: int, boundary_mask: np.ndarray | None = None
+    ) -> list[tuple[int, int]]:
     """
     Lloyd relaxation with optional fast mode.
     
     Args:
         mask: Valid region mask
-        seeds: Initial seed positions
-        iterations: Number of relaxation iterations (ignored if fast_mode=True)
+        point_seeds: Initial seed positions
+        rng_seed: RNG seed for reproducibility.
+        iterations: Number of relaxation iterations
         boundary_mask: Optional boundary mask
-        fast_mode: If True, skip iteration and use single-pass Voronoi (10-20x faster, slightly lower quality)
     """
-    if iterations <= 0 or not seeds:
-        return seeds
+    if iterations <= 0 or not point_seeds:
+        return point_seeds
 
     coords_yx = np.column_stack(np.where(mask))
     if coords_yx.size == 0:
-        return seeds
-
-    # Single-pass fast mode: just assign to nearest seed, no iteration
-    if fast_mode:
-        coords_xy = np.flip(coords_yx, axis=1).astype(np.float32, copy=False)
-        tree = cKDTree(np.array(seeds, dtype=np.float32))
-        _, labels = tree.query(coords_xy, k=1)
-        
-        # Return centroid of each region (one pass)
-        rng = np.random.default_rng(config.RNG_SEED)
-        counts = np.bincount(labels, minlength=len(seeds))
-        sum_x = np.bincount(labels, weights=coords_xy[:, 0], minlength=len(seeds))
-        sum_y = np.bincount(labels, weights=coords_xy[:, 1], minlength=len(seeds))
-        
-        new_seeds = []
-        for i in range(len(seeds)):
-            if counts[i] > 0:
-                cx = int(round(sum_x[i] / counts[i]))
-                cy = int(round(sum_y[i] / counts[i]))
-                cx = max(0, min(cx, mask.shape[1] - 1))
-                cy = max(0, min(cy, mask.shape[0] - 1))
-                
-                # Try to place in valid area
-                if mask[cy, cx]:
-                    new_seeds.append((cx, cy))
-                else:
-                    new_seeds.append(seeds[i])
-            else:
-                new_seeds.append(seeds[i])
-        
-        return new_seeds
+        return point_seeds
 
     # Standard Lloyd relaxation (slower but better quality)
     coords_xy = np.flip(coords_yx, axis=1).copy()
     if coords_xy.dtype != np.float32:
         coords_xy = coords_xy.astype(np.float32, copy=False)
-    rng = np.random.default_rng(config.RNG_SEED)
+    rng = np.random.default_rng(rng_seed)
 
     # Cache distance transform (expensive operation)
     _, (ny, nx) = distance_transform_edt(~mask, return_indices=True)
 
-    seeds_arr = np.array(seeds, dtype=np.float32)
+    seeds_arr = np.array(point_seeds, dtype=np.float32)
 
     for _ in range(iterations):
         # Assign each coordinate to nearest seed
@@ -326,6 +299,7 @@ def build_metadata(
 def poisson_disk_samples(
     mask: NDArray[np.bool],
     num_points: int,
+    rng_seed: int,
     min_dist: float | None = None,
     k: int = 30,
     border_margin: float = 0.0,
@@ -336,6 +310,7 @@ def poisson_disk_samples(
     Args:
         mask: 2D boolean mask of valid area.
         num_points: Target number of points.
+        rng_seed: RNG seed for reproducibility.
         min_dist: Minimum distance between points. If None, estimated from mask area.
         k: Attempts per active point.
         border_margin: Optional distance (in pixels) to keep away from mask edges.
@@ -372,7 +347,7 @@ def poisson_disk_samples(
     grid_h = int(np.ceil(h / cell_size))
     grid = -np.ones((grid_h, grid_w), dtype=np.int32)
 
-    rng = np.random.default_rng(config.RNG_SEED)
+    rng = np.random.default_rng(rng_seed)
 
     ys, xs = np.where(mask)
     if xs.size == 0:

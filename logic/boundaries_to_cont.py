@@ -64,7 +64,7 @@ def classify_pixels_by_color(
     }
     return result, counts
 
-def convert_boundaries_to_cont_areas(boundaries_image: np.typing.NDArray[np.uint8]) -> tuple[np.typing.NDArray[np.uint8], list[dict]]:
+def convert_boundaries_to_cont_areas(boundaries_image: NDArray[np.uint8], rng_seed: int) -> tuple[NDArray[np.uint8], list[dict]]:
     """
     Convert the boundary image into an image of continous areas(usually countries).
     
@@ -88,7 +88,7 @@ def convert_boundaries_to_cont_areas(boundaries_image: np.typing.NDArray[np.uint
 
     # Create image from regions using the labeled array
     regions_image = np.full((*boundaries_image.shape[:2], 4), [0, 0, 0, 255], dtype=np.uint8)
-    color_series = ColorSeries(config.RNG_SEED)
+    color_series = ColorSeries(rng_seed)
     region_to_color = {}
     metadata = []
     

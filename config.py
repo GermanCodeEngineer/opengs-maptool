@@ -53,5 +53,6 @@ SERIES_ID_START = 1
 SERIES_ID_END = 999999
 
 # RNG
-# Set to an int for deterministic results, or None for non-deterministic.
-RNG_SEED = int(1e6)
+CONT_AREAS_RNG_SEED = int(1e6)
+TERRITORIES_RNG_SEED = int(2e6)
+PROVINCES_RNG_SEED = int(3e6)

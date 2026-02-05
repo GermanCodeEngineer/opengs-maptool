@@ -1,12 +1,10 @@
-import sys
 import json
 import pathlib
 import config
 import numpy as np
+from numpy.random import SeedSequence
 from pathlib import Path
 from PIL import Image
-#from PyQt6.QtWidgets import QApplication
-#from ui.main_window import MainWindow
 from logic.boundaries_to_cont import convert_boundaries_to_cont_areas, assign_borders_to_areas, classify_pixels_by_color
 from logic.cont_to_regions import convert_all_cont_areas_to_regions
 from logic.utils import NumberSeries, NumberSubSeries
@@ -77,7 +75,8 @@ def generate_map(
         cont_areas_image = np.array(Image.open(cont_areas_image_path))
         cont_areas_data = json.loads(cont_areas_data_path.read_text())
     else:
-        areas_with_borders_image, cont_areas_data = convert_boundaries_to_cont_areas(np.array(Image.open(boundary_image_path)))
+        boundary_image = np.array(Image.open(boundary_image_path))
+        areas_with_borders_image, cont_areas_data = convert_boundaries_to_cont_areas(boundary_image, config.CONT_AREAS_RNG_SEED)
         cont_areas_image = assign_borders_to_areas(areas_with_borders_image)
         Image.fromarray(cont_areas_image).save(cont_areas_image_path)
         cont_areas_data_path.write_text(json.dumps(cont_areas_data))
@@ -106,6 +105,7 @@ def generate_map(
             fn_new_number_series=lambda: NumberSubSeries(
                 number_superseries, config.TERRITORY_ID_PREFIX, config.SERIES_ID_START, config.SERIES_ID_END
             ),
+            rng_seed=config.TERRITORIES_RNG_SEED,
         )
         Image.fromarray(territory_image).save(territory_image_path)
         territory_data_path.write_text(json.dumps(territory_data))
