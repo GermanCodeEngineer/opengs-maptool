@@ -5,7 +5,7 @@ from dataclasses import dataclass
 from tqdm import tqdm
 from multiprocessing import Pool, cpu_count
 from logic.utils import (
-    NumberSeries, NumberSubSeries, ColorSeries,
+    NumberSeries, ColorSeries,
     poisson_disk_samples, lloyd_relaxation, assign_regions, build_metadata, hex_to_rgb,
 )
 import config
@@ -19,10 +19,10 @@ class AreaProcessingArgs:
         cont_areas_image: Continuous areas image
         type_image: Type/classification image
         type_counts: Pixel counts per type
-        total_num_land_regions: Total regions to generate for land areas
-        total_num_ocean_regions: Total regions to generate for ocean/lake areas
+        pixels_per_land_region: Average pixels per region for land areas
+        pixels_per_water_region: Average pixels per region for ocean/lake areas
         filter_color: RGBA color to filter for
-        number_series: NumberSeries or NumberSubSeries for generating region IDs
+        number_series: NumberSeries for generating region IDs
         color_series: ColorSeries instance for generating unique colors per process
         poisson_rng_seed: RNG seed for Poisson disk sampling
         lloyd_rng_seed: RNG seed for Lloyd relaxation
@@ -31,13 +31,14 @@ class AreaProcessingArgs:
     cont_areas_image: NDArray[np.uint8]
     type_image: NDArray[np.uint8]
     type_counts: dict[str, int]
-    total_num_land_regions: int
-    total_num_ocean_regions: int
+    pixels_per_land_region: int
+    pixels_per_water_region: int
     filter_color: tuple[int, int, int, int]
-    number_series: NumberSeries | NumberSubSeries
+    number_series: NumberSeries
     color_series: ColorSeries
     poisson_rng_seed: int
     lloyd_rng_seed: int
+    lloyd_iterations: int
 
 
 def convert_all_cont_areas_to_regions(
@@ -45,10 +46,11 @@ def convert_all_cont_areas_to_regions(
         cont_areas_metadata: list[dict[str, Any]],
         type_image: NDArray[np.uint8],
         type_counts: dict[str, int],
-        total_num_land_regions: int,
-        total_num_ocean_regions: int,
-        fn_new_number_series: Callable[[], NumberSeries | NumberSubSeries],
+        pixels_per_land_region: int,
+        pixels_per_water_region: int,
+        fn_new_number_series: Callable[[dict[str, Any]], NumberSeries],
         rng_seed: int,
+        lloyd_iterations: int,
         num_processes: int | None = None,
     ) -> tuple[NDArray[np.uint8], list[dict[str, Any]]]:
     """
@@ -61,10 +63,11 @@ def convert_all_cont_areas_to_regions(
         cont_areas_metadata: Metadata list with area colors (from convert_boundaries_to_cont_areas)
         type_image: Type/classification image
         type_counts: Pixel counts per type
-        total_num_land_regions: Total regions to generate for land areas
-        total_num_ocean_regions: Total regions to generate for ocean/lake areas
+        pixels_per_land_region: Average pixels per region for land areas
+        pixels_per_water_region: Average pixels per region for ocean/lake areas
         fn_new_number_series: A function to produce a new number series
         rng_seed: Master RNG seed for color series seeding
+        lloyd_iterations: Number of iterations for Lloyd relaxation
         num_processes: Number of processes to use. If None, uses number of CPU cores
     
     Returns:
@@ -87,13 +90,14 @@ def convert_all_cont_areas_to_regions(
             cont_areas_image=cont_areas_image,
             type_image=type_image,
             type_counts=type_counts,
-            total_num_land_regions=total_num_land_regions,
-            total_num_ocean_regions=total_num_ocean_regions,
+            pixels_per_land_region=pixels_per_land_region,
+            pixels_per_water_region=pixels_per_water_region,
             filter_color=(*hex_to_rgb(area_meta["color"]), 255),
-            number_series=fn_new_number_series(),
+            number_series=fn_new_number_series(area_meta),
             color_series=ColorSeries(color_seed),
             poisson_rng_seed=poisson_seed,
             lloyd_rng_seed=lloyd_seed,
+            lloyd_iterations=lloyd_iterations,
         ) 
         for area_meta, color_seed, poisson_seed, lloyd_seed 
         in zip(cont_areas_metadata, color_seeds, poisson_seeds, lloyd_seeds)
@@ -125,7 +129,7 @@ def convert_all_cont_areas_to_regions(
                 color_hex = region["color"]
                 
                 # If color collision detected, find a new color
-                if color_hex in existing_colors:
+                while color_hex in existing_colors:
                     new_color_rgb, new_color_hex = color_series.get_color_rgb_hex(is_water=(region["region_type"] != "land"))
                     r_old, g_old, b_old = hex_to_rgb(color_hex)
                     r_new, g_new, b_new = new_color_rgb
@@ -181,24 +185,29 @@ def convert_cont_area_to_regions(args: AreaProcessingArgs) -> tuple[
     
     ocean_pixels = np.sum(np.all(cropped_rgb[cropped_mask] == ocean_color, axis=1))
     lake_pixels = np.sum(np.all(cropped_rgb[cropped_mask] == lake_color, axis=1))
+    water_pixels = ocean_pixels + lake_pixels
     land_pixels = np.sum(np.all(cropped_rgb[cropped_mask] == land_color, axis=1))
     
-    # Determine predominant type
-    if ocean_pixels > land_pixels and ocean_pixels > lake_pixels:
-        area_type = "ocean"
-        type_total_pixels = args.type_counts.get("ocean", 1)
-        total_num_regions = args.total_num_ocean_regions
-    elif lake_pixels > land_pixels and lake_pixels > ocean_pixels:
-        area_type = "lake"
-        type_total_pixels = args.type_counts.get("lake", args.type_counts.get("ocean", 1))
-        total_num_regions = args.total_num_ocean_regions
-    else:
+    # Determine predominant type and calculate number of regions
+    if land_pixels > water_pixels:
         area_type = "land"
-        type_total_pixels = args.type_counts.get("land", 1)
-        total_num_regions = args.total_num_land_regions
+        pixels_per_region = args.pixels_per_land_region
+        pixel_count = land_pixels
+    else:
+        area_type = "ocean" if ocean_pixels > lake_pixels else "lake"
+        pixels_per_region = args.pixels_per_water_region
+        pixel_count = water_pixels
     
-    num_white_pixels = len(rows)
-    num_area_regions = max(1, round((num_white_pixels / type_total_pixels) * total_num_regions))
+    # Calculate regions: areas smaller than 0.5 regions get 0 territories (skip them)
+    num_area_regions = max(1, round(pixel_count / pixels_per_region))
+    
+    # Debug output for ocean areas
+    if area_type == "ocean":
+        print(f"[DEBUG] {area_type.upper()} area: {pixel_count:,} pixels -> {num_area_regions} territories (pixels_per_region={pixels_per_region:,})")
+    
+    # Skip this area if it's too small to warrant any regions
+    if num_area_regions == 0:
+        return np.zeros((10, 10, 4), dtype=np.uint8), [], None, args.color_series
     
     # Optimization: if only one region, assign entire area to it
     if num_area_regions == 1:
@@ -239,12 +248,12 @@ def convert_cont_area_to_regions(args: AreaProcessingArgs) -> tuple[
         mask=cropped_mask,
         point_seeds=seeds,
         rng_seed=args.lloyd_rng_seed,
-        iterations=2,
+        iterations=args.lloyd_iterations,
         boundary_mask=None,
     )
     
     pmap = assign_regions(cropped_mask, seeds, start_index=0)
-    metadata = build_metadata(pmap, seeds, 0, area_type, args.number_series, args.color_series, is_territory=True)
+    metadata = build_metadata(pmap, seeds, 0, area_type, args.number_series, args.color_series)
     
     # Convert province map to colored image
     h, w = cropped_mask.shape

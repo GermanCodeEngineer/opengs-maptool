@@ -17,11 +17,12 @@ def export_image(parent_layout, image, text):
 def _export_provinces_csv_to(metadata, path: str) -> None:
     with open(path, "w", newline="") as f:
         w = csv.writer(f, delimiter=";")
-        w.writerow(["province_id", "R", "G", "B",
-                    "province_type", "x", "y"])
+        w.writerow(["region_id", "R", "G", "B",
+                    "region_type", "x", "y"])
         for d in metadata:
-            w.writerow([d["province_id"], d["R"], d["G"], d["B"],
-                        d["province_type"], round(d["x"], 2), round(d["y"], 2)])
+            w.writerow([d["region_id"], d["R"], d["G"], d["B"],
+                        d["region_type"], round(d["x"], 2), round(d["y"], 2)])
+
 
 def export_provinces_csv(main_layout):
     metadata = getattr(main_layout, "province_data", None)
@@ -43,13 +44,13 @@ def export_provinces_csv(main_layout):
 def _export_territories_csv_to(metadata, path: str) -> None:
     with open(path, "w", newline="") as f:
         w = csv.writer(f, delimiter=";")
-        w.writerow(["territory_id", "R", "G", "B",
-                    "territory_type", "x", "y"])
+        w.writerow(["region_id", "R", "G", "B",
+                    "region_type", "x", "y"])
         for d in metadata:
             if "x" not in d:
                 breakpoint()
-            w.writerow([d["territory_id"], d["R"], d["G"], d["B"],
-                        d["territory_type"], round(d["x"], 2), round(d["y"], 2)])
+            w.writerow([d["region_id"], d["R"], d["G"], d["B"],
+                        d["region_type"], round(d["x"], 2), round(d["y"], 2)])
 
 def export_territories_csv(main_layout):
     metadata = getattr(main_layout, "territory_data", None)
@@ -69,8 +70,8 @@ def export_territories_csv(main_layout):
 
 def _export_territories_json_to(territories: list[dict], export_path: str) -> None:
     territories = [{
-        "territory_id": t["territory_id"],
-        "provinces": t.get("province_ids", [])
+        "region_id": t["region_id"],
+        "provinces": t.get("region_ids", [])
     } for t in territories]
 
     with open(export_path, "w", encoding="utf-8") as f:

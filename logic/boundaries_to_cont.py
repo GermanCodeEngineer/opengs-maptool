@@ -64,13 +64,18 @@ def classify_pixels_by_color(
     }
     return result, counts
 
-def convert_boundaries_to_cont_areas(boundaries_image: NDArray[np.uint8], rng_seed: int) -> tuple[NDArray[np.uint8], list[dict]]:
+def convert_boundaries_to_cont_areas(boundaries_image: NDArray[np.uint8], rng_seed: int, min_area_pixels: int = 50) -> tuple[NDArray[np.uint8], list[dict]]:
     """
     Convert the boundary image into an image of continous areas(usually countries).
     
+    Args:
+        boundaries_image: Input boundary image
+        rng_seed: Random seed for color generation
+        min_area_pixels: Minimum pixel count for a continuous area to be kept (smaller areas are merged into background)
+    
     Returns:
         Tuple of (cont_areas_image, metadata) where metadata contains:
-        - area_id: Region ID (1-indexed)
+        - region_id: Region ID (1-indexed)
         - R, G, B: Area color
     """
 
@@ -86,6 +91,22 @@ def convert_boundaries_to_cont_areas(boundaries_image: NDArray[np.uint8], rng_se
     white_mask = is_white.astype(np.uint8)
     labeled_array, num_features = ndimage.label(white_mask)
 
+    # Filter out small areas
+    if min_area_pixels > 0:
+        region_sizes = np.bincount(labeled_array.ravel())
+        small_regions = np.where(region_sizes < min_area_pixels)[0]
+        for small_region in small_regions:
+            if small_region > 0:  # Skip background (0)
+                labeled_array[labeled_array == small_region] = 0
+        
+        # Relabel to have consecutive IDs
+        unique_labels = np.unique(labeled_array[labeled_array > 0])
+        new_labeled_array = np.zeros_like(labeled_array)
+        for new_id, old_id in enumerate(unique_labels, start=1):
+            new_labeled_array[labeled_array == old_id] = new_id
+        labeled_array = new_labeled_array
+        num_features = len(unique_labels)
+
     # Create image from regions using the labeled array
     regions_image = np.full((*boundaries_image.shape[:2], 4), [0, 0, 0, 255], dtype=np.uint8)
     color_series = ColorSeries(rng_seed)
@@ -99,7 +120,7 @@ def convert_boundaries_to_cont_areas(boundaries_image: NDArray[np.uint8], rng_se
         regions_image[labeled_array == region_id] = region_to_color[region_id]
         
         metadata.append({
-            "area_id": region_id,
+            "region_id": region_id,
             "color": color_hex,
         })
     

@@ -36,28 +36,6 @@ class NumberSeries:
         return formatted_number
 
 
-class NumberSubSeries:
-    """Generates hierarchical IDs like 'parent-prefix-1-sub-prefix-1'"""
-    def __init__(self, parent_series: NumberSeries, sub_prefix: str, number_start: int, number_end: int) -> None:
-        self.parent_series: NumberSeries = parent_series
-        self.parent_id = parent_series.get_id()
-        self.sub_prefix: str = sub_prefix
-        self.sub_number_end: int = number_end
-        self.sub_id_length: int = len(str(number_end))
-        self.sub_number_next: int = number_start
-
-    def get_id(self) -> str | None:
-        if self.sub_number_next > self.sub_number_end:
-            print("ERROR: No more available sub numbers!")
-            return None
-
-        formatted_sub_number: str = self.sub_prefix + \
-            str(self.sub_number_next).zfill(self.sub_id_length)
-        self.sub_number_next += 1
-        
-        return f"{self.parent_id}-{formatted_sub_number}"
-
-
 class ColorSeries:
     def __init__(self, rng_seed: int, exclude_values: Iterable[tuple[int, int, int]] | None = None) -> None:
         self.rng = np.random.default_rng(rng_seed)
@@ -250,7 +228,6 @@ def build_metadata(
     region_type: str,
     series: NumberSeries,
     color_series: ColorSeries,
-    is_territory: bool,
 ) -> list[dict[str, Any]]:
     if pmap.size == 0 or not seeds:
         return []
@@ -286,8 +263,8 @@ def build_metadata(
             cy = float(sum_y[i] / counts[i])
 
         metadata.append({
-            ("territory_id" if is_territory else "province_id"): rid,
-            ("territory_type" if is_territory else "province_type"): (region_type),
+            "region_id": rid,
+            "region_type": (region_type),
             "color": color_hex,
             "x": cx,
             "y": cy,
