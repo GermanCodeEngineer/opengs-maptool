@@ -1,2 +1,13 @@
+TODOs
 - update UI system and README tab references
+- move some things from config to MapTool
 - update export and import modules
+- complete "WORK IN PROGRESS"
+- rewrite commits synthetically
+
+Working Features:
+- Map of continous areas
+- Custom Territory/Province density
+- Local and Global Area, Territory & Province centres
+- Automatic Generation with Python Interface
+- Fully deterministic behaviour with Area, Territory & Province Generation Seeds

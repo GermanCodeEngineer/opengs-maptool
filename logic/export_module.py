@@ -18,10 +18,11 @@ def _export_provinces_csv_to(metadata, path: str) -> None:
     with open(path, "w", newline="") as f:
         w = csv.writer(f, delimiter=";")
         w.writerow(["region_id", "R", "G", "B",
-                    "region_type", "x", "y"])
+                    "region_type", "local_x", "local_y", "global_x", "global_y"])
         for d in metadata:
             w.writerow([d["region_id"], d["R"], d["G"], d["B"],
-                        d["region_type"], round(d["x"], 2), round(d["y"], 2)])
+                        d["region_type"], round(d["local_x"], 2), round(d["local_y"], 2),
+                        round(d.get("global_x", d["local_x"]), 2), round(d.get("global_y", d["local_y"]), 2)])
 
 
 def export_provinces_csv(main_layout):
@@ -45,12 +46,13 @@ def _export_territories_csv_to(metadata, path: str) -> None:
     with open(path, "w", newline="") as f:
         w = csv.writer(f, delimiter=";")
         w.writerow(["region_id", "R", "G", "B",
-                    "region_type", "x", "y"])
+                    "region_type", "local_x", "local_y", "global_x", "global_y"])
         for d in metadata:
-            if "x" not in d:
+            if "local_x" not in d:
                 breakpoint()
             w.writerow([d["region_id"], d["R"], d["G"], d["B"],
-                        d["region_type"], round(d["x"], 2), round(d["y"], 2)])
+                        d["region_type"], round(d["local_x"], 2), round(d["local_y"], 2),
+                        round(d.get("global_x", d["local_x"]), 2), round(d.get("global_y", d["local_y"]), 2)])
 
 def export_territories_csv(main_layout):
     metadata = getattr(main_layout, "territory_data", None)

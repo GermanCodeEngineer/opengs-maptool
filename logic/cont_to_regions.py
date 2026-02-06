@@ -1,7 +1,7 @@
 import numpy as np
 from numpy.typing import NDArray
 from typing import Any, Callable
-from dataclasses import dataclass
+from gceutils import grepr_dataclass
 from tqdm import tqdm
 from multiprocessing import Pool, cpu_count
 from logic.utils import (
@@ -11,14 +11,14 @@ from logic.utils import (
 import config
 
 
-@dataclass
+@grepr_dataclass(validate=False, frozen=True)
 class AreaProcessingArgs:
     """
     Arguments for processing a single continuous area into regions.
     Args:
         cont_areas_image: Continuous areas image
-        type_image: Type/classification image
-        type_counts: Pixel counts per type
+        class_image: Type/classification image
+        class_counts: Pixel counts per type
         pixels_per_land_region: Average pixels per region for land areas
         pixels_per_water_region: Average pixels per region for ocean/lake areas
         filter_color: RGBA color to filter for
@@ -29,8 +29,8 @@ class AreaProcessingArgs:
     """
     area_meta: dict[str, Any]
     cont_areas_image: NDArray[np.uint8]
-    type_image: NDArray[np.uint8]
-    type_counts: dict[str, int]
+    class_image: NDArray[np.uint8]
+    class_counts: dict[str, int]
     pixels_per_land_region: int
     pixels_per_water_region: int
     filter_color: tuple[int, int, int, int]
@@ -44,14 +44,16 @@ class AreaProcessingArgs:
 def convert_all_cont_areas_to_regions(
         cont_areas_image: NDArray[np.uint8],
         cont_areas_metadata: list[dict[str, Any]],
-        type_image: NDArray[np.uint8],
-        type_counts: dict[str, int],
+        class_image: NDArray[np.uint8],
+        class_counts: dict[str, int],
         pixels_per_land_region: int,
         pixels_per_water_region: int,
         fn_new_number_series: Callable[[dict[str, Any]], NumberSeries],
         rng_seed: int,
         lloyd_iterations: int,
         num_processes: int | None = None,
+        tqdm_description: str = "Converting areas to regions",
+        tqdm_unit: str = "area",
     ) -> tuple[NDArray[np.uint8], list[dict[str, Any]]]:
     """
     Convert all continuous areas into regions and combine into a single image.
@@ -61,8 +63,8 @@ def convert_all_cont_areas_to_regions(
     Args:
         cont_areas_image: Continuous areas image (from convert_boundaries_to_cont_areas)
         cont_areas_metadata: Metadata list with area colors (from convert_boundaries_to_cont_areas)
-        type_image: Type/classification image
-        type_counts: Pixel counts per type
+        class_image: Type/classification image
+        class_counts: Pixel counts per type
         pixels_per_land_region: Average pixels per region for land areas
         pixels_per_water_region: Average pixels per region for ocean/lake areas
         fn_new_number_series: A function to produce a new number series
@@ -88,8 +90,8 @@ def convert_all_cont_areas_to_regions(
         AreaProcessingArgs(
             area_meta=area_meta,
             cont_areas_image=cont_areas_image,
-            type_image=type_image,
-            type_counts=type_counts,
+            class_image=class_image,
+            class_counts=class_counts,
             pixels_per_land_region=pixels_per_land_region,
             pixels_per_water_region=pixels_per_water_region,
             filter_color=(*hex_to_rgb(area_meta["color"]), 255),
@@ -108,8 +110,8 @@ def convert_all_cont_areas_to_regions(
         results = list(tqdm(
             pool.imap_unordered(convert_cont_area_to_regions, task_args),
             total=len(cont_areas_metadata),
-            desc="Converting areas to regions",
-            unit="area"
+            desc=tqdm_description,
+            unit=tqdm_unit,
         ))
     
 
@@ -143,6 +145,11 @@ def convert_all_cont_areas_to_regions(
                     color_hex = new_color_hex
                 
                 existing_colors.add(color_hex)
+                
+                # Calculate global coordinates from local coordinates
+                region["global_x"] = region["local_x"] + x_min
+                region["global_y"] = region["local_y"] + y_min
+                
                 updated_region_metadata.append(region)
             
             # Only copy pixels with alpha > 0 to avoid overwriting with transparency
@@ -173,7 +180,7 @@ def convert_cont_area_to_regions(args: AreaProcessingArgs) -> tuple[
     x_min, x_max = cols.min(), cols.max() + 1
     bbox = (y_min, y_max, x_min, x_max)
     cropped_mask = mask[y_min:y_max, x_min:x_max]
-    cropped_type_image = args.type_image[y_min:y_max, x_min:x_max]
+    cropped_class_image = args.class_image[y_min:y_max, x_min:x_max]
 
     # Determine area type by checking the most common type in this area
     ocean_color = np.array(config.OCEAN_COLOR, dtype=np.uint8)
@@ -181,7 +188,7 @@ def convert_cont_area_to_regions(args: AreaProcessingArgs) -> tuple[
     land_color = np.array(config.LAND_COLOR, dtype=np.uint8)
     
     # Get only RGB channels (first 3) for comparison
-    cropped_rgb = cropped_type_image[:, :, :3]
+    cropped_rgb = cropped_class_image[:, :, :3]
     
     ocean_pixels = np.sum(np.all(cropped_rgb[cropped_mask] == ocean_color, axis=1))
     lake_pixels = np.sum(np.all(cropped_rgb[cropped_mask] == lake_color, axis=1))
@@ -226,8 +233,8 @@ def convert_cont_area_to_regions(args: AreaProcessingArgs) -> tuple[
             "region_id": region_id,
             "parent_id": args.area_meta["region_id"],
             "color": color_hex,
-            "x": cx_cropped,
-            "y": cy_cropped,
+            "local_x": cx_cropped,
+            "local_y": cy_cropped,
             "density_multiplier": density_multiplier,
         }]
         

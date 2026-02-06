@@ -417,8 +417,8 @@ def build_metadata(
             "region_id": rid,
             "parent_id": parent_id,
             "color": color_hex,
-            "x": cx,
-            "y": cy,
+            "local_x": cx,
+            "local_y": cy,
             "density_multiplier": parent_density_multiplier or 1.0,
         }
         metadata.append(meta_dict)

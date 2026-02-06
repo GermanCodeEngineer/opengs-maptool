@@ -176,9 +176,15 @@ def convert_boundaries_to_cont_areas(boundaries_image: NDArray[np.uint8], rng_se
             density_multiplier = ((avg_blue - 128) / 127) * 3 + 1
         #density_multiplier = max(0.25, min(4.0, density_multiplier))  # Clamp to reasonable range
         
+        # Calculate center of mass (centroid) for local coordinates
+        center_x = float(np.mean(cols))
+        center_y = float(np.mean(rows))
+        
         metadata.append({
             "region_id": region_id,
             "color": color_hex,
+            "local_x": center_x,
+            "local_y": center_y,
             "density_multiplier": density_multiplier,
         })
     
