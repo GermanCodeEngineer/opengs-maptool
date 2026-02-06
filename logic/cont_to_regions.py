@@ -98,7 +98,7 @@ def convert_all_cont_areas_to_regions(
             poisson_rng_seed=poisson_seed,
             lloyd_rng_seed=lloyd_seed,
             lloyd_iterations=lloyd_iterations,
-        ) 
+        )
         for area_meta, color_seed, poisson_seed, lloyd_seed 
         in zip(cont_areas_metadata, color_seeds, poisson_seeds, lloyd_seeds)
     ]
@@ -200,14 +200,10 @@ def convert_cont_area_to_regions(args: AreaProcessingArgs) -> tuple[
     
     # Apply density multiplier from boundary metadata
     density_multiplier = args.area_meta.get("density_multiplier", 1.0)
-    adjusted_pixels_per_region = pixels_per_region * density_multiplier
     
     # Calculate regions: areas smaller than 0.5 regions get 0 territories (skip them)
-    num_area_regions = max(1, round(pixel_count / adjusted_pixels_per_region))
-    
-    # Debug output
-    print(f"[DEBUG] {area_type.upper()} area: {pixel_count:,} pixels -> {num_area_regions} territories (pixels_per_region={pixels_per_region:,}, density_multiplier={density_multiplier:.2f})")
-    
+    num_area_regions = max(1, round(pixel_count / pixels_per_region * density_multiplier))
+        
     # Skip this area if it's too small to warrant any regions
     if num_area_regions == 0:
         return np.zeros((10, 10, 4), dtype=np.uint8), [], None, args.color_series
@@ -226,11 +222,13 @@ def convert_cont_area_to_regions(args: AreaProcessingArgs) -> tuple[
         cy_cropped = cy - y_min
         
         metadata = [{
+            "region_type": area_type,
             "region_id": region_id,
+            "parent_id": args.area_meta["region_id"],
             "color": color_hex,
             "x": cx_cropped,
             "y": cy_cropped,
-            "region_type": area_type,
+            "density_multiplier": density_multiplier,
         }]
         
         # Fill only masked pixels with single region color
@@ -240,8 +238,15 @@ def convert_cont_area_to_regions(args: AreaProcessingArgs) -> tuple[
         
         return cropped_image, metadata, bbox, args.color_series
     
-    # Multi-region case: use Poisson + Lloyd
-    seeds = poisson_disk_samples(cropped_mask, num_area_regions, rng_seed=args.poisson_rng_seed, min_dist=None, k=30, border_margin=0.0)
+    seeds = poisson_disk_samples(
+        cropped_mask,
+        num_area_regions,
+        rng_seed=args.poisson_rng_seed,
+        min_dist=None,
+        k=30,
+        border_margin=0.0,
+        no_distance_limit=True,
+    )
     
     if not seeds:
         return np.zeros((10, 10, 4), dtype=np.uint8), [], None, args.color_series
@@ -256,7 +261,11 @@ def convert_cont_area_to_regions(args: AreaProcessingArgs) -> tuple[
     )
     
     pmap = assign_regions(cropped_mask, seeds, start_index=0)
-    metadata = build_metadata(pmap, seeds, 0, area_type, args.number_series, args.color_series)
+    metadata = build_metadata(
+        pmap, seeds, 0, area_type, args.number_series, args.color_series,
+        parent_id=args.area_meta["region_id"],
+        parent_density_multiplier=args.area_meta.get("density_multiplier", 1.0)
+    )
     
     # Convert province map to colored image
     h, w = cropped_mask.shape

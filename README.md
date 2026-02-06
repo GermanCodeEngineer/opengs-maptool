@@ -46,9 +46,9 @@ The boundery borders must be pure black, RGB (0,0,0), everything else will be ig
 Your boundary image will then be edited, so that the Blue channel of the RGB pixels is `128`:
 ![](example_input/bound2_yellow.png)
 Now you can use an image editor (like PAINT.NET) to **change the blue channel** to e.g.
-- B=255 (high blue -> white) -> **2x more regions**
+- B=255 (high blue -> white) -> **4x more regions**
 - B=128 (mid blue -> light yellow) -> **normal**
-- B=0 (low blue -> dark yellow) -> **2x fewer regions**
+- B=0 (low blue -> dark yellow) -> **4x fewer regions**
 
 <br>**After Editing:**
 ![](example_input/bound2_density.png)

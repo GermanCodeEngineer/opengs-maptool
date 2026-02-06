@@ -166,12 +166,15 @@ def convert_boundaries_to_cont_areas(boundaries_image: NDArray[np.uint8], rng_se
         else:
             avg_blue = 128.0
         
-        # Convert B channel to density multiplier
-        # B=255 (high blue) -> 0.5 (2x more regions)
+        # Convert B channel to density multiplier (piecewise linear)
+        # B=0 (low blue) -> 0.25 (4x fewer regions)
         # B=128 (mid blue) -> 1.0 (normal)
-        # B=0 (low blue) -> 2.0 (2x fewer regions)
-        density_multiplier = 2.0 - (avg_blue / 128.0)
-        density_multiplier = max(0.25, min(4.0, density_multiplier))  # Clamp to reasonable range
+        # B=255 (high blue) -> 4.0 (4x more regions)
+        if avg_blue <= 128.0:
+            density_multiplier = (avg_blue / 128) * 0.75 + 0.25
+        else:
+            density_multiplier = ((avg_blue - 128) / 127) * 3 + 1
+        #density_multiplier = max(0.25, min(4.0, density_multiplier))  # Clamp to reasonable range
         
         metadata.append({
             "region_id": region_id,

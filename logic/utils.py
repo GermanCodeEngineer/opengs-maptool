@@ -118,6 +118,154 @@ def build_masks(
     return land_fill, land_border, sea_fill, sea_border, land_mask, sea_mask
 
 
+def poisson_disk_samples(
+    mask: np.ndarray,
+    num_points: int,
+    rng_seed: int,
+    min_dist: float | None = None,
+    k: int = 30,
+    border_margin: float = 0.0,
+    debug_output_path: Any | None = None,
+    no_distance_limit: bool = False,
+) -> list[tuple[int, int]]:
+    """
+    Generate relatively evenly spaced points inside a boolean mask using Poisson disk sampling.
+
+    Args:
+        mask: 2D boolean array indicating valid area.
+        num_points: Target number of points.
+        rng_seed: RNG seed for reproducibility.
+        min_dist: Minimum distance between points. If None, estimated from area/num_points.
+        k: Number of attempts per active point.
+        border_margin: Minimum distance from the boundary (in pixels). Uses distance transform.
+        debug_output_path: Optional path to save a debug visualization.
+        no_distance_limit: If True, fill remaining points without distance constraint.
+
+    Returns:
+        List of (x, y) integer coordinates.
+    """
+    if num_points <= 0:
+        return []
+    if mask.ndim != 2:
+        raise ValueError("mask must be a 2D boolean array")
+
+    allowed_mask = mask
+    if border_margin > 0:
+        dist = distance_transform_edt(mask)
+        allowed_mask = mask & (dist >= border_margin)
+        if not allowed_mask.any():
+            allowed_mask = mask
+
+    coords_yx = np.column_stack(np.where(allowed_mask))
+    if coords_yx.size == 0:
+        return []
+
+    area = coords_yx.shape[0]
+    if min_dist is None:
+        min_dist = max(1.0, float(np.sqrt(area / max(num_points, 1)) * 0.85))
+    min_dist = max(1.0, float(min_dist))
+
+    h, w = mask.shape
+    cell_size = min_dist / np.sqrt(2)
+    grid_h = int(np.ceil(h / cell_size))
+    grid_w = int(np.ceil(w / cell_size))
+    grid = -np.ones((grid_h, grid_w), dtype=np.int32)
+
+    rng = np.random.default_rng(rng_seed)
+
+    def grid_coords(px: int, py: int) -> tuple[int, int]:
+        return int(py / cell_size), int(px / cell_size)
+
+    samples: list[tuple[int, int]] = []
+    active: list[int] = []
+
+    start_idx = int(rng.integers(0, coords_yx.shape[0]))
+    sy, sx = coords_yx[start_idx]
+    samples.append((int(sx), int(sy)))
+    gy, gx = grid_coords(int(sx), int(sy))
+    grid[gy, gx] = 0
+    active.append(0)
+
+    min_dist_sq = min_dist * min_dist
+
+    while active and len(samples) < num_points:
+        idx = int(rng.choice(active))
+        base_x, base_y = samples[idx]
+        found = False
+
+        for _ in range(k):
+            radius = float(rng.uniform(min_dist, 2.0 * min_dist))
+            angle = float(rng.uniform(0.0, 2.0 * np.pi))
+            x = int(round(base_x + radius * np.cos(angle)))
+            y = int(round(base_y + radius * np.sin(angle)))
+
+            if x < 0 or y < 0 or x >= w or y >= h:
+                continue
+            if not allowed_mask[y, x]:
+                continue
+
+            gy, gx = grid_coords(x, y)
+            y0 = max(0, gy - 2)
+            y1 = min(grid_h, gy + 3)
+            x0 = max(0, gx - 2)
+            x1 = min(grid_w, gx + 3)
+
+            ok = True
+            for ny in range(y0, y1):
+                for nx in range(x0, x1):
+                    sidx = grid[ny, nx]
+                    if sidx == -1:
+                        continue
+                    sx2, sy2 = samples[sidx]
+                    dx = sx2 - x
+                    dy = sy2 - y
+                    if (dx * dx + dy * dy) < min_dist_sq:
+                        ok = False
+                        break
+                if not ok:
+                    break
+
+            if ok:
+                samples.append((x, y))
+                grid[gy, gx] = len(samples) - 1
+                active.append(len(samples) - 1)
+                found = True
+                break
+
+        if not found:
+            active.remove(idx)
+
+    if no_distance_limit and len(samples) < num_points:
+        remaining = num_points - len(samples)
+        used = set(samples)
+        all_pts = [(int(x), int(y)) for y, x in coords_yx]
+        rng.shuffle(all_pts)
+        for x, y in all_pts:
+            if (x, y) in used:
+                continue
+            samples.append((x, y))
+            used.add((x, y))
+            remaining -= 1
+            if remaining <= 0:
+                break
+
+    if debug_output_path is not None:
+        try:
+            from PIL import Image, ImageDraw
+
+            debug_img = np.zeros((h, w, 3), dtype=np.uint8)
+            debug_img[allowed_mask] = [200, 200, 200]
+            debug_pil = Image.fromarray(debug_img)
+            draw = ImageDraw.Draw(debug_pil)
+            for px, py in samples:
+                draw.ellipse([px - 2, py - 2, px + 2, py + 2], fill=(255, 0, 0))
+            debug_pil.save(debug_output_path)
+        except Exception:
+            pass
+
+    return samples
+
+
 def lloyd_relaxation(
         mask: np.ndarray, point_seeds: list[tuple[int, int]], 
         rng_seed: int, iterations: int, boundary_mask: np.ndarray | None = None
@@ -228,6 +376,8 @@ def build_metadata(
     region_type: str,
     series: NumberSeries,
     color_series: ColorSeries,
+    parent_id: str | None = None,
+    parent_density_multiplier: float | None = None,
 ) -> list[dict[str, Any]]:
     if pmap.size == 0 or not seeds:
         return []
@@ -262,129 +412,16 @@ def build_metadata(
             cx = float(sum_x[i] / counts[i])
             cy = float(sum_y[i] / counts[i])
 
-        metadata.append({
+        meta_dict = {
+            "region_type": region_type,
             "region_id": rid,
-            "region_type": (region_type),
+            "parent_id": parent_id,
             "color": color_hex,
             "x": cx,
             "y": cy,
-        })
+            "density_multiplier": parent_density_multiplier or 1.0,
+        }
+        metadata.append(meta_dict)
 
     return metadata
 
-
-def poisson_disk_samples(
-    mask: NDArray[np.bool],
-    num_points: int,
-    rng_seed: int,
-    min_dist: float | None = None,
-    k: int = 30,
-    border_margin: float = 0.0,
-) -> list[tuple[int, int]]:
-    """
-    Generate roughly evenly spaced points within a mask using Bridson's Poisson-disk sampling.
-
-    Args:
-        mask: 2D boolean mask of valid area.
-        num_points: Target number of points.
-        rng_seed: RNG seed for reproducibility.
-        min_dist: Minimum distance between points. If None, estimated from mask area.
-        k: Attempts per active point.
-        border_margin: Optional distance (in pixels) to keep away from mask edges.
-
-    Returns:
-        List of (x, y) points.
-    """
-    if num_points <= 0:
-        return []
-
-    if mask is None or not mask.any():
-        return []
-
-    mask = mask.astype(bool)
-
-    if border_margin > 0:
-        dist = distance_transform_edt(mask)
-        mask = mask & (dist >= border_margin)
-        if not mask.any():
-            return []
-
-    area = int(mask.sum())
-    if area == 0:
-        return []
-
-    if min_dist is None:
-        min_dist = np.sqrt(area / (num_points * np.pi))
-    r = float(max(1.0, min_dist))
-    r2 = r * r
-
-    h, w = mask.shape
-    cell_size = r / np.sqrt(2)
-    grid_w = int(np.ceil(w / cell_size))
-    grid_h = int(np.ceil(h / cell_size))
-    grid = -np.ones((grid_h, grid_w), dtype=np.int32)
-
-    rng = np.random.default_rng(rng_seed)
-
-    ys, xs = np.where(mask)
-    if xs.size == 0:
-        return []
-
-    first_idx = rng.integers(xs.size)
-    first = (int(xs[first_idx]), int(ys[first_idx]))
-
-    samples: list[tuple[int, int]] = [first]
-    active: list[int] = [0]
-
-    gx0 = int(first[0] / cell_size)
-    gy0 = int(first[1] / cell_size)
-    grid[gy0, gx0] = 0
-
-    while active and len(samples) < num_points:
-        active_i = int(rng.integers(len(active)))
-        s_idx = active[active_i]
-        sx, sy = samples[s_idx]
-        found = False
-
-        for _ in range(k):
-            radius = rng.uniform(r, 2 * r)
-            angle = rng.uniform(0.0, 2 * np.pi)
-            x = int(round(sx + radius * np.cos(angle)))
-            y = int(round(sy + radius * np.sin(angle)))
-
-            if x < 0 or y < 0 or x >= w or y >= h:
-                continue
-            if not mask[y, x]:
-                continue
-
-            gx = int(x / cell_size)
-            gy = int(y / cell_size)
-
-            y0 = max(0, gy - 2)
-            y1 = min(grid_h, gy + 3)
-            x0 = max(0, gx - 2)
-            x1 = min(grid_w, gx + 3)
-
-            ok = True
-            for ny in range(y0, y1):
-                for nx in range(x0, x1):
-                    s2_idx = grid[ny, nx]
-                    if s2_idx != -1:
-                        px, py = samples[s2_idx]
-                        if (px - x) ** 2 + (py - y) ** 2 < r2:
-                            ok = False
-                            break
-                if not ok:
-                    break
-
-            if ok:
-                samples.append((x, y))
-                grid[gy, gx] = len(samples) - 1
-                active.append(len(samples) - 1)
-                found = True
-                break
-
-        if not found:
-            active.pop(active_i)
-
-    return samples

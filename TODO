@@ -1,4 +1,2 @@
-- fix sea and land provinces being confused
-- add tipp to "split up the world oceans and big countries for better territories"
-- test and add feature to README: area(country) territory/province density based on value of B channel
 - update UI system and README tab references
+- update export and import modules

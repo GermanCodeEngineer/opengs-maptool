@@ -1,1 +1,1787 @@
-[{"region_id": 1, "color": "#ad69c1", "density_multiplier": 1.6503474953713637}, {"region_id": 2, "color": "#352f8b", "density_multiplier": 1.0001383700013837}, {"region_id": 3, "color": "#a2b062", "density_multiplier": 1.8972332015810276}, {"region_id": 4, "color": "#b7900d", "density_multiplier": 1.00041248453183}, {"region_id": 5, "color": "#98fea5", "density_multiplier": 1.9064171122994653}, {"region_id": 6, "color": "#60f66c", "density_multiplier": 1.9447236180904524}, {"region_id": 7, "color": "#97b9c9", "density_multiplier": 1.0001351132248826}, {"region_id": 8, "color": "#c8306b", "density_multiplier": 1.4551486327301395}, {"region_id": 9, "color": "#fdec69", "density_multiplier": 1.476013467152613}, {"region_id": 10, "color": "#6d3442", "density_multiplier": 1.000069656315738}, {"region_id": 11, "color": "#b6a716", "density_multiplier": 1.9058064516129032}, {"region_id": 12, "color": "#7f1dd7", "density_multiplier": 1.9961449849724575}, {"region_id": 13, "color": "#d8c154", "density_multiplier": 1.000093561123482}, {"region_id": 14, "color": "#074d7f", "density_multiplier": 1.0042735042735043}, {"region_id": 15, "color": "#8b779d", "density_multiplier": 1.9749821300929236}, {"region_id": 16, "color": "#44e3ad", "density_multiplier": 1.9594491201224178}, {"region_id": 17, "color": "#e26a9d", "density_multiplier": 1.0}, {"region_id": 18, "color": "#b37c04", "density_multiplier": 1.8739837398373984}, {"region_id": 19, "color": "#275814", "density_multiplier": 1.9263420724094882}, {"region_id": 20, "color": "#1c8619", "density_multiplier": 1.9617585484996511}, {"region_id": 21, "color": "#493169", "density_multiplier": 1.8911917098445596}, {"region_id": 22, "color": "#5347e9", "density_multiplier": 1.92}, {"region_id": 23, "color": "#6dda31", "density_multiplier": 1.937335092348285}, {"region_id": 24, "color": "#10fc58", "density_multiplier": 1.9711722696394356}, {"region_id": 25, "color": "#f72d2f", "density_multiplier": 1.0057803468208093}, {"region_id": 26, "color": "#da3ced", "density_multiplier": 1.0001966955153423}, {"region_id": 27, "color": "#dbb018", "density_multiplier": 1.9934443665319146}, {"region_id": 28, "color": "#61083e", "density_multiplier": 1.906735751295337}, {"region_id": 29, "color": "#c73e5d", "density_multiplier": 1.9885808867785728}, {"region_id": 30, "color": "#7fd111", "density_multiplier": 1.0}, {"region_id": 31, "color": "#3962f2", "density_multiplier": 1.0}, {"region_id": 32, "color": "#b9ce2e", "density_multiplier": 1.0}, {"region_id": 33, "color": "#4ed510", "density_multiplier": 1.000196240896603}, {"region_id": 34, "color": "#75af3d", "density_multiplier": 1.8}, {"region_id": 35, "color": "#828069", "density_multiplier": 1.0}, {"region_id": 36, "color": "#129cb2", "density_multiplier": 1.0}, {"region_id": 37, "color": "#f133f4", "density_multiplier": 1.9171842650103519}, {"region_id": 38, "color": "#8a668c", "density_multiplier": 1.0}, {"region_id": 39, "color": "#f96b8f", "density_multiplier": 1.001934235976789}, {"region_id": 40, "color": "#4e5621", "density_multiplier": 1.8846153846153846}, {"region_id": 41, "color": "#b5ca5a", "density_multiplier": 1.0}, {"region_id": 42, "color": "#40622c", "density_multiplier": 1.9677346057714156}, {"region_id": 43, "color": "#2ade7e", "density_multiplier": 1.7906976744186047}, {"region_id": 44, "color": "#2caef1", "density_multiplier": 1.9605263157894737}, {"region_id": 45, "color": "#4c7950", "density_multiplier": 1.0}, {"region_id": 46, "color": "#4005c1", "density_multiplier": 1.0}, {"region_id": 47, "color": "#7c1df5", "density_multiplier": 1.0}, {"region_id": 48, "color": "#f67adc", "density_multiplier": 1.0}, {"region_id": 49, "color": "#7036cf", "density_multiplier": 1.0}, {"region_id": 50, "color": "#c92fdb", "density_multiplier": 1.9408706952566601}, {"region_id": 51, "color": "#030cab", "density_multiplier": 0.35887672906485557}, {"region_id": 52, "color": "#74c1a9", "density_multiplier": 1.9363207547169812}, {"region_id": 53, "color": "#276e43", "density_multiplier": 1.65325854812774}, {"region_id": 54, "color": "#1fa5a9", "density_multiplier": 1.8378378378378377}, {"region_id": 55, "color": "#5ab19f", "density_multiplier": 1.989478251437249}, {"region_id": 56, "color": "#2f5d88", "density_multiplier": 1.0}, {"region_id": 57, "color": "#4db543", "density_multiplier": 1.0}, {"region_id": 58, "color": "#711efd", "density_multiplier": 1.654119101488829}, {"region_id": 59, "color": "#465ab2", "density_multiplier": 1.856164383561644}, {"region_id": 60, "color": "#d71452", "density_multiplier": 1.839779005524862}, {"region_id": 61, "color": "#1e4786", "density_multiplier": 1.875}, {"region_id": 62, "color": "#c97a9f", "density_multiplier": 1.0}, {"region_id": 63, "color": "#4455a0", "density_multiplier": 1.0}, {"region_id": 64, "color": "#3e0c44", "density_multiplier": 1.0}, {"region_id": 65, "color": "#9bfee7", "density_multiplier": 1.8449367088607596}, {"region_id": 66, "color": "#b42d07", "density_multiplier": 1.0}, {"region_id": 67, "color": "#2b60e8", "density_multiplier": 1.0}, {"region_id": 68, "color": "#d30ce4", "density_multiplier": 1.0}, {"region_id": 69, "color": "#60e544", "density_multiplier": 1.0}, {"region_id": 70, "color": "#596121", "density_multiplier": 1.0}, {"region_id": 71, "color": "#ce2429", "density_multiplier": 1.0}, {"region_id": 72, "color": "#306697", "density_multiplier": 1.0}, {"region_id": 73, "color": "#4aa401", "density_multiplier": 1.0}, {"region_id": 74, "color": "#80430b", "density_multiplier": 1.0}, {"region_id": 75, "color": "#65b794", "density_multiplier": 1.0}, {"region_id": 76, "color": "#c89ad5", "density_multiplier": 1.0}, {"region_id": 77, "color": "#96cde7", "density_multiplier": 1.0}, {"region_id": 78, "color": "#346512", "density_multiplier": 1.0}, {"region_id": 79, "color": "#c0ec14", "density_multiplier": 1.0}, {"region_id": 80, "color": "#2d877e", "density_multiplier": 1.6536726526246788}, {"region_id": 81, "color": "#2c37b2", "density_multiplier": 1.0}, {"region_id": 82, "color": "#60daf7", "density_multiplier": 1.0}, {"region_id": 83, "color": "#000d02", "density_multiplier": 1.0}, {"region_id": 84, "color": "#0dce0b", "density_multiplier": 1.0}, {"region_id": 85, "color": "#82a203", "density_multiplier": 1.0}, {"region_id": 86, "color": "#cfc294", "density_multiplier": 1.0}, {"region_id": 87, "color": "#4b4dd9", "density_multiplier": 1.0}, {"region_id": 88, "color": "#383b68", "density_multiplier": 1.0}, {"region_id": 89, "color": "#d6a679", "density_multiplier": 1.0}, {"region_id": 90, "color": "#0482a2", "density_multiplier": 1.0}, {"region_id": 91, "color": "#7cec06", "density_multiplier": 1.3118447127146182}, {"region_id": 92, "color": "#caae60", "density_multiplier": 1.0}, {"region_id": 93, "color": "#933dcc", "density_multiplier": 0.7600452702512788}, {"region_id": 94, "color": "#a50b44", "density_multiplier": 1.0}, {"region_id": 95, "color": "#6deb30", "density_multiplier": 1.0}, {"region_id": 96, "color": "#8588eb", "density_multiplier": 1.0}, {"region_id": 97, "color": "#e5124a", "density_multiplier": 1.0}, {"region_id": 98, "color": "#2ab1c4", "density_multiplier": 1.0}, {"region_id": 99, "color": "#f7565e", "density_multiplier": 1.0}, {"region_id": 100, "color": "#605b84", "density_multiplier": 1.0}, {"region_id": 101, "color": "#ff7149", "density_multiplier": 0.7606087522062068}, {"region_id": 102, "color": "#d5e07e", "density_multiplier": 1.0}, {"region_id": 103, "color": "#f231b4", "density_multiplier": 0.622306747958508}, {"region_id": 104, "color": "#8f3395", "density_multiplier": 1.0}, {"region_id": 105, "color": "#e5c845", "density_multiplier": 1.0}, {"region_id": 106, "color": "#486968", "density_multiplier": 1.0}, {"region_id": 107, "color": "#ec8d9e", "density_multiplier": 1.0}, {"region_id": 108, "color": "#9e461c", "density_multiplier": 0.6176783183750592}, {"region_id": 109, "color": "#1b1c3a", "density_multiplier": 1.0}, {"region_id": 110, "color": "#4c319c", "density_multiplier": 1.0}, {"region_id": 111, "color": "#94ba45", "density_multiplier": 1.0}, {"region_id": 112, "color": "#de995c", "density_multiplier": 1.0}, {"region_id": 113, "color": "#b43015", "density_multiplier": 1.0}, {"region_id": 114, "color": "#01371e", "density_multiplier": 1.0}, {"region_id": 115, "color": "#b4df05", "density_multiplier": 1.0}, {"region_id": 116, "color": "#2e08ba", "density_multiplier": 0.6213424749399972}, {"region_id": 117, "color": "#5e485d", "density_multiplier": 1.0}, {"region_id": 118, "color": "#824eb8", "density_multiplier": 1.0}, {"region_id": 119, "color": "#65a0c7", "density_multiplier": 1.0}, {"region_id": 120, "color": "#102109", "density_multiplier": 1.0}, {"region_id": 121, "color": "#a2bd57", "density_multiplier": 1.0}, {"region_id": 122, "color": "#1bcee0", "density_multiplier": 1.0}, {"region_id": 123, "color": "#e44b7a", "density_multiplier": 1.0}, {"region_id": 124, "color": "#0c01f8", "density_multiplier": 1.0}, {"region_id": 125, "color": "#48067e", "density_multiplier": 1.0}, {"region_id": 126, "color": "#1fca08", "density_multiplier": 1.0}, {"region_id": 127, "color": "#28898a", "density_multiplier": 1.0}, {"region_id": 128, "color": "#d268b5", "density_multiplier": 1.0}, {"region_id": 129, "color": "#323052", "density_multiplier": 1.0}, {"region_id": 130, "color": "#1a1f01", "density_multiplier": 1.0}, {"region_id": 131, "color": "#78b152", "density_multiplier": 1.0}, {"region_id": 132, "color": "#17aec5", "density_multiplier": 1.0}, {"region_id": 133, "color": "#a58f37", "density_multiplier": 1.0}, {"region_id": 134, "color": "#2e6f41", "density_multiplier": 0.6426196808510638}, {"region_id": 135, "color": "#962685", "density_multiplier": 1.0}, {"region_id": 136, "color": "#d30b24", "density_multiplier": 1.0}, {"region_id": 137, "color": "#2d6892", "density_multiplier": 1.0}, {"region_id": 138, "color": "#68ccff", "density_multiplier": 1.0}, {"region_id": 139, "color": "#6e8567", "density_multiplier": 1.0}, {"region_id": 140, "color": "#5b735c", "density_multiplier": 1.0}, {"region_id": 141, "color": "#659fb7", "density_multiplier": 1.0}, {"region_id": 142, "color": "#721451", "density_multiplier": 1.0}, {"region_id": 143, "color": "#e26453", "density_multiplier": 1.0}, {"region_id": 144, "color": "#ee00fb", "density_multiplier": 1.0}, {"region_id": 145, "color": "#ad02f9", "density_multiplier": 1.0}, {"region_id": 146, "color": "#633353", "density_multiplier": 1.0}, {"region_id": 147, "color": "#ddcc6a", "density_multiplier": 1.0}, {"region_id": 148, "color": "#f9d5f7", "density_multiplier": 1.0}, {"region_id": 149, "color": "#5ba10b", "density_multiplier": 1.0}, {"region_id": 150, "color": "#5899b2", "density_multiplier": 1.0}, {"region_id": 151, "color": "#34c3d9", "density_multiplier": 1.0}, {"region_id": 152, "color": "#07ac55", "density_multiplier": 1.0}, {"region_id": 153, "color": "#271567", "density_multiplier": 1.0}, {"region_id": 154, "color": "#c1d765", "density_multiplier": 1.0}, {"region_id": 155, "color": "#85b678", "density_multiplier": 1.0}, {"region_id": 156, "color": "#44616a", "density_multiplier": 1.0}, {"region_id": 157, "color": "#afa6d8", "density_multiplier": 1.0}, {"region_id": 158, "color": "#be2cda", "density_multiplier": 1.0}, {"region_id": 159, "color": "#a058bb", "density_multiplier": 1.0}, {"region_id": 160, "color": "#91341f", "density_multiplier": 1.0}, {"region_id": 161, "color": "#d55f1a", "density_multiplier": 1.0}, {"region_id": 162, "color": "#92fe6b", "density_multiplier": 1.0}, {"region_id": 163, "color": "#163b09", "density_multiplier": 1.0}, {"region_id": 164, "color": "#3fcca4", "density_multiplier": 1.0}, {"region_id": 165, "color": "#daf501", "density_multiplier": 1.0}, {"region_id": 166, "color": "#7fd397", "density_multiplier": 1.0}, {"region_id": 167, "color": "#87d8c0", "density_multiplier": 1.0}, {"region_id": 168, "color": "#845097", "density_multiplier": 0.6165917730617287}, {"region_id": 169, "color": "#36120a", "density_multiplier": 1.0}, {"region_id": 170, "color": "#753fac", "density_multiplier": 0.6285383815155496}, {"region_id": 171, "color": "#705059", "density_multiplier": 1.0}, {"region_id": 172, "color": "#24d198", "density_multiplier": 0.6266104674915374}, {"region_id": 173, "color": "#58e01b", "density_multiplier": 1.0}, {"region_id": 174, "color": "#8658c0", "density_multiplier": 1.0}, {"region_id": 175, "color": "#52fc8e", "density_multiplier": 1.0}, {"region_id": 176, "color": "#0cbd12", "density_multiplier": 1.0}, {"region_id": 177, "color": "#a20cbe", "density_multiplier": 1.0}, {"region_id": 178, "color": "#8a4b39", "density_multiplier": 1.0}, {"region_id": 179, "color": "#869433", "density_multiplier": 1.0}, {"region_id": 180, "color": "#16bbce", "density_multiplier": 1.0}, {"region_id": 181, "color": "#a282df", "density_multiplier": 1.6547175821492992}, {"region_id": 182, "color": "#d73122", "density_multiplier": 1.0}, {"region_id": 183, "color": "#6ff026", "density_multiplier": 1.0}, {"region_id": 184, "color": "#63f9a3", "density_multiplier": 0.8095516505363087}, {"region_id": 185, "color": "#be0bf6", "density_multiplier": 1.0}, {"region_id": 186, "color": "#02031c", "density_multiplier": 1.0}, {"region_id": 187, "color": "#44fc29", "density_multiplier": 1.0}, {"region_id": 188, "color": "#73bcf8", "density_multiplier": 1.0}, {"region_id": 189, "color": "#5997c0", "density_multiplier": 1.0}, {"region_id": 190, "color": "#6d9716", "density_multiplier": 1.0}, {"region_id": 191, "color": "#3673d6", "density_multiplier": 1.0}, {"region_id": 192, "color": "#e5a016", "density_multiplier": 1.0}, {"region_id": 193, "color": "#79e7e7", "density_multiplier": 1.0}, {"region_id": 194, "color": "#40a126", "density_multiplier": 1.0}, {"region_id": 195, "color": "#f87554", "density_multiplier": 1.0}, {"region_id": 196, "color": "#60fc4b", "density_multiplier": 1.0}, {"region_id": 197, "color": "#643031", "density_multiplier": 1.0}, {"region_id": 198, "color": "#9b24c4", "density_multiplier": 1.0}, {"region_id": 199, "color": "#479e97", "density_multiplier": 1.0}, {"region_id": 200, "color": "#35004a", "density_multiplier": 1.0}, {"region_id": 201, "color": "#2bebc5", "density_multiplier": 1.0}, {"region_id": 202, "color": "#0beb3d", "density_multiplier": 1.0}, {"region_id": 203, "color": "#6fc4b4", "density_multiplier": 1.0}, {"region_id": 204, "color": "#788b5c", "density_multiplier": 1.0}, {"region_id": 205, "color": "#502fbb", "density_multiplier": 1.0}, {"region_id": 206, "color": "#e9cae1", "density_multiplier": 1.0}, {"region_id": 207, "color": "#d533db", "density_multiplier": 1.0}, {"region_id": 208, "color": "#c0d9e4", "density_multiplier": 1.0}, {"region_id": 209, "color": "#681802", "density_multiplier": 1.0}, {"region_id": 210, "color": "#7a9d07", "density_multiplier": 1.0}, {"region_id": 211, "color": "#234642", "density_multiplier": 1.0}, {"region_id": 212, "color": "#677f7e", "density_multiplier": 1.0}, {"region_id": 213, "color": "#bffe7f", "density_multiplier": 1.0}, {"region_id": 214, "color": "#1637cf", "density_multiplier": 1.0}, {"region_id": 215, "color": "#062d2c", "density_multiplier": 1.0}, {"region_id": 216, "color": "#c6044e", "density_multiplier": 1.0}, {"region_id": 217, "color": "#8227a7", "density_multiplier": 1.0}, {"region_id": 218, "color": "#57e782", "density_multiplier": 1.0}, {"region_id": 219, "color": "#2b9342", "density_multiplier": 1.0}, {"region_id": 220, "color": "#6c0272", "density_multiplier": 1.0}, {"region_id": 221, "color": "#cb6c79", "density_multiplier": 1.0}, {"region_id": 222, "color": "#ab1f27", "density_multiplier": 1.0}, {"region_id": 223, "color": "#623da7", "density_multiplier": 1.0}, {"region_id": 224, "color": "#de79b8", "density_multiplier": 1.0}, {"region_id": 225, "color": "#c9a652", "density_multiplier": 1.0}, {"region_id": 226, "color": "#358c98", "density_multiplier": 1.0}, {"region_id": 227, "color": "#edec4a", "density_multiplier": 1.0}, {"region_id": 228, "color": "#bfbefc", "density_multiplier": 1.0}, {"region_id": 229, "color": "#152e27", "density_multiplier": 1.0}, {"region_id": 230, "color": "#cd5cc6", "density_multiplier": 1.0}, {"region_id": 231, "color": "#29291c", "density_multiplier": 1.0}, {"region_id": 232, "color": "#cd9c52", "density_multiplier": 1.0}, {"region_id": 233, "color": "#4a093d", "density_multiplier": 1.0}, {"region_id": 234, "color": "#dc7095", "density_multiplier": 1.0}, {"region_id": 235, "color": "#7975b6", "density_multiplier": 1.0}, {"region_id": 236, "color": "#6aeb27", "density_multiplier": 1.0}, {"region_id": 237, "color": "#325813", "density_multiplier": 1.0}, {"region_id": 238, "color": "#3159f9", "density_multiplier": 1.0}, {"region_id": 239, "color": "#6dcc5d", "density_multiplier": 1.6555906154042987}, {"region_id": 240, "color": "#8e4d21", "density_multiplier": 1.0}, {"region_id": 241, "color": "#5f2969", "density_multiplier": 1.0}, {"region_id": 242, "color": "#8a5bfe", "density_multiplier": 1.0}, {"region_id": 243, "color": "#b51c1d", "density_multiplier": 1.6553401223950188}, {"region_id": 244, "color": "#3cfcab", "density_multiplier": 1.0}, {"region_id": 245, "color": "#a5bb16", "density_multiplier": 1.0}, {"region_id": 246, "color": "#49f569", "density_multiplier": 1.0}, {"region_id": 247, "color": "#8744aa", "density_multiplier": 1.0}, {"region_id": 248, "color": "#ea1060", "density_multiplier": 1.0}, {"region_id": 249, "color": "#d657f7", "density_multiplier": 1.0}, {"region_id": 250, "color": "#14d3ab", "density_multiplier": 1.311245094721051}, {"region_id": 251, "color": "#02e414", "density_multiplier": 1.0}, {"region_id": 252, "color": "#9ca627", "density_multiplier": 1.0}, {"region_id": 253, "color": "#2f1dbc", "density_multiplier": 1.0}, {"region_id": 254, "color": "#15ea39", "density_multiplier": 1.0}, {"region_id": 255, "color": "#972e82", "density_multiplier": 1.0}, {"region_id": 256, "color": "#dcbb0b", "density_multiplier": 1.0}, {"region_id": 257, "color": "#a4b2ba", "density_multiplier": 1.0}, {"region_id": 258, "color": "#9a3875", "density_multiplier": 1.0}, {"region_id": 259, "color": "#700afc", "density_multiplier": 0.6521473463687151}, {"region_id": 260, "color": "#ab9caf", "density_multiplier": 1.0}, {"region_id": 261, "color": "#22035f", "density_multiplier": 1.0}, {"region_id": 262, "color": "#0d1edc", "density_multiplier": 1.0}, {"region_id": 263, "color": "#065661", "density_multiplier": 1.0}, {"region_id": 264, "color": "#51a99d", "density_multiplier": 1.0}, {"region_id": 265, "color": "#38c9cf", "density_multiplier": 1.0}, {"region_id": 266, "color": "#c9b3d9", "density_multiplier": 1.0}, {"region_id": 267, "color": "#b1d008", "density_multiplier": 1.0}, {"region_id": 268, "color": "#64f1dd", "density_multiplier": 1.0}, {"region_id": 269, "color": "#2b5e12", "density_multiplier": 1.0}, {"region_id": 270, "color": "#50c039", "density_multiplier": 1.0}, {"region_id": 271, "color": "#30f216", "density_multiplier": 1.0}, {"region_id": 272, "color": "#07709a", "density_multiplier": 1.0}, {"region_id": 273, "color": "#003c39", "density_multiplier": 1.0}, {"region_id": 274, "color": "#350454", "density_multiplier": 1.0}, {"region_id": 275, "color": "#4b737d", "density_multiplier": 1.0}, {"region_id": 276, "color": "#d8db0c", "density_multiplier": 1.0}, {"region_id": 277, "color": "#e000c9", "density_multiplier": 1.0}, {"region_id": 278, "color": "#91607b", "density_multiplier": 1.0}, {"region_id": 279, "color": "#0e9e37", "density_multiplier": 1.0}, {"region_id": 280, "color": "#28b054", "density_multiplier": 1.0}, {"region_id": 281, "color": "#2095ea", "density_multiplier": 1.0}, {"region_id": 282, "color": "#fa78d9", "density_multiplier": 1.0}, {"region_id": 283, "color": "#346863", "density_multiplier": 1.0}, {"region_id": 284, "color": "#6fa3b5", "density_multiplier": 1.0}, {"region_id": 285, "color": "#c126e1", "density_multiplier": 1.0}, {"region_id": 286, "color": "#163b52", "density_multiplier": 1.0}, {"region_id": 287, "color": "#faacb7", "density_multiplier": 1.0}, {"region_id": 288, "color": "#d52df1", "density_multiplier": 1.342156883284389}, {"region_id": 289, "color": "#d6e417", "density_multiplier": 1.0}, {"region_id": 290, "color": "#65730c", "density_multiplier": 1.0}, {"region_id": 291, "color": "#194787", "density_multiplier": 1.0}, {"region_id": 292, "color": "#a6e479", "density_multiplier": 1.0}, {"region_id": 293, "color": "#dd2442", "density_multiplier": 1.0}, {"region_id": 294, "color": "#6d7a17", "density_multiplier": 1.0}, {"region_id": 295, "color": "#262309", "density_multiplier": 1.0}, {"region_id": 296, "color": "#d4f6bd", "density_multiplier": 1.0}, {"region_id": 297, "color": "#ae02e4", "density_multiplier": 1.0}, {"region_id": 298, "color": "#bf670d", "density_multiplier": 1.0}, {"region_id": 299, "color": "#26d5f8", "density_multiplier": 1.0}, {"region_id": 300, "color": "#3464e4", "density_multiplier": 1.0}, {"region_id": 301, "color": "#36fe29", "density_multiplier": 1.0}, {"region_id": 302, "color": "#2e95a9", "density_multiplier": 1.0}, {"region_id": 303, "color": "#91837b", "density_multiplier": 1.0}, {"region_id": 304, "color": "#8532bf", "density_multiplier": 1.0}, {"region_id": 305, "color": "#c45f89", "density_multiplier": 1.0}, {"region_id": 306, "color": "#0fb074", "density_multiplier": 1.0}, {"region_id": 307, "color": "#bb0e0d", "density_multiplier": 1.0}, {"region_id": 308, "color": "#f81dbe", "density_multiplier": 1.0}, {"region_id": 309, "color": "#95cba1", "density_multiplier": 1.0}, {"region_id": 310, "color": "#4c70d3", "density_multiplier": 1.0}, {"region_id": 311, "color": "#f7d4ed", "density_multiplier": 1.0}, {"region_id": 312, "color": "#34dcf1", "density_multiplier": 1.0}]
+[
+    {
+        "region_id": 1,
+        "color": "#ad69c1",
+        "density_multiplier": 0.5078125
+    },
+    {
+        "region_id": 2,
+        "color": "#352f8b",
+        "density_multiplier": 1.0
+    },
+    {
+        "region_id": 3,
+        "color": "#a2b062",
+        "density_multiplier": 0.4
+    },
+    {
+        "region_id": 4,
+        "color": "#b7900d",
+        "density_multiplier": 0.4
+    },
+    {
+        "region_id": 5,
+        "color": "#98fea5",
+        "density_multiplier": 0.25
+    },
+    {
+        "region_id": 6,
+        "color": "#60f66c",
+        "density_multiplier": 0.4
+    },
+    {
+        "region_id": 7,
+        "color": "#97b9c9",
+        "density_multiplier": 0.25
+    },
+    {
+        "region_id": 8,
+        "color": "#c8306b",
+        "density_multiplier": 0.25
+    },
+    {
+        "region_id": 9,
+        "color": "#fdec69",
+        "density_multiplier": 1.0
+    },
+    {
+        "region_id": 10,
+        "color": "#6d3442",
+        "density_multiplier": 0.654296875
+    },
+    {
+        "region_id": 11,
+        "color": "#b6a716",
+        "density_multiplier": 0.5078125
+    },
+    {
+        "region_id": 12,
+        "color": "#7f1dd7",
+        "density_multiplier": 1.0
+    },
+    {
+        "region_id": 13,
+        "color": "#d8c154",
+        "density_multiplier": 0.4
+    },
+    {
+        "region_id": 14,
+        "color": "#074d7f",
+        "density_multiplier": 0.25
+    },
+    {
+        "region_id": 15,
+        "color": "#8b779d",
+        "density_multiplier": 1.0
+    },
+    {
+        "region_id": 16,
+        "color": "#44e3ad",
+        "density_multiplier": 0.9085937500000001
+    },
+    {
+        "region_id": 17,
+        "color": "#e26a9d",
+        "density_multiplier": 0.853515625
+    },
+    {
+        "region_id": 18,
+        "color": "#b37c04",
+        "density_multiplier": 0.25
+    },
+    {
+        "region_id": 19,
+        "color": "#275814",
+        "density_multiplier": 0.55
+    },
+    {
+        "region_id": 20,
+        "color": "#1c8619",
+        "density_multiplier": 0.25
+    },
+    {
+        "region_id": 21,
+        "color": "#493169",
+        "density_multiplier": 0.8500000000000001
+    },
+    {
+        "region_id": 22,
+        "color": "#5347e9",
+        "density_multiplier": 0.25
+    },
+    {
+        "region_id": 23,
+        "color": "#6dda31",
+        "density_multiplier": 0.25
+    },
+    {
+        "region_id": 24,
+        "color": "#10fc58",
+        "density_multiplier": 0.25
+    },
+    {
+        "region_id": 25,
+        "color": "#f72d2f",
+        "density_multiplier": 0.25
+    },
+    {
+        "region_id": 26,
+        "color": "#da3ced",
+        "density_multiplier": 0.55
+    },
+    {
+        "region_id": 27,
+        "color": "#dbb018",
+        "density_multiplier": 0.25
+    },
+    {
+        "region_id": 28,
+        "color": "#61083e",
+        "density_multiplier": 0.25
+    },
+    {
+        "region_id": 29,
+        "color": "#c73e5d",
+        "density_multiplier": 0.7
+    },
+    {
+        "region_id": 30,
+        "color": "#7fd111",
+        "density_multiplier": 0.7234375
+    },
+    {
+        "region_id": 31,
+        "color": "#3962f2",
+        "density_multiplier": 1.0
+    },
+    {
+        "region_id": 32,
+        "color": "#b9ce2e",
+        "density_multiplier": 0.912109375
+    },
+    {
+        "region_id": 33,
+        "color": "#4ed510",
+        "density_multiplier": 0.25
+    },
+    {
+        "region_id": 34,
+        "color": "#75af3d",
+        "density_multiplier": 0.79609375
+    },
+    {
+        "region_id": 35,
+        "color": "#828069",
+        "density_multiplier": 0.25
+    },
+    {
+        "region_id": 36,
+        "color": "#129cb2",
+        "density_multiplier": 0.951953125
+    },
+    {
+        "region_id": 37,
+        "color": "#f133f4",
+        "density_multiplier": 0.25
+    },
+    {
+        "region_id": 38,
+        "color": "#8a668c",
+        "density_multiplier": 0.7808593749999999
+    },
+    {
+        "region_id": 39,
+        "color": "#f96b8f",
+        "density_multiplier": 2.2283464566929134
+    },
+    {
+        "region_id": 40,
+        "color": "#4e5621",
+        "density_multiplier": 0.88984375
+    },
+    {
+        "region_id": 41,
+        "color": "#b5ca5a",
+        "density_multiplier": 0.6507812500000001
+    },
+    {
+        "region_id": 42,
+        "color": "#40622c",
+        "density_multiplier": 1.0
+    },
+    {
+        "region_id": 43,
+        "color": "#2ade7e",
+        "density_multiplier": 0.4
+    },
+    {
+        "region_id": 44,
+        "color": "#2caef1",
+        "density_multiplier": 1.0
+    },
+    {
+        "region_id": 45,
+        "color": "#4c7950",
+        "density_multiplier": 0.7
+    },
+    {
+        "region_id": 46,
+        "color": "#4005c1",
+        "density_multiplier": 2.2283464566929134
+    },
+    {
+        "region_id": 47,
+        "color": "#7c1df5",
+        "density_multiplier": 1.0
+    },
+    {
+        "region_id": 48,
+        "color": "#f67adc",
+        "density_multiplier": 0.25
+    },
+    {
+        "region_id": 49,
+        "color": "#7036cf",
+        "density_multiplier": 1.0
+    },
+    {
+        "region_id": 50,
+        "color": "#c92fdb",
+        "density_multiplier": 0.94609375
+    },
+    {
+        "region_id": 51,
+        "color": "#030cab",
+        "density_multiplier": 0.41875
+    },
+    {
+        "region_id": 52,
+        "color": "#74c1a9",
+        "density_multiplier": 0.7
+    },
+    {
+        "region_id": 53,
+        "color": "#276e43",
+        "density_multiplier": 2.2283464566929134
+    },
+    {
+        "region_id": 54,
+        "color": "#1fa5a9",
+        "density_multiplier": 0.25
+    },
+    {
+        "region_id": 55,
+        "color": "#5ab19f",
+        "density_multiplier": 0.48320312499999996
+    },
+    {
+        "region_id": 56,
+        "color": "#2f5d88",
+        "density_multiplier": 0.25
+    },
+    {
+        "region_id": 57,
+        "color": "#4db543",
+        "density_multiplier": 2.2283464566929134
+    },
+    {
+        "region_id": 58,
+        "color": "#711efd",
+        "density_multiplier": 1.0
+    },
+    {
+        "region_id": 59,
+        "color": "#465ab2",
+        "density_multiplier": 0.8500000000000001
+    },
+    {
+        "region_id": 60,
+        "color": "#d71452",
+        "density_multiplier": 0.8500000000000001
+    },
+    {
+        "region_id": 61,
+        "color": "#1e4786",
+        "density_multiplier": 1.0
+    },
+    {
+        "region_id": 62,
+        "color": "#c97a9f",
+        "density_multiplier": 2.2283464566929134
+    },
+    {
+        "region_id": 63,
+        "color": "#4455a0",
+        "density_multiplier": 0.701171875
+    },
+    {
+        "region_id": 64,
+        "color": "#3e0c44",
+        "density_multiplier": 0.25
+    },
+    {
+        "region_id": 65,
+        "color": "#9bfee7",
+        "density_multiplier": 3.0551181102362204
+    },
+    {
+        "region_id": 66,
+        "color": "#b42d07",
+        "density_multiplier": 0.4
+    },
+    {
+        "region_id": 67,
+        "color": "#2b60e8",
+        "density_multiplier": 0.25
+    },
+    {
+        "region_id": 68,
+        "color": "#d30ce4",
+        "density_multiplier": 0.5078125
+    },
+    {
+        "region_id": 69,
+        "color": "#60e544",
+        "density_multiplier": 0.55703125
+    },
+    {
+        "region_id": 70,
+        "color": "#596121",
+        "density_multiplier": 0.28984375
+    },
+    {
+        "region_id": 71,
+        "color": "#ce2429",
+        "density_multiplier": 0.25
+    },
+    {
+        "region_id": 72,
+        "color": "#306697",
+        "density_multiplier": 1.0
+    },
+    {
+        "region_id": 73,
+        "color": "#4aa401",
+        "density_multiplier": 0.25
+    },
+    {
+        "region_id": 74,
+        "color": "#80430b",
+        "density_multiplier": 1.0
+    },
+    {
+        "region_id": 75,
+        "color": "#65b794",
+        "density_multiplier": 0.5078125
+    },
+    {
+        "region_id": 76,
+        "color": "#c89ad5",
+        "density_multiplier": 0.335546875
+    },
+    {
+        "region_id": 77,
+        "color": "#96cde7",
+        "density_multiplier": 0.431640625
+    },
+    {
+        "region_id": 78,
+        "color": "#346512",
+        "density_multiplier": 0.4
+    },
+    {
+        "region_id": 79,
+        "color": "#c0ec14",
+        "density_multiplier": 0.377734375
+    },
+    {
+        "region_id": 80,
+        "color": "#2d877e",
+        "density_multiplier": 2.2283464566929134
+    },
+    {
+        "region_id": 81,
+        "color": "#2c37b2",
+        "density_multiplier": 0.3015625
+    },
+    {
+        "region_id": 82,
+        "color": "#60daf7",
+        "density_multiplier": 1.6
+    },
+    {
+        "region_id": 83,
+        "color": "#000d02",
+        "density_multiplier": 2.2283464566929134
+    },
+    {
+        "region_id": 84,
+        "color": "#0dce0b",
+        "density_multiplier": 0.403515625
+    },
+    {
+        "region_id": 85,
+        "color": "#82a203",
+        "density_multiplier": 0.53828125
+    },
+    {
+        "region_id": 86,
+        "color": "#cfc294",
+        "density_multiplier": 0.9800781249999999
+    },
+    {
+        "region_id": 87,
+        "color": "#4b4dd9",
+        "density_multiplier": 0.276953125
+    },
+    {
+        "region_id": 88,
+        "color": "#383b68",
+        "density_multiplier": 2.2283464566929134
+    },
+    {
+        "region_id": 89,
+        "color": "#d6a679",
+        "density_multiplier": 2.2283464566929134
+    },
+    {
+        "region_id": 90,
+        "color": "#0482a2",
+        "density_multiplier": 2.2283464566929134
+    },
+    {
+        "region_id": 91,
+        "color": "#7cec06",
+        "density_multiplier": 0.4
+    },
+    {
+        "region_id": 92,
+        "color": "#caae60",
+        "density_multiplier": 0.55
+    },
+    {
+        "region_id": 93,
+        "color": "#933dcc",
+        "density_multiplier": 0.883984375
+    },
+    {
+        "region_id": 94,
+        "color": "#a50b44",
+        "density_multiplier": 0.8500000000000001
+    },
+    {
+        "region_id": 95,
+        "color": "#6deb30",
+        "density_multiplier": 1.0
+    },
+    {
+        "region_id": 96,
+        "color": "#8588eb",
+        "density_multiplier": 1.0
+    },
+    {
+        "region_id": 97,
+        "color": "#e5124a",
+        "density_multiplier": 0.8500000000000001
+    },
+    {
+        "region_id": 98,
+        "color": "#2ab1c4",
+        "density_multiplier": 1.4488188976377954
+    },
+    {
+        "region_id": 99,
+        "color": "#f7565e",
+        "density_multiplier": 2.2283464566929134
+    },
+    {
+        "region_id": 100,
+        "color": "#605b84",
+        "density_multiplier": 0.353125
+    },
+    {
+        "region_id": 101,
+        "color": "#ff7149",
+        "density_multiplier": 0.8640625
+    },
+    {
+        "region_id": 102,
+        "color": "#d5e07e",
+        "density_multiplier": 2.2283464566929134
+    },
+    {
+        "region_id": 103,
+        "color": "#f231b4",
+        "density_multiplier": 2.2283464566929134
+    },
+    {
+        "region_id": 104,
+        "color": "#8f3395",
+        "density_multiplier": 2.2283464566929134
+    },
+    {
+        "region_id": 105,
+        "color": "#e5c845",
+        "density_multiplier": 0.8500000000000001
+    },
+    {
+        "region_id": 106,
+        "color": "#486968",
+        "density_multiplier": 1.0
+    },
+    {
+        "region_id": 107,
+        "color": "#ec8d9e",
+        "density_multiplier": 0.5078125
+    },
+    {
+        "region_id": 108,
+        "color": "#9e461c",
+        "density_multiplier": 2.2283464566929134
+    },
+    {
+        "region_id": 109,
+        "color": "#1b1c3a",
+        "density_multiplier": 2.2283464566929134
+    },
+    {
+        "region_id": 110,
+        "color": "#4c319c",
+        "density_multiplier": 1.0
+    },
+    {
+        "region_id": 111,
+        "color": "#94ba45",
+        "density_multiplier": 1.0
+    },
+    {
+        "region_id": 112,
+        "color": "#de995c",
+        "density_multiplier": 2.2283464566929134
+    },
+    {
+        "region_id": 113,
+        "color": "#b43015",
+        "density_multiplier": 2.2283464566929134
+    },
+    {
+        "region_id": 114,
+        "color": "#01371e",
+        "density_multiplier": 2.2283464566929134
+    },
+    {
+        "region_id": 115,
+        "color": "#b4df05",
+        "density_multiplier": 1.0
+    },
+    {
+        "region_id": 116,
+        "color": "#2e08ba",
+        "density_multiplier": 0.8500000000000001
+    },
+    {
+        "region_id": 117,
+        "color": "#5e485d",
+        "density_multiplier": 2.2283464566929134
+    },
+    {
+        "region_id": 118,
+        "color": "#824eb8",
+        "density_multiplier": 0.765625
+    },
+    {
+        "region_id": 119,
+        "color": "#65a0c7",
+        "density_multiplier": 1.0
+    },
+    {
+        "region_id": 120,
+        "color": "#102109",
+        "density_multiplier": 1.7322834645669292
+    },
+    {
+        "region_id": 121,
+        "color": "#a2bd57",
+        "density_multiplier": 2.2283464566929134
+    },
+    {
+        "region_id": 122,
+        "color": "#1bcee0",
+        "density_multiplier": 1.0
+    },
+    {
+        "region_id": 123,
+        "color": "#e44b7a",
+        "density_multiplier": 2.2283464566929134
+    },
+    {
+        "region_id": 124,
+        "color": "#0c01f8",
+        "density_multiplier": 2.2283464566929134
+    },
+    {
+        "region_id": 125,
+        "color": "#48067e",
+        "density_multiplier": 2.2283464566929134
+    },
+    {
+        "region_id": 126,
+        "color": "#1fca08",
+        "density_multiplier": 0.8500000000000001
+    },
+    {
+        "region_id": 127,
+        "color": "#28898a",
+        "density_multiplier": 2.2283464566929134
+    },
+    {
+        "region_id": 128,
+        "color": "#d268b5",
+        "density_multiplier": 1.7322834645669292
+    },
+    {
+        "region_id": 129,
+        "color": "#323052",
+        "density_multiplier": 1.0
+    },
+    {
+        "region_id": 130,
+        "color": "#1a1f01",
+        "density_multiplier": 2.1811023622047245
+    },
+    {
+        "region_id": 131,
+        "color": "#78b152",
+        "density_multiplier": 2.2283464566929134
+    },
+    {
+        "region_id": 132,
+        "color": "#17aec5",
+        "density_multiplier": 0.48320312499999996
+    },
+    {
+        "region_id": 133,
+        "color": "#a58f37",
+        "density_multiplier": 2.195275590551181
+    },
+    {
+        "region_id": 134,
+        "color": "#2e6f41",
+        "density_multiplier": 0.7
+    },
+    {
+        "region_id": 135,
+        "color": "#962685",
+        "density_multiplier": 2.1811023622047245
+    },
+    {
+        "region_id": 136,
+        "color": "#d30b24",
+        "density_multiplier": 1.3826771653543304
+    },
+    {
+        "region_id": 137,
+        "color": "#2d6892",
+        "density_multiplier": 1.0
+    },
+    {
+        "region_id": 138,
+        "color": "#68ccff",
+        "density_multiplier": 2.2283464566929134
+    },
+    {
+        "region_id": 139,
+        "color": "#6e8567",
+        "density_multiplier": 2.2283464566929134
+    },
+    {
+        "region_id": 140,
+        "color": "#5b735c",
+        "density_multiplier": 1.0
+    },
+    {
+        "region_id": 141,
+        "color": "#659fb7",
+        "density_multiplier": 1.0
+    },
+    {
+        "region_id": 142,
+        "color": "#721451",
+        "density_multiplier": 1.0
+    },
+    {
+        "region_id": 143,
+        "color": "#e26453",
+        "density_multiplier": 2.1811023622047245
+    },
+    {
+        "region_id": 144,
+        "color": "#ee00fb",
+        "density_multiplier": 1.0
+    },
+    {
+        "region_id": 145,
+        "color": "#ad02f9",
+        "density_multiplier": 1.0
+    },
+    {
+        "region_id": 146,
+        "color": "#633353",
+        "density_multiplier": 2.2283464566929134
+    },
+    {
+        "region_id": 147,
+        "color": "#ddcc6a",
+        "density_multiplier": 2.2283464566929134
+    },
+    {
+        "region_id": 148,
+        "color": "#f9d5f7",
+        "density_multiplier": 0.8500000000000001
+    },
+    {
+        "region_id": 149,
+        "color": "#5ba10b",
+        "density_multiplier": 2.2283464566929134
+    },
+    {
+        "region_id": 150,
+        "color": "#5899b2",
+        "density_multiplier": 1.0
+    },
+    {
+        "region_id": 151,
+        "color": "#34c3d9",
+        "density_multiplier": 2.2283464566929134
+    },
+    {
+        "region_id": 152,
+        "color": "#07ac55",
+        "density_multiplier": 2.2283464566929134
+    },
+    {
+        "region_id": 153,
+        "color": "#271567",
+        "density_multiplier": 1.0
+    },
+    {
+        "region_id": 154,
+        "color": "#c1d765",
+        "density_multiplier": 1.0
+    },
+    {
+        "region_id": 155,
+        "color": "#85b678",
+        "density_multiplier": 1.0
+    },
+    {
+        "region_id": 156,
+        "color": "#44616a",
+        "density_multiplier": 2.2283464566929134
+    },
+    {
+        "region_id": 157,
+        "color": "#afa6d8",
+        "density_multiplier": 1.0
+    },
+    {
+        "region_id": 158,
+        "color": "#be2cda",
+        "density_multiplier": 2.2283464566929134
+    },
+    {
+        "region_id": 159,
+        "color": "#a058bb",
+        "density_multiplier": 2.2283464566929134
+    },
+    {
+        "region_id": 160,
+        "color": "#91341f",
+        "density_multiplier": 2.2283464566929134
+    },
+    {
+        "region_id": 161,
+        "color": "#d55f1a",
+        "density_multiplier": 2.1811023622047245
+    },
+    {
+        "region_id": 162,
+        "color": "#92fe6b",
+        "density_multiplier": 2.2283464566929134
+    },
+    {
+        "region_id": 163,
+        "color": "#163b09",
+        "density_multiplier": 1.0
+    },
+    {
+        "region_id": 164,
+        "color": "#3fcca4",
+        "density_multiplier": 1.0
+    },
+    {
+        "region_id": 165,
+        "color": "#daf501",
+        "density_multiplier": 2.0015748031496066
+    },
+    {
+        "region_id": 166,
+        "color": "#7fd397",
+        "density_multiplier": 2.2283464566929134
+    },
+    {
+        "region_id": 167,
+        "color": "#87d8c0",
+        "density_multiplier": 1.0
+    },
+    {
+        "region_id": 168,
+        "color": "#845097",
+        "density_multiplier": 1.0
+    },
+    {
+        "region_id": 169,
+        "color": "#36120a",
+        "density_multiplier": 0.7
+    },
+    {
+        "region_id": 170,
+        "color": "#753fac",
+        "density_multiplier": 0.72578125
+    },
+    {
+        "region_id": 171,
+        "color": "#705059",
+        "density_multiplier": 0.7
+    },
+    {
+        "region_id": 172,
+        "color": "#24d198",
+        "density_multiplier": 0.7
+    },
+    {
+        "region_id": 173,
+        "color": "#58e01b",
+        "density_multiplier": 1.0
+    },
+    {
+        "region_id": 174,
+        "color": "#8658c0",
+        "density_multiplier": 1.0
+    },
+    {
+        "region_id": 175,
+        "color": "#52fc8e",
+        "density_multiplier": 1.0
+    },
+    {
+        "region_id": 176,
+        "color": "#0cbd12",
+        "density_multiplier": 1.0
+    },
+    {
+        "region_id": 177,
+        "color": "#a20cbe",
+        "density_multiplier": 0.7
+    },
+    {
+        "region_id": 178,
+        "color": "#8a4b39",
+        "density_multiplier": 2.2283464566929134
+    },
+    {
+        "region_id": 179,
+        "color": "#869433",
+        "density_multiplier": 2.2283464566929134
+    },
+    {
+        "region_id": 180,
+        "color": "#16bbce",
+        "density_multiplier": 0.895703125
+    },
+    {
+        "region_id": 181,
+        "color": "#a282df",
+        "density_multiplier": 1.0
+    },
+    {
+        "region_id": 182,
+        "color": "#d73122",
+        "density_multiplier": 1.0
+    },
+    {
+        "region_id": 183,
+        "color": "#6ff026",
+        "density_multiplier": 1.0
+    },
+    {
+        "region_id": 184,
+        "color": "#63f9a3",
+        "density_multiplier": 1.0
+    },
+    {
+        "region_id": 185,
+        "color": "#be0bf6",
+        "density_multiplier": 1.0
+    },
+    {
+        "region_id": 186,
+        "color": "#02031c",
+        "density_multiplier": 1.0
+    },
+    {
+        "region_id": 187,
+        "color": "#44fc29",
+        "density_multiplier": 1.7511811023622048
+    },
+    {
+        "region_id": 188,
+        "color": "#73bcf8",
+        "density_multiplier": 1.132283464566929
+    },
+    {
+        "region_id": 189,
+        "color": "#5997c0",
+        "density_multiplier": 1.0
+    },
+    {
+        "region_id": 190,
+        "color": "#6d9716",
+        "density_multiplier": 1.0
+    },
+    {
+        "region_id": 191,
+        "color": "#3673d6",
+        "density_multiplier": 0.7890625
+    },
+    {
+        "region_id": 192,
+        "color": "#e5a016",
+        "density_multiplier": 0.58515625
+    },
+    {
+        "region_id": 193,
+        "color": "#79e7e7",
+        "density_multiplier": 0.8500000000000001
+    },
+    {
+        "region_id": 194,
+        "color": "#40a126",
+        "density_multiplier": 1.0
+    },
+    {
+        "region_id": 195,
+        "color": "#f87554",
+        "density_multiplier": 0.579296875
+    },
+    {
+        "region_id": 196,
+        "color": "#60fc4b",
+        "density_multiplier": 1.0
+    },
+    {
+        "region_id": 197,
+        "color": "#643031",
+        "density_multiplier": 1.0
+    },
+    {
+        "region_id": 198,
+        "color": "#9b24c4",
+        "density_multiplier": 0.7
+    },
+    {
+        "region_id": 199,
+        "color": "#479e97",
+        "density_multiplier": 1.0
+    },
+    {
+        "region_id": 200,
+        "color": "#35004a",
+        "density_multiplier": 1.0
+    },
+    {
+        "region_id": 201,
+        "color": "#2bebc5",
+        "density_multiplier": 1.0
+    },
+    {
+        "region_id": 202,
+        "color": "#0beb3d",
+        "density_multiplier": 2.1811023622047245
+    },
+    {
+        "region_id": 203,
+        "color": "#6fc4b4",
+        "density_multiplier": 1.0
+    },
+    {
+        "region_id": 204,
+        "color": "#788b5c",
+        "density_multiplier": 2.1811023622047245
+    },
+    {
+        "region_id": 205,
+        "color": "#502fbb",
+        "density_multiplier": 0.8500000000000001
+    },
+    {
+        "region_id": 206,
+        "color": "#e9cae1",
+        "density_multiplier": 2.1811023622047245
+    },
+    {
+        "region_id": 207,
+        "color": "#d533db",
+        "density_multiplier": 1.0
+    },
+    {
+        "region_id": 208,
+        "color": "#c0d9e4",
+        "density_multiplier": 1.0
+    },
+    {
+        "region_id": 209,
+        "color": "#681802",
+        "density_multiplier": 1.0
+    },
+    {
+        "region_id": 210,
+        "color": "#7a9d07",
+        "density_multiplier": 1.0
+    },
+    {
+        "region_id": 211,
+        "color": "#234642",
+        "density_multiplier": 1.0
+    },
+    {
+        "region_id": 212,
+        "color": "#677f7e",
+        "density_multiplier": 1.0
+    },
+    {
+        "region_id": 213,
+        "color": "#bffe7f",
+        "density_multiplier": 0.4
+    },
+    {
+        "region_id": 214,
+        "color": "#1637cf",
+        "density_multiplier": 0.8500000000000001
+    },
+    {
+        "region_id": 215,
+        "color": "#062d2c",
+        "density_multiplier": 1.0
+    },
+    {
+        "region_id": 216,
+        "color": "#c6044e",
+        "density_multiplier": 0.5078125
+    },
+    {
+        "region_id": 217,
+        "color": "#8227a7",
+        "density_multiplier": 1.0
+    },
+    {
+        "region_id": 218,
+        "color": "#57e782",
+        "density_multiplier": 1.0
+    },
+    {
+        "region_id": 219,
+        "color": "#2b9342",
+        "density_multiplier": 1.5905511811023623
+    },
+    {
+        "region_id": 220,
+        "color": "#6c0272",
+        "density_multiplier": 1.0
+    },
+    {
+        "region_id": 221,
+        "color": "#cb6c79",
+        "density_multiplier": 1.0
+    },
+    {
+        "region_id": 222,
+        "color": "#ab1f27",
+        "density_multiplier": 1.0
+    },
+    {
+        "region_id": 223,
+        "color": "#623da7",
+        "density_multiplier": 1.0
+    },
+    {
+        "region_id": 224,
+        "color": "#de79b8",
+        "density_multiplier": 1.0
+    },
+    {
+        "region_id": 225,
+        "color": "#c9a652",
+        "density_multiplier": 0.9156249999999999
+    },
+    {
+        "region_id": 226,
+        "color": "#358c98",
+        "density_multiplier": 1.0
+    },
+    {
+        "region_id": 227,
+        "color": "#edec4a",
+        "density_multiplier": 1.0
+    },
+    {
+        "region_id": 228,
+        "color": "#bfbefc",
+        "density_multiplier": 1.0
+    },
+    {
+        "region_id": 229,
+        "color": "#152e27",
+        "density_multiplier": 1.0
+    },
+    {
+        "region_id": 230,
+        "color": "#cd5cc6",
+        "density_multiplier": 1.0
+    },
+    {
+        "region_id": 231,
+        "color": "#29291c",
+        "density_multiplier": 1.0
+    },
+    {
+        "region_id": 232,
+        "color": "#cd9c52",
+        "density_multiplier": 0.752734375
+    },
+    {
+        "region_id": 233,
+        "color": "#4a093d",
+        "density_multiplier": 1.0
+    },
+    {
+        "region_id": 234,
+        "color": "#dc7095",
+        "density_multiplier": 1.0
+    },
+    {
+        "region_id": 235,
+        "color": "#7975b6",
+        "density_multiplier": 1.0
+    },
+    {
+        "region_id": 236,
+        "color": "#6aeb27",
+        "density_multiplier": 0.7
+    },
+    {
+        "region_id": 237,
+        "color": "#325813",
+        "density_multiplier": 0.8500000000000001
+    },
+    {
+        "region_id": 238,
+        "color": "#3159f9",
+        "density_multiplier": 1.0
+    },
+    {
+        "region_id": 239,
+        "color": "#6dcc5d",
+        "density_multiplier": 1.0
+    },
+    {
+        "region_id": 240,
+        "color": "#8e4d21",
+        "density_multiplier": 1.0
+    },
+    {
+        "region_id": 241,
+        "color": "#5f2969",
+        "density_multiplier": 1.0
+    },
+    {
+        "region_id": 242,
+        "color": "#8a5bfe",
+        "density_multiplier": 1.0
+    },
+    {
+        "region_id": 243,
+        "color": "#b51c1d",
+        "density_multiplier": 1.0
+    },
+    {
+        "region_id": 244,
+        "color": "#3cfcab",
+        "density_multiplier": 1.0
+    },
+    {
+        "region_id": 245,
+        "color": "#a5bb16",
+        "density_multiplier": 1.0
+    },
+    {
+        "region_id": 246,
+        "color": "#49f569",
+        "density_multiplier": 1.0
+    },
+    {
+        "region_id": 247,
+        "color": "#8744aa",
+        "density_multiplier": 1.0
+    },
+    {
+        "region_id": 248,
+        "color": "#ea1060",
+        "density_multiplier": 0.741015625
+    },
+    {
+        "region_id": 249,
+        "color": "#d657f7",
+        "density_multiplier": 1.0
+    },
+    {
+        "region_id": 250,
+        "color": "#14d3ab",
+        "density_multiplier": 0.7925781249999999
+    },
+    {
+        "region_id": 251,
+        "color": "#02e414",
+        "density_multiplier": 1.0
+    },
+    {
+        "region_id": 252,
+        "color": "#9ca627",
+        "density_multiplier": 1.0
+    },
+    {
+        "region_id": 253,
+        "color": "#2f1dbc",
+        "density_multiplier": 1.0
+    },
+    {
+        "region_id": 254,
+        "color": "#15ea39",
+        "density_multiplier": 0.8500000000000001
+    },
+    {
+        "region_id": 255,
+        "color": "#972e82",
+        "density_multiplier": 0.8500000000000001
+    },
+    {
+        "region_id": 256,
+        "color": "#dcbb0b",
+        "density_multiplier": 1.0
+    },
+    {
+        "region_id": 257,
+        "color": "#a4b2ba",
+        "density_multiplier": 1.0
+    },
+    {
+        "region_id": 258,
+        "color": "#9a3875",
+        "density_multiplier": 1.0
+    },
+    {
+        "region_id": 259,
+        "color": "#700afc",
+        "density_multiplier": 1.0
+    },
+    {
+        "region_id": 260,
+        "color": "#ab9caf",
+        "density_multiplier": 1.0
+    },
+    {
+        "region_id": 261,
+        "color": "#22035f",
+        "density_multiplier": 1.0
+    },
+    {
+        "region_id": 262,
+        "color": "#0d1edc",
+        "density_multiplier": 1.0
+    },
+    {
+        "region_id": 263,
+        "color": "#065661",
+        "density_multiplier": 1.0
+    },
+    {
+        "region_id": 264,
+        "color": "#51a99d",
+        "density_multiplier": 0.7
+    },
+    {
+        "region_id": 265,
+        "color": "#38c9cf",
+        "density_multiplier": 1.0
+    },
+    {
+        "region_id": 266,
+        "color": "#c9b3d9",
+        "density_multiplier": 1.0
+    },
+    {
+        "region_id": 267,
+        "color": "#b1d008",
+        "density_multiplier": 0.865234375
+    },
+    {
+        "region_id": 268,
+        "color": "#64f1dd",
+        "density_multiplier": 1.0
+    },
+    {
+        "region_id": 269,
+        "color": "#2b5e12",
+        "density_multiplier": 0.7
+    },
+    {
+        "region_id": 270,
+        "color": "#50c039",
+        "density_multiplier": 1.0
+    },
+    {
+        "region_id": 271,
+        "color": "#30f216",
+        "density_multiplier": 1.0
+    },
+    {
+        "region_id": 272,
+        "color": "#07709a",
+        "density_multiplier": 1.0
+    },
+    {
+        "region_id": 273,
+        "color": "#003c39",
+        "density_multiplier": 1.0
+    },
+    {
+        "region_id": 274,
+        "color": "#350454",
+        "density_multiplier": 1.0
+    },
+    {
+        "region_id": 275,
+        "color": "#4b737d",
+        "density_multiplier": 1.0
+    },
+    {
+        "region_id": 276,
+        "color": "#d8db0c",
+        "density_multiplier": 0.5078125
+    },
+    {
+        "region_id": 277,
+        "color": "#e000c9",
+        "density_multiplier": 0.8500000000000001
+    },
+    {
+        "region_id": 278,
+        "color": "#91607b",
+        "density_multiplier": 1.0
+    },
+    {
+        "region_id": 279,
+        "color": "#0e9e37",
+        "density_multiplier": 1.0
+    },
+    {
+        "region_id": 280,
+        "color": "#28b054",
+        "density_multiplier": 0.5078125
+    },
+    {
+        "region_id": 281,
+        "color": "#2095ea",
+        "density_multiplier": 1.0
+    },
+    {
+        "region_id": 282,
+        "color": "#fa78d9",
+        "density_multiplier": 1.0
+    },
+    {
+        "region_id": 283,
+        "color": "#346863",
+        "density_multiplier": 1.0
+    },
+    {
+        "region_id": 284,
+        "color": "#6fa3b5",
+        "density_multiplier": 1.0
+    },
+    {
+        "region_id": 285,
+        "color": "#c126e1",
+        "density_multiplier": 1.0
+    },
+    {
+        "region_id": 286,
+        "color": "#163b52",
+        "density_multiplier": 1.0
+    },
+    {
+        "region_id": 287,
+        "color": "#faacb7",
+        "density_multiplier": 0.765625
+    },
+    {
+        "region_id": 288,
+        "color": "#d52df1",
+        "density_multiplier": 1.0
+    },
+    {
+        "region_id": 289,
+        "color": "#d6e417",
+        "density_multiplier": 1.0
+    },
+    {
+        "region_id": 290,
+        "color": "#65730c",
+        "density_multiplier": 1.0
+    },
+    {
+        "region_id": 291,
+        "color": "#194787",
+        "density_multiplier": 1.0
+    },
+    {
+        "region_id": 292,
+        "color": "#a6e479",
+        "density_multiplier": 1.0
+    },
+    {
+        "region_id": 293,
+        "color": "#dd2442",
+        "density_multiplier": 1.0
+    },
+    {
+        "region_id": 294,
+        "color": "#6d7a17",
+        "density_multiplier": 0.752734375
+    },
+    {
+        "region_id": 295,
+        "color": "#262309",
+        "density_multiplier": 0.521875
+    },
+    {
+        "region_id": 296,
+        "color": "#d4f6bd",
+        "density_multiplier": 1.0
+    },
+    {
+        "region_id": 297,
+        "color": "#ae02e4",
+        "density_multiplier": 2.1811023622047245
+    },
+    {
+        "region_id": 298,
+        "color": "#bf670d",
+        "density_multiplier": 1.0
+    },
+    {
+        "region_id": 299,
+        "color": "#26d5f8",
+        "density_multiplier": 1.0
+    },
+    {
+        "region_id": 300,
+        "color": "#3464e4",
+        "density_multiplier": 1.0
+    },
+    {
+        "region_id": 301,
+        "color": "#36fe29",
+        "density_multiplier": 1.0
+    },
+    {
+        "region_id": 302,
+        "color": "#2e95a9",
+        "density_multiplier": 1.0
+    },
+    {
+        "region_id": 303,
+        "color": "#91837b",
+        "density_multiplier": 1.0
+    },
+    {
+        "region_id": 304,
+        "color": "#8532bf",
+        "density_multiplier": 1.0
+    },
+    {
+        "region_id": 305,
+        "color": "#c45f89",
+        "density_multiplier": 1.0
+    },
+    {
+        "region_id": 306,
+        "color": "#0fb074",
+        "density_multiplier": 1.0
+    },
+    {
+        "region_id": 307,
+        "color": "#bb0e0d",
+        "density_multiplier": 1.1181102362204725
+    },
+    {
+        "region_id": 308,
+        "color": "#f81dbe",
+        "density_multiplier": 1.0
+    },
+    {
+        "region_id": 309,
+        "color": "#95cba1",
+        "density_multiplier": 1.0
+    },
+    {
+        "region_id": 310,
+        "color": "#4c70d3",
+        "density_multiplier": 0.7
+    },
+    {
+        "region_id": 311,
+        "color": "#f7d4ed",
+        "density_multiplier": 1.0
+    },
+    {
+        "region_id": 312,
+        "color": "#34dcf1",
+        "density_multiplier": 0.7
+    },
+    {
+        "region_id": 313,
+        "color": "#51ec80",
+        "density_multiplier": 0.9015625
+    },
+    {
+        "region_id": 314,
+        "color": "#f2f96c",
+        "density_multiplier": 0.7
+    },
+    {
+        "region_id": 315,
+        "color": "#5ee298",
+        "density_multiplier": 0.6507812500000001
+    },
+    {
+        "region_id": 316,
+        "color": "#75fc6c",
+        "density_multiplier": 1.0
+    },
+    {
+        "region_id": 317,
+        "color": "#468a1e",
+        "density_multiplier": 1.0
+    },
+    {
+        "region_id": 318,
+        "color": "#70cb49",
+        "density_multiplier": 1.0
+    },
+    {
+        "region_id": 319,
+        "color": "#46b553",
+        "density_multiplier": 0.647265625
+    },
+    {
+        "region_id": 320,
+        "color": "#d320e3",
+        "density_multiplier": 1.0
+    },
+    {
+        "region_id": 321,
+        "color": "#9e2386",
+        "density_multiplier": 0.8500000000000001
+    },
+    {
+        "region_id": 322,
+        "color": "#afd72f",
+        "density_multiplier": 0.7
+    },
+    {
+        "region_id": 323,
+        "color": "#41dc88",
+        "density_multiplier": 0.7
+    },
+    {
+        "region_id": 324,
+        "color": "#8198b9",
+        "density_multiplier": 0.8500000000000001
+    },
+    {
+        "region_id": 325,
+        "color": "#aa5174",
+        "density_multiplier": 0.9015625
+    },
+    {
+        "region_id": 326,
+        "color": "#242cfe",
+        "density_multiplier": 0.605078125
+    },
+    {
+        "region_id": 327,
+        "color": "#be6178",
+        "density_multiplier": 0.8734375000000001
+    },
+    {
+        "region_id": 328,
+        "color": "#7e2e89",
+        "density_multiplier": 1.0
+    },
+    {
+        "region_id": 329,
+        "color": "#d6dcb5",
+        "density_multiplier": 1.0
+    },
+    {
+        "region_id": 330,
+        "color": "#bc5882",
+        "density_multiplier": 0.8500000000000001
+    },
+    {
+        "region_id": 331,
+        "color": "#8d4719",
+        "density_multiplier": 0.7421875
+    },
+    {
+        "region_id": 332,
+        "color": "#e21296",
+        "density_multiplier": 1.0
+    },
+    {
+        "region_id": 333,
+        "color": "#76c106",
+        "density_multiplier": 1.0
+    },
+    {
+        "region_id": 334,
+        "color": "#66b68f",
+        "density_multiplier": 1.0
+    },
+    {
+        "region_id": 335,
+        "color": "#f15d0b",
+        "density_multiplier": 1.0
+    },
+    {
+        "region_id": 336,
+        "color": "#435657",
+        "density_multiplier": 1.0
+    },
+    {
+        "region_id": 337,
+        "color": "#636d0d",
+        "density_multiplier": 1.0
+    },
+    {
+        "region_id": 338,
+        "color": "#84b8ce",
+        "density_multiplier": 1.0
+    },
+    {
+        "region_id": 339,
+        "color": "#d88048",
+        "density_multiplier": 0.4609375
+    },
+    {
+        "region_id": 340,
+        "color": "#079dff",
+        "density_multiplier": 1.0
+    },
+    {
+        "region_id": 341,
+        "color": "#4c0c6b",
+        "density_multiplier": 1.0
+    },
+    {
+        "region_id": 342,
+        "color": "#0a26c2",
+        "density_multiplier": 1.0
+    },
+    {
+        "region_id": 343,
+        "color": "#bb7198",
+        "density_multiplier": 1.0
+    },
+    {
+        "region_id": 344,
+        "color": "#610897",
+        "density_multiplier": 1.0
+    },
+    {
+        "region_id": 345,
+        "color": "#21e110",
+        "density_multiplier": 1.0
+    },
+    {
+        "region_id": 346,
+        "color": "#da7f05",
+        "density_multiplier": 0.56171875
+    },
+    {
+        "region_id": 347,
+        "color": "#9831fe",
+        "density_multiplier": 0.8500000000000001
+    },
+    {
+        "region_id": 348,
+        "color": "#895ea0",
+        "density_multiplier": 1.0
+    },
+    {
+        "region_id": 349,
+        "color": "#0db07b",
+        "density_multiplier": 1.0
+    },
+    {
+        "region_id": 350,
+        "color": "#8174f6",
+        "density_multiplier": 1.0
+    },
+    {
+        "region_id": 351,
+        "color": "#52dcfb",
+        "density_multiplier": 0.8500000000000001
+    },
+    {
+        "region_id": 352,
+        "color": "#8e7467",
+        "density_multiplier": 0.7
+    },
+    {
+        "region_id": 353,
+        "color": "#bd147f",
+        "density_multiplier": 0.8500000000000001
+    },
+    {
+        "region_id": 354,
+        "color": "#297a92",
+        "density_multiplier": 0.876953125
+    },
+    {
+        "region_id": 355,
+        "color": "#845c10",
+        "density_multiplier": 1.0
+    },
+    {
+        "region_id": 356,
+        "color": "#96984d",
+        "density_multiplier": 0.778515625
+    },
+    {
+        "region_id": 357,
+        "color": "#9e4e43",
+        "density_multiplier": 1.0
+    }
+]

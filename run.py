@@ -104,13 +104,13 @@ def generate_map(
             cont_areas_metadata=cont_areas_data,
             type_image=type_image,
             type_counts=type_counts,
-            pixels_per_land_region=4500,
-            pixels_per_water_region=50000,  # Much larger ocean territories
+            pixels_per_land_region=6000,
+            pixels_per_water_region=35000,
             fn_new_number_series=lambda area_meta: NumberSeries(
                 f"{area_meta['region_id']}-{config.TERRITORY_ID_PREFIX}", config.SERIES_ID_START, config.SERIES_ID_END
             ),
             rng_seed=config.TERRITORIES_RNG_SEED,
-            lloyd_iterations=3,
+            lloyd_iterations=1,
         )
 
         # Replace ids with correct format
@@ -120,7 +120,7 @@ def generate_map(
         Image.fromarray(territory_image).save(territory_image_path)
         territory_data_path.write_text(json.dumps(territory_data))
 
-    """
+    
     # Create province visualization image if necessary
     if province_image_path.exists() and province_data_path.exists():
         province_image = np.array(Image.open(province_image_path).convert("RGBA"))
@@ -132,8 +132,8 @@ def generate_map(
             cont_areas_metadata=territory_data,
             type_image=type_image,
             type_counts=type_counts,
-            pixels_per_land_region=type_counts.get("land", 1) / (800*4),
-            pixels_per_water_region=type_counts.get("ocean", 1) / (300*4), # lakes are insignificant
+            pixels_per_land_region=6000//5,
+            pixels_per_water_region=35000//5,
             fn_new_number_series=lambda territory_meta: NumberSeries(
                 f"{territory_meta['region_id']}-{config.PROVINCE_ID_PREFIX}", config.SERIES_ID_START, config.SERIES_ID_END
             ),
@@ -142,7 +142,7 @@ def generate_map(
         )
         Image.fromarray(province_image).save(province_image_path)
         province_data_path.write_text(json.dumps(province_data))
-    """
+    
 
 
 def main():
