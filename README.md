@@ -39,7 +39,7 @@ The boundery borders must be pure black, RGB (0,0,0), everything else will be ig
 1. You should devide up large oceans and countries for a better result, especially if they are a weird shape (like Earth's ocean is).
 2. Moreover you most like want to **reduce region density in some areas** (e.g. Siberia's regions should be huge and there should be only a few) and increase it in other very populated. Assigning different densities requires splitting that country.
 
-<br>**Boundary Image with divided oceans and big contries:**
+<br>**Boundary Image with divided oceans and big countries:**
 ![](example_input/bound2_borders.png)
 
 ### Colored Boundary Images

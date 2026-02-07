@@ -2,7 +2,7 @@ import sys
 from pathlib import Path
 from PIL import Image
 from PyQt6.QtWidgets import QApplication
-from ui.maptoolui import MapToolWindow
+from ui.maptool_window import MapToolWindow
 from logic.maptool import MapTool
 
 def main() -> None:

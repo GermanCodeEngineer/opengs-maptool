@@ -64,27 +64,6 @@ def classify_pixels_by_color(
     }
     return result, counts
 
-def normalize_area_density(boundary_image: NDArray[np.uint8]) -> NDArray[np.uint8]:
-    """
-    Set the B channel to 128 (normal density) for all white areas in a boundary image.
-    Black borders (R+G < 100) are left unchanged.
-    
-    Args:
-        boundary_image: RGBA boundary image where R+G channels define borders/areas
-        
-    Returns:
-        New RGBA image with B channel normalized to 128 for all areas
-    """
-    result = boundary_image.copy()
-    
-    # Identify white areas (R and G are both bright, indicating non-border pixels)
-    is_area = (result[:, :, 0] > 100) & (result[:, :, 1] > 100)
-    
-    # Set B channel to 128 (normal density) for all areas
-    result[is_area, 2] = 128
-    
-    return result
-
 def convert_boundaries_to_cont_areas(boundaries_image: NDArray[np.uint8], rng_seed: int, min_area_pixels: int = 50) -> tuple[NDArray[np.uint8], list[dict]]:
     """
     Convert the boundary image into an image of continous areas(usually countries).

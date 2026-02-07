@@ -177,3 +177,26 @@ class MapTool:
         territory_image: Image.Image, territory_image_buffer: NDArray[np.uint8], territory_data: list[dict[str, Any]]) -> None: ...
     def on_provinces_generated(self,
         province_image: Image.Image, province_image_buffer: NDArray[np.uint8], province_data: list[dict[str, Any]]) -> None: ...
+
+    
+    @staticmethod
+    def normalize_boundary_area_density(boundary_image: NDArray[np.uint8]) -> NDArray[np.uint8]:
+        """
+        Set the B channel to 128 (normal density) for all white areas in a boundary image.
+        Black borders (R+G < 100) are left unchanged.
+        
+        Args:
+            boundary_image: RGBA boundary image where R+G channels define borders/areas
+            
+        Returns:
+            New RGBA image with B channel normalized to 128 for all areas
+        """
+        result = boundary_image.copy()
+        
+        # Identify white areas (R and G are both bright, indicating non-border pixels)
+        is_area = (result[:, :, 0] > 100) & (result[:, :, 1] > 100)
+        
+        # Set B channel to 128 (normal density) for all areas
+        result[is_area, 2] = 128
+        
+        return result

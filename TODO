@@ -4,6 +4,7 @@ TODOs
 - update export and import modules
 - complete "WORK IN PROGRESS"
 - implement progress bar
+- let image displays work properly
 - write terminal usage guide
 - fix discontinous territories and especially provinces?
 - rewrite commits synthetically
