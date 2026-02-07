@@ -64,14 +64,15 @@ def classify_pixels_by_color(
     }
     return result, counts
 
-def convert_boundaries_to_cont_areas(boundaries_image: NDArray[np.uint8], rng_seed: int, min_area_pixels: int = 50) -> tuple[NDArray[np.uint8], list[dict]]:
+def convert_boundaries_to_cont_areas(boundaries_image: NDArray[np.uint8], rng_seed: int, min_area_pixels: int = 50, progress_callback=None) -> tuple[NDArray[np.uint8], list[dict]]:
     """
-    Convert the boundary image into an image of continous areas(usually countries).
+    Convert the boundary image into an image of continuous areas(usually countries).
     
     Args:
         boundaries_image: Input boundary image
         rng_seed: Random seed for color generation
         min_area_pixels: Minimum pixel count for a continuous area to be kept (smaller areas are merged into background)
+        progress_callback: Optional callback function(current, total) for progress reporting
     
     Returns:
         Tuple of (cont_areas_image, metadata) where metadata contains:
@@ -90,6 +91,9 @@ def convert_boundaries_to_cont_areas(boundaries_image: NDArray[np.uint8], rng_se
     # Use scipy's label function for connected component analysis (rel. fast)
     white_mask = is_white.astype(np.uint8)
     labeled_array, num_features = ndimage.label(white_mask)
+    
+    if progress_callback:
+        progress_callback(10, 100)
 
     # Filter out small areas
     if min_area_pixels > 0:
@@ -106,6 +110,9 @@ def convert_boundaries_to_cont_areas(boundaries_image: NDArray[np.uint8], rng_se
             new_labeled_array[labeled_array == old_id] = new_id
         labeled_array = new_labeled_array
         num_features = len(unique_labels)
+    
+    if progress_callback:
+        progress_callback(20, 100)
 
     # Create image from regions using the labeled array
     regions_image = np.full((*boundaries_image.shape[:2], 4), [0, 0, 0, 255], dtype=np.uint8)
@@ -114,7 +121,10 @@ def convert_boundaries_to_cont_areas(boundaries_image: NDArray[np.uint8], rng_se
     metadata = []
     
     # Vectorized color assignment
-    for region_id in tqdm(range(1, num_features + 1), desc="Processing boundaries into areas", unit="areas"):
+    for idx, region_id in enumerate(tqdm(range(1, num_features + 1), desc="Processing boundaries into areas", unit="areas"), start=1):
+        if progress_callback and idx % max(1, num_features // 20) == 0:  # Report every 5%
+            progress_callback(20 + int((idx / num_features) * 80), 100)
+        
         color_rgb, color_hex = color_series.get_color_rgb_hex(is_water=False)
         region_to_color[region_id] = (*color_rgb, 255)
         regions_image[labeled_array == region_id] = region_to_color[region_id]
@@ -167,11 +177,15 @@ def convert_boundaries_to_cont_areas(boundaries_image: NDArray[np.uint8], rng_se
             "density_multiplier": density_multiplier,
         })
     
+    if progress_callback:
+        progress_callback(100, 100)
+    
     return regions_image, metadata
 
 def assign_borders_to_areas(
     regions_image: NDArray[np.uint8],
     max_iters: int = 50,
+    progress_callback = None,
 ) -> NDArray[np.uint8]:
     """
     Assign black pixels to neighboring areas by 4-neighbor majority vote.
@@ -179,6 +193,7 @@ def assign_borders_to_areas(
     Args:
         regions_image: RGBA image where non-black pixels represent area colors.
         max_iters: Max number of propagation iterations.
+        progress_callback: Optional callable that takes (current, total) for progress updates.
 
     Returns:
         Updated RGBA image with black pixels filled when possible.
@@ -200,7 +215,10 @@ def assign_borders_to_areas(
     ) | rgb[:, :, 2].astype(np.int32)
     color_code[black_mask] = 0
 
-    for _ in range(max_iters):
+    for iteration in range(max_iters):
+        if progress_callback:
+            progress_callback(iteration, max_iters)
+        
         if not np.any(black_mask):
             break
 
@@ -232,6 +250,9 @@ def assign_borders_to_areas(
 
         color_code[update_mask] = best[update_mask]
         black_mask = color_code == 0
+    
+    if progress_callback:
+        progress_callback(max_iters, max_iters)
 
     result[:, :, 0] = (color_code >> 16) & 255
     result[:, :, 1] = (color_code >> 8) & 255

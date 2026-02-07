@@ -54,6 +54,7 @@ def convert_all_cont_areas_to_regions(
         num_processes: int | None = None,
         tqdm_description: str = "Converting areas to regions",
         tqdm_unit: str = "area",
+        progress_callback=None,
     ) -> tuple[NDArray[np.uint8], list[dict[str, Any]]]:
     """
     Convert all continuous areas into regions and combine into a single image.
@@ -107,12 +108,17 @@ def convert_all_cont_areas_to_regions(
     
     # Process areas in parallel with progress bar
     with Pool(num_processes) as pool:
-        results = list(tqdm(
+        tqdm_iter = tqdm(
             pool.imap_unordered(convert_cont_area_to_regions, task_args),
             total=len(cont_areas_metadata),
             desc=tqdm_description,
             unit=tqdm_unit,
-        ))
+        )
+        results = []
+        for i, result in enumerate(tqdm_iter, 1):
+            results.append(result)
+            if progress_callback:
+                progress_callback(i, len(cont_areas_metadata))
     
 
     h, w = cont_areas_image.shape[:2]

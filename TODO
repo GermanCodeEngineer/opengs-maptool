@@ -2,15 +2,16 @@ TODOs
 - update UI system and README tab references
 - move some things from config to MapTool
 - update export and import modules
+- add export buttons everywhere
 - complete "WORK IN PROGRESS"
 - implement progress bar
 - let image displays work properly
 - write terminal usage guide
-- fix discontinous territories and especially provinces?
+- fix discontinuous territories and especially provinces?
 - rewrite commits synthetically
 
 Working Features:
-- Map of continous areas
+- Map of continuous areas
 - Custom Territory/Province density
 - Local and Global Area, Territory & Province centres
 - Automatic Generation with Python Interface

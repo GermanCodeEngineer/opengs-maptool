@@ -14,9 +14,9 @@ class MapToolResult:
     """
     Dataclass Containing Results of the Map Tool
     - territory and province maps
-    - continous areas map
+    - continuous areas map
     - cleaned land/ocean/lake classification
-    - data of continous areas, territories & provinces 
+    - data of continuous areas, territories & provinces 
     """
     cont_areas_image: Image.Image
     cont_areas_data: list[dict[str, Any]]
@@ -94,13 +94,31 @@ class MapTool:
             province_image, province_data,
         )
     
-    def _generate_cont_areas(self) -> tuple[Image.Image, NDArray[np.uint8], list[dict[str, Any]]]:
+    def _generate_cont_areas(self, progress_callback=None) -> tuple[Image.Image, NDArray[np.uint8], list[dict[str, Any]]]:
+        if progress_callback:
+            progress_callback(0, 100)
+        
+        def boundaries_progress(current, total):
+            if progress_callback:
+                # Map progress (0-100) to overall progress (0-50)
+                progress_callback(int((current / total) * 50), 100)
+        
         areas_with_borders_image, cont_areas_data = convert_boundaries_to_cont_areas(
             self.boundary_image, 
             config.CONT_AREAS_RNG_SEED,
-            min_area_pixels=50  # Filter out tiny areas & islands
+            min_area_pixels=50,  # Filter out tiny areas & islands
+            progress_callback=boundaries_progress
         )
-        cont_areas_image = assign_borders_to_areas(areas_with_borders_image)
+        
+        if progress_callback:
+            progress_callback(50, 100)
+        
+        def border_progress(current, total):
+            if progress_callback:
+                # Map iteration progress (0-100) to overall progress (50-100)
+                progress_callback(50 + int((current / total) * 50), 100)
+        
+        cont_areas_image = assign_borders_to_areas(areas_with_borders_image, progress_callback=border_progress)
         args = (Image.fromarray(cont_areas_image), cont_areas_image, cont_areas_data)
         if callable(getattr(self, "on_cont_areas_generated", None)):
             self.on_cont_areas_generated(*args)
@@ -116,7 +134,13 @@ class MapTool:
     def _generate_territories(self,
         cont_areas_image: NDArray[np.uint8], cont_areas_data: list[dict[str, Any]],
         class_image: NDArray[np.uint8], class_counts: dict[str, int],
+        progress_callback=None,
     ) -> tuple[Image.Image, NDArray[np.uint8], list[dict[str, Any]]]:
+        def territory_progress(current: int, total: int) -> None:
+            if progress_callback:
+                # Map progress (0-100) to overall progress (0-90)
+                progress_callback(int((current / total) * 90), 100)
+        
         territory_image, territory_data = convert_all_cont_areas_to_regions(
             cont_areas_image=cont_areas_image,
             cont_areas_metadata=cont_areas_data,
@@ -130,13 +154,20 @@ class MapTool:
             rng_seed=config.TERRITORIES_RNG_SEED,
             lloyd_iterations=self.lloyd_iterations,
             tqdm_description="Generating territories from areas",
-            tqdm_unit="areas"
+            tqdm_unit="areas",
+            progress_callback=territory_progress,
         )
 
         # Replace ids with correct format
+        if progress_callback:
+            progress_callback(90, 100)
+        
         number_series = NumberSeries(config.TERRITORY_ID_PREFIX, config.SERIES_ID_START, config.SERIES_ID_END)
         for territory in territory_data:
             territory["region_id"] = number_series.get_id()
+        
+        if progress_callback:
+            progress_callback(100, 100)
         
         args = (Image.fromarray(territory_image), territory_image, territory_data)
         if callable(getattr(self, "on_territories_generated", None)):
@@ -146,7 +177,13 @@ class MapTool:
     def _generate_provinces(self,
         territory_image: NDArray[np.uint8], territory_data: list[dict[str, Any]],
         class_image: NDArray[np.uint8], class_counts: dict[str, int],
+        progress_callback=None,
     ) -> tuple[Image.Image, NDArray[np.uint8], list[dict[str, Any]]]:
+        def province_progress(current: int, total: int) -> None:
+            if progress_callback:
+                # Map progress (0-100) to overall progress (0-90)
+                progress_callback(int((current / total) * 90), 100)
+        
         province_image, province_data = convert_all_cont_areas_to_regions(
             cont_areas_image=territory_image,
             cont_areas_metadata=territory_data,
@@ -161,7 +198,11 @@ class MapTool:
             lloyd_iterations=self.lloyd_iterations,
             tqdm_description="Generating provinces from territories",
             tqdm_unit="territories",
+            progress_callback=province_progress,
         )
+
+        if progress_callback:
+            progress_callback(100, 100)
 
         args = (Image.fromarray(province_image), province_image, province_data)
         if callable(getattr(self, "on_provinces_generated", None)):

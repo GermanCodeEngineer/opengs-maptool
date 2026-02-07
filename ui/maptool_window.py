@@ -1,12 +1,102 @@
 from pathlib import Path
 from PIL import Image
-from PyQt6.QtWidgets import QWidget, QVBoxLayout, QHBoxLayout, QProgressBar, QTabWidget, QLabel, QCheckBox
-from PyQt6.QtGui import QFont, QColor
-from PyQt6.QtCore import Qt, QUrl
+from typing import Any, Callable
+import numpy as np
+from numpy.typing import NDArray
+from PyQt6.QtWidgets import QWidget, QVBoxLayout, QHBoxLayout, QTabWidget, QLabel, QPushButton, QMessageBox
+from PyQt6.QtCore import Qt, QThread, pyqtSignal
+from PyQt6.QtGui import QPainter, QColor
 from logic.maptool import MapTool
 from ui.buttons import create_slider, create_button
 from ui.image_display import ImageDisplay
 import config
+
+
+class ProgressButton(QPushButton):
+    """Button with integrated progress bar background."""
+    
+    def __init__(self, text: str, parent=None) -> None:
+        super().__init__(text, parent)
+        self._progress = 0
+        self._default_text = text
+        self._is_processing = False
+        self.setMinimumHeight(35)
+        
+    def set_progress(self, value: int) -> None:
+        """Set progress value (0-100)."""
+        self._progress = max(0, min(100, value))
+        if not self._is_processing and value > 0:
+            self._is_processing = True
+            self.setText(f"{self._default_text} - {self._progress}%")
+        elif self._is_processing:
+            self.setText(f"{self._default_text} - {self._progress}%")
+        self.update()  # Trigger repaint
+        
+    def reset_progress(self) -> None:
+        """Reset progress to 0."""
+        self._progress = 0
+        self._is_processing = False
+        self.setText(self._default_text)
+        self.update()
+        
+    def paintEvent(self, event) -> None:
+        """Custom paint to show progress as button background."""
+        painter = QPainter(self)
+        painter.setRenderHint(QPainter.RenderHint.Antialiasing)
+        
+        # Draw background for the unfilled portion (light gray)
+        if self._is_processing:
+            background_color = QColor(220, 220, 220, 80)
+            painter.fillRect(0, 0, self.width(), self.height(), background_color)
+        
+        # Draw progress background
+        if self._progress > 0:
+            progress_width = int((self.width() * self._progress) / 100)
+            progress_color = QColor(70, 160, 70, 120)  # Green, semi-transparent
+            painter.fillRect(0, 0, progress_width, self.height(), progress_color)
+        
+        # Let the default button paint on top
+        painter.end()
+        super().paintEvent(event)
+
+
+class BackgroundWorker(QThread):
+    """Generalized worker thread for running tasks in the background with progress tracking."""
+    finished = pyqtSignal(object)
+    progress = pyqtSignal(int)
+    error = pyqtSignal(Exception)
+    
+    def __init__(self, task: Callable, *args, **kwargs) -> None:
+        """
+        Initialize the background worker.
+        
+        Args:
+            task: The function to run in the background. 
+                  If the task needs progress tracking, it should accept a 'progress_callback' kwarg.
+            *args: Positional arguments to pass to the task
+            **kwargs: Keyword arguments to pass to the task
+        """
+        super().__init__()
+        self.task = task
+        self.args = args
+        self.kwargs = kwargs
+    
+    def run(self) -> None:
+        """Run the task in a background thread."""
+        try:
+            # Inject progress callback if task accepts it
+            def progress_callback(current: int, total: int = 100) -> None:
+                percentage = int((current / total) * 100) if total > 0 else current
+                self.progress.emit(percentage)
+            
+            # Add progress_callback to kwargs if not already present
+            if 'progress_callback' not in self.kwargs:
+                self.kwargs['progress_callback'] = progress_callback
+            
+            result = self.task(*self.args, **self.kwargs)
+            self.finished.emit(result)
+        except Exception as e:
+            self.error.emit(e)
 
 
 EXAMPLE_INPUT_DIR = Path(__file__).parent.parent / "example_input"
@@ -21,9 +111,19 @@ class MapToolWindow(QWidget):
 
     def __init__(self) -> None:
         super().__init__()
+        # Initialize data storage
+        self._cont_areas_image_buffer = None
+        self._cont_areas_data = None
+        self._class_image_buffer = None
+        self._class_counts = None
+        self._territory_image_buffer = None
+        self._territory_data = None
+        self._province_image_buffer = None
+        self._province_data = None
         self.create_layout()
         self.showMaximized()
     
+
     def create_layout(self) -> None:
         # MAIN LAYOUT
         self.setWindowTitle(config.TITLE)
@@ -43,28 +143,30 @@ class MapToolWindow(QWidget):
         self.label_version = QLabel("Version "+config.VERSION)
         main_layout.addWidget(self.label_version)
 
-        self.create_readme_tab()
-        self.tabs.addTab(self.readme_tab, "README")
+        self.create_start_tab()
+        self.tabs.addTab(self.readme_tab, "Getting Started")
         self.create_boundary_tab()
         self.tabs.addTab(self.boundary_tab, "Adapt Boundary Image")
         self.create_input_images_tab()
         self.tabs.addTab(self.land_tab, "Input Images")
-        self.create_province_tab()
-        self.tabs.addTab(self.province_tab, "Province Image")
+        self.create_areas_tab()
+        self.tabs.addTab(self.areas_tab, "Generate Areas")
         self.create_territory_tab()
-        self.tabs.addTab(self.territory_tab, "Territory Image")
+        self.tabs.addTab(self.territory_tab, "Generate Territories")
+        self.create_province_tab()
+        self.tabs.addTab(self.province_tab, "Generate Provinces")
 
-    def create_readme_tab(self) -> None:
+    def create_start_tab(self) -> None:
         self.readme_tab = QWidget()
-        readme_layout = QVBoxLayout(self.readme_tab)
+        start_layout = QVBoxLayout(self.readme_tab)
         self.readme_label = QLabel(
-            '<h2>Please read the README</h2>' # TODO: change to Thomas-Holtvedt
-            '<p><a href="https://github.com/GermanCodeEngineer/opengs-maptool/blob/main/README.md">'
-            'Open the README in your browser</a></p>'
+            '<h1>Please read the README</h1>' # TODO: change to Thomas-Holtvedt
+            '<h2><a href="https://github.com/GermanCodeEngineer/opengs-maptool/blob/main/README.md">'        
+            'Open the README in your browser</a></h2>'
         )
         self.readme_label.setOpenExternalLinks(True)
         self.readme_label.setAlignment(Qt.AlignmentFlag.AlignCenter)
-        readme_layout.addWidget(self.readme_label)
+        start_layout.addWidget(self.readme_label)
 
     def create_boundary_tab(self) -> None:
         self.boundary_tab = QWidget()
@@ -85,7 +187,6 @@ class MapToolWindow(QWidget):
         self.normalized_boundary_image_display.set_image(EMPTY_IMAGE)
         boundary_tab_layout.addWidget(self.normalized_boundary_image_display, stretch=1)
 
-
     def create_input_images_tab(self) -> None:
         self.land_tab = QWidget()
         land_tab_layout = QVBoxLayout(self.land_tab)
@@ -99,67 +200,32 @@ class MapToolWindow(QWidget):
         self.final_boundary_image_display.set_image(EMPTY_IMAGE)
         land_tab_layout.addWidget(self.final_boundary_image_display, stretch=1)
 
-        create_button(land_tab_layout, "Import Land Image", self.on_button_import_land)
+        self.button_import_land = ProgressButton("Import and Clean Land Image")
+        self.button_import_land.clicked.connect(self.on_button_import_land)
+        land_tab_layout.addWidget(self.button_import_land)
+
         self.land_image_display = ImageDisplay(name="Land Image")
         self.land_image_display.set_image(EMPTY_IMAGE)
         land_tab_layout.addWidget(self.land_image_display, stretch=1)
 
-    def create_province_tab(self) -> None:
-        # TAB3 PROVINCE IMAGE
-        self.province_tab = QWidget()
-        self.province_image_display = ImageDisplay(name="Province Image")
-        self.province_image_display.set_image(EMPTY_IMAGE)
-        province_tab_layout = QVBoxLayout(self.province_tab)
-        province_tab_layout.addWidget(self.province_image_display, stretch=1)
-        button_row = QHBoxLayout()
-        province_tab_layout.addLayout(button_row)
+    def create_areas_tab(self) -> None:
+        self.areas_tab = QWidget()
+        areas_tab_layout = QVBoxLayout(self.areas_tab)
+        
+        self.button_generate_areas = ProgressButton("Generate Continuous Areas")
+        self.button_generate_areas.clicked.connect(self.on_button_generate_areas)
+        areas_tab_layout.addWidget(self.button_generate_areas)
 
-        # Buttons
-        self.pixels_per_land_province_slider = create_slider(province_tab_layout,
-            "Pixels per Land province:",
-            config.PIXELS_PER_LAND_PROVINCE_MIN,
-            config.PIXELS_PER_LAND_PROVINCE_MAX,
-            config.PIXELS_PER_LAND_PROVINCE_DEFAULT,
-            config.PIXELS_PER_LAND_PROVINCE_TICK,
-            config.PIXELS_PER_LAND_PROVINCE_STEP,
-        )
-
-        self.pixels_per_water_province_slider = create_slider(province_tab_layout,
-            "Pixels per Water province:",
-            config.PIXELS_PER_WATER_PROVINCE_MIN,
-            config.PIXELS_PER_WATER_PROVINCE_MAX,
-            config.PIXELS_PER_WATER_PROVINCE_DEFAULT,
-            config.PIXELS_PER_WATER_PROVINCE_TICK,
-            config.PIXELS_PER_WATER_PROVINCE_STEP,
-        )
-
-        self.button_gen_prov = create_button(province_tab_layout,
-            "Generate Provinces",
-            self.on_button_generate_provinces,
-        )
-        #self.button_gen_prov.setEnabled(False)
-
-        self.button_exp_prov_img = create_button(button_row,
-            "Export Province Map",
-            self.on_button_export_province_image,
-        )
-        #self.button_exp_prov_img.setEnabled(False)
-
-        self.button_exp_prov_csv = create_button(button_row,
-            "Export Province CSV",
-            self.on_button_export_province_csv,
-        )
-        #self.button_exp_prov_csv.setEnabled(False)
+        self.areas_image_display = ImageDisplay(name="Continuous Areas Image")
+        self.areas_image_display.set_image(EMPTY_IMAGE)
+        areas_tab_layout.addWidget(self.areas_image_display, stretch=1)
 
     def create_territory_tab(self) -> None:
-        # TAB4 TERRITORY IMAGE
         self.territory_tab = QWidget()
         self.territory_image_display = ImageDisplay(name="Territory Image")
         self.territory_image_display.set_image(EMPTY_IMAGE)
         territory_tab_layout = QVBoxLayout(self.territory_tab)
         territory_tab_layout.addWidget(self.territory_image_display, stretch=1)
-        button_territory_row = QHBoxLayout()
-        territory_tab_layout.addLayout(button_territory_row)
 
         # Buttons
         self.pixels_per_land_territory_slider = create_slider(territory_tab_layout,
@@ -180,32 +246,42 @@ class MapToolWindow(QWidget):
             config.PIXELS_PER_WATER_TERRITORY_STEP,
         )
 
-        self.button_gen_territories = create_button(territory_tab_layout,
-            "Generate Territories",
-            self.on_button_generate_territories,
+        self.button_gen_territories = ProgressButton("Generate Territories")
+        self.button_gen_territories.clicked.connect(self.on_button_generate_territories)
+        territory_tab_layout.addWidget(self.button_gen_territories)
+
+    def create_province_tab(self) -> None:
+        self.province_tab = QWidget()
+        self.province_image_display = ImageDisplay(name="Province Image")
+        self.province_image_display.set_image(EMPTY_IMAGE)
+        province_tab_layout = QVBoxLayout(self.province_tab)
+        province_tab_layout.addWidget(self.province_image_display, stretch=1)
+
+        # Buttons
+        self.pixels_per_land_province_slider = create_slider(province_tab_layout,
+            "Pixels per Land province:",
+            config.PIXELS_PER_LAND_PROVINCE_MIN,
+            config.PIXELS_PER_LAND_PROVINCE_MAX,
+            config.PIXELS_PER_LAND_PROVINCE_DEFAULT,
+            config.PIXELS_PER_LAND_PROVINCE_TICK,
+            config.PIXELS_PER_LAND_PROVINCE_STEP,
         )
-        #self.button_gen_territories.setEnabled(False)
 
-        self.button_exp_terr_img = create_button(button_territory_row,
-            "Export Territory Map",
-            self.on_button_export_territory_image,
+        self.pixels_per_water_province_slider = create_slider(province_tab_layout,
+            "Pixels per Water province:",
+            config.PIXELS_PER_WATER_PROVINCE_MIN,
+            config.PIXELS_PER_WATER_PROVINCE_MAX,
+            config.PIXELS_PER_WATER_PROVINCE_DEFAULT,
+            config.PIXELS_PER_WATER_PROVINCE_TICK,
+            config.PIXELS_PER_WATER_PROVINCE_STEP,
         )
-        #self.button_exp_terr_img.setEnabled(False)
 
-        self.button_exp_terr_csv = create_button(button_territory_row,
-            "Export Territory CSV",
-            self.on_button_export_territory_csv,
-        )
-        #self.button_exp_terr_csv.setEnabled(False)
+        self.button_gen_provinces = ProgressButton("Generate Provinces")
+        self.button_gen_provinces.clicked.connect(self.on_button_generate_provinces)
+        province_tab_layout.addWidget(self.button_gen_provinces)
+    
 
-        self.button_exp_terr_json = create_button(button_territory_row,
-            "Export Territory JSON",
-            self.on_button_export_territory_json,
-        )
-        #self.button_exp_terr_json.setEnabled(False)
-
-
-    # TAB 1
+    # TAB 2
     def on_button_import_boundary(self) -> None:
         self.orig_boundary_image_display.import_image()
 
@@ -215,7 +291,7 @@ class MapToolWindow(QWidget):
             normalized_buffer = MapTool.normalize_boundary_area_density(image_buffer)
             self.normalized_boundary_image_display.set_image(Image.fromarray(normalized_buffer))
 
-    # TAB 2
+    # TAB 3
     def on_button_import_final_boundary(self) -> None:
         self.final_boundary_image_display.import_image()
 
@@ -225,48 +301,161 @@ class MapToolWindow(QWidget):
     def on_button_import_land(self) -> None:
         self.land_image_display.import_image()
 
-    # TAB 3
-    def on_button_generate_provinces(self) -> None:
-        # TODO: Implement province generation
-        pass
+        def run_task(maptool: MapTool, progress_callback: Callable) -> tuple:
+            self.button_import_land.set_progress(30)
+            class_image, _, class_counts = maptool._generate_type_classification()
+            return (class_image, class_counts)
+        
+        def on_progress(value: int) -> None:
+            self.button_import_land.set_progress(value)
+        
+        def on_finished(result: tuple) -> None:
+            self.button_import_land.reset_progress()
+            self.button_import_land.setEnabled(True)
+            class_image, class_counts = result
+            self.land_image_display.set_image(class_image)
+            self.land_image_display.set_data(class_counts, "Classification Counts")
+        
+        def on_error(error: Exception) -> None:
+            self.button_import_land.reset_progress()
+            self.button_import_land.setEnabled(True)
+            QMessageBox.critical(self, "Error", f"Error processing land image: {error}")
 
-    def on_button_export_province_image(self) -> None:
-        # TODO: Implement province image export
-        pass
-
-    def on_button_export_province_csv(self) -> None:
-        # TODO: Implement province CSV export
-        pass
+        self.button_import_land.reset_progress()
+        self.button_import_land.setEnabled(False)
+        
+        self.classify_worker = self._create_background_worker(run_task, on_progress, on_finished, on_error)
 
     # TAB 4
+    def on_button_generate_areas(self) -> None:
+        def run_task(maptool: MapTool, progress_callback: Callable) -> tuple:
+            cont_areas_image, cont_areas_image_buffer, cont_areas_data = maptool._generate_cont_areas(progress_callback=progress_callback)
+            return (cont_areas_image, cont_areas_image_buffer, cont_areas_data)
+        
+        def on_progress(value: int) -> None:
+            self.button_generate_areas.set_progress(value)
+        
+        def on_finished(result: tuple) -> None:
+            self.button_generate_areas.reset_progress()
+            self.button_generate_areas.setEnabled(True)
+            cont_areas_image, cont_areas_image_buffer, cont_areas_data = result
+            self.areas_image_display.set_image(cont_areas_image)
+            self.areas_image_display.set_data(cont_areas_data, "Continuous Area Data")
+            # Store for later use in territory/province generation
+            self._cont_areas_image_buffer = cont_areas_image_buffer
+            self._cont_areas_data = cont_areas_data
+            # Also generate type classification
+            self._generate_type_classification()
+        
+        def on_error(error: Exception) -> None:
+            self.button_generate_areas.reset_progress()
+            self.button_generate_areas.setEnabled(True)
+            QMessageBox.critical(self, "Error", f"Error generating areas: {error}")
+
+        self.button_generate_areas.reset_progress()
+        self.button_generate_areas.setEnabled(False)
+        
+        self.areas_worker = self._create_background_worker(run_task, on_progress, on_finished, on_error)
+    
+    def _generate_type_classification(self) -> None:
+        maptool = self._create_maptool()
+        _, self._class_image_buffer, self._class_counts = maptool._generate_type_classification()
+    
+    # TAB 5
     def on_button_generate_territories(self) -> None:
-        # TODO: Implement territory generation
-        pass
+        if self._cont_areas_image_buffer is None:
+            QMessageBox.warning(self, "Warning", "Continuous areas must be generated first")
+            return
+        
+        def run_task(maptool: MapTool, progress_callback: Callable) -> tuple:
+            territory_image, territory_image_buffer, territory_data = maptool._generate_territories(
+                self._cont_areas_image_buffer,
+                self._cont_areas_data,
+                self._class_image_buffer,
+                self._class_counts,
+                progress_callback=progress_callback,
+            )
+            return (territory_image, territory_image_buffer, territory_data)
+        
+        def on_progress(value: int) -> None:
+            self.button_gen_territories.set_progress(value)
+        
+        def on_finished(result: tuple) -> None:
+            self.button_gen_territories.reset_progress()
+            self.button_gen_territories.setEnabled(True)
+            territory_image, territory_image_buffer, territory_data = result
+            self.territory_image_display.set_image(territory_image)
+            self.territory_image_display.set_data(territory_data, "Territory Data")
+            # Store for later use in province generation
+            self._territory_image_buffer = territory_image_buffer
+            self._territory_data = territory_data
+        
+        def on_error(error: Exception) -> None:
+            self.button_gen_territories.reset_progress()
+            self.button_gen_territories.setEnabled(True)
+            QMessageBox.critical(self, "Error", f"Error generating territories: {error}")
 
-    def on_button_export_territory_image(self) -> None:
-        # TODO: Implement territory image export
-        pass
+        self.button_gen_territories.reset_progress()
+        self.button_gen_territories.setEnabled(False)
+        
+        self.territories_worker = self._create_background_worker(run_task, on_progress, on_finished, on_error)
 
-    def on_button_export_territory_csv(self) -> None:
-        # TODO: Implement territory CSV export
-        pass
+    # TAB 6
+    def on_button_generate_provinces(self) -> None:
+        if self._territory_image_buffer is None:
+            QMessageBox.warning(self, "Warning", "Territories must be generated first")
+            return
+        
+        def run_task(maptool: MapTool, progress_callback: Callable) -> tuple:
+            province_image, province_image_buffer, province_data = maptool._generate_provinces(
+                self._territory_image_buffer,
+                self._territory_data,
+                self._class_image_buffer,
+                self._class_counts,
+                progress_callback=progress_callback,
+            )
+            return (province_image, province_image_buffer, province_data)
+        
+        def on_progress(value: int) -> None:
+            self.button_gen_provinces.set_progress(value)
+        
+        def on_finished(result: tuple) -> None:
+            self.button_gen_provinces.reset_progress()
+            self.button_gen_provinces.setEnabled(True)
+            province_image, province_image_buffer, province_data = result
+            self.province_image_display.set_image(province_image)
+            self.province_image_display.set_data(province_data, "Province Data")
+            # Store for later use
+            self._province_image = province_image
+            self._province_image_buffer = province_image_buffer
+            self._province_data = province_data
+        
+        def on_error(error: Exception) -> None:
+            self.button_gen_provinces.reset_progress()
+            self.button_gen_provinces.setEnabled(True)
+            QMessageBox.critical(self, "Error", f"Error generating provinces: {error}")
 
-    def on_button_export_territory_json(self) -> None:
-        # TODO: Implement territory JSON export
-        pass
-
-    def on_readme_load_finished(self, ok: bool) -> None:
-        if ok:
-            self.readme_view.show()
-            self.readme_label.hide()
-        else:
-            self.readme_view.hide()
-            self.readme_label.show()
+        self.button_gen_provinces.reset_progress()
+        self.button_gen_provinces.setEnabled(False)
+        
+        self.provinces_worker = self._create_background_worker(run_task, on_progress, on_finished, on_error)
 
 
-    def generate(self) -> None:
-        # WORK IN PROGRESS
-        maptool = MapTool(
-            land_image=Image.open(EXAMPLE_INPUT_DIR / "bound2_density.png"),
-            boundary_image=Image.open(EXAMPLE_INPUT_DIR / "land2.png"),
+    def _create_maptool(self) -> MapTool:
+        return MapTool(
+            land_image=self.land_image_display.get_image(),
+            boundary_image=self.final_boundary_image_display.get_image(),
+            pixels_per_land_territory=self.pixels_per_land_territory_slider.value(),
+            pixels_per_water_territory=self.pixels_per_water_territory_slider.value(),
+            pixels_per_land_province=self.pixels_per_land_province_slider.value(),
+            pixels_per_water_province=self.pixels_per_water_province_slider.value(),
         )
+    
+    def _create_background_worker(self, run_task: Callable, on_progress: Callable, on_finished: Callable, on_error: Callable) -> BackgroundWorker:
+        worker = BackgroundWorker(run_task, self._create_maptool())
+        worker.progress.connect(on_progress)
+        worker.finished.connect(on_finished)
+        worker.error.connect(on_error)
+        worker.start()
+        return worker
+
