@@ -1,13 +1,10 @@
-import json
-import pathlib
 import config
 import numpy as np
 from numpy.typing import NDArray
-from pathlib import Path
 from typing import Any
 from PIL import Image
-from gceutils import grepr_dataclass, enforce_argument_types
-from logic.boundaries_to_cont import normalize_area_density, convert_boundaries_to_cont_areas, assign_borders_to_areas, classify_pixels_by_color
+from gceutils import grepr_dataclass
+from logic.boundaries_to_cont import convert_boundaries_to_cont_areas, assign_borders_to_areas, classify_pixels_by_color
 from logic.cont_to_regions import convert_all_cont_areas_to_regions
 from logic.utils import NumberSeries
 
@@ -44,9 +41,12 @@ class MapTool:
     lloyd_iterations: int
 
     def __init__(self,
-            land_image: Image.Image, boundary_image: Image.Image,
-            pixels_per_land_territory: int = 6000, pixels_per_water_territory: int = 35000,
-            pixels_per_land_province: int = 6000//5, pixels_per_water_province: int = 35000//5,
+            land_image: Image.Image,
+            boundary_image: Image.Image,
+            pixels_per_land_territory: int = config.PIXELS_PER_LAND_TERRITORY_DEFAULT,
+            pixels_per_water_territory: int = config.PIXELS_PER_WATER_TERRITORY_DEFAULT,
+            pixels_per_land_province: int = config.PIXELS_PER_LAND_PROVINCE_DEFAULT,
+            pixels_per_water_province: int = config.PIXELS_PER_WATER_PROVINCE_DEFAULT, # 1/5th
             lloyd_iterations: int = 2,
         ) -> None:
         """
@@ -61,6 +61,8 @@ class MapTool:
             pixels_per_water_province: Approximate pixels per water province
             lloyd_iterations: Number of Lloyd's algorithm iterations for province and territory generation 
         """
+        super().__init__()
+
         self.land_image = np.array(land_image.convert("RGBA"))
         self.boundary_image = np.array(boundary_image.convert("RGBA"))
         self.pixels_per_land_territory = pixels_per_land_territory
@@ -175,39 +177,3 @@ class MapTool:
         territory_image: Image.Image, territory_image_buffer: NDArray[np.uint8], territory_data: list[dict[str, Any]]) -> None: ...
     def on_provinces_generated(self,
         province_image: Image.Image, province_image_buffer: NDArray[np.uint8], province_data: list[dict[str, Any]]) -> None: ...
-
-
-def temp_main():
-    """
-    Main entry point for map generation with default settings.
-    
-    Loads example input images from the example_input directory and generates
-    province and territory maps, saving results to the output directory.
-    """
-    import json
-
-    # Default paths
-    input_directory = pathlib.Path(__file__).parent.parent / "example_input"
-    output_directory = pathlib.Path(__file__).parent.parent / "output"
-    
-    #boundary_image = np.array(Image.open(input_directory / "bound2_borders.png").convert("RGBA"))
-    #boundary_image = normalize_area_density(boundary_image)
-    #Image.fromarray(boundary_image).save(input_directory / "bound2_yellow.png")
-
-    maptool = MapTool(
-        land_image=Image.open(input_directory / "land2.png"),
-        boundary_image=Image.open(input_directory / "bound2_density.png")
-    )
-    result = maptool.generate()
-    result.cont_areas_image.save(output_directory / "cont_areas_image.png")
-    result.class_image.save(output_directory / "class_image.png")
-    result.territory_image.save(output_directory / "territory_image.png")
-    result.province_image.save(output_directory / "province_image.png")
-    
-    (output_directory / "data.json").write_text(json.dumps(dict(
-        cont_areas=result.cont_areas_data,
-        class_counts=result.class_counts,
-        territories=result.territory_data,
-        provinces=result.province_data,
-    )))
-    

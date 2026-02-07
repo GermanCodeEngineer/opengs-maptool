@@ -3,6 +3,9 @@ TODOs
 - move some things from config to MapTool
 - update export and import modules
 - complete "WORK IN PROGRESS"
+- implement progress bar
+- write terminal usage guide
+- fix discontinous territories and especially provinces?
 - rewrite commits synthetically
 
 Working Features:

@@ -1,11 +1,12 @@
-import config
+from PIL import Image
 from PyQt6.QtWidgets import QLabel
 from PyQt6.QtGui import QPixmap, QImage
 from PyQt6.QtCore import Qt
+import config
 
 
 class ImageDisplay(QLabel):
-    def __init__(self, parent=None):
+    def __init__(self, parent=None) -> None:
         super().__init__(parent)
         self.setMinimumSize(config.DISPLAY_SIZE_WIDTH,
                             config.DISPLAY_SIZE_HEIGHT)
@@ -14,7 +15,7 @@ class ImageDisplay(QLabel):
 
         self._image = None
 
-    def set_image(self, image):
+    def set_image(self, image: Image.Image) -> None:
         self._image = image
         qimage = QImage(
             image.tobytes("raw", "RGBA"),
@@ -29,5 +30,5 @@ class ImageDisplay(QLabel):
 
         self.setPixmap(pixmap)
 
-    def get_image(self):
+    def get_image(self) -> Image.Image:
         return self._image

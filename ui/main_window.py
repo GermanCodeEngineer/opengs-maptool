@@ -70,7 +70,7 @@ class MainWindow(QWidget):
         province_tab_layout.addLayout(button_row)
 
         # Buttons
-        self.land_slider = create_slider(province_tab_layout,
+        self.pixels_per_land_province_slider = create_slider(province_tab_layout,
                                          "Land province Density:",
                                          config.LAND_PROVINCES_MIN,
                                          config.LAND_PROVINCES_MAX,
@@ -78,7 +78,7 @@ class MainWindow(QWidget):
                                          config.LAND_PROVINCES_TICK,
                                          config.LAND_PROVINCES_STEP)
 
-        self.ocean_slider = create_slider(province_tab_layout,
+        self.pixels_per_water_province_slider = create_slider(province_tab_layout,
                                           "Ocean province Density",
                                           config.OCEAN_PROVINCES_MIN,
                                           config.OCEAN_PROVINCES_MAX,
@@ -113,7 +113,7 @@ class MainWindow(QWidget):
         territory_tab_layout.addLayout(button_territory_row)
 
         # Buttons
-        self.territory_land_slider = create_slider(territory_tab_layout,
+        self.pixels_per_land_territory_slider = create_slider(territory_tab_layout,
                                                    "Territory Land Density:",
                                                    config.LAND_TERRITORIES_MIN,
                                                    config.LAND_TERRITORIES_MAX,
@@ -121,7 +121,7 @@ class MainWindow(QWidget):
                                                    config.LAND_TERRITORIES_TICK,
                                                    config.LAND_TERRITORIES_STEP)
 
-        self.territory_ocean_slider = create_slider(territory_tab_layout,
+        self.pixels_per_water_territory_slider = create_slider(territory_tab_layout,
                                                     "Territory Ocean Density:",
                                                     config.OCEAN_TERRITORIES_MIN,
                                                     config.OCEAN_TERRITORIES_MAX,
