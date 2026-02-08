@@ -7,6 +7,7 @@ from PyQt6.QtGui import QPainter, QColor
 from logic.maptool import MapTool
 from ui.buttons import create_slider, create_button
 from ui.image_display import ImageDisplay
+from ui.flappy_bird_game import FlappyBirdGame
 import config
 
 
@@ -97,7 +98,7 @@ class BackgroundWorker(QThread):
             self.error.emit(e)
 
 
-EXAMPLE_INPUT_DIR = Path(__file__).parent.parent / "example_input"
+EXAMPLE_INPUT_DIR = Path(__file__).parent.parent / "examples" / "input"
 EXAMPLE_BOUNDARY_ORIG_IMAGE = Image.open(EXAMPLE_INPUT_DIR / "bound2_orig.png")
 EXAMPLE_LAND_IMAGE = Image.open(EXAMPLE_INPUT_DIR / "land2.png")
 EMPTY_IMAGE = Image.new("RGB", EXAMPLE_BOUNDARY_ORIG_IMAGE.size, color=(100, 100, 100))
@@ -138,8 +139,15 @@ class MapToolWindow(QWidget):
         #self.progress.setMaximum(100)
         #self.progress.setValue(0)
 
+        # Bottom bar with game button and version label
+        bottom_layout = QHBoxLayout()
+        self.button_flappy_bird = QPushButton("Play 🐦 While Waiting")
+        self.button_flappy_bird.clicked.connect(self.on_button_play_flappy_bird)
+        bottom_layout.addWidget(self.button_flappy_bird)
+        bottom_layout.addStretch()
         self.label_version = QLabel("Version "+config.VERSION)
-        main_layout.addWidget(self.label_version)
+        bottom_layout.addWidget(self.label_version)
+        main_layout.addLayout(bottom_layout)
 
         self.create_start_tab()
         self.tabs.addTab(self.readme_tab, "Getting Started")
@@ -153,6 +161,11 @@ class MapToolWindow(QWidget):
         self.tabs.addTab(self.territory_tab, "Generate Territories")
         self.create_province_tab()
         self.tabs.addTab(self.province_tab, "Generate Provinces")
+
+    def on_button_play_flappy_bird(self) -> None:
+            """Open Flappy Bird game in a new window."""
+            self.flappy_bird_window = FlappyBirdGame()
+            self.flappy_bird_window.show()
 
     def create_start_tab(self) -> None:
         self.readme_tab = QWidget()
