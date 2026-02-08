@@ -4,7 +4,7 @@ from numpy.typing import NDArray
 from typing import Any
 from PIL import Image
 from gceutils import grepr_dataclass
-from logic.boundaries_to_cont import convert_boundaries_to_cont_areas, assign_borders_to_areas, classify_pixels_by_color
+from logic.boundaries_to_cont import convert_boundaries_to_cont_areas, assign_borders_to_areas, classify_pixels_by_color, recalculate_bboxes_from_image
 from logic.cont_to_regions import convert_all_cont_areas_to_regions
 from logic.utils import NumberSeries
 
@@ -131,6 +131,10 @@ class MapTool:
                 progress_callback(50 + int((current / total) * 50), 100)
         
         cont_areas_image = assign_borders_to_areas(areas_with_borders_image, progress_callback=border_progress)
+        
+        # Recalculate bboxes from the final image after border assignment
+        cont_areas_data = recalculate_bboxes_from_image(cont_areas_image, cont_areas_data)
+        
         args = (Image.fromarray(cont_areas_image), cont_areas_image, cont_areas_data)
         if callable(getattr(self, "on_cont_areas_generated", None)):
             self.on_cont_areas_generated(*args)

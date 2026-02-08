@@ -1,5 +1,7 @@
 import config
+import math
 import numpy as np
+from PIL import Image, ImageDraw
 from numpy.typing import NDArray
 from typing import Any, Iterable
 from scipy.ndimage import distance_transform_edt
@@ -16,6 +18,30 @@ def hex_to_rgb(hex_color: str) -> tuple[int, int, int]:
     """Convert hex color string (e.g., '#aabbcc') to RGB tuple"""
     hex_color = hex_color.lstrip('#')
     return tuple(int(hex_color[i:i+2], 16) for i in (0, 2, 4))
+
+
+def round_coord(value: float, decimals: int = 2) -> float:
+    """Round a coordinate value to a fixed number of decimals."""
+    return float(round(value, decimals))
+
+
+def round_bbox(
+    bbox: list[float],
+    decimals: int = 0,
+) -> list[int]:
+    """Convert bbox to integers.
+
+    For pixel coordinates, we use floor for min values and ceil for max values
+    to ensure the bbox fully encompasses the region.
+    """
+    
+    # bbox format: [x0, y0, x1, y1]
+    return [
+        int(math.floor(bbox[0])),  # x0: floor to include leftmost
+        int(math.floor(bbox[1])),  # y0: floor to include topmost
+        int(math.ceil(bbox[2])),   # x1: ceil to include rightmost
+        int(math.ceil(bbox[3])),   # y1: ceil to include bottommost
+    ]
 
 
 class NumberSeries:
@@ -251,8 +277,6 @@ def poisson_disk_samples(
 
     if debug_output_path is not None:
         try:
-            from PIL import Image, ImageDraw
-
             debug_img = np.zeros((h, w, 3), dtype=np.uint8)
             debug_img[allowed_mask] = [200, 200, 200]
             debug_pil = Image.fromarray(debug_img)
@@ -418,11 +442,16 @@ def build_metadata(
         if counts[i] <= 0:
             sx, sy = seeds[i]
             cx, cy = float(sx), float(sy)
-            bbox_local = (float(sx), float(sy), float(sx), float(sy))
+            bbox_local = [int(sx), int(sy), int(sx) + 1, int(sy) + 1]
         else:
             cx = float(sum_x[i] / counts[i])
             cy = float(sum_y[i] / counts[i])
-            bbox_local = (float(min_x[i]), float(min_y[i]), float(max_x[i]), float(max_y[i]))
+            # Convert to integers with floor/ceil for proper pixel coverage
+            bbox_local = [int(min_x[i]), int(min_y[i]), int(max_x[i]) + 1, int(max_y[i]) + 1]
+
+        cx = round_coord(cx, 2)
+        cy = round_coord(cy, 2)
+        bbox_local = round_bbox(bbox_local, 0)
 
         meta_dict = {
             "region_type": region_type,

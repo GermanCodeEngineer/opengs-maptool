@@ -2,10 +2,7 @@ TODOs
 - update UI system and README tab references
 - explain JSON region fields in README
 - write terminal usage guide
-- move some things from config to MapTool
 - add flappy bird button and window while waiting
-- replace local_x for areas with global_x?
-- add child references?
 - complete "WORK IN PROGRESS"
 - fix discontinuous territories and especially provinces?
 - rewrite commits synthetically
@@ -16,3 +13,5 @@ Working Features
 - Local and Global Area, Territory & Province centres
 - Automatic Generation with Python Interface
 - Fully deterministic behaviour with Area, Territory & Province Generation Seeds
+- Every Generated Image and All Data can be exported as JSON or CSV files
+- All of these features are available through the Application GUI and Python Interface

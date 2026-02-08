@@ -7,6 +7,7 @@ from multiprocessing import Pool, cpu_count
 from logic.utils import (
     NumberSeries, ColorSeries,
     poisson_disk_samples, lloyd_relaxation, assign_regions, build_metadata, hex_to_rgb,
+    round_coord, round_bbox,
 )
 import config
 
@@ -153,15 +154,18 @@ def convert_all_cont_areas_to_regions(
                 existing_colors.add(color_hex)
                 
                 # Calculate global coordinates from local coordinates
-                region["global_x"] = region["local_x"] + x_min
-                region["global_y"] = region["local_y"] + y_min
+                region["global_x"] = round_coord(region["local_x"] + x_min, 2)
+                region["global_y"] = round_coord(region["local_y"] + y_min, 2)
                 if region.get("bbox_local") is not None:
                     bx0, by0, bx1, by1 = region["bbox_local"]
-                    region["bbox"] = (
-                        float(bx0 + x_min),
-                        float(by0 + y_min),
-                        float(bx1 + x_min),
-                        float(by1 + y_min),
+                    region["bbox"] = round_bbox(
+                        [
+                            float(bx0 + x_min),
+                            float(by0 + y_min),
+                            float(bx1 + x_min),
+                            float(by1 + y_min),
+                        ],
+                        0,
                     )
                 
                 updated_region_metadata.append(region)
@@ -242,12 +246,17 @@ def convert_cont_area_to_regions(args: AreaProcessingArgs) -> tuple[
         cx_cropped = cx - x_min
         cy_cropped = cy - y_min
         
-        local_bbox = (
-            float(cols.min() - x_min),
-            float(rows.min() - y_min),
-            float(cols.max() - x_min),
-            float(rows.max() - y_min),
-        )
+        # Bbox as integers: add 1 to max values to include the last pixel (exclusive end bound)
+        local_bbox = [
+            int(cols.min() - x_min),
+            int(rows.min() - y_min),
+            int(cols.max() - x_min) + 1,
+            int(rows.max() - y_min) + 1,
+        ]
+
+        cx_cropped = round_coord(cx_cropped, 2)
+        cy_cropped = round_coord(cy_cropped, 2)
+        local_bbox = round_bbox(local_bbox, 0)
 
         metadata = [{
             "region_type": area_type,

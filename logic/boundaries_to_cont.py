@@ -2,10 +2,65 @@ import numpy as np
 from numpy.typing import NDArray
 from scipy import ndimage
 from tqdm import tqdm
-from logic.utils import ColorSeries
+from logic.utils import ColorSeries, round_coord, hex_to_rgb
 import config
 
 NEIGHBOR_OFFSETS = [(-1, 0), (1, 0), (0, -1), (0, 1)]
+
+
+def recalculate_bboxes_from_image(
+    image: NDArray[np.uint8],
+    metadata: list[dict],
+) -> list[dict]:
+    """
+    Recalculate bounding boxes for all regions from the image.
+    
+    This is needed when the image has been modified after metadata creation
+    (e.g., after border assignment).
+    
+    Args:
+        image: RGBA image where non-black pixels represent area colors
+        metadata: List of region metadata dicts with 'color' field
+    
+    Returns:
+        Updated metadata list with recalculated bboxes
+    """
+    
+    updated_metadata = []
+    
+    for region in metadata:
+        color_hex = region.get("color", "")
+        try:
+            color_rgb = hex_to_rgb(color_hex)
+            target_color = np.array(color_rgb, dtype=np.uint8)
+        except (ValueError, AttributeError):
+            # Color not found, keep original bbox
+            updated_metadata.append(region)
+            continue
+        
+        # Find all pixels matching this region's color
+        rgb_match = np.all(image[:, :, :3] == target_color, axis=2)
+        
+        if not np.any(rgb_match):
+            # No pixels found, keep original bbox
+            updated_metadata.append(region)
+            continue
+        
+        # Calculate new bbox
+        rows, cols = np.where(rgb_match)
+        bbox_local = [
+            int(cols.min()),
+            int(rows.min()),
+            int(cols.max()) + 1,
+            int(rows.max()) + 1,
+        ]
+        
+        # Update bbox in metadata
+        region["bbox_local"] = bbox_local
+        region["bbox"] = bbox_local
+        updated_metadata.append(region)
+    
+    return updated_metadata
 
 def classify_pixels_by_color(
     land_image: NDArray[np.uint8],
@@ -169,12 +224,16 @@ def convert_boundaries_to_cont_areas(boundaries_image: NDArray[np.uint8], rng_se
         center_x = float(np.mean(cols))
         center_y = float(np.mean(rows))
         
-        bbox_local = (
-            float(cols.min()),
-            float(rows.min()),
-            float(cols.max()),
-            float(rows.max()),
-        )
+        # BBox as integers: add 1 to max values to include the last pixel (exclusive end bound)
+        bbox_local = [
+            int(cols.min()),
+            int(rows.min()),
+            int(cols.max()) + 1,
+            int(rows.max()) + 1,
+        ]
+
+        center_x = round_coord(center_x, 2)
+        center_y = round_coord(center_y, 2)
 
         metadata.append({
             "region_type": None,

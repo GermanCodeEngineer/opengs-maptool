@@ -10,13 +10,23 @@ import json
 import sys
 from pathlib import Path
 from PIL import Image, ImageDraw
-import numpy as np
 
 # Add parent directory to path so we can import from logic
 sys.path.insert(0, str(Path(__file__).parent.parent))
 
 from logic.maptool import MapTool
 from logic.export_module import export_to_json, export_to_csv
+
+
+def hex_to_rgb(hex_color: str) -> tuple[int, int, int]:
+    """Convert hex color string (e.g., '#aabbcc') to RGB tuple"""
+    hex_color = hex_color.lstrip('#')
+    return tuple(int(hex_color[i:i+2], 16) for i in (0, 2, 4))
+
+
+def darken_color(rgb: tuple[int, int, int], factor: float = 0.6) -> tuple[int, int, int]:
+    """Darken an RGB color by multiplying each component by a factor."""
+    return tuple(max(0, int(c * factor)) for c in rgb)
 
 
 def generate_maps(output_dir: Path) -> dict:
@@ -142,6 +152,68 @@ def draw_centers(image: Image.Image, data: list[dict], coord_scale: float = 1.0,
     return img_copy
 
 
+def draw_bboxes(image: Image.Image, data: list[dict], coord_scale: float = 1.0,
+                width: int = 2, darken_factor: float = 0.6) -> Image.Image:
+    """
+    Draw bounding boxes for regions using the region's color (darkened).
+    Border width scales with region size.
+
+    Args:
+        image: PIL Image to draw on
+        data: List of region metadata dicts
+        coord_scale: Scale factor for coordinates (useful for zooming)
+        width: Base outline width (used for larger regions)
+        darken_factor: Factor to darken the region color (0.0-1.0)
+
+    Returns:
+        Image with bounding boxes drawn
+    """
+    img_copy = image.copy()
+    draw = ImageDraw.Draw(img_copy)
+
+    for region in data:
+        bbox = region.get("bbox") or region.get("bbox_local")
+        if not bbox or len(bbox) != 4:
+            continue
+
+        # Get region color and darken it
+        color_hex = region.get("color", "#808080")  # fallback gray
+        try:
+            color_rgb = hex_to_rgb(color_hex)
+            outline_color = darken_color(color_rgb, darken_factor)
+        except (ValueError, AttributeError):
+            outline_color = (128, 128, 128)  # fallback gray
+
+        x0, y0, x1, y1 = bbox
+        x0 = int(round(x0 * coord_scale))
+        y0 = int(round(y0 * coord_scale))
+        x1 = int(round(x1 * coord_scale))
+        y1 = int(round(y1 * coord_scale))
+
+        if x1 < x0:
+            x0, x1 = x1, x0
+        if y1 < y0:
+            y0, y1 = y1, y0
+
+        # Scale border width based on region size
+        bbox_width = x1 - x0
+        bbox_height = y1 - y0
+        bbox_size = min(bbox_width, bbox_height)
+        
+        # Use smaller border for small regions
+        if bbox_size < 10:
+            border_width = 1
+        elif bbox_size < 30:
+            border_width = 1
+        else:
+            border_width = width
+
+        draw.rectangle([x0, y0, x1, y1], outline=outline_color, width=border_width)
+
+    return img_copy
+
+
+
 def main():
     output_dir = Path(__file__).parent / "output"
     output_dir.mkdir(exist_ok=True)
@@ -158,6 +230,13 @@ def main():
     )
     cont_areas_vis.save(output_dir / "contareascenters.png")
     print(f"  Saved: contareascenters.png ({len(cont_areas_data)} centers)")
+
+    cont_areas_bbox_vis = draw_bboxes(
+        cont_areas_image, cont_areas_data,
+        width=2
+    )
+    cont_areas_bbox_vis.save(output_dir / "contareasbboxes.png")
+    print(f"  Saved: contareasbboxes.png ({len(cont_areas_data)} bboxes)")
     
     # Visualize territories
     print("Visualizing territories...")
@@ -168,6 +247,13 @@ def main():
     )
     territory_vis.save(output_dir / "territorycenters.png")
     print(f"  Saved: territorycenters.png ({len(territory_data)} centers)")
+
+    territory_bbox_vis = draw_bboxes(
+        territory_image, territory_data,
+        width=2
+    )
+    territory_bbox_vis.save(output_dir / "territorybboxes.png")
+    print(f"  Saved: territorybboxes.png ({len(territory_data)} bboxes)")
     
     # Visualize provinces
     print("Visualizing provinces...")
@@ -178,6 +264,13 @@ def main():
     )
     province_vis.save(output_dir / "provincecenters.png")
     print(f"  Saved: provincecenters.png ({len(province_data)} centers)")
+
+    province_bbox_vis = draw_bboxes(
+        province_image, province_data,
+        width=2
+    )
+    province_bbox_vis.save(output_dir / "provincebboxes.png")
+    print(f"  Saved: provincebboxes.png ({len(province_data)} bboxes)")
     
     # Create a combined map with all three overlaid on the province map
     print("Creating combined visualization...")
@@ -203,6 +296,28 @@ def main():
     
     combined.save(output_dir / "allcenters.png")
     print(f"  Saved: allcenters.png (combined visualization)")
+
+    print("Creating combined bbox visualization...")
+    combined_bbox = province_image.copy()
+
+    combined_bbox = draw_bboxes(
+        combined_bbox, territory_data,
+        width=2
+    )
+
+    combined_bbox = draw_bboxes(
+        combined_bbox, cont_areas_data,
+        width=2
+    )
+
+    combined_bbox = draw_bboxes(
+        combined_bbox, province_data,
+        width=2
+    )
+
+    combined_bbox.save(output_dir / "allbboxes.png")
+    print(f"  Saved: allbboxes.png (combined visualization)")
+
     print("\nColor scheme:")
     print("  Lime   = Continuous areas")
     print("  Blue   = Territories")
