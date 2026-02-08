@@ -2,7 +2,7 @@ import numpy as np
 from numpy.typing import NDArray
 from scipy import ndimage
 from tqdm import tqdm
-from logic.utils import ColorSeries, round_coord, hex_to_rgb
+from logic.utils import ColorSeries, round_float, hex_to_rgb
 import config
 
 NEIGHBOR_OFFSETS = [(-1, 0), (1, 0), (0, -1), (0, 1)]
@@ -218,7 +218,6 @@ def convert_boundaries_to_cont_areas(boundaries_image: NDArray[np.uint8], rng_se
             density_multiplier = (avg_blue / 128) * 0.75 + 0.25
         else:
             density_multiplier = ((avg_blue - 128) / 127) * 3 + 1
-        #density_multiplier = max(0.25, min(4.0, density_multiplier))  # Clamp to reasonable range
         
         # Calculate center of mass (centroid) for local coordinates
         center_x = float(np.mean(cols))
@@ -232,8 +231,9 @@ def convert_boundaries_to_cont_areas(boundaries_image: NDArray[np.uint8], rng_se
             int(rows.max()) + 1,
         ]
 
-        center_x = round_coord(center_x, 2)
-        center_y = round_coord(center_y, 2)
+        center_x = round_float(center_x, 2)
+        center_y = round_float(center_y, 2)
+        density_multiplier = round_float(density_multiplier, 2)
 
         metadata.append({
             "region_type": None,
@@ -253,6 +253,72 @@ def convert_boundaries_to_cont_areas(boundaries_image: NDArray[np.uint8], rng_se
         progress_callback(100, 100)
     
     return regions_image, metadata
+
+def classify_continuous_areas(
+    cont_areas_image: NDArray[np.uint8],
+    class_image: NDArray[np.uint8],
+    cont_areas_metadata: list[dict],
+) -> list[dict]:
+    """
+    Classify each continuous area as land, ocean, or lake based on its pixel composition.
+    
+    Updates the region_type field in metadata by checking which type of pixels
+    (land, ocean, lake) are most prevalent in each area.
+    
+    Args:
+        cont_areas_image: Image with continuous areas colored
+        class_image: Classification image with land/ocean/lake colors
+        cont_areas_metadata: Metadata list for continuous areas
+    
+    Returns:
+        Updated metadata with region_type field set correctly
+    """
+    updated_metadata = []
+    
+    ocean_color = np.array(config.OCEAN_COLOR, dtype=np.uint8)
+    lake_color = np.array(config.LAKE_COLOR, dtype=np.uint8)
+    land_color = np.array(config.LAND_COLOR, dtype=np.uint8)
+    
+    for region in cont_areas_metadata:
+        color_hex = region.get("color", "")
+        try:
+            color_rgb = hex_to_rgb(color_hex)
+            target_color = np.array(color_rgb, dtype=np.uint8)
+        except (ValueError, AttributeError):
+            region["region_type"] = "unknown"
+            updated_metadata.append(region)
+            continue
+        
+        # Find all pixels of this continuous area
+        rgb_match = np.all(cont_areas_image[:, :, :3] == target_color, axis=2)
+        
+        if not np.any(rgb_match):
+            region["region_type"] = "unknown"
+            updated_metadata.append(region)
+            continue
+        
+        # Get classification of pixels in this area
+        class_pixels = class_image[rgb_match, :3]
+        
+        # Count pixel types
+        ocean_pixels = np.sum(np.all(class_pixels == ocean_color, axis=1))
+        lake_pixels = np.sum(np.all(class_pixels == lake_color, axis=1))
+        land_pixels = np.sum(np.all(class_pixels == land_color, axis=1))
+        
+        # Determine predominant type
+        total = ocean_pixels + lake_pixels + land_pixels
+        if total == 0:
+            region["region_type"] = "unknown"
+        elif land_pixels > ocean_pixels + lake_pixels:
+            region["region_type"] = "land"
+        elif ocean_pixels > lake_pixels:
+            region["region_type"] = "ocean"
+        else:
+            region["region_type"] = "lake"
+        
+        updated_metadata.append(region)
+    
+    return updated_metadata
 
 def assign_borders_to_areas(
     regions_image: NDArray[np.uint8],

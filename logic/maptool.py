@@ -4,7 +4,7 @@ from numpy.typing import NDArray
 from typing import Any
 from PIL import Image
 from gceutils import grepr_dataclass
-from logic.boundaries_to_cont import convert_boundaries_to_cont_areas, assign_borders_to_areas, classify_pixels_by_color, recalculate_bboxes_from_image
+from logic.boundaries_to_cont import convert_boundaries_to_cont_areas, assign_borders_to_areas, classify_pixels_by_color, recalculate_bboxes_from_image, classify_continuous_areas
 from logic.cont_to_regions import convert_all_cont_areas_to_regions
 from logic.utils import NumberSeries
 
@@ -97,6 +97,10 @@ class MapTool:
         """
         cont_areas_image, cont_areas_image_buffer, cont_areas_data = self._generate_cont_areas()
         class_image, class_image_buffer, class_counts = self._generate_type_classification()
+        
+        # Classify continuous areas by land/ocean/lake type
+        cont_areas_data = classify_continuous_areas(cont_areas_image_buffer, class_image_buffer, cont_areas_data)
+        
         territory_image, territory_image_buffer, territory_data = self._generate_territories(cont_areas_image_buffer, cont_areas_data, class_image_buffer, class_counts)
         province_image, province_image_buffer, province_data = self._generate_provinces(territory_image_buffer, territory_data, class_image_buffer, class_counts)
         return MapToolResult(

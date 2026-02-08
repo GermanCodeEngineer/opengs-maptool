@@ -21,8 +21,8 @@ def hex_to_rgb(hex_color: str) -> tuple[int, int, int]:
     return tuple(int(hex_color[i:i+2], 16) for i in (0, 2, 4))
 
 
-def round_coord(value: float, decimals: int = 2) -> float:
-    """Round a coordinate value to a fixed number of decimals."""
+def round_float(value: float, decimals: int = 2) -> float:
+    """Round a float value to a fixed number of decimals."""
     return float(round(value, decimals))
 
 
@@ -608,8 +608,8 @@ def build_metadata(
             # Convert to integers with floor/ceil for proper pixel coverage
             bbox_local = [int(min_x[i]), int(min_y[i]), int(max_x[i]) + 1, int(max_y[i]) + 1]
 
-        cx = round_coord(cx, 2)
-        cy = round_coord(cy, 2)
+        cx = round_float(cx, 2)
+        cy = round_float(cy, 2)
         bbox_local = round_bbox(bbox_local, 0)
 
         meta_dict = {

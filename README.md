@@ -132,6 +132,74 @@ output_data = {
 
 ---
 
+## MapToolResult - Understanding the Output
+
+The `generate()` method returns a `MapToolResult` object containing both images and metadata:
+
+```python
+result = maptool.generate()
+```
+
+### Result Images
+- `result.cont_areas_image` - Colored continuous areas (if boundary provided)
+- `result.territory_image` - Colored territory map
+- `result.province_image` - Colored province map
+- `result.class_image` - Cleaned land/ocean/lake classification
+
+### Result Data
+
+Each data field (`cont_areas_data`, `territory_data`, `province_data`) is a list of dictionaries representing regions. Each region dict contains:
+
+| Field | Type | Description |
+|-------|------|-------------|
+| `region_id` | str \| int | Unique identifier (e.g., "area-001", "ter-001", "prv-042") |
+| `region_type` | str | Type of region: "land", "ocean", or "lake" (determined by predominant pixel type) |
+| `color` | str | Hex color code (e.g., "#a1b2c3") used in the map image |
+| `parent_id` | str \| int \| None | ID of parent region (territory for provinces, area for territories, None for areas) |
+| `density_multiplier` | float | Density factor applied (from boundary blue channel, only set for areas and inherited by territories) |
+| `local_x`, `local_y` | float | Centroid coordinates: for territories/provinces = within parent(see `parent_id`) area; for areas = global |
+| `global_x`, `global_y` | float | Centroid coordinates in the full map |
+| `bbox_local` | list[int] | Bounding box: for territories/provinces = within parent area; for areas = global |
+| `bbox` | list[int] | Bounding box in global coordinates |
+
+**Example region:**
+```python
+{
+   "region_type": "land",
+   "region_id": "ter-000235",
+   "parent_id": 113,
+   "color": "#b12a8c",
+   "local_x": 150.75,
+   "local_y": 96.39,
+   "global_x": 2892.75,
+   "global_y": 470.39,
+   "bbox_local": [119, 66, 193, 129],
+   "bbox": [2861, 440, 2935, 503],
+   "density_multiplier": 2.23
+}
+```
+
+### Class Data
+
+`result.class_counts` is a dictionary showing pixel distribution:
+```python
+{
+    "land": 450000,    # Pixels classified as land
+    "ocean": 300000,   # Pixels classified as ocean
+    "lake": 50000      # Pixels classified as lake
+}
+```
+
+### Using the Data in GUI
+
+When you export CSV/JSON from the GUI or via Python, this field data is included, allowing you to:
+- Map region IDs to visual colors
+- Calculate region areas (from bounding boxes)
+- Track parent-child relationships (territory → provinces)
+- Access precise centroid coordinates for game logic
+
+---
+
 ## Image Specifications Reference
 
 ### Boundary Image

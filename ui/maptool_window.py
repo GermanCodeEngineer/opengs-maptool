@@ -171,8 +171,8 @@ class MapToolWindow(QWidget):
         self.readme_tab = QWidget()
         start_layout = QVBoxLayout(self.readme_tab)
         self.readme_label = QLabel(
-            '<h1>Please read the README</h1>' # TODO: change to Thomas-Holtvedt
-            '<h2><a href="https://github.com/GermanCodeEngineer/opengs-maptool/blob/main/README.md">'        
+            '<h1>Please read the README</h1>'
+            '<h2><a href="https://github.com/Thomas-Holtvedt/opengs-maptool/blob/main/README.md">'        
             'Open the README in your browser</a></h2>'
         )
         self.readme_label.setOpenExternalLinks(True)
