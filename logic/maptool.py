@@ -39,6 +39,9 @@ class MapTool:
     pixels_per_land_province: int
     pixels_per_water_province: int
     lloyd_iterations: int
+    cont_areas_rng_seed: int
+    territories_rng_seed: int
+    provinces_rng_seed: int
 
     def __init__(self,
             land_image: Image.Image,
@@ -48,6 +51,9 @@ class MapTool:
             pixels_per_land_province: int = config.PIXELS_PER_LAND_PROVINCE_DEFAULT,
             pixels_per_water_province: int = config.PIXELS_PER_WATER_PROVINCE_DEFAULT, # 1/5th
             lloyd_iterations: int = 2,
+            cont_areas_rng_seed: int = int(1e6),
+            territories_rng_seed: int = int(2e6),
+            provinces_rng_seed: int = int(3e6),
         ) -> None:
         """
         Initialize MapTool with input images and parameters.
@@ -60,6 +66,9 @@ class MapTool:
             pixels_per_land_province: Approximate pixels per land province
             pixels_per_water_province: Approximate pixels per water province
             lloyd_iterations: Number of Lloyd's algorithm iterations for province and territory generation 
+            cont_areas_rng_seed: RNG seed used for continuous area generation
+            territories_rng_seed: RNG seed used for territory generation
+            provinces_rng_seed: RNG seed used for province generation
         """
         super().__init__()
 
@@ -70,6 +79,9 @@ class MapTool:
         self.pixels_per_land_province = pixels_per_land_province
         self.pixels_per_water_province = pixels_per_water_province
         self.lloyd_iterations = lloyd_iterations
+        self.cont_areas_rng_seed = cont_areas_rng_seed
+        self.territories_rng_seed = territories_rng_seed
+        self.provinces_rng_seed = provinces_rng_seed
     
    
     def generate(self) -> MapToolResult:
@@ -105,7 +117,7 @@ class MapTool:
         
         areas_with_borders_image, cont_areas_data = convert_boundaries_to_cont_areas(
             self.boundary_image, 
-            config.CONT_AREAS_RNG_SEED,
+            self.cont_areas_rng_seed,
             min_area_pixels=50,  # Filter out tiny areas & islands
             progress_callback=boundaries_progress
         )
@@ -151,7 +163,7 @@ class MapTool:
             fn_new_number_series=lambda area_meta: NumberSeries(
                 f"{area_meta['region_id']}-{config.TERRITORY_ID_PREFIX}", config.SERIES_ID_START, config.SERIES_ID_END
             ),
-            rng_seed=config.TERRITORIES_RNG_SEED,
+            rng_seed=self.territories_rng_seed,
             lloyd_iterations=self.lloyd_iterations,
             tqdm_description="Generating territories from areas",
             tqdm_unit="areas",
@@ -194,7 +206,7 @@ class MapTool:
             fn_new_number_series=lambda territory_meta: NumberSeries(
                 f"{territory_meta['region_id']}-{config.PROVINCE_ID_PREFIX}", config.SERIES_ID_START, config.SERIES_ID_END
             ),
-            rng_seed=config.PROVINCES_RNG_SEED,
+            rng_seed=self.provinces_rng_seed,
             lloyd_iterations=self.lloyd_iterations,
             tqdm_description="Generating provinces from territories",
             tqdm_unit="territories",

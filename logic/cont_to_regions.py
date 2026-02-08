@@ -155,6 +155,14 @@ def convert_all_cont_areas_to_regions(
                 # Calculate global coordinates from local coordinates
                 region["global_x"] = region["local_x"] + x_min
                 region["global_y"] = region["local_y"] + y_min
+                if region.get("bbox_local") is not None:
+                    bx0, by0, bx1, by1 = region["bbox_local"]
+                    region["bbox"] = (
+                        float(bx0 + x_min),
+                        float(by0 + y_min),
+                        float(bx1 + x_min),
+                        float(by1 + y_min),
+                    )
                 
                 updated_region_metadata.append(region)
             
@@ -234,6 +242,13 @@ def convert_cont_area_to_regions(args: AreaProcessingArgs) -> tuple[
         cx_cropped = cx - x_min
         cy_cropped = cy - y_min
         
+        local_bbox = (
+            float(cols.min() - x_min),
+            float(rows.min() - y_min),
+            float(cols.max() - x_min),
+            float(rows.max() - y_min),
+        )
+
         metadata = [{
             "region_type": area_type,
             "region_id": region_id,
@@ -241,6 +256,10 @@ def convert_cont_area_to_regions(args: AreaProcessingArgs) -> tuple[
             "color": color_hex,
             "local_x": cx_cropped,
             "local_y": cy_cropped,
+            "global_x": None, # Set later
+            "global_y": None,
+            "bbox_local": local_bbox,
+            "bbox": None,  # Set later (global bbox)
             "density_multiplier": density_multiplier,
         }]
         

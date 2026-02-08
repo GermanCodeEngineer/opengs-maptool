@@ -1,9 +1,7 @@
 from pathlib import Path
 from PIL import Image
-from typing import Any, Callable
-import numpy as np
-from numpy.typing import NDArray
-from PyQt6.QtWidgets import QWidget, QVBoxLayout, QHBoxLayout, QTabWidget, QLabel, QPushButton, QMessageBox
+from typing import Callable
+from PyQt6.QtWidgets import QWidget, QVBoxLayout, QHBoxLayout, QTabWidget, QLabel, QPushButton, QMessageBox, QSpinBox
 from PyQt6.QtCore import Qt, QThread, pyqtSignal
 from PyQt6.QtGui import QPainter, QColor
 from logic.maptool import MapTool
@@ -211,25 +209,34 @@ class MapToolWindow(QWidget):
     def create_areas_tab(self) -> None:
         self.areas_tab = QWidget()
         areas_tab_layout = QVBoxLayout(self.areas_tab)
+
+        self.cont_areas_rng_seed_input = self._create_seed_input(
+            areas_tab_layout,
+            "Continuous Areas RNG Seed:",
+            int(1e6),
+        )
         
         self.button_generate_areas = ProgressButton("Generate Continuous Areas")
         self.button_generate_areas.clicked.connect(self.on_button_generate_areas)
         areas_tab_layout.addWidget(self.button_generate_areas)
 
-        self.areas_image_display = ImageDisplay(name="Continuous Areas Image")
+        self.areas_image_display = ImageDisplay(name="Continuous Areas Image", csv_export=True)
         self.areas_image_display.set_image(EMPTY_IMAGE)
         areas_tab_layout.addWidget(self.areas_image_display, stretch=1)
 
     def create_territory_tab(self) -> None:
         self.territory_tab = QWidget()
-        self.territory_image_display = ImageDisplay(name="Territory Image")
-        self.territory_image_display.set_image(EMPTY_IMAGE)
         territory_tab_layout = QVBoxLayout(self.territory_tab)
-        territory_tab_layout.addWidget(self.territory_image_display, stretch=1)
+
+        self.territories_rng_seed_input = self._create_seed_input(
+            territory_tab_layout,
+            "Territories RNG Seed:",
+            int(2e6),
+        )
 
         # Buttons
         self.pixels_per_land_territory_slider = create_slider(territory_tab_layout,
-            "Territory Land Density:",
+            "Pixels per Land territory:",
             config.PIXELS_PER_LAND_TERRITORY_MIN,
             config.PIXELS_PER_LAND_TERRITORY_MAX,
             config.PIXELS_PER_LAND_TERRITORY_DEFAULT,
@@ -238,7 +245,7 @@ class MapToolWindow(QWidget):
         )
 
         self.pixels_per_water_territory_slider = create_slider(territory_tab_layout,
-            "Territory Ocean Density:",
+            "Pixels per Water territory:",
             config.PIXELS_PER_WATER_TERRITORY_MIN,
             config.PIXELS_PER_WATER_TERRITORY_MAX,
             config.PIXELS_PER_WATER_TERRITORY_DEFAULT,
@@ -250,12 +257,19 @@ class MapToolWindow(QWidget):
         self.button_gen_territories.clicked.connect(self.on_button_generate_territories)
         territory_tab_layout.addWidget(self.button_gen_territories)
 
+        self.territory_image_display = ImageDisplay(name="Territory Image", csv_export=True)
+        self.territory_image_display.set_image(EMPTY_IMAGE)
+        territory_tab_layout.addWidget(self.territory_image_display, stretch=1)
+
     def create_province_tab(self) -> None:
         self.province_tab = QWidget()
-        self.province_image_display = ImageDisplay(name="Province Image")
-        self.province_image_display.set_image(EMPTY_IMAGE)
         province_tab_layout = QVBoxLayout(self.province_tab)
-        province_tab_layout.addWidget(self.province_image_display, stretch=1)
+
+        self.provinces_rng_seed_input = self._create_seed_input(
+            province_tab_layout,
+            "Provinces RNG Seed:",
+            int(3e6),
+        )
 
         # Buttons
         self.pixels_per_land_province_slider = create_slider(province_tab_layout,
@@ -280,6 +294,9 @@ class MapToolWindow(QWidget):
         self.button_gen_provinces.clicked.connect(self.on_button_generate_provinces)
         province_tab_layout.addWidget(self.button_gen_provinces)
     
+        self.province_image_display = ImageDisplay(name="Province Image", csv_export=True)
+        self.province_image_display.set_image(EMPTY_IMAGE)
+        province_tab_layout.addWidget(self.province_image_display, stretch=1)
 
     # TAB 2
     def on_button_import_boundary(self) -> None:
@@ -449,7 +466,26 @@ class MapToolWindow(QWidget):
             pixels_per_water_territory=self.pixels_per_water_territory_slider.value(),
             pixels_per_land_province=self.pixels_per_land_province_slider.value(),
             pixels_per_water_province=self.pixels_per_water_province_slider.value(),
+            cont_areas_rng_seed=self.cont_areas_rng_seed_input.value(),
+            territories_rng_seed=self.territories_rng_seed_input.value(),
+            provinces_rng_seed=self.provinces_rng_seed_input.value(),
         )
+
+    def _create_seed_input(self, parent_layout: QVBoxLayout, label_text: str, default_value: int) -> QSpinBox:
+        row = QHBoxLayout()
+        parent_layout.addLayout(row)
+
+        label = QLabel(label_text)
+        row.addWidget(label)
+
+        spinbox = QSpinBox()
+        spinbox.setMinimum(0)
+        spinbox.setMaximum(2_147_483_647)
+        spinbox.setSingleStep(1)
+        spinbox.setValue(default_value)
+        row.addWidget(spinbox)
+
+        return spinbox
     
     def _create_background_worker(self, run_task: Callable, on_progress: Callable, on_finished: Callable, on_error: Callable) -> BackgroundWorker:
         worker = BackgroundWorker(run_task, self._create_maptool())

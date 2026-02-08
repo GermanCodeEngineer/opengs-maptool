@@ -1,28 +1,99 @@
 """
 Visualize the centers (capitals) of continuous areas, territories, and provinces on three maps.
+
+This script can be run standalone to:
+1. Generate maps from example inputs using MapTool
+2. Save the results (images and data) to the output folder
+3. Visualize the region centers on each map
 """
 import json
-import pathlib
+import sys
 from pathlib import Path
 from PIL import Image, ImageDraw
 import numpy as np
 
+# Add parent directory to path so we can import from logic
+sys.path.insert(0, str(Path(__file__).parent.parent))
 
-def load_data(output_dir: Path):
-    """Load all region data and images."""
-    cont_areas_data = json.loads((output_dir / "contareasdata.json").read_text())
-    territory_data = json.loads((output_dir / "territorydata.json").read_text())
-    province_data = json.loads((output_dir / "provincedata.json").read_text())
+from logic.maptool import MapTool
+from logic.export_module import export_to_json, export_to_csv
+
+
+def generate_maps(output_dir: Path) -> dict:
+    """Generate all maps using MapTool with example inputs."""
+    example_input_dir = Path(__file__).parent.parent / "example_input"
     
-    cont_areas_image = Image.open(output_dir / "contareasimage.png").convert("RGBA")
-    territory_image = Image.open(output_dir / "territoryimage.png").convert("RGBA")
-    province_image = Image.open(output_dir / "provinceimage.png").convert("RGBA")
+    if not example_input_dir.exists():
+        raise FileNotFoundError(f"Example input directory not found: {example_input_dir}")
+    
+    boundary_image_path = example_input_dir / "bound2_density.png"
+    land_image_path = example_input_dir / "land2.png"
+    
+    if not boundary_image_path.exists() or not land_image_path.exists():
+        raise FileNotFoundError(f"Required input files not found in {example_input_dir}")
+    
+    print("Loading input images...")
+    boundary_image = Image.open(boundary_image_path)
+    land_image = Image.open(land_image_path)
+    
+    print("Generating maps with MapTool...")
+    maptool = MapTool(
+        land_image=land_image,
+        boundary_image=boundary_image,
+    )
+    result = maptool.generate()
+    
+    print("Saving generated maps and data...")
+    output_dir.mkdir(parents=True, exist_ok=True)
+    
+    # Save images
+    result.cont_areas_image.save(output_dir / "contareasimage.png")
+    result.territory_image.save(output_dir / "territoryimage.png")
+    result.province_image.save(output_dir / "provinceimage.png")
+    
+    # Save data as JSON
+    export_to_json(result.cont_areas_data, output_dir / "contareasdata.json")
+    export_to_json(result.territory_data, output_dir / "territorydata.json")
+    export_to_json(result.province_data, output_dir / "provincedata.json")
+    
+    # Save data as CSV
+    export_to_csv(result.cont_areas_data, output_dir / "contareasdata.csv")
+    export_to_csv(result.territory_data, output_dir / "territorydata.csv")
+    export_to_csv(result.province_data, output_dir / "provincedata.csv")
     
     return {
-        "cont_areas": (cont_areas_data, cont_areas_image),
-        "territories": (territory_data, territory_image),
-        "provinces": (province_data, province_image),
+        "cont_areas": (result.cont_areas_data, result.cont_areas_image),
+        "territories": (result.territory_data, result.territory_image),
+        "provinces": (result.province_data, result.province_image),
     }
+
+
+def load_data(output_dir: Path) -> dict:
+    """Load all region data and images, generating them if they don't exist."""
+    required_files = [
+        "contareasdata.json", "territorydata.json", "provincedata.json",
+        "contareasimage.png", "territoryimage.png", "provinceimage.png"
+    ]
+    
+    # Check if all files exist
+    if all((output_dir / f).exists() for f in required_files):
+        print("Loading existing maps and data...")
+        cont_areas_data = json.loads((output_dir / "contareasdata.json").read_text())
+        territory_data = json.loads((output_dir / "territorydata.json").read_text())
+        province_data = json.loads((output_dir / "provincedata.json").read_text())
+        
+        cont_areas_image = Image.open(output_dir / "contareasimage.png").convert("RGBA")
+        territory_image = Image.open(output_dir / "territoryimage.png").convert("RGBA")
+        province_image = Image.open(output_dir / "provinceimage.png").convert("RGBA")
+        
+        return {
+            "cont_areas": (cont_areas_data, cont_areas_image),
+            "territories": (territory_data, territory_image),
+            "provinces": (province_data, province_image),
+        }
+    else:
+        # Generate maps if any are missing
+        return generate_maps(output_dir)
 
 
 def draw_centers(image: Image.Image, data: list[dict], coord_scale: float = 1.0, 

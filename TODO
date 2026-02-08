@@ -1,16 +1,16 @@
 TODOs
 - update UI system and README tab references
-- move some things from config to MapTool
-- update export and import modules
-- add export buttons everywhere
-- complete "WORK IN PROGRESS"
-- implement progress bar
-- let image displays work properly
+- explain JSON region fields in README
 - write terminal usage guide
+- move some things from config to MapTool
+- add flappy bird button and window while waiting
+- replace local_x for areas with global_x?
+- add child references?
+- complete "WORK IN PROGRESS"
 - fix discontinuous territories and especially provinces?
 - rewrite commits synthetically
 
-Working Features:
+Working Features
 - Map of continuous areas
 - Custom Territory/Province density
 - Local and Global Area, Territory & Province centres

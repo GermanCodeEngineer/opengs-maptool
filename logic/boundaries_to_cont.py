@@ -169,11 +169,24 @@ def convert_boundaries_to_cont_areas(boundaries_image: NDArray[np.uint8], rng_se
         center_x = float(np.mean(cols))
         center_y = float(np.mean(rows))
         
+        bbox_local = (
+            float(cols.min()),
+            float(rows.min()),
+            float(cols.max()),
+            float(rows.max()),
+        )
+
         metadata.append({
+            "region_type": None,
             "region_id": region_id,
+            "parent_id": None,
             "color": color_hex,
             "local_x": center_x,
             "local_y": center_y,
+            "global_x": center_x,
+            "global_y": center_y,
+            "bbox_local": bbox_local,
+            "bbox": bbox_local,
             "density_multiplier": density_multiplier,
         })
     

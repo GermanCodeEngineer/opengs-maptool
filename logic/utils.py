@@ -394,6 +394,16 @@ def build_metadata(
     coords_yx = np.column_stack(np.where(valid))
     coords_xy = np.flip(coords_yx, axis=1).astype(np.float32, copy=False)
 
+    min_x = np.full(len(seeds), np.inf, dtype=np.float64)
+    min_y = np.full(len(seeds), np.inf, dtype=np.float64)
+    max_x = np.full(len(seeds), -np.inf, dtype=np.float64)
+    max_y = np.full(len(seeds), -np.inf, dtype=np.float64)
+
+    np.minimum.at(min_x, indices, coords_xy[:, 0])
+    np.minimum.at(min_y, indices, coords_xy[:, 1])
+    np.maximum.at(max_x, indices, coords_xy[:, 0])
+    np.maximum.at(max_y, indices, coords_xy[:, 1])
+
     counts = np.bincount(indices, minlength=len(seeds))
     sum_x = np.bincount(indices, weights=coords_xy[:, 0], minlength=len(seeds))
     sum_y = np.bincount(indices, weights=coords_xy[:, 1], minlength=len(seeds))
@@ -408,9 +418,11 @@ def build_metadata(
         if counts[i] <= 0:
             sx, sy = seeds[i]
             cx, cy = float(sx), float(sy)
+            bbox_local = (float(sx), float(sy), float(sx), float(sy))
         else:
             cx = float(sum_x[i] / counts[i])
             cy = float(sum_y[i] / counts[i])
+            bbox_local = (float(min_x[i]), float(min_y[i]), float(max_x[i]), float(max_y[i]))
 
         meta_dict = {
             "region_type": region_type,
@@ -419,6 +431,10 @@ def build_metadata(
             "color": color_hex,
             "local_x": cx,
             "local_y": cy,
+            "global_x": None, # Set later
+            "global_y": None,
+            "bbox_local": bbox_local,
+            "bbox": None,  # Set later (global bbox)
             "density_multiplier": parent_density_multiplier or 1.0,
         }
         metadata.append(meta_dict)
