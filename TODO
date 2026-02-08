@@ -1,10 +1,8 @@
 TODOs
-- update UI system and README tab references
 - explain JSON region fields in README
-- write terminal usage guide
-- add flappy bird button and window while waiting
-- complete "WORK IN PROGRESS"
-- fix discontinuous territories and especially provinces?
+
+Before PR:
+- link change TODO
 - rewrite commits synthetically
 
 Working Features
@@ -15,3 +13,4 @@ Working Features
 - Fully deterministic behaviour with Area, Territory & Province Generation Seeds
 - Every Generated Image and All Data can be exported as JSON or CSV files
 - All of these features are available through the Application GUI and Python Interface
+- Bonus Feature: Flappy Bird Popup Game (rendering processes can take a few minutes ㋡)

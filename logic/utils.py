@@ -4,8 +4,9 @@ import numpy as np
 from PIL import Image, ImageDraw
 from numpy.typing import NDArray
 from typing import Any, Iterable
-from scipy.ndimage import distance_transform_edt
+from scipy.ndimage import distance_transform_edt, label as scipy_label
 from scipy.spatial import cKDTree
+from collections import deque
 
 
 def rgb_to_hex(rgb: tuple[int, int, int]) -> str:
@@ -89,7 +90,7 @@ class ColorSeries:
         return (rgb, rgb_to_hex(rgb))
 
 
-def is_sea_color(arr: np.ndarray) -> np.ndarray:
+def is_sea_color(arr: NDArray[np.uint8]) -> NDArray[np.bool]:
     # Vectorized comparison - faster than individual channel checks
     ocean_color = np.array(config.OCEAN_COLOR, dtype=np.uint8)
     return np.all(arr[..., :3] == ocean_color, axis=-1)
@@ -145,7 +146,7 @@ def build_masks(
 
 
 def poisson_disk_samples(
-    mask: np.ndarray,
+    mask: NDArray[np.bool],
     num_points: int,
     rng_seed: int,
     min_dist: float | None = None,
@@ -291,8 +292,8 @@ def poisson_disk_samples(
 
 
 def lloyd_relaxation(
-        mask: np.ndarray, point_seeds: list[tuple[int, int]], 
-        rng_seed: int, iterations: int, boundary_mask: np.ndarray | None = None
+        mask: NDArray[np.bool], point_seeds: list[tuple[int, int]], 
+        rng_seed: int, iterations: int, boundary_mask: NDArray[np.bool] | None = None
     ) -> list[tuple[int, int]]:
     """
     Lloyd relaxation with optional fast mode.
@@ -362,27 +363,185 @@ def lloyd_relaxation(
     return [(int(x), int(y)) for x, y in seeds_arr]
 
 
-def assign_regions(mask: np.ndarray, seeds: list[tuple[int, int]], start_index: int) -> np.ndarray:
-    """Assign each pixel in mask to nearest seed (respecting mask boundaries)."""
+def assign_regions(mask: NDArray[np.bool], seeds: list[tuple[int, int]], start_index: int) -> NDArray[np.int32]:
+    """
+    Assign each pixel in mask to nearest seed using geodesic (through-mask) distance.
+    
+    Uses distance transform and Voronoi-like assignment where distance is measured
+    through the valid mask pixels only. This naturally handles narrow straits and
+    ensures no region splits due to narrow passages.
+    
+    Args:
+        mask: Boolean mask of valid pixels (True = valid)
+        seeds: List of (x, y) seed positions
+        start_index: Starting index for region IDs
+    
+    Returns:
+        pmap: Region map where each pixel has a region ID (or -1 for invalid)
+    """
+    
     h, w = mask.shape
     pmap = np.full((h, w), -1, np.int32)
 
     if not seeds or not mask.any():
         return pmap
-
-    coords_yx = np.column_stack(np.where(mask))
-    coords_xy = np.flip(coords_yx, axis=1).astype(np.float32, copy=False)
-
-    # For each valid pixel, find nearest seed using KDTree (Euclidean distance)
-    # This respects mask because we only compute distances for pixels in mask
-    tree = cKDTree(np.array(seeds, dtype=np.float32))
-    _, labels = tree.query(coords_xy, k=1)
-
-    pmap[coords_yx[:, 0], coords_yx[:, 1]] = start_index + labels
+    
+    # Multi-source BFS: start from all seeds simultaneously, assign based on which reaches first
+    # This gives geodesic distance (distance through mask, not straight-line)
+    queue = deque()
+    distances = np.full((h, w), np.inf, dtype=np.float32)
+    
+    # Initialize: add all seeds to queue with distance 0
+    for idx, (sx, sy) in enumerate(seeds):
+        if 0 <= sx < w and 0 <= sy < h and mask[sy, sx]:
+            pmap[sy, sx] = start_index + idx
+            distances[sy, sx] = 0.0
+            queue.append((sy, sx, start_index + idx, 0.0))
+    
+    # BFS with distance tracking: assign to closest seed by path distance
+    while queue:
+        y, x, region_id, dist = queue.popleft()
+        
+        # Skip if already processed with shorter distance
+        if dist > distances[y, x]:
+            continue
+        
+        # Check 8-connected neighbors with appropriate distances
+        for dy in [-1, 0, 1]:
+            for dx in [-1, 0, 1]:
+                if dy == 0 and dx == 0:
+                    continue
+                
+                ny = y + dy
+                nx = x + dx
+                
+                # Calculate distance (diagonal = sqrt(2), orthogonal = 1)
+                step_dist = 1.414 if (dy != 0 and dx != 0) else 1.0
+                new_dist = dist + step_dist
+                
+                # Check bounds and mask
+                if 0 <= ny < h and 0 <= nx < w and mask[ny, nx]:
+                    # Update if this path is shorter
+                    if new_dist < distances[ny, nx]:
+                        distances[ny, nx] = new_dist
+                        pmap[ny, nx] = region_id
+                        queue.append((ny, nx, region_id, new_dist))
+    
     return pmap
 
 
-def assign_borders(pmap: np.ndarray, border_mask: np.ndarray) -> None:
+def defragment_regions(
+    pmap: NDArray[np.int32],
+    mask: NDArray[np.bool],
+    seeds: list[tuple[int, int]],
+    size_threshold: int = 100,
+) -> NDArray[np.int32]:
+    """
+    Fix regions that got fragmented into multiple disconnected components.
+    
+    Two-phase approach:
+    1. Merge small fragments (<size_threshold) to best neighboring region
+    2. Reassign remaining fragments to nearest other seeds
+    
+    Args:
+        pmap: Region map with region assignments
+        mask: Valid region mask
+        seeds: Original seed positions (for reassignment)
+        size_threshold: Pixel count below which fragments are considered "small"
+    
+    Returns:
+        Fixed pmap with defragmented regions
+    """
+    
+    pmap_fixed = pmap.copy()
+    h, w = mask.shape
+    
+    # Phase 1: Merge small fragments to neighbors
+    valid_ids = set(np.unique(pmap[mask])) - {-1}
+    
+    for region_id in valid_ids:
+        region_mask = (pmap_fixed == region_id)
+        
+        # Detect connected components within this region
+        components, num_components = scipy_label(region_mask)
+        
+        if num_components <= 1:
+            continue  # region is already contiguous
+        
+        # Analyze fragment sizes
+        fragment_sizes = np.bincount(components[region_mask])
+        largest_idx = np.argmax(fragment_sizes)
+        
+        # Merge only small fragments to neighbors
+        for frag_idx in range(num_components):
+            if frag_idx == largest_idx or frag_idx == 0:
+                continue
+            
+            if fragment_sizes[frag_idx] >= size_threshold:
+                continue  # Skip large fragments in phase 1
+            
+            frag_mask = (components == frag_idx)
+            neighbor_counts: dict[int, int] = {}
+            
+            # Find neighbors
+            frag_coords = np.where(frag_mask)
+            for y, x in zip(frag_coords[0], frag_coords[1]):
+                for dy in [-1, 0, 1]:
+                    for dx in [-1, 0, 1]:
+                        if dy == 0 and dx == 0:
+                            continue
+                        ny, nx = y + dy, x + dx
+                        if 0 <= ny < h and 0 <= nx < w:
+                            neighbor_id = pmap_fixed[ny, nx]
+                            if neighbor_id >= 0 and neighbor_id != region_id:
+                                neighbor_counts[neighbor_id] = neighbor_counts.get(neighbor_id, 0) + 1
+            
+            # Merge to best neighbor if found
+            if neighbor_counts:
+                best_neighbor = max(neighbor_counts, key=neighbor_counts.get)
+                pmap_fixed[frag_mask] = best_neighbor
+    
+    # Phase 2: Reassign remaining fragmented regions to nearest other seeds
+    valid_ids_after_phase1 = set(np.unique(pmap_fixed[mask])) - {-1}
+    
+    for region_id in valid_ids_after_phase1:
+        region_mask = (pmap_fixed == region_id)
+        
+        # Detect connected components again after phase 1
+        components, num_components = scipy_label(region_mask)
+        
+        if num_components <= 1:
+            continue  # region is already contiguous
+        
+        # Find which seeds belong to this region
+        region_seed_indices = set()
+        for idx, (sx, sy) in enumerate(seeds):
+            if pmap_fixed[sy, sx] == region_id:
+                region_seed_indices.add(idx)
+        
+        # Reassign all pixels to nearest seed outside their region
+        region_coords = np.where(region_mask)
+        for y, x in zip(region_coords[0], region_coords[1]):
+            min_dist = np.inf
+            best_seed_id = region_id
+            
+            for idx, (sx, sy) in enumerate(seeds):
+                # Skip seeds of this region
+                if idx in region_seed_indices:
+                    continue
+                
+                dist = np.sqrt((x - sx) ** 2 + (y - sy) ** 2)
+                if dist < min_dist:
+                    min_dist = dist
+                    best_seed_id = idx
+            
+            if best_seed_id != region_id:
+                pmap_fixed[y, x] = best_seed_id
+    
+    return pmap_fixed
+
+
+def assign_borders(pmap: NDArray[np.int32], border_mask: NDArray[np.bool]) -> None:
     """Assign border pixels to nearest valid region (respects boundary structure)."""
     valid = pmap >= 0
     if not valid.any() or not border_mask.any():
@@ -394,7 +553,7 @@ def assign_borders(pmap: np.ndarray, border_mask: np.ndarray) -> None:
 
 
 def build_metadata(
-    pmap: np.ndarray,
+    pmap: NDArray[np.int32],
     seeds: list[tuple[int, int]],
     start_index: int,
     region_type: str,
@@ -469,4 +628,121 @@ def build_metadata(
         metadata.append(meta_dict)
 
     return metadata
+
+
+def fix_region_connectivity(
+    pmap: NDArray[np.int32],
+    mask: NDArray[np.bool],
+    island_threshold: int = 50,
+) -> tuple[np.ndarray, dict[str, int]]:
+    """
+    Fix disconnected regions by reassigning isolated pixel clusters to neighbors.
+    
+    Iteratively detects and merges small disconnected "islands" into adjacent regions
+    based on border adjacency count. Handles cascading merges until all islands are resolved.
+    
+    Args:
+        pmap: Region map where each pixel has a region ID (or -1 for invalid)
+        mask: Valid region mask
+        island_threshold: Max pixels for a cluster to be considered an "island" to fix
+    
+    Returns:
+        Tuple of:
+        - Fixed pmap (copy with islands reassigned)
+        - Stats dict with keys:
+            - "islands_found": Number of islands detected and fixed
+            - "pixels_reassigned": Total pixels reassigned
+            - "regions_affected": regions that had islands
+    """
+    
+    stats = {
+        "islands_found": 0,
+        "pixels_reassigned": 0,
+        "regions_affected": 0,
+    }
+    
+    pmap_fixed = pmap.copy()
+    max_iterations = 10
+    iteration = 0
+    
+    while iteration < max_iterations:
+        iteration += 1
+        found_any_island = False
+        
+        # Get unique region IDs (excluding invalid -1)
+        valid_ids = set(np.unique(pmap_fixed[mask])) - {-1}
+        
+        for region_id in valid_ids:
+            region_mask = (pmap_fixed == region_id)
+            
+            if not region_mask.any():
+                continue
+            
+            # Label connected components within this region (8-connected for better connectivity)
+            components, num_components = scipy_label(region_mask)
+            
+            if num_components <= 1:
+                # region is already fully connected
+                continue
+            
+            # Find the size of each component
+            component_sizes = np.bincount(components[region_mask])
+            if len(component_sizes) == 0:
+                continue
+                
+            largest_component_idx = np.argmax(component_sizes)
+            
+            # For each smaller component (potential island), reassign to best neighbor
+            for comp_idx in range(1, num_components + 1):
+                if comp_idx == largest_component_idx or comp_idx == 0:
+                    continue
+                
+                comp_mask = (components == comp_idx)
+                comp_size = np.sum(comp_mask)
+                
+                # Only fix small islands (leave large disconnected parts alone)
+                if comp_size > island_threshold:
+                    continue
+                
+                found_any_island = True
+                stats["islands_found"] += 1
+                stats["pixels_reassigned"] += comp_size
+                stats["regions_affected"] += 1
+                
+                # Find neighboring region IDs at the border of this island
+                neighbor_counts: dict[int, int] = {}
+                island_coords = np.where(comp_mask)
+                
+                for y, x in zip(island_coords[0], island_coords[1]):
+                    # Check 8-connected neighbors
+                    for dy in [-1, 0, 1]:
+                        for dx in [-1, 0, 1]:
+                            if dy == 0 and dx == 0:
+                                continue
+                            ny = y + dy
+                            nx = x + dx
+                            if 0 <= ny < pmap_fixed.shape[0] and 0 <= nx < pmap_fixed.shape[1]:
+                                neighbor_id = pmap_fixed[ny, nx]
+                                # Count adjacencies to ALL neighboring regions (including same ID)
+                                if neighbor_id >= 0:
+                                    neighbor_counts[neighbor_id] = neighbor_counts.get(neighbor_id, 0) + 1
+                
+                # Prefer merging with the main component of the same region if adjacent
+                if region_id in neighbor_counts:
+                    best_neighbor = region_id
+                elif neighbor_counts:
+                    # Otherwise assign island to the neighbor with most shared border
+                    best_neighbor = max(neighbor_counts, key=neighbor_counts.get)
+                else:
+                    # No neighbors found, skip
+                    continue
+                
+                if best_neighbor != region_id:
+                    pmap_fixed[comp_mask] = best_neighbor
+        
+        # If no islands found in this iteration, we're done
+        if not found_any_island:
+            break
+    
+    return pmap_fixed, stats
 

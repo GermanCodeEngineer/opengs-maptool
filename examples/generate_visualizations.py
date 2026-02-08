@@ -31,7 +31,7 @@ def darken_color(rgb: tuple[int, int, int], factor: float = 0.6) -> tuple[int, i
 
 def generate_maps(output_dir: Path) -> dict:
     """Generate all maps using MapTool with example inputs."""
-    example_input_dir = Path(__file__).parent.parent / "example_input"
+    example_input_dir = Path(__file__).parent.parent / "examples" / "input"
     
     if not example_input_dir.exists():
         raise FileNotFoundError(f"Example input directory not found: {example_input_dir}")

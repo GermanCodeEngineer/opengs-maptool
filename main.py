@@ -9,8 +9,8 @@ def main() -> None:
     import json
 
     # Default paths
-    input_directory = Path(__file__).parent.parent / "example_input"
-    output_directory = Path(__file__).parent.parent / "output"
+    input_directory = Path(__file__).parent.parent / "examples" / "input"
+    output_directory = Path(__file__).parent.parent / "examples" / "output"
     
     #boundary_image = np.array(Image.open(input_directory / "bound2_borders.png").convert("RGBA"))
     #boundary_image = normalize_area_density(boundary_image)

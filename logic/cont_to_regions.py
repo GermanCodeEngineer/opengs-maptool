@@ -7,7 +7,7 @@ from multiprocessing import Pool, cpu_count
 from logic.utils import (
     NumberSeries, ColorSeries,
     poisson_disk_samples, lloyd_relaxation, assign_regions, build_metadata, hex_to_rgb,
-    round_coord, round_bbox,
+    round_coord, round_bbox, defragment_regions,
 )
 import config
 
@@ -302,6 +302,10 @@ def convert_cont_area_to_regions(args: AreaProcessingArgs) -> tuple[
     )
     
     pmap = assign_regions(cropped_mask, seeds, start_index=0)
+    
+    # Detect and fix territories split by narrow passages
+    pmap = defragment_regions(pmap, cropped_mask, seeds, size_threshold=100)
+    
     metadata = build_metadata(
         pmap, seeds, 0, area_type, args.number_series, args.color_series,
         parent_id=args.area_meta["region_id"],
