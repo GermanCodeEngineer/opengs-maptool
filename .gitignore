@@ -1,8 +1,14 @@
+# Python
 __pycache__/
-gen_ext_opcode_info/
-.coverage
-.pytest_cache/
-htmlcov/
-dist/
-*.egg-info/
-build/
+*.pyc
+
+# IDE
+.idea/
+.vscode/
+*.iml
+
+# Virtual environment
+.venv/
+
+# Windows Zone.Identifier files
+*:Zone.Identifier

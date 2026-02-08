@@ -115,6 +115,8 @@ class ImageDisplay(QWidget):
         self._data_name = "Data"
 
     def set_image(self, image: Image.Image) -> None:
+        if image.mode != "RGBA":
+            image = image.convert("RGBA")
         self._image = image
         qimage = QImage(
             image.tobytes("raw", "RGBA"),
@@ -173,6 +175,9 @@ class ImageDisplay(QWidget):
             f"{self.name}.png",
             "PNG Images (*.png);;JPEG Images (*.jpg);;BMP Images (*.bmp)"
         )
+        path_lower = path.lower()
+        if path and not(path_lower.endswith(".png") or path_lower.endswith(".jpg") or path_lower.endswith(".bmp")):
+            path += ".png"
         if path:
             self._image.save(path)
     
@@ -201,6 +206,8 @@ class ImageDisplay(QWidget):
             f"{self._data_name}.csv",
             "CSV Files (*.csv)"
         )
+        if path and (not path.lower().endswith(".csv")):
+            path += ".csv"
         if path and len(self._data) > 0:
             export_to_csv(self._data, path)
 

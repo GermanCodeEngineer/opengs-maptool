@@ -5,7 +5,7 @@ from PyQt6.QtWidgets import QApplication
 from ui.maptool_window import MapToolWindow
 from logic.maptool import MapTool
 
-def main() -> None:
+def main_automatic() -> None:
     import json
 
     # Default paths
@@ -33,13 +33,13 @@ def main() -> None:
         provinces=result.province_data,
     )))
 
-def main2() -> None:
+def main_gui() -> None:
     app = QApplication(sys.argv)
     window = MapToolWindow()
     window.show()
     sys.exit(app.exec())
 
 if __name__ == "__main__":
-    #main()
-    main2()
+    #main_automatic()
+    main_gui()
 

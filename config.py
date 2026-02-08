@@ -1,6 +1,6 @@
 # Main Window
 TITLE = "OpenGS - Map Tool"
-VERSION = "0.2"
+VERSION = "0.2.5"
 
 # Territory and Province Sizes
 PIXELS_PER_LAND_TERRITORY_DEFAULT = 6000
@@ -42,13 +42,12 @@ LAKE_COLOR = (0, 255, 0)  # RGB
 # Boundary Map Color Code
 BOUNDARY_COLOR = (0, 0, 0)
 
-# Image Display
+# Image Import
 MAX_IMAGE_PIXELS = 300000000
 
 # Number Series
-AREA_ID_PREFIX = "area-"
-TERRITORY_ID_PREFIX = "ter-"
-PROVINCE_ID_PREFIX = "prv-"
+TERRITORY_ID_PREFIX = "TRT"
+PROVINCE_ID_PREFIX = "PRV"
 SERIES_ID_START = 1
 SERIES_ID_END = 999999
 

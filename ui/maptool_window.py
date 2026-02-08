@@ -1,7 +1,7 @@
 from pathlib import Path
 from PIL import Image
 from typing import Callable
-from PyQt6.QtWidgets import QWidget, QVBoxLayout, QHBoxLayout, QTabWidget, QLabel, QPushButton, QMessageBox, QSpinBox
+from PyQt6.QtWidgets import QWidget, QVBoxLayout, QHBoxLayout, QTabWidget, QLabel, QPushButton, QMessageBox, QSpinBox, QSizePolicy
 from PyQt6.QtCore import Qt, QThread, pyqtSignal
 from PyQt6.QtGui import QPainter, QColor
 from logic.maptool import MapTool
@@ -126,6 +126,9 @@ class MapToolWindow(QWidget):
     def create_layout(self) -> None:
         # MAIN LAYOUT
         self.setWindowTitle(config.TITLE)
+        self.setMinimumSize(800, 600)
+        self.setSizePolicy(QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Expanding)
+        
         main_layout = QVBoxLayout(self)
         self.setLayout(main_layout)
 
