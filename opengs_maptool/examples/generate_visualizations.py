@@ -11,11 +11,11 @@ import sys
 from pathlib import Path
 from PIL import Image, ImageDraw
 
-# Add parent directory to path so we can import from logic
-sys.path.insert(0, str(Path(__file__).parent.parent))
+if __package__ in (None, ""):
+    # Allow running as a script from the repo root.
+    sys.path.insert(0, str(Path(__file__).resolve().parents[2]))
 
-from logic.maptool import MapTool
-from logic.export_module import export_to_json, export_to_csv
+from opengs_maptool import MapTool, export_to_json, export_to_csv
 
 
 def hex_to_rgb(hex_color: str) -> tuple[int, int, int]:
@@ -31,7 +31,7 @@ def darken_color(rgb: tuple[int, int, int], factor: float = 0.6) -> tuple[int, i
 
 def generate_maps(output_dir: Path) -> dict:
     """Generate all maps using MapTool with example inputs."""
-    example_input_dir = Path(__file__).parent.parent / "examples" / "input"
+    example_input_dir = Path(__file__).parent / "input"
     
     if not example_input_dir.exists():
         raise FileNotFoundError(f"Example input directory not found: {example_input_dir}")

@@ -4,11 +4,11 @@ from typing import Callable
 from PyQt6.QtWidgets import QWidget, QVBoxLayout, QHBoxLayout, QTabWidget, QLabel, QPushButton, QMessageBox, QSpinBox, QSizePolicy
 from PyQt6.QtCore import Qt, QThread, pyqtSignal
 from PyQt6.QtGui import QPainter, QColor
-from logic.maptool import MapTool
-from ui.buttons import create_slider, create_button
-from ui.image_display import ImageDisplay
-from ui.flappy_bird_game import FlappyBirdGame
-import config
+from ..logic.maptool import MapTool
+from .buttons import create_slider, create_button
+from .image_display import ImageDisplay
+from .flappy_bird_game import FlappyBirdGame
+from .. import config
 
 
 class ProgressButton(QPushButton):

@@ -1,12 +1,12 @@
-import config
+from .. import config
 import numpy as np
 from numpy.typing import NDArray
 from typing import Any
 from PIL import Image
 from gceutils import grepr_dataclass
-from logic.boundaries_to_cont import convert_boundaries_to_cont_areas, assign_borders_to_areas, classify_pixels_by_color, recalculate_bboxes_from_image, classify_continuous_areas
-from logic.cont_to_regions import convert_all_cont_areas_to_regions
-from logic.utils import NumberSeries
+from .boundaries_to_cont import convert_boundaries_to_cont_areas, assign_borders_to_areas, classify_pixels_by_color, recalculate_bboxes_from_image, classify_continuous_areas
+from .cont_to_regions import convert_all_cont_areas_to_regions
+from .utils import NumberSeries
 
 
 @grepr_dataclass(validate=False, frozen=True)

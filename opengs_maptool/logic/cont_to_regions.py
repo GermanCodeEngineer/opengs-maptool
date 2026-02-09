@@ -4,12 +4,12 @@ from typing import Any, Callable
 from gceutils import grepr_dataclass
 from tqdm import tqdm
 from multiprocessing import Pool, cpu_count
-from logic.utils import (
+from .utils import (
     NumberSeries, ColorSeries,
     poisson_disk_samples, lloyd_relaxation, assign_regions, build_metadata, hex_to_rgb,
     round_float, round_bbox, defragment_regions,
 )
-import config
+from .. import config
 
 
 @grepr_dataclass(validate=False, frozen=True)
