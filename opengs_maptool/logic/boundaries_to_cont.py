@@ -28,7 +28,7 @@ def recalculate_bboxes_from_image(
     
     updated_metadata = []
     
-    for region in metadata:
+    for region in tqdm(metadata, desc="Recalculating bboxes", unit="regions"):
         color_hex = region.get("color", "")
         try:
             color_rgb = hex_to_rgb(color_hex)

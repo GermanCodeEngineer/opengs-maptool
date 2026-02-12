@@ -13,7 +13,8 @@ def main_automatic() -> None:
 
     maptool = MapTool(
         land_image=Image.open(input_directory / "land2.png"),
-        boundary_image=Image.open(input_directory / "bound2_density.png")
+        boundary_image=Image.open(input_directory / "bound2_density.png"),
+        
     )
 
     result = maptool.generate()
@@ -35,6 +36,7 @@ def main_gui() -> None:
     sys.exit(app.exec())
 
 if __name__ == "__main__":
-    #main_automatic()
-    main_gui()
-
+    if sys.argv == "-gui":
+        main_gui()
+    else:
+        main_automatic()
