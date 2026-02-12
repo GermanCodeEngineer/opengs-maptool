@@ -7,7 +7,7 @@ from multiprocessing import Pool, cpu_count
 from .utils import (
     NumberSeries, ColorSeries,
     poisson_disk_samples, lloyd_relaxation, assign_regions, build_metadata, hex_to_rgb,
-    round_float, round_bbox, defragment_regions,
+    round_float, round_bbox, defragment_regions, generate_grid_based_seeds,
 )
 from .. import config
 
@@ -27,6 +27,10 @@ class AreaProcessingArgs:
         color_series: ColorSeries instance for generating unique colors per process
         poisson_rng_seed: RNG seed for Poisson disk sampling
         lloyd_rng_seed: RNG seed for Lloyd relaxation
+        lloyd_iterations: Number of Lloyd relaxation iterations
+        use_grid_based_seeds: If True, use grid-based seed generation for large areas
+        grid_size: Size of grid cells for grid-based seed generation
+        grid_threshold: Minimum area size (pixels) to trigger grid-based generation
     """
     area_meta: dict[str, Any]
     cont_areas_image: NDArray[np.uint8]
@@ -37,9 +41,12 @@ class AreaProcessingArgs:
     filter_color: tuple[int, int, int, int]
     number_series: NumberSeries
     color_series: ColorSeries
-    poisson_rng_seed: int
-    lloyd_rng_seed: int
+    poisson_rng_seed: np.random.SeedSequence
+    lloyd_rng_seed: np.random.SeedSequence
     lloyd_iterations: int
+    use_grid_based_seeds: bool = True
+    grid_size: int = 100
+    grid_threshold: int = 10000
 
 
 def convert_all_cont_areas_to_regions(
@@ -115,11 +122,10 @@ def convert_all_cont_areas_to_regions(
             desc=tqdm_description,
             unit=tqdm_unit,
         )
-        results = []
-        for i, result in enumerate(tqdm_iter, 1):
-            results.append(result)
-            if progress_callback:
-                progress_callback(i, len(cont_areas_metadata))
+        results = [
+            (result, progress_callback(i, len(cont_areas_metadata)))[0] # keep result, call progress callback
+            for i, result in enumerate(tqdm_iter, 1)
+        ]
     
 
     h, w = cont_areas_image.shape[:2]
@@ -279,15 +285,27 @@ def convert_cont_area_to_regions(args: AreaProcessingArgs) -> tuple[
         
         return cropped_image, metadata, bbox, args.color_series
     
-    seeds = poisson_disk_samples(
-        cropped_mask,
-        num_area_regions,
-        rng_seed=args.poisson_rng_seed,
-        min_dist=None,
-        k=30,
-        border_margin=0.0,
-        no_distance_limit=True,
-    )
+    # Use grid-based seeding for large areas to improve distribution
+    area_size = np.sum(cropped_mask)
+    if args.use_grid_based_seeds and area_size > args.grid_threshold:
+        seeds = generate_grid_based_seeds(
+            cropped_mask,
+            num_area_regions,
+            rng_seed=args.poisson_rng_seed,
+            grid_size=args.grid_size,
+            k=30,
+            no_distance_limit=True,
+        )
+    else:
+        seeds = poisson_disk_samples(
+            cropped_mask,
+            num_area_regions,
+            rng_seed=args.poisson_rng_seed,
+            min_dist=None,
+            k=30,
+            border_margin=0.0,
+            no_distance_limit=True,
+        )
     
     if not seeds:
         return np.zeros((10, 10, 4), dtype=np.uint8), [], None, args.color_series
