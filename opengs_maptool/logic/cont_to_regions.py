@@ -37,8 +37,8 @@ class AreaProcessingArgs:
     filter_color: tuple[int, int, int, int]
     number_series: NumberSeries
     color_series: ColorSeries
-    poisson_rng_seed: int
-    lloyd_rng_seed: int
+    poisson_rng_seed: np.random.SeedSequence
+    lloyd_rng_seed: np.random.SeedSequence
     lloyd_iterations: int
 
 
@@ -115,11 +115,10 @@ def convert_all_cont_areas_to_regions(
             desc=tqdm_description,
             unit=tqdm_unit,
         )
-        results = []
-        for i, result in enumerate(tqdm_iter, 1):
-            results.append(result)
-            if progress_callback:
-                progress_callback(i, len(cont_areas_metadata))
+        results = [
+            (result, progress_callback(i, len(cont_areas_metadata)))[0] # keep result, call progress callback
+            for i, result in enumerate(tqdm_iter, 1)
+        ]
     
 
     h, w = cont_areas_image.shape[:2]

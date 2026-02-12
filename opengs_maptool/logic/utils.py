@@ -64,7 +64,7 @@ class NumberSeries:
 
 
 class ColorSeries:
-    def __init__(self, rng_seed: int, exclude_values: Iterable[tuple[int, int, int]] | None = None) -> None:
+    def __init__(self, rng_seed: int  | np.random.SeedSequence, exclude_values: Iterable[tuple[int, int, int]] | None = None) -> None:
         self.rng = np.random.default_rng(rng_seed)
         self.used_values = set() if exclude_values is None else set(exclude_values) 
 
@@ -148,7 +148,7 @@ def build_masks(
 def poisson_disk_samples(
     mask: NDArray[np.bool],
     num_points: int,
-    rng_seed: int,
+    rng_seed: int | np.random.SeedSequence,
     min_dist: float | None = None,
     k: int = 30,
     border_margin: float = 0.0,
@@ -293,7 +293,7 @@ def poisson_disk_samples(
 
 def lloyd_relaxation(
         mask: NDArray[np.bool], point_seeds: list[tuple[int, int]], 
-        rng_seed: int, iterations: int, boundary_mask: NDArray[np.bool] | None = None
+        rng_seed: int | np.random.SeedSequence, iterations: int, boundary_mask: NDArray[np.bool] | None = None
     ) -> list[tuple[int, int]]:
     """
     Lloyd relaxation with optional fast mode.
