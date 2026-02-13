@@ -37,6 +37,9 @@ The graphical interface provides an interactive, step-by-step workflow:
 
 #### 2. **Adapt Boundary Image** (Optional)
    - Import your boundary image (black lines on transparent background, RGB 0,0,0)
+    - If your source stores density in the blue channel, click "Convert Blue-Channel Density To Grayscale"
+       - Output format uses grayscale `1..255` for density
+       - `0` is reserved exclusively for boundaries
    - Click "Normalize Territory and Province Density" to prepare it for density editing
    - Use the blue channel to control region density:
      - **B=255 (white)** → 4x more regions
@@ -100,9 +103,10 @@ maptool = MapTool(
     pixels_per_land_province=1200,       # Adjust province size
     pixels_per_water_province=7000,
     lloyd_iterations=2,                  # Quality of Voronoi relaxation
-    cont_areas_rng_seed=int(1e6),
-    territories_rng_seed=int(2e6),
-    provinces_rng_seed=int(3e6),
+    cont_areas_rng_seed = int(1e6),
+    districts_rng_seed = int(2e6),
+    territories_rng_seed = int(3e6),
+    provinces_rng_seed = int(4e6),
 )
 
 # Generate all maps

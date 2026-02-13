@@ -200,6 +200,12 @@ class MapToolWindow(QWidget):
             "Normalize Territory and Province Density",
             self.on_button_normalize_density,
         )
+
+        create_button(
+            boundary_tab_layout,
+            "Convert Blue-Channel Density To Grayscale",
+            self.on_button_convert_blue_density_to_grayscale,
+        )
         
         self.normalized_boundary_image_display = ImageDisplay(name="Adapted Boundary Image")
         self.normalized_boundary_image_display.set_image(EMPTY_IMAGE)
@@ -363,6 +369,12 @@ class MapToolWindow(QWidget):
         if image_buffer is not None:
             normalized_buffer = MapTool.normalize_boundary_area_density(image_buffer)
             self.normalized_boundary_image_display.set_image(Image.fromarray(normalized_buffer))
+
+    def on_button_convert_blue_density_to_grayscale(self) -> None:
+        image_buffer = self.orig_boundary_image_display.get_image_buffer()
+        if image_buffer is not None:
+            converted_buffer = MapTool.convert_blue_density_to_grayscale(image_buffer)
+            self.normalized_boundary_image_display.set_image(Image.fromarray(converted_buffer))
 
     # TAB 3
     def on_button_import_final_boundary(self) -> None:

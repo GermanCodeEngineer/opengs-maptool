@@ -2,7 +2,7 @@ import numpy as np
 from numpy.typing import NDArray
 from scipy import ndimage
 from tqdm import tqdm
-from .utils import ColorSeries, round_float, hex_to_rgb
+from .utils import ColorSeries, round_float, hex_to_rgb, get_area_pixel_mask
 from .. import config
 
 NEIGHBOR_OFFSETS = [(-1, 0), (1, 0), (0, -1), (0, 1)]
@@ -135,13 +135,8 @@ def convert_boundaries_to_cont_areas(boundaries_image: NDArray[np.uint8], rng_se
         - R, G, B: Area color
     """
 
-    # Vectorized mask creation - use only R and G channels for border/area detection
-    # Area detection: R and G channels are bright (ignore B channel)
-    is_white: np.ndarray = (
-        (boundaries_image[:, :, 3] == 255) &
-        (boundaries_image[:, :, 0] > 180) &
-        (boundaries_image[:, :, 1] > 180)
-    )
+    # Vectorized mask creation for both legacy and grayscale boundary formats.
+    is_white: np.ndarray = get_area_pixel_mask(boundaries_image)
 
     # Use scipy's label function for connected component analysis (rel. fast)
     white_mask = is_white.astype(np.uint8)
@@ -184,12 +179,8 @@ def convert_boundaries_to_cont_areas(boundaries_image: NDArray[np.uint8], rng_se
         region_to_color[region_id] = (*color_rgb, 255)
         regions_image[labeled_array == region_id] = region_to_color[region_id]
         
-        # Calculate density multiplier from B channel (0-255)
-        # Sample B value from representative points in the region (center and nearby)
         region_mask = labeled_array == region_id
         rows, cols = np.where(region_mask)
-        # Areas should not measure density; districts will compute density separately.
-        density_multiplier = 1.0
         
         # Calculate center of mass (centroid) for local coordinates
         center_x = float(np.mean(cols))
@@ -205,7 +196,6 @@ def convert_boundaries_to_cont_areas(boundaries_image: NDArray[np.uint8], rng_se
 
         center_x = round_float(center_x, 2)
         center_y = round_float(center_y, 2)
-        density_multiplier = round_float(density_multiplier, 2)
 
         metadata.append({
             "region_type": None,
@@ -218,7 +208,7 @@ def convert_boundaries_to_cont_areas(boundaries_image: NDArray[np.uint8], rng_se
             "global_y": center_y,
             "bbox_local": bbox_local,
             "bbox": bbox_local,
-            "density_multiplier": density_multiplier,
+            "density_multiplier": None,
         })
     
     if progress_callback:

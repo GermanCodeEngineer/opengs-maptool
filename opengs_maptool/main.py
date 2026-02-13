@@ -14,9 +14,11 @@ def main_automatic() -> None:
     class DistrictMapTool(MapTool):
         def on_cont_areas_generated(self, cont_areas_image, cont_areas_image_buffer, cont_areas_data):
             cont_areas_image.save(output_directory / "contareas_image.png")
+            (output_directory / "contareas_data.json").write_text(json.dumps(cont_areas_data))
 
-        def on_districts_generated(self, district_image, district_image_buffer, district_data):
-            district_image.save(output_directory / "district_image.png")
+        def on_districts_generated(self, districts_image, districts_image_buffer, districts_data):
+            districts_image.save(output_directory / "districts_image.png")
+            (output_directory / "districts_data.json").write_text(json.dumps(districts_data))
             sys.exit(0) # temporarily exit after that
 
     maptool = DistrictMapTool(

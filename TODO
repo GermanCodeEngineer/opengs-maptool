@@ -4,3 +4,6 @@ TODOs:
 - maptool options for what images to produce? maybe chaching?
 - improve flappy bird and run in seperate process to avoid lags
 - add terms definition to README
+
+Sources:
+- https://www.earthdata.nasa.gov/data/catalog/sedac-ciesin-sedac-gpwv4-popdens-4.0

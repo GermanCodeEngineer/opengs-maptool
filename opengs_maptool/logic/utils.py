@@ -44,6 +44,28 @@ def round_bbox(
     ]
 
 
+def get_area_pixel_mask(image: NDArray[np.uint8]) -> NDArray[np.bool_]:
+    """Return mask for area pixels in supported boundary/density image formats.
+
+    Supported formats:
+    - Legacy: bright R/G channels for area pixels.
+    - Grayscale: non-zero grayscale value for area pixels, 0 reserved for borders.
+    """
+    red = image[:, :, 0]
+    green = image[:, :, 1]
+    blue = image[:, :, 2]
+
+    # Determine format from image content to avoid mixing classification rules.
+    is_grayscale_image = bool(np.all(red == green) and np.all(green == blue))
+
+    if is_grayscale_image:
+        # In grayscale format, 0 is reserved for borders and >0 are area pixels.
+        return red > 0
+
+    # Legacy format: areas are bright in R/G channels.
+    return (red > 180) & (green > 180)
+
+
 class NumberSeries:
     def __init__(self, prefix: str, number_start: int, number_end: int) -> None:
         self.prefix: str = prefix
@@ -598,7 +620,7 @@ def build_metadata(
 
         cx = round_float(cx, 2)
         cy = round_float(cy, 2)
-        bbox_local = round_bbox(bbox_local, 0)
+        bbox_local = round_bbox(bbox_local)
 
         meta_dict = {
             "region_type": region_type,

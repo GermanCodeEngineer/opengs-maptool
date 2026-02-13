@@ -176,7 +176,7 @@ class MapTool:
                 # Map progress (0-100) to overall progress (0-90)
                 progress_callback(int((current / total) * 90), 100)
 
-        district_image, district_data = convert_all_cont_areas_to_regions(
+        districts_image, district_data = convert_all_cont_areas_to_regions(
             cont_areas_image=cont_areas_image,
             cont_areas_metadata=cont_areas_data,
             class_image=class_image,
@@ -204,7 +204,7 @@ class MapTool:
         if progress_callback:
             progress_callback(100, 100)
 
-        args = (Image.fromarray(district_image), district_image, district_data)
+        args = (Image.fromarray(districts_image), districts_image, district_data)
         if callable(getattr(self, "on_districts_generated", None)):
             self.on_districts_generated(*args)
         return args
@@ -293,7 +293,7 @@ class MapTool:
     def on_type_classification_generated(self,
         class_image: Image.Image, class_image_buffer: NDArray[np.uint8], class_counts: dict[str, int]) -> None: ...
     def on_districts_generated(self,
-        district_image: Image.Image, district_image_buffer: NDArray[np.uint8], district_data: list[dict[str, Any]]) -> None: ...
+        districts_image: Image.Image, districts_image_buffer: NDArray[np.uint8], districts_data: list[dict[str, Any]]) -> None: ...
     def on_territories_generated(self,
         territory_image: Image.Image, territory_image_buffer: NDArray[np.uint8], territory_data: list[dict[str, Any]]) -> None: ...
     def on_provinces_generated(self,
@@ -320,4 +320,50 @@ class MapTool:
         # Set B channel to 128 (normal density) for all areas
         result[is_area, 2] = 128
         
+        return result
+
+    @staticmethod
+    def convert_blue_density_to_grayscale(
+        boundary_image: NDArray[np.uint8],
+        black_threshold: int = 16,
+    ) -> NDArray[np.uint8]:
+        """
+        Convert a boundary+density image into strict grayscale density format.
+
+        Input format:
+        - Density is stored in the blue channel.
+        - Borders are black or near-black.
+
+        Output format:
+        - RGB are equal (grayscale).
+        - Borders are exactly 0.
+        - Non-border area pixels are in the range 1..255 (0 is reserved for borders).
+        - Alpha is set to 255.
+
+        Args:
+            boundary_image: Input image as RGBA/RGB numpy array.
+            black_threshold: Max RGB channel value considered "near-black" border.
+
+        Returns:
+            RGBA uint8 image in grayscale-density format.
+        """
+        if boundary_image.ndim != 3 or boundary_image.shape[2] < 3:
+            raise ValueError("boundary_image must have shape (H, W, C) with at least 3 channels")
+
+        rgb = boundary_image[:, :, :3].astype(np.uint8)
+        blue = rgb[:, :, 2]
+
+        # Border if all channels are near-black.
+        is_border = np.max(rgb, axis=2) <= int(black_threshold)
+
+        # Reserve 0 exclusively for borders.
+        gray = blue.copy()
+        gray[~is_border] = np.clip(gray[~is_border], 1, 255)
+        gray[is_border] = 0
+
+        result = np.empty((*gray.shape, 4), dtype=np.uint8)
+        result[:, :, 0] = gray
+        result[:, :, 1] = gray
+        result[:, :, 2] = gray
+        result[:, :, 3] = 255
         return result

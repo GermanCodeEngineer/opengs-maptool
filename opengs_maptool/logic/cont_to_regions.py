@@ -7,9 +7,11 @@ from multiprocessing import Pool, cpu_count
 from .utils import (
     NumberSeries, ColorSeries,
     poisson_disk_samples, lloyd_relaxation, assign_regions, build_metadata, hex_to_rgb,
-    round_float, round_bbox, defragment_regions, generate_grid_based_seeds,
+    round_float, round_bbox, defragment_regions, generate_grid_based_seeds, get_area_pixel_mask,
 )
 from .. import config
+
+
 
 
 @grepr_dataclass(validate=False, frozen=True)
@@ -168,7 +170,6 @@ def convert_all_cont_areas_to_regions(
                             float(bx1 + x_min),
                             float(by1 + y_min),
                         ],
-                        0,
                     )
                 
                 updated_region_metadata.append(region)
@@ -226,14 +227,10 @@ def convert_cont_area_to_regions(args: AreaProcessingArgs) -> tuple[
         pixels_per_region = args.pixels_per_water_region
         pixel_count = water_pixels
     
-    # Apply density multiplier from density image if provided; otherwise use metadata
+    # Apply area-level density multiplier only when no per-region density image is provided
     if args.density_image is not None:
         density_src = args.density_image[y_min:y_max, x_min:x_max]
-        is_area_pixel = (
-            (density_src[:, :, 3] == 255) &
-            (density_src[:, :, 0] > 180) &
-            (density_src[:, :, 1] > 180)
-        )
+        is_area_pixel = get_area_pixel_mask(density_src)
         density_mask = cropped_mask & is_area_pixel
         if np.any(density_mask):
             avg_blue = float(np.mean(density_src[:, :, 2][density_mask]))
@@ -245,7 +242,7 @@ def convert_cont_area_to_regions(args: AreaProcessingArgs) -> tuple[
         else:
             density_multiplier = ((avg_blue - 128) / 127) * 3 + 1
     else:
-        density_multiplier = args.area_meta.get("density_multiplier", 1.0)
+        density_multiplier = args.area_meta.get("density_multiplier") or 1.0
     
     # Calculate regions: areas smaller than 0.5 regions get 0 territories (skip them)
     num_area_regions = max(1, round(pixel_count / pixels_per_region * density_multiplier))
@@ -277,7 +274,7 @@ def convert_cont_area_to_regions(args: AreaProcessingArgs) -> tuple[
 
         cx_cropped = round_float(cx_cropped, 2)
         cy_cropped = round_float(cy_cropped, 2)
-        local_bbox = round_bbox(local_bbox, 0)
+        local_bbox = round_bbox(local_bbox)
 
         metadata = [{
             "region_type": area_type,
@@ -290,8 +287,23 @@ def convert_cont_area_to_regions(args: AreaProcessingArgs) -> tuple[
             "global_y": None,
             "bbox_local": local_bbox,
             "bbox": None,  # Set later (global bbox)
-            "density_multiplier": density_multiplier,
+            "density_multiplier": round_float(density_multiplier, 2),
         }]
+
+        # For districts, compute average density from this region's own pixels.
+        if args.density_image is not None:
+            density_src = args.density_image[y_min:y_max, x_min:x_max]
+            is_area_pixel = get_area_pixel_mask(density_src)
+            region_density_mask = cropped_mask & is_area_pixel
+
+            avg_blue = float(np.mean(density_src[:, :, 2][region_density_mask])) if np.any(region_density_mask) else 128.0
+
+            if avg_blue <= 128.0:
+                region_density_multiplier = (avg_blue / 128) * 0.75 + 0.25
+            else:
+                region_density_multiplier = ((avg_blue - 128) / 127) * 3 + 1
+
+            metadata[0]["density_multiplier"] = round_float(region_density_multiplier, 2)
         
         # Fill only masked pixels with single region color
         h, w = cropped_mask.shape
@@ -331,8 +343,24 @@ def convert_cont_area_to_regions(args: AreaProcessingArgs) -> tuple[
     metadata = build_metadata(
         pmap, seeds, 0, area_type, args.number_series, args.color_series,
         parent_id=args.area_meta["region_id"],
-        parent_density_multiplier=args.area_meta.get("density_multiplier", 1.0)
+        parent_density_multiplier=args.area_meta.get("density_multiplier") or 1.0
     )
+
+    # For districts, compute average density per generated region from the density image.
+    if args.density_image is not None and metadata:
+        density_src = args.density_image[y_min:y_max, x_min:x_max]
+        is_area_pixel = get_area_pixel_mask(density_src)
+
+        for i, region_meta in enumerate(metadata):
+            region_mask = (pmap == i) & cropped_mask & is_area_pixel
+            avg_blue = float(np.mean(density_src[:, :, 2][region_mask])) if np.any(region_mask) else 128.0
+
+            if avg_blue <= 128.0:
+                region_density_multiplier = (avg_blue / 128) * 0.75 + 0.25
+            else:
+                region_density_multiplier = ((avg_blue - 128) / 127) * 3 + 1
+
+            region_meta["density_multiplier"] = round_float(region_density_multiplier, 2)
     
     # Convert province map to colored image
     h, w = cropped_mask.shape
