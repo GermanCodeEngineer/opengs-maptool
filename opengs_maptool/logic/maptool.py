@@ -13,15 +13,17 @@ from .utils import NumberSeries
 class MapToolResult:
     """
     Dataclass Containing Results of the Map Tool
-    - territory and province maps
+    - district, territory and province maps
     - continuous areas map
     - cleaned land/ocean/lake classification
-    - data of continuous areas, territories & provinces 
+    - data of continuous areas, districts, territories & provinces 
     """
     cont_areas_image: Image.Image
     cont_areas_data: list[dict[str, Any]]
     class_image: Image.Image
     class_counts: dict[str, int]
+    district_image: Image.Image
+    district_data: list[dict[str, Any]]
     territory_image: Image.Image
     territory_data: list[dict[str, Any]]
     province_image: Image.Image
@@ -40,20 +42,24 @@ class MapTool:
     pixels_per_water_province: int
     lloyd_iterations: int
     cont_areas_rng_seed: int
+    districts_rng_seed: int
     territories_rng_seed: int
     provinces_rng_seed: int
 
     def __init__(self,
             land_image: Image.Image,
             boundary_image: Image.Image,
+            pixels_per_land_district: int = config.PIXELS_PER_LAND_DISTRICT_DEFAULT,
+            pixels_per_water_district: int = config.PIXELS_PER_WATER_DISTRICT_DEFAULT,
             pixels_per_land_territory: int = config.PIXELS_PER_LAND_TERRITORY_DEFAULT,
             pixels_per_water_territory: int = config.PIXELS_PER_WATER_TERRITORY_DEFAULT,
             pixels_per_land_province: int = config.PIXELS_PER_LAND_PROVINCE_DEFAULT,
             pixels_per_water_province: int = config.PIXELS_PER_WATER_PROVINCE_DEFAULT, # 1/5th
             lloyd_iterations: int = 2,
             cont_areas_rng_seed: int = int(1e6),
-            territories_rng_seed: int = int(2e6),
-            provinces_rng_seed: int = int(3e6),
+            districts_rng_seed: int = int(2e6),
+            territories_rng_seed: int = int(3e6),
+            provinces_rng_seed: int = int(4e6),
         ) -> None:
         """
         Initialize MapTool with input images and parameters.
@@ -61,12 +67,15 @@ class MapTool:
         Args:
             land_image: PIL Image containing land/ocean/lake classification
             boundary_image: PIL Image containing (country) boundaries and density information(in blue channel)
+            pixels_per_land_district: Approximate pixels per land district
+            pixels_per_water_district: Approximate pixels per water district
             pixels_per_land_territory: Approximate pixels per land territory
             pixels_per_water_territory: Approximate pixels per water territory
             pixels_per_land_province: Approximate pixels per land province
             pixels_per_water_province: Approximate pixels per water province
             lloyd_iterations: Number of Lloyd's algorithm iterations for province and territory generation 
             cont_areas_rng_seed: RNG seed used for continuous area generation
+            districts_rng_seed: RNG seed used for district generation
             territories_rng_seed: RNG seed used for territory generation
             provinces_rng_seed: RNG seed used for province generation
         """
@@ -74,12 +83,15 @@ class MapTool:
 
         self.land_image = np.array(land_image.convert("RGBA"))
         self.boundary_image = np.array(boundary_image.convert("RGBA"))
+        self.pixels_per_land_district = pixels_per_land_district
+        self.pixels_per_water_district = pixels_per_water_district
         self.pixels_per_land_territory = pixels_per_land_territory
         self.pixels_per_water_territory = pixels_per_water_territory
         self.pixels_per_land_province = pixels_per_land_province
         self.pixels_per_water_province = pixels_per_water_province
         self.lloyd_iterations = lloyd_iterations
         self.cont_areas_rng_seed = cont_areas_rng_seed
+        self.districts_rng_seed = districts_rng_seed
         self.territories_rng_seed = territories_rng_seed
         self.provinces_rng_seed = provinces_rng_seed
     
@@ -92,8 +104,9 @@ class MapTool:
         This method orchestrates the full map generation pipeline:
         1. Converts boundaries to continuous areas
         2. Classifies pixels by land/water type
-        3. Generates territories from continuous areas
-        4. Generates provinces from territories
+        3. Generates districts from continuous areas
+        4. Generates territories from districts
+        5. Generates provinces from territories
         """
         cont_areas_image, cont_areas_image_buffer, cont_areas_data = self._generate_cont_areas()
         class_image, class_image_buffer, class_counts = self._generate_type_classification()
@@ -101,11 +114,13 @@ class MapTool:
         # Classify continuous areas by land/ocean/lake type
         cont_areas_data = classify_continuous_areas(cont_areas_image_buffer, class_image_buffer, cont_areas_data)
         
-        territory_image, territory_image_buffer, territory_data = self._generate_territories(cont_areas_image_buffer, cont_areas_data, class_image_buffer, class_counts)
+        district_image, district_image_buffer, district_data = self._generate_districts(cont_areas_image_buffer, cont_areas_data, class_image_buffer, class_counts)
+        territory_image, territory_image_buffer, territory_data = self._generate_territories(district_image_buffer, district_data, class_image_buffer, class_counts)
         province_image, province_image_buffer, province_data = self._generate_provinces(territory_image_buffer, territory_data, class_image_buffer, class_counts)
         return MapToolResult(
             cont_areas_image, cont_areas_data,
             class_image, class_counts,
+            district_image, district_data,
             territory_image, territory_data,
             province_image, province_data,
         )
@@ -149,6 +164,49 @@ class MapTool:
         args = (Image.fromarray(class_image), class_image, class_counts)
         if callable(getattr(self, "on_type_classification_generated", None)):
             self.on_type_classification_generated(*args)
+        return args
+    
+    def _generate_districts(self,
+        cont_areas_image: NDArray[np.uint8], cont_areas_data: list[dict[str, Any]],
+        class_image: NDArray[np.uint8], class_counts: dict[str, int],
+        progress_callback=None,
+    ) -> tuple[Image.Image, NDArray[np.uint8], list[dict[str, Any]]]:
+        def district_progress(current: int, total: int) -> None:
+            if progress_callback:
+                # Map progress (0-100) to overall progress (0-90)
+                progress_callback(int((current / total) * 90), 100)
+
+        district_image, district_data = convert_all_cont_areas_to_regions(
+            cont_areas_image=cont_areas_image,
+            cont_areas_metadata=cont_areas_data,
+            class_image=class_image,
+            class_counts=class_counts,
+            pixels_per_land_region=self.pixels_per_land_district,
+            pixels_per_water_region=self.pixels_per_water_district,
+            fn_new_number_series=lambda area_meta: NumberSeries(
+                f"{area_meta['region_id']}-{config.DISTRICT_ID_PREFIX}", config.SERIES_ID_START, config.SERIES_ID_END
+            ),
+            rng_seed=self.districts_rng_seed,
+            lloyd_iterations=self.lloyd_iterations,
+            density_image=self.boundary_image,
+            tqdm_description="Generating districts from areas",
+            tqdm_unit="areas",
+            progress_callback=district_progress,
+        )
+
+        if progress_callback:
+            progress_callback(90, 100)
+
+        number_series = NumberSeries(config.DISTRICT_ID_PREFIX, config.SERIES_ID_START, config.SERIES_ID_END)
+        for district in district_data:
+            district["region_id"] = number_series.get_id()
+
+        if progress_callback:
+            progress_callback(100, 100)
+
+        args = (Image.fromarray(district_image), district_image, district_data)
+        if callable(getattr(self, "on_districts_generated", None)):
+            self.on_districts_generated(*args)
         return args
     
     def _generate_territories(self,
@@ -234,6 +292,8 @@ class MapTool:
         cont_areas_image: Image.Image, cont_areas_image_buffer: NDArray[np.uint8], cont_areas_data: list[dict[str, Any]]) -> None: ...
     def on_type_classification_generated(self,
         class_image: Image.Image, class_image_buffer: NDArray[np.uint8], class_counts: dict[str, int]) -> None: ...
+    def on_districts_generated(self,
+        district_image: Image.Image, district_image_buffer: NDArray[np.uint8], district_data: list[dict[str, Any]]) -> None: ...
     def on_territories_generated(self,
         territory_image: Image.Image, territory_image_buffer: NDArray[np.uint8], territory_data: list[dict[str, Any]]) -> None: ...
     def on_provinces_generated(self,

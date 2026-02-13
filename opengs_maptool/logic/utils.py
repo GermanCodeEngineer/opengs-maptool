@@ -28,7 +28,6 @@ def round_float(value: float, decimals: int = 2) -> float:
 
 def round_bbox(
     bbox: list[float],
-    decimals: int = 0,
 ) -> list[int]:
     """Convert bbox to integers.
 
@@ -539,17 +538,6 @@ def defragment_regions(
                 pmap_fixed[y, x] = best_seed_id
     
     return pmap_fixed
-
-
-def assign_borders(pmap: NDArray[np.int32], border_mask: NDArray[np.bool]) -> None:
-    """Assign border pixels to nearest valid region (respects boundary structure)."""
-    valid = pmap >= 0
-    if not valid.any() or not border_mask.any():
-        return
-
-    _, (ny, nx) = distance_transform_edt(~valid, return_indices=True)
-    bm = border_mask
-    pmap[bm] = pmap[ny[bm], nx[bm]]
 
 
 def build_metadata(

@@ -28,9 +28,6 @@ class AreaProcessingArgs:
         poisson_rng_seed: RNG seed for Poisson disk sampling
         lloyd_rng_seed: RNG seed for Lloyd relaxation
         lloyd_iterations: Number of Lloyd relaxation iterations
-        use_grid_based_seeds: If True, use grid-based seed generation for large areas
-        grid_size: Size of grid cells for grid-based seed generation
-        grid_threshold: Minimum area size (pixels) to trigger grid-based generation
     """
     area_meta: dict[str, Any]
     cont_areas_image: NDArray[np.uint8]
@@ -44,9 +41,7 @@ class AreaProcessingArgs:
     poisson_rng_seed: np.random.SeedSequence
     lloyd_rng_seed: np.random.SeedSequence
     lloyd_iterations: int
-    use_grid_based_seeds: bool = True
-    grid_size: int = 100
-    grid_threshold: int = 10000
+    density_image: NDArray[np.uint8] | None
 
 
 def convert_all_cont_areas_to_regions(
@@ -59,6 +54,7 @@ def convert_all_cont_areas_to_regions(
         fn_new_number_series: Callable[[dict[str, Any]], NumberSeries],
         rng_seed: int,
         lloyd_iterations: int,
+    density_image: NDArray[np.uint8] | None = None,
         num_processes: int | None = None,
         tqdm_description: str = "Converting areas to regions",
         tqdm_unit: str = "area",
@@ -109,6 +105,7 @@ def convert_all_cont_areas_to_regions(
             poisson_rng_seed=poisson_seed,
             lloyd_rng_seed=lloyd_seed,
             lloyd_iterations=lloyd_iterations,
+            density_image=density_image,
         )
         for area_meta, color_seed, poisson_seed, lloyd_seed 
         in zip(cont_areas_metadata, color_seeds, poisson_seeds, lloyd_seeds)
@@ -229,8 +226,26 @@ def convert_cont_area_to_regions(args: AreaProcessingArgs) -> tuple[
         pixels_per_region = args.pixels_per_water_region
         pixel_count = water_pixels
     
-    # Apply density multiplier from boundary metadata
-    density_multiplier = args.area_meta.get("density_multiplier", 1.0)
+    # Apply density multiplier from density image if provided; otherwise use metadata
+    if args.density_image is not None:
+        density_src = args.density_image[y_min:y_max, x_min:x_max]
+        is_area_pixel = (
+            (density_src[:, :, 3] == 255) &
+            (density_src[:, :, 0] > 180) &
+            (density_src[:, :, 1] > 180)
+        )
+        density_mask = cropped_mask & is_area_pixel
+        if np.any(density_mask):
+            avg_blue = float(np.mean(density_src[:, :, 2][density_mask]))
+        else:
+            avg_blue = 128.0
+
+        if avg_blue <= 128.0:
+            density_multiplier = (avg_blue / 128) * 0.75 + 0.25
+        else:
+            density_multiplier = ((avg_blue - 128) / 127) * 3 + 1
+    else:
+        density_multiplier = args.area_meta.get("density_multiplier", 1.0)
     
     # Calculate regions: areas smaller than 0.5 regions get 0 territories (skip them)
     num_area_regions = max(1, round(pixel_count / pixels_per_region * density_multiplier))
@@ -286,26 +301,15 @@ def convert_cont_area_to_regions(args: AreaProcessingArgs) -> tuple[
         return cropped_image, metadata, bbox, args.color_series
     
     # Use grid-based seeding for large areas to improve distribution
-    area_size = np.sum(cropped_mask)
-    if args.use_grid_based_seeds and area_size > args.grid_threshold:
-        seeds = generate_grid_based_seeds(
-            cropped_mask,
-            num_area_regions,
-            rng_seed=args.poisson_rng_seed,
-            grid_size=args.grid_size,
-            k=30,
-            no_distance_limit=True,
-        )
-    else:
-        seeds = poisson_disk_samples(
-            cropped_mask,
-            num_area_regions,
-            rng_seed=args.poisson_rng_seed,
-            min_dist=None,
-            k=30,
-            border_margin=0.0,
-            no_distance_limit=True,
-        )
+    seeds = poisson_disk_samples(
+        cropped_mask,
+        num_area_regions,
+        rng_seed=args.poisson_rng_seed,
+        min_dist=None,
+        k=30,
+        border_margin=0.0,
+        no_distance_limit=True,
+    )
     
     if not seeds:
         return np.zeros((10, 10, 4), dtype=np.uint8), [], None, args.color_series

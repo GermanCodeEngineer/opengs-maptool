@@ -1,0 +1,6 @@
+TODOs:
+- move default images opening into layout creation
+- use seperate grayscale image instead of blue channel for density
+- maptool options for what images to produce? maybe chaching?
+- improve flappy bird and run in seperate process to avoid lags
+- add terms definition to README

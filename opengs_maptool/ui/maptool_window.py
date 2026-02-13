@@ -115,6 +115,8 @@ class MapToolWindow(QWidget):
         self._cont_areas_data = None
         self._class_image_buffer = None
         self._class_counts = None
+        self._district_image_buffer = None
+        self._district_data = None
         self._territory_image_buffer = None
         self._territory_data = None
         self._province_image_buffer = None
@@ -160,6 +162,8 @@ class MapToolWindow(QWidget):
         self.tabs.addTab(self.land_tab, "Input Images")
         self.create_areas_tab()
         self.tabs.addTab(self.areas_tab, "Generate Areas")
+        self.create_district_tab()
+        self.tabs.addTab(self.district_tab, "Generate Districts")
         self.create_territory_tab()
         self.tabs.addTab(self.territory_tab, "Generate Territories")
         self.create_province_tab()
@@ -277,6 +281,42 @@ class MapToolWindow(QWidget):
         self.territory_image_display.set_image(EMPTY_IMAGE)
         territory_tab_layout.addWidget(self.territory_image_display, stretch=1)
 
+    def create_district_tab(self) -> None:
+        self.district_tab = QWidget()
+        district_tab_layout = QVBoxLayout(self.district_tab)
+
+        self.districts_rng_seed_input = self._create_seed_input(
+            district_tab_layout,
+            "Districts RNG Seed:",
+            int(1_500_000),
+        )
+
+        self.pixels_per_land_district_slider = create_slider(district_tab_layout,
+            "Pixels per Land district:",
+            config.PIXELS_PER_LAND_DISTRICT_MIN,
+            config.PIXELS_PER_LAND_DISTRICT_MAX,
+            config.PIXELS_PER_LAND_DISTRICT_DEFAULT,
+            config.PIXELS_PER_LAND_DISTRICT_TICK,
+            config.PIXELS_PER_LAND_DISTRICT_STEP,
+        )
+
+        self.pixels_per_water_district_slider = create_slider(district_tab_layout,
+            "Pixels per Water district:",
+            config.PIXELS_PER_WATER_DISTRICT_MIN,
+            config.PIXELS_PER_WATER_DISTRICT_MAX,
+            config.PIXELS_PER_WATER_DISTRICT_DEFAULT,
+            config.PIXELS_PER_WATER_DISTRICT_TICK,
+            config.PIXELS_PER_WATER_DISTRICT_STEP,
+        )
+
+        self.button_gen_districts = ProgressButton("Generate Districts")
+        self.button_gen_districts.clicked.connect(self.on_button_generate_districts)
+        district_tab_layout.addWidget(self.button_gen_districts)
+
+        self.district_image_display = ImageDisplay(name="District Image", csv_export=True)
+        self.district_image_display.set_image(EMPTY_IMAGE)
+        district_tab_layout.addWidget(self.district_image_display, stretch=1)
+
     def create_province_tab(self) -> None:
         self.province_tab = QWidget()
         province_tab_layout = QVBoxLayout(self.province_tab)
@@ -389,21 +429,59 @@ class MapToolWindow(QWidget):
         self.button_generate_areas.setEnabled(False)
         
         self.areas_worker = self._create_background_worker(run_task, on_progress, on_finished, on_error)
+
+    # TAB 5
+    def on_button_generate_districts(self) -> None:
+        if self._cont_areas_image_buffer is None:
+            QMessageBox.warning(self, "Warning", "Continuous areas must be generated first")
+            return
+
+        def run_task(maptool: MapTool, progress_callback: Callable) -> tuple:
+            district_image, district_image_buffer, district_data = maptool._generate_districts(
+                self._cont_areas_image_buffer,
+                self._cont_areas_data,
+                self._class_image_buffer,
+                self._class_counts,
+                progress_callback=progress_callback,
+            )
+            return (district_image, district_image_buffer, district_data)
+
+        def on_progress(value: int) -> None:
+            self.button_gen_districts.set_progress(value)
+
+        def on_finished(result: tuple) -> None:
+            self.button_gen_districts.reset_progress()
+            self.button_gen_districts.setEnabled(True)
+            district_image, district_image_buffer, district_data = result
+            self.district_image_display.set_image(district_image)
+            self.district_image_display.set_data(district_data, "District Data")
+            self._district_image_buffer = district_image_buffer
+            self._district_data = district_data
+
+        def on_error(error: Exception) -> None:
+            self.button_gen_districts.reset_progress()
+            self.button_gen_districts.setEnabled(True)
+            QMessageBox.critical(self, "Error", f"Error generating districts: {error}")
+
+        self.button_gen_districts.reset_progress()
+        self.button_gen_districts.setEnabled(False)
+
+        self.districts_worker = self._create_background_worker(run_task, on_progress, on_finished, on_error)
     
     def _generate_type_classification(self) -> None:
         maptool = self._create_maptool()
         _, self._class_image_buffer, self._class_counts = maptool._generate_type_classification()
     
-    # TAB 5
+    # TAB 6
     def on_button_generate_territories(self) -> None:
-        if self._cont_areas_image_buffer is None:
-            QMessageBox.warning(self, "Warning", "Continuous areas must be generated first")
+        if self._district_image_buffer is None:
+            QMessageBox.warning(self, "Warning", "Districts must be generated first")
             return
         
         def run_task(maptool: MapTool, progress_callback: Callable) -> tuple:
             territory_image, territory_image_buffer, territory_data = maptool._generate_territories(
-                self._cont_areas_image_buffer,
-                self._cont_areas_data,
+                self._district_image_buffer,
+                self._district_data,
                 self._class_image_buffer,
                 self._class_counts,
                 progress_callback=progress_callback,
@@ -433,7 +511,7 @@ class MapToolWindow(QWidget):
         
         self.territories_worker = self._create_background_worker(run_task, on_progress, on_finished, on_error)
 
-    # TAB 6
+    # TAB 7
     def on_button_generate_provinces(self) -> None:
         if self._territory_image_buffer is None:
             QMessageBox.warning(self, "Warning", "Territories must be generated first")
@@ -482,7 +560,10 @@ class MapToolWindow(QWidget):
             pixels_per_water_territory=self.pixels_per_water_territory_slider.value(),
             pixels_per_land_province=self.pixels_per_land_province_slider.value(),
             pixels_per_water_province=self.pixels_per_water_province_slider.value(),
+            pixels_per_land_district=self.pixels_per_land_district_slider.value(),
+            pixels_per_water_district=self.pixels_per_water_district_slider.value(),
             cont_areas_rng_seed=self.cont_areas_rng_seed_input.value(),
+            districts_rng_seed=self.districts_rng_seed_input.value(),
             territories_rng_seed=self.territories_rng_seed_input.value(),
             provinces_rng_seed=self.provinces_rng_seed_input.value(),
         )

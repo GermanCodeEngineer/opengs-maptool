@@ -1,5 +1,5 @@
 """
-Visualize the centers (capitals) of continuous areas, territories, and provinces on three maps.
+Visualize the centers (capitals) of continuous areas, districts, territories, and provinces on maps.
 
 This script can be run standalone to:
 1. Generate maps from example inputs using MapTool
@@ -58,21 +58,25 @@ def generate_maps(output_dir: Path) -> dict:
     
     # Save images
     result.cont_areas_image.save(output_dir / "contareasimage.png")
+    result.district_image.save(output_dir / "districtimage.png")
     result.territory_image.save(output_dir / "territoryimage.png")
     result.province_image.save(output_dir / "provinceimage.png")
     
     # Save data as JSON
     export_to_json(result.cont_areas_data, output_dir / "contareasdata.json")
+    export_to_json(result.district_data, output_dir / "districtdata.json")
     export_to_json(result.territory_data, output_dir / "territorydata.json")
     export_to_json(result.province_data, output_dir / "provincedata.json")
     
     # Save data as CSV
     export_to_csv(result.cont_areas_data, output_dir / "contareasdata.csv")
+    export_to_csv(result.district_data, output_dir / "districtdata.csv")
     export_to_csv(result.territory_data, output_dir / "territorydata.csv")
     export_to_csv(result.province_data, output_dir / "provincedata.csv")
     
     return {
         "cont_areas": (result.cont_areas_data, result.cont_areas_image),
+        "districts": (result.district_data, result.district_image),
         "territories": (result.territory_data, result.territory_image),
         "provinces": (result.province_data, result.province_image),
     }
@@ -81,23 +85,26 @@ def generate_maps(output_dir: Path) -> dict:
 def load_data(output_dir: Path) -> dict:
     """Load all region data and images, generating them if they don't exist."""
     required_files = [
-        "contareasdata.json", "territorydata.json", "provincedata.json",
-        "contareasimage.png", "territoryimage.png", "provinceimage.png"
+        "contareasdata.json", "districtdata.json", "territorydata.json", "provincedata.json",
+        "contareasimage.png", "districtimage.png", "territoryimage.png", "provinceimage.png"
     ]
     
     # Check if all files exist
     if all((output_dir / f).exists() for f in required_files):
         print("Loading existing maps and data...")
         cont_areas_data = json.loads((output_dir / "contareasdata.json").read_text())
+        district_data = json.loads((output_dir / "districtdata.json").read_text())
         territory_data = json.loads((output_dir / "territorydata.json").read_text())
         province_data = json.loads((output_dir / "provincedata.json").read_text())
         
         cont_areas_image = Image.open(output_dir / "contareasimage.png").convert("RGBA")
+        district_image = Image.open(output_dir / "districtimage.png").convert("RGBA")
         territory_image = Image.open(output_dir / "territoryimage.png").convert("RGBA")
         province_image = Image.open(output_dir / "provinceimage.png").convert("RGBA")
         
         return {
             "cont_areas": (cont_areas_data, cont_areas_image),
+            "districts": (district_data, district_image),
             "territories": (territory_data, territory_image),
             "provinces": (province_data, province_image),
         }
@@ -238,12 +245,29 @@ def main():
     cont_areas_bbox_vis.save(output_dir / "contareasbboxes.png")
     print(f"  Saved: contareasbboxes.png ({len(cont_areas_data)} bboxes)")
     
+    # Visualize districts
+    print("Visualizing districts...")
+    district_data, district_image = data["districts"]
+    district_vis = draw_centers(
+        district_image, district_data,
+        circle_radius=7, outline_color="cyan", text=False
+    )
+    district_vis.save(output_dir / "districtcenters.png")
+    print(f"  Saved: districtcenters.png ({len(district_data)} centers)")
+
+    district_bbox_vis = draw_bboxes(
+        district_image, district_data,
+        width=2
+    )
+    district_bbox_vis.save(output_dir / "districtbboxes.png")
+    print(f"  Saved: districtbboxes.png ({len(district_data)} bboxes)")
+
     # Visualize territories
     print("Visualizing territories...")
     territory_data, territory_image = data["territories"]
     territory_vis = draw_centers(
         territory_image, territory_data,
-        circle_radius=6, outline_color="cyan", text=False
+        circle_radius=6, outline_color="blue", text=False
     )
     territory_vis.save(output_dir / "territorycenters.png")
     print(f"  Saved: territorycenters.png ({len(territory_data)} centers)")
@@ -272,20 +296,26 @@ def main():
     province_bbox_vis.save(output_dir / "provincebboxes.png")
     print(f"  Saved: provincebboxes.png ({len(province_data)} bboxes)")
     
-    # Create a combined map with all three overlaid on the province map
+    # Create a combined map with all regions overlaid on the province map
     print("Creating combined visualization...")
     combined = province_image.copy()
     
-    # Draw territories first (larger circles, darker)
+    # Draw districts first (largest circles)
+    combined = draw_centers(
+        combined, district_data,
+        circle_radius=7, outline_color="cyan", text=False
+    )
+
+    # Draw territories next
     combined = draw_centers(
         combined, territory_data,
         circle_radius=5, outline_color="blue", text=False
     )
     
-    # Then continuous areas (largest circles)
+    # Then continuous areas
     combined = draw_centers(
         combined, cont_areas_data,
-        circle_radius=7, outline_color="lime", text=False
+        circle_radius=6, outline_color="lime", text=False
     )
     
     # Finally provinces (smallest circles on top)
@@ -299,6 +329,11 @@ def main():
 
     print("Creating combined bbox visualization...")
     combined_bbox = province_image.copy()
+
+    combined_bbox = draw_bboxes(
+        combined_bbox, district_data,
+        width=2
+    )
 
     combined_bbox = draw_bboxes(
         combined_bbox, territory_data,
@@ -320,6 +355,7 @@ def main():
 
     print("\nColor scheme:")
     print("  Lime   = Continuous areas")
+    print("  Cyan   = Districts")
     print("  Blue   = Territories")
     print("  Red    = Provinces")
 

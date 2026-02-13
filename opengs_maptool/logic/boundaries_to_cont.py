@@ -188,36 +188,8 @@ def convert_boundaries_to_cont_areas(boundaries_image: NDArray[np.uint8], rng_se
         # Sample B value from representative points in the region (center and nearby)
         region_mask = labeled_array == region_id
         rows, cols = np.where(region_mask)
-        
-        if len(rows) > 0:
-            # Get center and nearby sample points
-            center_row, center_col = int(np.median(rows)), int(np.median(cols))
-            sample_points = [
-                (center_row, center_col),
-                (center_row, max(0, center_col - 5)),
-                (center_row, min(boundaries_image.shape[1] - 1, center_col + 5)),
-                (max(0, center_row - 5), center_col),
-                (min(boundaries_image.shape[0] - 1, center_row + 5), center_col),
-            ]
-            
-            # Sample B channel from these points (avoid out of bounds)
-            blue_samples = []
-            for r, c in sample_points:
-                if 0 <= r < boundaries_image.shape[0] and 0 <= c < boundaries_image.shape[1]:
-                    blue_samples.append(boundaries_image[r, c, 2])
-            
-            avg_blue = float(np.mean(blue_samples)) if blue_samples else 128.0
-        else:
-            avg_blue = 128.0
-        
-        # Convert B channel to density multiplier (piecewise linear)
-        # B=0 (low blue) -> 0.25 (4x fewer regions)
-        # B=128 (mid blue) -> 1.0 (normal)
-        # B=255 (high blue) -> 4.0 (4x more regions)
-        if avg_blue <= 128.0:
-            density_multiplier = (avg_blue / 128) * 0.75 + 0.25
-        else:
-            density_multiplier = ((avg_blue - 128) / 127) * 3 + 1
+        # Areas should not measure density; districts will compute density separately.
+        density_multiplier = 1.0
         
         # Calculate center of mass (centroid) for local coordinates
         center_x = float(np.mean(cols))
