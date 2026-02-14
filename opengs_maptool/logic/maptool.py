@@ -65,8 +65,8 @@ class MapTool:
         Initialize MapTool with input images and parameters.
         
         Args:
-            land_image: PIL Image containing land/ocean/lake classification
-            boundary_image: PIL Image containing (country) boundaries
+            land_image: **CLEANED** PIL Image containing land/ocean/lake classification (see clean_land_image)
+            boundary_image: **CLEANED** PIL Image containing (country) boundaries (see clean_boundary_image)
             pixels_per_land_district: Approximate pixels per land district
             pixels_per_water_district: Approximate pixels per water district
             pixels_per_land_territory: Approximate pixels per land territory
@@ -180,6 +180,7 @@ class MapTool:
             cont_areas_image=cont_areas_image,
             cont_areas_metadata=cont_areas_data,
             class_image=class_image,
+            density_image=self.boundary_image,
             class_counts=class_counts,
             pixels_per_land_region=self.pixels_per_land_district,
             pixels_per_water_region=self.pixels_per_water_district,
@@ -188,6 +189,7 @@ class MapTool:
             ),
             rng_seed=self.districts_rng_seed,
             lloyd_iterations=self.lloyd_iterations,
+            override_density_multiplier=True,
             tqdm_description="Generating districts from areas",
             tqdm_unit="areas",
             progress_callback=district_progress,
@@ -209,7 +211,7 @@ class MapTool:
         return args
     
     def _generate_territories(self,
-        cont_areas_image: NDArray[np.uint8], cont_areas_data: list[dict[str, Any]],
+        district_image: NDArray[np.uint8], district_data: list[dict[str, Any]],
         class_image: NDArray[np.uint8], class_counts: dict[str, int],
         progress_callback=None,
     ) -> tuple[Image.Image, NDArray[np.uint8], list[dict[str, Any]]]:
@@ -219,9 +221,10 @@ class MapTool:
                 progress_callback(int((current / total) * 90), 100)
         
         territory_image, territory_data = convert_all_cont_areas_to_regions(
-            cont_areas_image=cont_areas_image,
-            cont_areas_metadata=cont_areas_data,
+            cont_areas_image=district_image,
+            cont_areas_metadata=district_data,
             class_image=class_image,
+            density_image=self.boundary_image,
             class_counts=class_counts,
             pixels_per_land_region=self.pixels_per_land_territory,
             pixels_per_water_region=self.pixels_per_water_territory,
@@ -230,8 +233,9 @@ class MapTool:
             ),
             rng_seed=self.territories_rng_seed,
             lloyd_iterations=self.lloyd_iterations,
-            tqdm_description="Generating territories from areas",
-            tqdm_unit="areas",
+            override_density_multiplier=False,
+            tqdm_description="Generating territories from districts",
+            tqdm_unit="districts",
             progress_callback=territory_progress,
         )
 
@@ -265,6 +269,7 @@ class MapTool:
             cont_areas_image=territory_image,
             cont_areas_metadata=territory_data,
             class_image=class_image,
+            density_image=self.boundary_image,
             class_counts=class_counts,
             pixels_per_land_region=self.pixels_per_land_province,
             pixels_per_water_region=self.pixels_per_water_province,
@@ -273,6 +278,7 @@ class MapTool:
             ),
             rng_seed=self.provinces_rng_seed,
             lloyd_iterations=self.lloyd_iterations,
+            override_density_multiplier=False,
             tqdm_description="Generating provinces from territories",
             tqdm_unit="territories",
             progress_callback=province_progress,
@@ -299,6 +305,20 @@ class MapTool:
         province_image: Image.Image, province_image_buffer: NDArray[np.uint8], province_data: list[dict[str, Any]]) -> None: ...
 
     
+    @staticmethod
+    def clean_land_image(land_image: Image.Image) -> Image.Image:
+        """Standardize a land image to configured ocean/lake/land colors.
+
+        Args:
+            land_image: Input land image as PIL Image.
+
+        Returns:
+            RGBA image where each pixel is reassigned to the nearest of
+            `config.OCEAN_COLOR`, `config.LAKE_COLOR`, or `config.LAND_COLOR`.
+        """
+        class_image, _ = classify_pixels_by_color(np.array(land_image.convert("RGBA")), export_colors=True)
+        return Image.fromarray(class_image)
+
     @staticmethod
     def clean_boundary_image(boundary_image: Image.Image) -> Image.Image:
         """

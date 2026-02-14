@@ -3,11 +3,11 @@ from PIL import Image
 from typing import Callable
 from PyQt6.QtWidgets import QWidget, QVBoxLayout, QHBoxLayout, QTabWidget, QLabel, QPushButton, QMessageBox, QSpinBox, QSizePolicy
 from PyQt6.QtCore import Qt, QThread, pyqtSignal
-from PyQt6.QtGui import QPainter, QColor
+from PyQt6.QtGui import QPainter, QColor, QCloseEvent
 from ..logic.maptool import MapTool
 from .buttons import create_slider, create_button
 from .image_display import ImageDisplay
-from .flappy_bird_game import FlappyBirdGame
+from .flappy_bird_game import start_flappy_bird_process
 from .. import config
 
 
@@ -118,6 +118,7 @@ class MapToolWindow(QWidget):
         self._territory_data = None
         self._province_image_buffer = None
         self._province_data = None
+        self.flappy_bird_process = None
         self.create_layout()
         self.showMaximized()
     
@@ -167,9 +168,25 @@ class MapToolWindow(QWidget):
         self.tabs.addTab(self.province_tab, "Generate Provinces")
 
     def on_button_play_flappy_bird(self) -> None:
-            """Open Flappy Bird game in a new window."""
-            self.flappy_bird_window = FlappyBirdGame()
-            self.flappy_bird_window.show()
+        """Open Flappy Bird game in a separate process."""
+        if self.flappy_bird_process is not None:
+            if self.flappy_bird_process.is_alive():
+                QMessageBox.information(self, "Flappy Bird", "Flappy Bird is already running.")
+                return
+            self.flappy_bird_process = None
+
+        try:
+            self.flappy_bird_process = start_flappy_bird_process()
+        except Exception as error:
+            self.flappy_bird_process = None
+            QMessageBox.critical(self, "Flappy Bird", f"Failed to start Flappy Bird: {error}")
+
+    def closeEvent(self, event: QCloseEvent) -> None:
+        if self.flappy_bird_process is not None and self.flappy_bird_process.is_alive():
+            self.flappy_bird_process.terminate()
+            self.flappy_bird_process.join(timeout=1.0)
+            self.flappy_bird_process = None
+        super().closeEvent(event)
 
     def create_start_tab(self) -> None:
         self.readme_tab = QWidget()
@@ -355,12 +372,11 @@ class MapToolWindow(QWidget):
         if not self.adapt_boundary_image_display.import_image():
             return
 
-        image_buffer = self.adapt_boundary_image_display.get_image_buffer()
-        if image_buffer is None:
+        image = self.adapt_boundary_image_display.get_image()
+        if image is None:
             return
 
-        cleaned_buffer = MapTool.clean_boundary_image(image_buffer)
-        cleaned_image = Image.fromarray(cleaned_buffer)
+        cleaned_image = MapTool.clean_boundary_image(image)
         self.adapt_boundary_image_display.set_image(cleaned_image)
 
     # TAB 3
@@ -371,32 +387,33 @@ class MapToolWindow(QWidget):
         self.final_boundary_image_display.set_image(self.adapt_boundary_image_display.get_image() or EMPTY_IMAGE)
 
     def on_button_import_land(self) -> None:
-        self.land_image_display.import_image()
-
-        def run_task(maptool: MapTool, progress_callback: Callable) -> tuple:
-            self.button_import_land.set_progress(30)
-            class_image, _, class_counts = maptool._generate_type_classification()
-            return (class_image, class_counts)
-        
-        def on_progress(value: int) -> None:
-            self.button_import_land.set_progress(value)
-        
-        def on_finished(result: tuple) -> None:
-            self.button_import_land.reset_progress()
-            self.button_import_land.setEnabled(True)
-            class_image, class_counts = result
-            self.land_image_display.set_image(class_image)
-            self.land_image_display.set_data(class_counts, "Classification Counts")
-        
-        def on_error(error: Exception) -> None:
-            self.button_import_land.reset_progress()
-            self.button_import_land.setEnabled(True)
-            QMessageBox.critical(self, "Error", f"Error processing land image: {error}")
+        if not self.land_image_display.import_image():
+            return
 
         self.button_import_land.reset_progress()
         self.button_import_land.setEnabled(False)
-        
-        self.classify_worker = self._create_background_worker(run_task, on_progress, on_finished, on_error)
+
+        try:
+            self.button_import_land.set_progress(30)
+
+            image = self.land_image_display.get_image()
+            if image is None:
+                raise ValueError("No land image selected")
+
+            cleaned_land_image = MapTool.clean_land_image(image)
+            self.land_image_display.set_image(cleaned_land_image)
+
+            self.button_import_land.set_progress(80)
+            self._generate_type_classification()
+            if self._class_counts is not None:
+                self.land_image_display.set_data(self._class_counts, "Classification Counts")
+
+            self.button_import_land.set_progress(100)
+        except Exception as error:
+            QMessageBox.critical(self, "Error", f"Error processing land image: {error}")
+        finally:
+            self.button_import_land.reset_progress()
+            self.button_import_land.setEnabled(True)
 
     # TAB 4
     def on_button_generate_areas(self) -> None:

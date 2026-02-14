@@ -1,6 +1,8 @@
 from .. import config
 import math
+import warnings
 import numpy as np
+from pathlib import Path
 from PIL import Image, ImageDraw
 from numpy.typing import NDArray
 from typing import Any, Iterable
@@ -44,7 +46,32 @@ def round_bbox(
     ]
 
 
-def get_area_pixel_mask(image: NDArray[np.uint8], threshold: int = 180) -> NDArray[np.bool_]:
+def ensure_point_in_mask(mask: NDArray[np.bool_], x: float, y: float) -> tuple[float, float]:
+    """Return a point guaranteed to be inside `mask`.
+
+    If (x, y) rounds to a pixel inside the mask, that rounded point is returned.
+    Otherwise, the nearest pixel in the mask is returned.
+    """
+    h, w = mask.shape
+    xi = int(round(x))
+    yi = int(round(y))
+    xi = max(0, min(w - 1, xi))
+    yi = max(0, min(h - 1, yi))
+
+    if mask[yi, xi]:
+        return float(xi), float(yi)
+
+    ys, xs = np.where(mask)
+    if len(xs) == 0:
+        return float(xi), float(yi)
+
+    dx = xs.astype(np.float64) - float(x)
+    dy = ys.astype(np.float64) - float(y)
+    nearest_idx = int(np.argmin(dx * dx + dy * dy))
+    return float(xs[nearest_idx]), float(ys[nearest_idx])
+
+
+def get_area_pixel_mask(image: NDArray[np.uint8], threshold: int) -> NDArray[np.bool_]:
     """Return mask for area pixels in boundary images.
 
     Args:
@@ -53,6 +80,65 @@ def get_area_pixel_mask(image: NDArray[np.uint8], threshold: int = 180) -> NDArr
             cleaned images where borders are exactly 0.
     """
     return image[:, :, 0] > threshold
+
+
+def calculate_average_density(avg_brightness: float) -> float:
+    """Map average blue-channel intensity (0-255) to a density multiplier."""
+    if avg_brightness <= 128.0:
+        return (avg_brightness / 128.0) * 0.75 + 0.25
+    else:
+        return ((avg_brightness - 128.0) / 127.0) * 3.0 + 1.0
+
+
+def calculate_masked_average_brightness(
+    image: NDArray[np.uint8],
+    mask: NDArray[np.bool_],
+    fallback: float = 128.0,
+    use_rgb_average: bool = False,
+) -> tuple[float, bool]:
+    """Calculate average brightness for masked pixels.
+
+    Returns a tuple of (average_brightness, had_any_pixels).
+    For performance, defaults to red-channel average unless RGB averaging is requested.
+    """
+    if not np.any(mask):
+        return fallback, False
+
+    if use_rgb_average:
+        avg_brightness = float(np.mean(image[:, :, :3][mask]))
+    else:
+        avg_brightness = float(np.mean(image[:, :, 0][mask]))
+
+    return avg_brightness, True
+
+
+def calculate_density_multiplier_from_masked_image(
+    image: NDArray[np.uint8],
+    mask: NDArray[np.bool_],
+    region_id: Any | None = None,
+    fallback: float = 128.0,
+    use_rgb_average: bool = False,
+    warn_on_empty: bool = True,
+) -> float:
+    """Compute density multiplier from masked image pixels.
+
+    This combines masked average brightness extraction, empty-mask fallback,
+    optional warning, and brightness-to-density conversion.
+    """
+    avg_brightness, has_pixels = calculate_masked_average_brightness(
+        image,
+        mask,
+        fallback=fallback,
+        use_rgb_average=use_rgb_average,
+    )
+
+    if warn_on_empty and not has_pixels:
+        warnings.warn(
+            f"No pixels found for region_id {region_id} while calculating density multiplier.",
+            stacklevel=2,
+        )
+
+    return calculate_average_density(avg_brightness)
 
 
 class NumberSeries:
@@ -449,9 +535,10 @@ def defragment_regions(
     """
     Fix regions that got fragmented into multiple disconnected components.
     
-    Two-phase approach:
+    Three-phase approach:
     1. Merge small fragments (<size_threshold) to best neighboring region
     2. Reassign remaining fragments to nearest other seeds
+    3. Enforce one connected component per seed/region iteratively
     
     Args:
         pmap: Region map with region assignments
@@ -513,6 +600,34 @@ def defragment_regions(
     
     # Phase 2: Reassign remaining fragmented regions to nearest other seeds
     valid_ids_after_phase1 = set(np.unique(pmap_fixed[mask])) - {-1}
+
+    fragmented_after_phase1: list[tuple[int, int]] = []
+    for region_id in valid_ids_after_phase1:
+        region_mask = (pmap_fixed == region_id)
+        _, num_components = scipy_label(region_mask)
+        if num_components > 1:
+            fragmented_after_phase1.append((region_id, int(num_components)))
+
+    if fragmented_after_phase1:
+        try:
+            debug_rgb = np.zeros((h, w, 3), dtype=np.uint8)
+            valid_pixels = mask & (pmap_fixed >= 0)
+
+            ids = pmap_fixed[valid_pixels].astype(np.uint32)
+            r = ((ids * 73) + 41) % 256
+            g = ((ids * 151) + 17) % 256
+            b = ((ids * 199) + 83) % 256
+            debug_rgb[valid_pixels] = np.stack([r, g, b], axis=1).astype(np.uint8)
+
+            # Highlight fragmented regions after phase 1 in magenta.
+            for region_id, _ in fragmented_after_phase1:
+                region_mask = (pmap_fixed == region_id) & mask
+                debug_rgb[region_mask] = [255, 0, 255]
+
+            debug_path = Path("defragment_phase1_debug.png")
+            Image.fromarray(debug_rgb).save(debug_path)
+        except Exception:
+            pass
     
     for region_id in valid_ids_after_phase1:
         region_mask = (pmap_fixed == region_id)
@@ -548,6 +663,72 @@ def defragment_regions(
             if best_seed_id != region_id:
                 pmap_fixed[y, x] = best_seed_id
     
+    # Phase 3: Strictly enforce one connected component per seed region
+    max_passes = 6
+    for _ in range(max_passes):
+        changed = False
+
+        for i, (sx, sy) in enumerate(seeds):
+            region_id = i
+            if not (0 <= sx < w and 0 <= sy < h):
+                continue
+
+            region_mask = (pmap_fixed == region_id) & mask
+            if not np.any(region_mask):
+                continue
+
+            components, num_components = scipy_label(region_mask)
+            if num_components <= 1:
+                continue
+
+            seed_component = int(components[sy, sx])
+            if seed_component <= 0:
+                component_sizes = np.bincount(components[region_mask])
+                if component_sizes.size <= 1:
+                    continue
+                component_sizes[0] = 0
+                seed_component = int(np.argmax(component_sizes))
+                if seed_component <= 0:
+                    continue
+
+            stray_component_ids = [
+                component_id
+                for component_id in range(1, num_components + 1)
+                if component_id != seed_component
+            ]
+
+            for component_id in stray_component_ids:
+                stray_component_mask = region_mask & (components == component_id)
+                if not np.any(stray_component_mask):
+                    continue
+
+                ys, xs = np.where(stray_component_mask)
+                center_x = float(np.mean(xs))
+                center_y = float(np.mean(ys))
+
+                best_region_id = region_id
+                best_dist_sq = np.inf
+                for j, (tx, ty) in enumerate(seeds):
+                    other_region_id = j
+                    if other_region_id == region_id:
+                        continue
+                    if not (0 <= tx < w and 0 <= ty < h):
+                        continue
+
+                    dx = center_x - float(tx)
+                    dy = center_y - float(ty)
+                    dist_sq = dx * dx + dy * dy
+                    if dist_sq < best_dist_sq:
+                        best_dist_sq = dist_sq
+                        best_region_id = other_region_id
+
+                if best_region_id != region_id:
+                    pmap_fixed[stray_component_mask] = best_region_id
+                    changed = True
+
+        if not changed:
+            break
+
     return pmap_fixed
 
 
@@ -604,6 +785,8 @@ def build_metadata(
         else:
             cx = float(sum_x[i] / counts[i])
             cy = float(sum_y[i] / counts[i])
+            region_mask = pmap == (start_index + i)
+            cx, cy = ensure_point_in_mask(region_mask, cx, cy)
             # Convert to integers with floor/ceil for proper pixel coverage
             bbox_local = [int(min_x[i]), int(min_y[i]), int(max_x[i]) + 1, int(max_y[i]) + 1]
 

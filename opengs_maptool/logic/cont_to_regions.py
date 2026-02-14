@@ -8,6 +8,7 @@ from .utils import (
     NumberSeries, ColorSeries,
     poisson_disk_samples, lloyd_relaxation, assign_regions, build_metadata, hex_to_rgb,
     round_float, round_bbox, defragment_regions, get_area_pixel_mask,
+    calculate_density_multiplier_from_masked_image, ensure_point_in_mask,
 )
 from .. import config
 
@@ -22,6 +23,7 @@ class AreaProcessingArgs:
         area_meta: Metadata for this area
         cont_areas_image: Continuous areas image
         class_image: Type/classification image
+        density_image: Greyscale density image used for density multiplier calculations
         class_counts: Pixel counts per type
         pixels_per_land_region: Average pixels per region for land areas
         pixels_per_water_region: Average pixels per region for ocean/lake areas
@@ -36,6 +38,7 @@ class AreaProcessingArgs:
     area_meta: dict[str, Any]
     cont_areas_image: NDArray[np.uint8]
     class_image: NDArray[np.uint8]
+    density_image: NDArray[np.uint8] | None
     class_counts: dict[str, int]
     pixels_per_land_region: int
     pixels_per_water_region: int
@@ -51,6 +54,7 @@ def convert_all_cont_areas_to_regions(
         cont_areas_image: NDArray[np.uint8],
         cont_areas_metadata: list[dict[str, Any]],
         class_image: NDArray[np.uint8],
+        density_image: NDArray[np.uint8] | None,
         class_counts: dict[str, int],
         pixels_per_land_region: int,
         pixels_per_water_region: int,
@@ -72,6 +76,7 @@ def convert_all_cont_areas_to_regions(
         cont_areas_image: Continuous areas image
         cont_areas_metadata: Metadata list with area colors
         class_image: Type/classification image
+        density_image: Optional greyscale density image for density multiplier calculations
         class_counts: Pixel counts per type
         pixels_per_land_region: Average pixels per region for land areas
         pixels_per_water_region: Average pixels per region for ocean/lake areas
@@ -103,6 +108,7 @@ def convert_all_cont_areas_to_regions(
             area_meta=area_meta,
             cont_areas_image=cont_areas_image,
             class_image=class_image,
+            density_image=density_image,
             class_counts=class_counts,
             pixels_per_land_region=pixels_per_land_region,
             pixels_per_water_region=pixels_per_water_region,
@@ -234,17 +240,12 @@ def convert_cont_area_to_regions(args: AreaProcessingArgs) -> tuple[
     
     if args.override_density_multiplier:
         density_src = args.density_image[y_min:y_max, x_min:x_max]
-        is_area_pixel = get_area_pixel_mask(density_src)
-        density_mask = cropped_mask & is_area_pixel
-        if np.any(density_mask):
-            avg_blue = float(np.mean(density_src[:, :, 2][density_mask]))
-        else:
-            avg_blue = 128.0
-
-        if avg_blue <= 128.0:
-            density_multiplier = (avg_blue / 128) * 0.75 + 0.25
-        else:
-            density_multiplier = ((avg_blue - 128) / 127) * 3 + 1
+        density_multiplier = calculate_density_multiplier_from_masked_image(
+            density_src,
+            mask=cropped_mask & get_area_pixel_mask(density_src, threshold=0),
+            region_id=args.area_meta.get("region_id"),
+            use_rgb_average=False,
+        )
     else:
         density_multiplier = args.area_meta.get("density_multiplier") or 1.0
 
@@ -267,6 +268,7 @@ def convert_cont_area_to_regions(args: AreaProcessingArgs) -> tuple[
         # Adjust centroid to cropped coordinates
         cx_cropped = cx - x_min
         cy_cropped = cy - y_min
+        cx_cropped, cy_cropped = ensure_point_in_mask(cropped_mask, cx_cropped, cy_cropped)
         
         # Bbox as integers: add 1 to max values to include the last pixel (exclusive end bound)
         local_bbox = [
@@ -294,18 +296,14 @@ def convert_cont_area_to_regions(args: AreaProcessingArgs) -> tuple[
             "density_multiplier": round_float(density_multiplier, 2),
         }]
 
-        # For districts, compute average density from this region's own pixels.
-        if args.density_image is not None:
+        if args.override_density_multiplier:
             density_src = args.density_image[y_min:y_max, x_min:x_max]
-            is_area_pixel = get_area_pixel_mask(density_src)
-            region_density_mask = cropped_mask & is_area_pixel
-
-            avg_blue = float(np.mean(density_src[:, :, 2][region_density_mask])) if np.any(region_density_mask) else 128.0
-
-            if avg_blue <= 128.0:
-                region_density_multiplier = (avg_blue / 128) * 0.75 + 0.25
-            else:
-                region_density_multiplier = ((avg_blue - 128) / 127) * 3 + 1
+            region_density_multiplier = calculate_density_multiplier_from_masked_image(
+                density_src,
+                mask=cropped_mask & get_area_pixel_mask(density_src, threshold=0),
+                region_id=args.area_meta.get("region_id"),
+                use_rgb_average=False,
+            )
 
             metadata[0]["density_multiplier"] = round_float(region_density_multiplier, 2)
         
@@ -351,18 +349,17 @@ def convert_cont_area_to_regions(args: AreaProcessingArgs) -> tuple[
     )
 
     # For districts, compute average density per generated region from the density image.
-    if args.density_image is not None and metadata:
+    if args.override_density_multiplier:
         density_src = args.density_image[y_min:y_max, x_min:x_max]
-        is_area_pixel = get_area_pixel_mask(density_src)
+        is_area_pixel = get_area_pixel_mask(density_src, threshold=0)
 
         for i, region_meta in enumerate(metadata):
-            region_mask = (pmap == i) & cropped_mask & is_area_pixel
-            avg_blue = float(np.mean(density_src[:, :, 2][region_mask])) if np.any(region_mask) else 128.0
-
-            if avg_blue <= 128.0:
-                region_density_multiplier = (avg_blue / 128) * 0.75 + 0.25
-            else:
-                region_density_multiplier = ((avg_blue - 128) / 127) * 3 + 1
+            region_density_multiplier = calculate_density_multiplier_from_masked_image(
+                density_src,
+                mask=(pmap == i) & cropped_mask & is_area_pixel,
+                region_id=args.area_meta.get("region_id"),
+                use_rgb_average=False,
+            )
 
             region_meta["density_multiplier"] = round_float(region_density_multiplier, 2)
     

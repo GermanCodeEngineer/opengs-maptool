@@ -1,8 +1,9 @@
 import numpy as np
+import warnings
 from numpy.typing import NDArray
 from scipy import ndimage
 from tqdm import tqdm
-from .utils import ColorSeries, round_float, hex_to_rgb, get_area_pixel_mask
+from .utils import ColorSeries, round_float, hex_to_rgb, get_area_pixel_mask, ensure_point_in_mask
 from .. import config
 
 NEIGHBOR_OFFSETS = [(-1, 0), (1, 0), (0, -1), (0, 1)]
@@ -69,6 +70,10 @@ def recalculate_bboxes_from_image(
         rgb_match = np.all(image[:, :, :3] == target_color, axis=2)
         
         if not np.any(rgb_match):
+            warnings.warn(
+                f"No pixels found for region_id {region.get('region_id')} (color={color_hex}) while recalculating bboxes.",
+                stacklevel=2,
+            )
             # No pixels found, keep original bbox
             updated_metadata.append(region)
             continue
@@ -212,6 +217,7 @@ def convert_boundaries_to_cont_areas(boundaries_image: NDArray[np.uint8], rng_se
         # Calculate center of mass (centroid) for local coordinates
         center_x = float(np.mean(cols))
         center_y = float(np.mean(rows))
+        center_x, center_y = ensure_point_in_mask(region_mask, center_x, center_y)
         
         # BBox as integers: add 1 to max values to include the last pixel (exclusive end bound)
         bbox_local = [
@@ -282,6 +288,10 @@ def classify_continuous_areas(
         rgb_match = np.all(cont_areas_image[:, :, :3] == target_color, axis=2)
         
         if not np.any(rgb_match):
+            warnings.warn(
+                f"No pixels found for region_id {region.get('region_id')} (color={color_hex}) while classifying continuous areas.",
+                stacklevel=2,
+            )
             region["region_type"] = "unknown"
             updated_metadata.append(region)
             continue

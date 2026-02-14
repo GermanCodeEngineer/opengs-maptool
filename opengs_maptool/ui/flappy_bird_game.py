@@ -1,7 +1,9 @@
 """Simple Flappy Bird game implementation using PyQt6."""
 
+import multiprocessing as mp
 import random
-from PyQt6.QtWidgets import QWidget
+import sys
+from PyQt6.QtWidgets import QApplication, QWidget
 from PyQt6.QtCore import Qt, QTimer
 from PyQt6.QtGui import QPainter, QColor, QFont
 
@@ -37,6 +39,7 @@ class FlappyBirdGame(QWidget):
         
         # Input handling
         self.key_pressed = set()
+        self.best_score = 0
     
     def keyPressEvent(self, event):
         """Handle key press events."""
@@ -59,6 +62,7 @@ class FlappyBirdGame(QWidget):
     
     def reset_game(self) -> None:
         """Reset the game to initial state."""
+        self.best_score = max(self.best_score, self.score)
         self.bird_y = 300
         self.bird_x = 50
         self.velocity = 0
@@ -80,6 +84,7 @@ class FlappyBirdGame(QWidget):
         # Check boundary collisions
         if self.bird_y <= 0 or self.bird_y >= self.height():
             self.game_over = True
+            self.best_score = max(self.best_score, self.score)
             self.timer.stop()
         
         # Generate pipes
@@ -101,6 +106,7 @@ class FlappyBirdGame(QWidget):
                 if (self.bird_y < pipe['gap_y'] or
                     self.bird_y + self.bird_size > pipe['gap_y'] + self.pipe_gap):
                     self.game_over = True
+                    self.best_score = max(self.best_score, self.score)
                     self.timer.stop()
             
             # Check if bird passed pipe
@@ -140,6 +146,7 @@ class FlappyBirdGame(QWidget):
         painter.setFont(font)
         painter.setPen(QColor(0, 0, 0))
         painter.drawText(10, 30, f"Score: {self.score}")
+        painter.drawText(10, 55, f"Best: {self.best_score}")
         
         # Draw game over message
         if self.game_over:
@@ -168,3 +175,19 @@ class FlappyBirdGame(QWidget):
             painter.setFont(font)
             painter.setPen(QColor(255, 255, 255))
             painter.drawText(10, self.height() - 10, "SPACE to flap")
+
+
+def run_flappy_bird_game() -> None:
+    """Run Flappy Bird in a dedicated Qt application process."""
+    app = QApplication.instance() or QApplication(sys.argv)
+    window = FlappyBirdGame()
+    window.show()
+    app.exec()
+
+
+def start_flappy_bird_process() -> mp.Process:
+    """Start Flappy Bird in a separate process and return the process handle."""
+    ctx = mp.get_context("spawn")
+    process = ctx.Process(target=run_flappy_bird_game, daemon=True)
+    process.start()
+    return process

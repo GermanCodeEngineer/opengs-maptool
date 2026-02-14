@@ -1,180 +1,179 @@
 """
-Visualize the centers (capitals) of continuous areas, districts, territories, and provinces on maps.
+Generate visualization overlays for areas, districts, territories, and provinces.
 
-This script can be run standalone to:
-1. Generate maps from example inputs using MapTool
-2. Save the results (images and data) to the output folder
-3. Visualize the region centers on each map
+This script:
+1. Loads existing map image/data pairs from examples/output
+2. Falls back to generating maps with MapTool when none are available
+3. Writes center, bbox, and density overlays for each available map level
 """
+
+from __future__ import annotations
+
 import json
 import sys
 from pathlib import Path
+
+import numpy as np
 from PIL import Image, ImageDraw
 
 if __package__ in (None, ""):
-    # Allow running as a script from the repo root.
     sys.path.insert(0, str(Path(__file__).resolve().parents[2]))
 
-from opengs_maptool import MapTool, export_to_json, export_to_csv
+from opengs_maptool import MapTool, export_to_csv, export_to_json
 
 
-def hex_to_rgb(hex_color: str) -> tuple[int, int, int]:
-    """Convert hex color string (e.g., '#aabbcc') to RGB tuple"""
-    hex_color = hex_color.lstrip('#')
-    return tuple(int(hex_color[i:i+2], 16) for i in (0, 2, 4))
+LEVEL_ORDER = ["areas", "districts", "territories", "provinces"]
+
+LEVEL_STYLE = {
+    "areas": {"radius": 8, "color": "lime"},
+    "districts": {"radius": 7, "color": "cyan"},
+    "territories": {"radius": 6, "color": "blue"},
+    "provinces": {"radius": 4, "color": "yellow"},
+}
+
+LEVEL_FILES = {
+    "areas": {
+        "data": "cont_areas_data.json",
+        "image": "cont_areas_image.png",
+    },
+    "districts": {
+        "data": "district_data.json",
+        "image": "district_image.png",
+    },
+    "territories": {
+        "data": "territory_data.json",
+        "image": "territory_image.png",
+    },
+    "provinces": {
+        "data": "province_data.json",
+        "image": "province_image.png",
+    },
+}
+
+
+def hex_to_rgb(color: str) -> tuple[int, int, int]:
+    color = color.lstrip("#")
+    if len(color) != 6:
+        raise ValueError(f"Invalid color: {color}")
+    return (int(color[0:2], 16), int(color[2:4], 16), int(color[4:6], 16))
 
 
 def darken_color(rgb: tuple[int, int, int], factor: float = 0.6) -> tuple[int, int, int]:
-    """Darken an RGB color by multiplying each component by a factor."""
     return tuple(max(0, int(c * factor)) for c in rgb)
 
 
-def generate_maps(output_dir: Path) -> dict:
-    """Generate all maps using MapTool with example inputs."""
+def density_to_rgb(normalized_density: np.ndarray) -> np.ndarray:
+    stops = np.array([0.0, 0.33, 0.66, 1.0], dtype=np.float32)
+    ramp = np.array(
+        [
+            [20, 32, 120],
+            [38, 196, 236],
+            [250, 224, 77],
+            [210, 35, 35],
+        ],
+        dtype=np.float32,
+    )
+
+    r = np.interp(normalized_density, stops, ramp[:, 0])
+    g = np.interp(normalized_density, stops, ramp[:, 1])
+    b = np.interp(normalized_density, stops, ramp[:, 2])
+    return np.stack([r, g, b], axis=-1).astype(np.uint8)
+
+
+def resolve_existing_path(base_dir: Path, candidate: str) -> Path | None:
+    path = base_dir / candidate
+    if path.exists():
+        return path
+    return None
+
+
+def save_generated_inputs(input_dir: Path, result: object) -> None:
+    input_dir.mkdir(parents=True, exist_ok=True)
+
+    result.cont_areas_image.save(input_dir / LEVEL_FILES["areas"]["image"])
+    result.district_image.save(input_dir / LEVEL_FILES["districts"]["image"])
+    result.territory_image.save(input_dir / LEVEL_FILES["territories"]["image"])
+    result.province_image.save(input_dir / LEVEL_FILES["provinces"]["image"])
+
+    export_to_json(result.cont_areas_data, input_dir / LEVEL_FILES["areas"]["data"])
+    export_to_json(result.district_data, input_dir / LEVEL_FILES["districts"]["data"])
+    export_to_json(result.territory_data, input_dir / LEVEL_FILES["territories"]["data"])
+    export_to_json(result.province_data, input_dir / LEVEL_FILES["provinces"]["data"])
+
+    export_to_csv(result.cont_areas_data, input_dir / LEVEL_FILES["areas"]["data"].replace(".json", ".csv"))
+    export_to_csv(result.district_data, input_dir / LEVEL_FILES["districts"]["data"].replace(".json", ".csv"))
+    export_to_csv(result.territory_data, input_dir / LEVEL_FILES["territories"]["data"].replace(".json", ".csv"))
+    export_to_csv(result.province_data, input_dir / LEVEL_FILES["provinces"]["data"].replace(".json", ".csv"))
+
+
+def generate_maps(input_dir: Path) -> None:
     example_input_dir = Path(__file__).parent / "input"
-    
-    if not example_input_dir.exists():
-        raise FileNotFoundError(f"Example input directory not found: {example_input_dir}")
-    
     boundary_image_path = example_input_dir / "bound2_orig.png"
     land_image_path = example_input_dir / "land2.png"
-    
+
+    if not example_input_dir.exists():
+        raise FileNotFoundError(f"Example input directory not found: {example_input_dir}")
     if not boundary_image_path.exists() or not land_image_path.exists():
         raise FileNotFoundError(f"Required input files not found in {example_input_dir}")
-    
-    print("Loading input images...")
-    boundary_image = Image.open(boundary_image_path)
-    land_image = Image.open(land_image_path)
-    
+
     print("Generating maps with MapTool...")
     maptool = MapTool(
-        land_image=land_image,
-        boundary_image=boundary_image,
+        land_image=Image.open(land_image_path),
+        boundary_image=Image.open(boundary_image_path),
     )
     result = maptool.generate()
-    
-    print("Saving generated maps and data...")
-    output_dir.mkdir(parents=True, exist_ok=True)
-    
-    # Save images
-    result.cont_areas_image.save(output_dir / "contareasimage.png")
-    result.district_image.save(output_dir / "districtimage.png")
-    result.territory_image.save(output_dir / "territoryimage.png")
-    result.province_image.save(output_dir / "provinceimage.png")
-    
-    # Save data as JSON
-    export_to_json(result.cont_areas_data, output_dir / "contareasdata.json")
-    export_to_json(result.district_data, output_dir / "districtdata.json")
-    export_to_json(result.territory_data, output_dir / "territorydata.json")
-    export_to_json(result.province_data, output_dir / "provincedata.json")
-    
-    # Save data as CSV
-    export_to_csv(result.cont_areas_data, output_dir / "contareasdata.csv")
-    export_to_csv(result.district_data, output_dir / "districtdata.csv")
-    export_to_csv(result.territory_data, output_dir / "territorydata.csv")
-    export_to_csv(result.province_data, output_dir / "provincedata.csv")
-    
-    return {
-        "cont_areas": (result.cont_areas_data, result.cont_areas_image),
-        "districts": (result.district_data, result.district_image),
-        "territories": (result.territory_data, result.territory_image),
-        "provinces": (result.province_data, result.province_image),
-    }
+    save_generated_inputs(input_dir, result)
 
 
-def load_data(output_dir: Path) -> dict:
-    """Load all region data and images, generating them if they don't exist."""
-    required_files = [
-        "contareasdata.json", "districtdata.json", "territorydata.json", "provincedata.json",
-        "contareasimage.png", "districtimage.png", "territoryimage.png", "provinceimage.png"
-    ]
-    
-    # Check if all files exist
-    if all((output_dir / f).exists() for f in required_files):
-        print("Loading existing maps and data...")
-        cont_areas_data = json.loads((output_dir / "contareasdata.json").read_text())
-        district_data = json.loads((output_dir / "districtdata.json").read_text())
-        territory_data = json.loads((output_dir / "territorydata.json").read_text())
-        province_data = json.loads((output_dir / "provincedata.json").read_text())
-        
-        cont_areas_image = Image.open(output_dir / "contareasimage.png").convert("RGBA")
-        district_image = Image.open(output_dir / "districtimage.png").convert("RGBA")
-        territory_image = Image.open(output_dir / "territoryimage.png").convert("RGBA")
-        province_image = Image.open(output_dir / "provinceimage.png").convert("RGBA")
-        
-        return {
-            "cont_areas": (cont_areas_data, cont_areas_image),
-            "districts": (district_data, district_image),
-            "territories": (territory_data, territory_image),
-            "provinces": (province_data, province_image),
-        }
-    else:
-        # Generate maps if any are missing
-        return generate_maps(output_dir)
+def load_available_levels(input_dir: Path) -> dict[str, tuple[list[dict], Image.Image]]:
+    loaded: dict[str, tuple[list[dict], Image.Image]] = {}
+
+    for level in LEVEL_ORDER:
+        level_paths = LEVEL_FILES[level]
+        data_path = resolve_existing_path(input_dir, level_paths["data"])
+        image_path = resolve_existing_path(input_dir, level_paths["image"])
+
+        if data_path is None or image_path is None:
+            continue
+
+        data = json.loads(data_path.read_text(encoding="utf-8"))
+        if not isinstance(data, list):
+            continue
+
+        image = Image.open(image_path).convert("RGBA")
+        loaded[level] = (data, image)
+
+    return loaded
 
 
-def draw_centers(image: Image.Image, data: list[dict], coord_scale: float = 1.0, 
-                 circle_radius: int = 5, outline_color: str = "red", 
-                 text: bool = False) -> Image.Image:
-    """
-    Draw circles at the center coordinates of regions.
-    
-    Args:
-        image: PIL Image to draw on
-        data: List of region metadata dicts
-        coord_scale: Scale factor for coordinates (useful for zooming)
-        circle_radius: Radius of circle markers
-        outline_color: Color of circle outline
-        text: Whether to label with region IDs
-    
-    Returns:
-        Image with centers drawn
-    """
+def draw_centers(
+    image: Image.Image,
+    data: list[dict],
+    circle_radius: int,
+    outline_color: str,
+) -> Image.Image:
     img_copy = image.copy()
     draw = ImageDraw.Draw(img_copy)
-    
+
     for region in data:
-        # Try global coordinates first, fall back to local
         if "global_x" in region and "global_y" in region:
-            x = region["global_x"] * coord_scale
-            y = region["global_y"] * coord_scale
+            x = region["global_x"]
+            y = region["global_y"]
         elif "local_x" in region and "local_y" in region:
-            x = region["local_x"] * coord_scale
-            y = region["local_y"] * coord_scale
+            x = region["local_x"]
+            y = region["local_y"]
         else:
             continue
-        
-        x = int(round(x))
-        y = int(round(y))
-        
-        # Draw circle
+
+        xi = int(round(float(x)))
+        yi = int(round(float(y)))
         r = circle_radius
-        draw.ellipse([x - r, y - r, x + r, y + r], outline=outline_color, width=2)
-        
-        # Optionally draw text label
-        if text:
-            region_id = region.get("region_id", "?")
-            draw.text((x + r + 2, y), str(region_id), fill=outline_color)
-    
+        draw.ellipse([xi - r, yi - r, xi + r, yi + r], outline=outline_color, width=2)
+
     return img_copy
 
 
-def draw_bboxes(image: Image.Image, data: list[dict], coord_scale: float = 1.0,
-                width: int = 2, darken_factor: float = 0.6) -> Image.Image:
-    """
-    Draw bounding boxes for regions using the region's color (darkened).
-    Border width scales with region size.
-
-    Args:
-        image: PIL Image to draw on
-        data: List of region metadata dicts
-        coord_scale: Scale factor for coordinates (useful for zooming)
-        width: Base outline width (used for larger regions)
-        darken_factor: Factor to darken the region color (0.0-1.0)
-
-    Returns:
-        Image with bounding boxes drawn
-    """
+def draw_bboxes(image: Image.Image, data: list[dict], width: int = 2, darken_factor: float = 0.6) -> Image.Image:
     img_copy = image.copy()
     draw = ImageDraw.Draw(img_copy)
 
@@ -183,181 +182,151 @@ def draw_bboxes(image: Image.Image, data: list[dict], coord_scale: float = 1.0,
         if not bbox or len(bbox) != 4:
             continue
 
-        # Get region color and darken it
-        color_hex = region.get("color", "#808080")  # fallback gray
+        color_hex = region.get("color", "#808080")
         try:
-            color_rgb = hex_to_rgb(color_hex)
-            outline_color = darken_color(color_rgb, darken_factor)
+            outline_color = darken_color(hex_to_rgb(str(color_hex)), darken_factor)
         except (ValueError, AttributeError):
-            outline_color = (128, 128, 128)  # fallback gray
+            outline_color = (128, 128, 128)
 
-        x0, y0, x1, y1 = bbox
-        x0 = int(round(x0 * coord_scale))
-        y0 = int(round(y0 * coord_scale))
-        x1 = int(round(x1 * coord_scale))
-        y1 = int(round(y1 * coord_scale))
-
+        x0, y0, x1, y1 = [int(round(float(v))) for v in bbox]
         if x1 < x0:
             x0, x1 = x1, x0
         if y1 < y0:
             y0, y1 = y1, y0
 
-        # Scale border width based on region size
-        bbox_width = x1 - x0
-        bbox_height = y1 - y0
-        bbox_size = min(bbox_width, bbox_height)
-        
-        # Use smaller border for small regions
-        if bbox_size < 10:
-            border_width = 1
-        elif bbox_size < 30:
-            border_width = 1
-        else:
-            border_width = width
-
+        bbox_size = min(x1 - x0, y1 - y0)
+        border_width = 1 if bbox_size < 30 else width
         draw.rectangle([x0, y0, x1, y1], outline=outline_color, width=border_width)
 
     return img_copy
 
 
+def make_density_heatmap_from_image(regions: list[dict], source_image: Image.Image) -> Image.Image:
+    source = np.array(source_image.convert("RGB"))
 
-def main():
-    output_dir = Path(__file__).parent / "output"
-    output_dir.mkdir(exist_ok=True)
-    
-    print("Loading data...")
-    data = load_data(output_dir)
-    
-    # Visualize continuous areas
-    print("Visualizing continuous areas...")
-    cont_areas_data, cont_areas_image = data["cont_areas"]
-    cont_areas_vis = draw_centers(
-        cont_areas_image, cont_areas_data,
-        circle_radius=8, outline_color="lime", text=False
-    )
-    cont_areas_vis.save(output_dir / "contareascenters.png")
-    print(f"  Saved: contareascenters.png ({len(cont_areas_data)} centers)")
+    density_by_color: dict[tuple[int, int, int], float] = {}
+    densities: list[float] = []
 
-    cont_areas_bbox_vis = draw_bboxes(
-        cont_areas_image, cont_areas_data,
-        width=2
-    )
-    cont_areas_bbox_vis.save(output_dir / "contareasbboxes.png")
-    print(f"  Saved: contareasbboxes.png ({len(cont_areas_data)} bboxes)")
-    
-    # Visualize districts
-    print("Visualizing districts...")
-    district_data, district_image = data["districts"]
-    district_vis = draw_centers(
-        district_image, district_data,
-        circle_radius=7, outline_color="cyan", text=False
-    )
-    district_vis.save(output_dir / "districtcenters.png")
-    print(f"  Saved: districtcenters.png ({len(district_data)} centers)")
+    for region in regions:
+        color = region.get("color")
+        density = region.get("density_multiplier")
+        if color is None or density is None:
+            continue
 
-    district_bbox_vis = draw_bboxes(
-        district_image, district_data,
-        width=2
-    )
-    district_bbox_vis.save(output_dir / "districtbboxes.png")
-    print(f"  Saved: districtbboxes.png ({len(district_data)} bboxes)")
+        rgb = hex_to_rgb(str(color))
+        density_value = float(density)
+        density_by_color[rgb] = density_value
+        densities.append(density_value)
 
-    # Visualize territories
-    print("Visualizing territories...")
-    territory_data, territory_image = data["territories"]
-    territory_vis = draw_centers(
-        territory_image, territory_data,
-        circle_radius=6, outline_color="blue", text=False
-    )
-    territory_vis.save(output_dir / "territorycenters.png")
-    print(f"  Saved: territorycenters.png ({len(territory_data)} centers)")
+    if not densities:
+        raise ValueError("No density values found")
 
-    territory_bbox_vis = draw_bboxes(
-        territory_image, territory_data,
-        width=2
-    )
-    territory_bbox_vis.save(output_dir / "territorybboxes.png")
-    print(f"  Saved: territorybboxes.png ({len(territory_data)} bboxes)")
-    
-    # Visualize provinces
-    print("Visualizing provinces...")
-    province_data, province_image = data["provinces"]
-    province_vis = draw_centers(
-        province_image, province_data,
-        circle_radius=4, outline_color="yellow", text=False
-    )
-    province_vis.save(output_dir / "provincecenters.png")
-    print(f"  Saved: provincecenters.png ({len(province_data)} centers)")
+    min_density = min(densities)
+    max_density = max(densities)
+    density_range = max(max_density - min_density, 1e-9)
 
-    province_bbox_vis = draw_bboxes(
-        province_image, province_data,
-        width=2
+    packed = (
+        (source[:, :, 0].astype(np.uint32) << 16)
+        | (source[:, :, 1].astype(np.uint32) << 8)
+        | source[:, :, 2].astype(np.uint32)
     )
-    province_bbox_vis.save(output_dir / "provincebboxes.png")
-    print(f"  Saved: provincebboxes.png ({len(province_data)} bboxes)")
-    
-    # Create a combined map with all regions overlaid on the province map
-    print("Creating combined visualization...")
-    combined = province_image.copy()
-    
-    # Draw districts first (largest circles)
-    combined = draw_centers(
-        combined, district_data,
-        circle_radius=7, outline_color="cyan", text=False
-    )
+    flat = packed.reshape(-1)
+    unique_colors, inverse_indices = np.unique(flat, return_inverse=True)
 
-    # Draw territories next
-    combined = draw_centers(
-        combined, territory_data,
-        circle_radius=5, outline_color="blue", text=False
-    )
-    
-    # Then continuous areas
-    combined = draw_centers(
-        combined, cont_areas_data,
-        circle_radius=6, outline_color="lime", text=False
-    )
-    
-    # Finally provinces (smallest circles on top)
-    combined = draw_centers(
-        combined, province_data,
-        circle_radius=3, outline_color="red", text=False
-    )
-    
-    combined.save(output_dir / "allcenters.png")
-    print(f"  Saved: allcenters.png (combined visualization)")
+    density_lookup: dict[int, float] = {
+        (rgb[0] << 16) | (rgb[1] << 8) | rgb[2]: density
+        for rgb, density in density_by_color.items()
+    }
 
-    print("Creating combined bbox visualization...")
-    combined_bbox = province_image.copy()
+    unique_densities = np.full(unique_colors.shape[0], np.nan, dtype=np.float32)
+    for index, color_key in enumerate(unique_colors):
+        density_value = density_lookup.get(int(color_key))
+        if density_value is not None:
+            unique_densities[index] = density_value
 
-    combined_bbox = draw_bboxes(
-        combined_bbox, district_data,
-        width=2
-    )
+    density_map = unique_densities[inverse_indices].reshape(source.shape[0], source.shape[1])
+    valid_mask = ~np.isnan(density_map)
 
-    combined_bbox = draw_bboxes(
-        combined_bbox, territory_data,
-        width=2
-    )
+    normalized = np.zeros_like(density_map, dtype=np.float32)
+    normalized[valid_mask] = (density_map[valid_mask] - min_density) / density_range
 
-    combined_bbox = draw_bboxes(
-        combined_bbox, cont_areas_data,
-        width=2
-    )
+    rgb_heat = np.zeros((source.shape[0], source.shape[1], 3), dtype=np.uint8)
+    rgb_heat[valid_mask] = density_to_rgb(normalized[valid_mask])
 
-    combined_bbox = draw_bboxes(
-        combined_bbox, province_data,
-        width=2
-    )
+    alpha = np.zeros((source.shape[0], source.shape[1]), dtype=np.uint8)
+    alpha[valid_mask] = 255
 
-    combined_bbox.save(output_dir / "allbboxes.png")
-    print(f"  Saved: allbboxes.png (combined visualization)")
+    rgba = np.dstack([rgb_heat, alpha])
+    return Image.fromarray(rgba, mode="RGBA")
 
-    print("\nColor scheme:")
-    print("  Lime   = Continuous areas")
-    print("  Cyan   = Districts")
-    print("  Blue   = Territories")
-    print("  Red    = Provinces")
+
+def main() -> None:
+    input_dir = Path(__file__).parent / "output"
+    input_dir.mkdir(parents=True, exist_ok=True)
+    output_dir = Path(__file__).parent / "visualization"
+    output_dir.mkdir(parents=True, exist_ok=True)
+
+    print("Loading available images/data...")
+    loaded = load_available_levels(input_dir)
+
+    if not loaded:
+        print("No complete image/data pairs found; generating example outputs first...")
+        generate_maps(input_dir)
+        loaded = load_available_levels(input_dir)
+
+    if not loaded:
+        raise RuntimeError("No visualizable outputs found after generation.")
+
+    print("Creating per-level visualizations...")
+    for level in LEVEL_ORDER:
+        if level not in loaded:
+            continue
+
+        region_data, region_image = loaded[level]
+        style = LEVEL_STYLE[level]
+
+        centers = draw_centers(
+            region_image,
+            region_data,
+            circle_radius=style["radius"],
+            outline_color=style["color"],
+        )
+        centers_path = output_dir / f"centers_{level}.png"
+        centers.save(centers_path)
+
+        bboxes = draw_bboxes(region_image, region_data, width=2)
+        bboxes_path = output_dir / f"bboxes_{level}.png"
+        bboxes.save(bboxes_path)
+
+        print(f"  Saved: {centers_path.name} ({len(region_data)} centers)")
+        print(f"  Saved: {bboxes_path.name} ({len(region_data)} bboxes)")
+
+        try:
+            density = make_density_heatmap_from_image(region_data, region_image)
+            density_path = output_dir / f"density_{level}.png"
+            density.save(density_path)
+            print(f"  Saved: {density_path.name}")
+        except ValueError:
+            pass
+
+    available_levels = [lvl for lvl in LEVEL_ORDER if lvl in loaded]
+    if not available_levels:
+        return
+
+    base_level = "provinces" if "provinces" in loaded else available_levels[-1]
+    base_image = loaded[base_level][1].copy()
+
+    combined_centers = base_image.copy()
+    for level in available_levels:
+        style = LEVEL_STYLE[level]
+        combined_centers = draw_centers(
+            combined_centers,
+            loaded[level][0],
+            circle_radius=max(3, style["radius"] - 1),
+            outline_color=style["color"],
+        )
+    combined_centers.save(output_dir / "centers_all.png")
+    print("  Saved: centers_all.png")
 
 
 if __name__ == "__main__":
