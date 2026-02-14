@@ -8,6 +8,33 @@ from .. import config
 NEIGHBOR_OFFSETS = [(-1, 0), (1, 0), (0, -1), (0, 1)]
 
 
+def clean_boundary_image(boundary_image: NDArray[np.uint8]) -> NDArray[np.uint8]:
+    """
+    Convert a boundary image to a strict two-color RGBA format.
+
+    - Boundary pixels are set to pitch black: (0, 0, 0, 255)
+    - All other pixels are set to medium gray: (128, 128, 128, 255)
+
+        Supported input format:
+        - Grayscale/flat boundary images where borders can be any value less than 180
+            and area pixels are bright (greater than 180) in the red channel.
+
+    Args:
+        boundary_image: Input boundary image as RGB/RGBA numpy array.
+
+    Returns:
+        RGBA uint8 image with standardized boundary and area colors.
+    """
+    if boundary_image.ndim != 3 or boundary_image.shape[2] < 3:
+        raise ValueError("boundary_image must have shape (H, W, C) with at least 3 channels")
+
+    area_mask = get_area_pixel_mask(boundary_image, threshold=180)
+    result = np.zeros((*area_mask.shape, 4), dtype=np.uint8)
+    result[area_mask] = (128, 128, 128, 255)
+    result[~area_mask] = (0, 0, 0, 255)
+    return result
+
+
 def recalculate_bboxes_from_image(
     image: NDArray[np.uint8],
     metadata: list[dict],
@@ -136,7 +163,7 @@ def convert_boundaries_to_cont_areas(boundaries_image: NDArray[np.uint8], rng_se
     """
 
     # Vectorized mask creation for both legacy and grayscale boundary formats.
-    is_white: np.ndarray = get_area_pixel_mask(boundaries_image)
+    is_white = get_area_pixel_mask(boundaries_image, threshold=0)
 
     # Use scipy's label function for connected component analysis (rel. fast)
     white_mask = is_white.astype(np.uint8)

@@ -44,26 +44,15 @@ def round_bbox(
     ]
 
 
-def get_area_pixel_mask(image: NDArray[np.uint8]) -> NDArray[np.bool_]:
-    """Return mask for area pixels in supported boundary/density image formats.
+def get_area_pixel_mask(image: NDArray[np.uint8], threshold: int = 180) -> NDArray[np.bool_]:
+    """Return mask for area pixels in boundary images.
 
-    Supported formats:
-    - Legacy: bright R/G channels for area pixels.
-    - Grayscale: non-zero grayscale value for area pixels, 0 reserved for borders.
+    Args:
+        image: Boundary image (RGB/RGBA).
+        threshold: Red-channel cutoff. Use 180 for uncleaned images and 0 for
+            cleaned images where borders are exactly 0.
     """
-    red = image[:, :, 0]
-    green = image[:, :, 1]
-    blue = image[:, :, 2]
-
-    # Determine format from image content to avoid mixing classification rules.
-    is_grayscale_image = bool(np.all(red == green) and np.all(green == blue))
-
-    if is_grayscale_image:
-        # In grayscale format, 0 is reserved for borders and >0 are area pixels.
-        return red > 0
-
-    # Legacy format: areas are bright in R/G channels.
-    return (red > 180) & (green > 180)
+    return image[:, :, 0] > threshold
 
 
 class NumberSeries:
@@ -755,94 +744,3 @@ def fix_region_connectivity(
             break
     
     return pmap_fixed, stats
-
-
-def generate_grid_based_seeds(
-    mask: NDArray[np.bool],
-    num_points: int,
-    rng_seed: np.random.SeedSequence,
-    grid_size: int = 32,
-    k: int = 30,
-    no_distance_limit: bool = False,
-) -> list[tuple[int, int]]:
-    """
-    Generate seeds for a region by dividing it into grid cells and generating
-    seeds independently for each cell based on local density.
-    
-    Args:
-        mask: 2D boolean array indicating valid area
-        num_points: Target total number of points across all cells
-        rng_seed: RNG seed for reproducibility
-        grid_size: Size of grid cells in pixels
-        k: Number of attempts per active point in Poisson sampling
-        no_distance_limit: If True, fill remaining points without distance constraint
-        
-    Returns:
-        List of (x, y) integer coordinates
-    """
-    if num_points <= 0:
-        return []
-    
-    h, w = mask.shape
-    all_seeds = []
-    
-    ss = rng_seed
-    
-    # Calculate grid dimensions
-    grid_rows = (h + grid_size - 1) // grid_size
-    grid_cols = (w + grid_size - 1) // grid_size
-    total_cells = grid_rows * grid_cols
-    
-    # Count pixels in each cell and calculate total
-    cell_pixel_counts = np.zeros((grid_rows, grid_cols), dtype=np.int32)
-    total_pixels = 0
-    
-    for gr in range(grid_rows):
-        for gc in range(grid_cols):
-            y_start = gr * grid_size
-            y_end = min((gr + 1) * grid_size, h)
-            x_start = gc * grid_size
-            x_end = min((gc + 1) * grid_size, w)
-            
-            cell_mask = mask[y_start:y_end, x_start:x_end]
-            pixel_count = np.sum(cell_mask)
-            cell_pixel_counts[gr, gc] = pixel_count
-            total_pixels += pixel_count
-    
-    # Generate seeds for each cell based on density
-    rng_seeds = ss.spawn(grid_rows * grid_cols)
-    
-    for gr in range(grid_rows):
-        for gc in range(grid_cols):
-            cell_idx = gr * grid_cols + gc
-            y_start = gr * grid_size
-            y_end = min((gr + 1) * grid_size, h)
-            x_start = gc * grid_size
-            x_end = min((gc + 1) * grid_size, w)
-            
-            cell_mask = mask[y_start:y_end, x_start:x_end]
-            pixel_count = cell_pixel_counts[gr, gc]
-            
-            # Skip empty cells
-            if pixel_count == 0:
-                continue
-            
-            # Allocate points proportionally to this cell's pixel count
-            cell_num_points = max(1, round(num_points * pixel_count / total_pixels))
-            
-            # Generate Poisson samples for this cell
-            cell_seeds = poisson_disk_samples(
-                cell_mask,
-                cell_num_points,
-                rng_seed=rng_seeds[cell_idx],
-                min_dist=None,
-                k=k,
-                border_margin=0.0,
-                no_distance_limit=no_distance_limit,
-            )
-            
-            # Adjust coordinates to global space
-            for x, y in cell_seeds:
-                all_seeds.append((x + x_start, y + y_start))
-    
-    return all_seeds

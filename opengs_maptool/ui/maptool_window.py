@@ -98,10 +98,7 @@ class BackgroundWorker(QThread):
             self.error.emit(e)
 
 
-EXAMPLE_INPUT_DIR = Path(__file__).parent.parent / "examples" / "input"
-EXAMPLE_BOUNDARY_ORIG_IMAGE = Image.open(EXAMPLE_INPUT_DIR / "bound2_orig.png")
-EXAMPLE_LAND_IMAGE = Image.open(EXAMPLE_INPUT_DIR / "land2.png")
-EMPTY_IMAGE = Image.new("RGB", EXAMPLE_BOUNDARY_ORIG_IMAGE.size, color=(100, 100, 100))
+EMPTY_IMAGE = Image.new("RGB", (16, 9), color=(100, 100, 100))
 
 class MapToolWindow(QWidget):
     """
@@ -157,9 +154,9 @@ class MapToolWindow(QWidget):
         self.create_start_tab()
         self.tabs.addTab(self.readme_tab, "Getting Started")
         self.create_boundary_tab()
-        self.tabs.addTab(self.boundary_tab, "Adapt Boundary Image")
+        self.tabs.addTab(self.boundary_tab, "Create Density Image")
         self.create_input_images_tab()
-        self.tabs.addTab(self.land_tab, "Input Images")
+        self.tabs.addTab(self.input_tab, "Input Images")
         self.create_areas_tab()
         self.tabs.addTab(self.areas_tab, "Generate Areas")
         self.create_district_tab()
@@ -190,47 +187,40 @@ class MapToolWindow(QWidget):
         self.boundary_tab = QWidget()
         boundary_tab_layout = QVBoxLayout(self.boundary_tab)
         
-        create_button(boundary_tab_layout, "Import Boundary Image", self.on_button_import_boundary)
+        create_button(boundary_tab_layout, "Import and Clean Boundary Image", self.on_button_import_boundary)
 
-        self.orig_boundary_image_display = ImageDisplay(name="Boundary Image")
-        self.orig_boundary_image_display.set_image(EXAMPLE_BOUNDARY_ORIG_IMAGE)
-        boundary_tab_layout.addWidget(self.orig_boundary_image_display, stretch=1)
-
-        create_button(boundary_tab_layout,
-            "Normalize Territory and Province Density",
-            self.on_button_normalize_density,
-        )
-
-        create_button(
-            boundary_tab_layout,
-            "Convert Blue-Channel Density To Grayscale",
-            self.on_button_convert_blue_density_to_grayscale,
-        )
+        self.adapt_boundary_image_display = ImageDisplay(name="Boundary Image")
+        self.adapt_boundary_image_display.set_image(EMPTY_IMAGE)
+        boundary_tab_layout.addWidget(self.adapt_boundary_image_display, stretch=1)
         
-        self.normalized_boundary_image_display = ImageDisplay(name="Adapted Boundary Image")
-        self.normalized_boundary_image_display.set_image(EMPTY_IMAGE)
-        boundary_tab_layout.addWidget(self.normalized_boundary_image_display, stretch=1)
-
+        instruction_label = QLabel(
+            '<h3>Instructions:</h3>'
+            '<p>1. Save the above boundary image</p>'
+            '<p>2. Edit the image in an image editor (e.g., Paint.NET, Photoshop, GIMP)</p>'
+            '<p>3. Change the greyscale values for different territory & province density</p>'
+            '<p><b>Important:</b> Greyscale value <b>0 (black)</b> is reserved for boundaries and will be removed</p>'
+            '<p>4. Upload the edited image in the next tab</p>'
+        )
+        instruction_label.setWordWrap(True)
+        boundary_tab_layout.addWidget(instruction_label)
+    
     def create_input_images_tab(self) -> None:
-        self.land_tab = QWidget()
-        land_tab_layout = QVBoxLayout(self.land_tab)
-
-        boundary_button_row = QHBoxLayout()
-        land_tab_layout.addLayout(boundary_button_row)
-        create_button(boundary_button_row, "Import Final Boundary Image", self.on_button_import_final_boundary)
-        create_button(boundary_button_row, "Keep Generated Boundary Image", self.on_button_keep_generated_boundary)
+        self.input_tab = QWidget()
+        input_tab_layout = QVBoxLayout(self.input_tab)
         
-        self.final_boundary_image_display = ImageDisplay(name="Final Boundary Image")
+        boundary_button_row = QHBoxLayout()
+        input_tab_layout.addLayout(boundary_button_row)
+        create_button(boundary_button_row, "Import Final Boundary && Density Image", self.on_button_import_final_boundary)
+        create_button(boundary_button_row, "Keep Generated Image", self.on_button_keep_generated_boundary)
+
+        self.final_boundary_image_display = ImageDisplay(name="Final Boundary && Density Image")
         self.final_boundary_image_display.set_image(EMPTY_IMAGE)
-        land_tab_layout.addWidget(self.final_boundary_image_display, stretch=1)
+        input_tab_layout.addWidget(self.final_boundary_image_display, stretch=1)
 
-        self.button_import_land = ProgressButton("Import and Clean Land Image")
-        self.button_import_land.clicked.connect(self.on_button_import_land)
-        land_tab_layout.addWidget(self.button_import_land)
-
+        create_button(input_tab_layout, "Import and Clean Land Image", self.on_button_import_land)
         self.land_image_display = ImageDisplay(name="Land Image")
         self.land_image_display.set_image(EMPTY_IMAGE)
-        land_tab_layout.addWidget(self.land_image_display, stretch=1)
+        input_tab_layout.addWidget(self.land_image_display, stretch=1)
 
     def create_areas_tab(self) -> None:
         self.areas_tab = QWidget()
@@ -362,26 +352,23 @@ class MapToolWindow(QWidget):
 
     # TAB 2
     def on_button_import_boundary(self) -> None:
-        self.orig_boundary_image_display.import_image()
+        if not self.adapt_boundary_image_display.import_image():
+            return
 
-    def on_button_normalize_density(self) -> None:
-        image_buffer = self.orig_boundary_image_display.get_image_buffer()
-        if image_buffer is not None:
-            normalized_buffer = MapTool.normalize_boundary_area_density(image_buffer)
-            self.normalized_boundary_image_display.set_image(Image.fromarray(normalized_buffer))
+        image_buffer = self.adapt_boundary_image_display.get_image_buffer()
+        if image_buffer is None:
+            return
 
-    def on_button_convert_blue_density_to_grayscale(self) -> None:
-        image_buffer = self.orig_boundary_image_display.get_image_buffer()
-        if image_buffer is not None:
-            converted_buffer = MapTool.convert_blue_density_to_grayscale(image_buffer)
-            self.normalized_boundary_image_display.set_image(Image.fromarray(converted_buffer))
+        cleaned_buffer = MapTool.clean_boundary_image(image_buffer)
+        cleaned_image = Image.fromarray(cleaned_buffer)
+        self.adapt_boundary_image_display.set_image(cleaned_image)
 
     # TAB 3
     def on_button_import_final_boundary(self) -> None:
         self.final_boundary_image_display.import_image()
 
     def on_button_keep_generated_boundary(self) -> None:
-        self.final_boundary_image_display.set_image(self.normalized_boundary_image_display.get_image() or EMPTY_IMAGE)
+        self.final_boundary_image_display.set_image(self.adapt_boundary_image_display.get_image() or EMPTY_IMAGE)
 
     def on_button_import_land(self) -> None:
         self.land_image_display.import_image()

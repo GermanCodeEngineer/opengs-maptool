@@ -7,7 +7,7 @@ from multiprocessing import Pool, cpu_count
 from .utils import (
     NumberSeries, ColorSeries,
     poisson_disk_samples, lloyd_relaxation, assign_regions, build_metadata, hex_to_rgb,
-    round_float, round_bbox, defragment_regions, generate_grid_based_seeds, get_area_pixel_mask,
+    round_float, round_bbox, defragment_regions, get_area_pixel_mask,
 )
 from .. import config
 
@@ -19,6 +19,7 @@ class AreaProcessingArgs:
     """
     Arguments for processing a single continuous area into regions.
     Args:
+        area_meta: Metadata for this area
         cont_areas_image: Continuous areas image
         class_image: Type/classification image
         class_counts: Pixel counts per type
@@ -30,6 +31,7 @@ class AreaProcessingArgs:
         poisson_rng_seed: RNG seed for Poisson disk sampling
         lloyd_rng_seed: RNG seed for Lloyd relaxation
         lloyd_iterations: Number of Lloyd relaxation iterations
+        override_density_multiplier: Use own average density instead of parent density
     """
     area_meta: dict[str, Any]
     cont_areas_image: NDArray[np.uint8]
@@ -43,8 +45,7 @@ class AreaProcessingArgs:
     poisson_rng_seed: np.random.SeedSequence
     lloyd_rng_seed: np.random.SeedSequence
     lloyd_iterations: int
-    density_image: NDArray[np.uint8] | None
-
+    override_density_multiplier: bool
 
 def convert_all_cont_areas_to_regions(
         cont_areas_image: NDArray[np.uint8],
@@ -56,11 +57,11 @@ def convert_all_cont_areas_to_regions(
         fn_new_number_series: Callable[[dict[str, Any]], NumberSeries],
         rng_seed: int,
         lloyd_iterations: int,
-    density_image: NDArray[np.uint8] | None = None,
+        override_density_multiplier: bool = False,
         num_processes: int | None = None,
         tqdm_description: str = "Converting areas to regions",
         tqdm_unit: str = "area",
-        progress_callback=None,
+        progress_callback: Callable[[int, int], None] | None = None,
     ) -> tuple[NDArray[np.uint8], list[dict[str, Any]]]:
     """
     Convert all continuous areas into regions and combine into a single image.
@@ -68,8 +69,8 @@ def convert_all_cont_areas_to_regions(
     Each process gets its own ColorSeries instance seeded uniquely to avoid color collisions.
     
     Args:
-        cont_areas_image: Continuous areas image (from convert_boundaries_to_cont_areas)
-        cont_areas_metadata: Metadata list with area colors (from convert_boundaries_to_cont_areas)
+        cont_areas_image: Continuous areas image
+        cont_areas_metadata: Metadata list with area colors
         class_image: Type/classification image
         class_counts: Pixel counts per type
         pixels_per_land_region: Average pixels per region for land areas
@@ -77,7 +78,11 @@ def convert_all_cont_areas_to_regions(
         fn_new_number_series: A function to produce a new number series
         rng_seed: Master RNG seed for color series seeding
         lloyd_iterations: Number of iterations for Lloyd relaxation
+        override_density_multiplier: Use region average density instead of parent density
         num_processes: Number of processes to use. If None, uses number of CPU cores
+        tqdm_description: Description for tqdm progress bar
+        tqdm_unit: Unit name for tqdm progress bar
+        progress_callback: Optional callback function for progress updates
     
     Returns:
         Tuple of (combined_image, combined_metadata) where:
@@ -107,7 +112,7 @@ def convert_all_cont_areas_to_regions(
             poisson_rng_seed=poisson_seed,
             lloyd_rng_seed=lloyd_seed,
             lloyd_iterations=lloyd_iterations,
-            density_image=density_image,
+            override_density_multiplier=override_density_multiplier,
         )
         for area_meta, color_seed, poisson_seed, lloyd_seed 
         in zip(cont_areas_metadata, color_seeds, poisson_seeds, lloyd_seeds)
@@ -227,8 +232,7 @@ def convert_cont_area_to_regions(args: AreaProcessingArgs) -> tuple[
         pixels_per_region = args.pixels_per_water_region
         pixel_count = water_pixels
     
-    # Apply area-level density multiplier only when no per-region density image is provided
-    if args.density_image is not None:
+    if args.override_density_multiplier:
         density_src = args.density_image[y_min:y_max, x_min:x_max]
         is_area_pixel = get_area_pixel_mask(density_src)
         density_mask = cropped_mask & is_area_pixel
@@ -243,7 +247,7 @@ def convert_cont_area_to_regions(args: AreaProcessingArgs) -> tuple[
             density_multiplier = ((avg_blue - 128) / 127) * 3 + 1
     else:
         density_multiplier = args.area_meta.get("density_multiplier") or 1.0
-    
+
     # Calculate regions: areas smaller than 0.5 regions get 0 territories (skip them)
     num_area_regions = max(1, round(pixel_count / pixels_per_region * density_multiplier))
         

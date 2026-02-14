@@ -36,7 +36,7 @@ def generate_maps(output_dir: Path) -> dict:
     if not example_input_dir.exists():
         raise FileNotFoundError(f"Example input directory not found: {example_input_dir}")
     
-    boundary_image_path = example_input_dir / "bound2_density.png"
+    boundary_image_path = example_input_dir / "bound2_orig.png"
     land_image_path = example_input_dir / "land2.png"
     
     if not boundary_image_path.exists() or not land_image_path.exists():

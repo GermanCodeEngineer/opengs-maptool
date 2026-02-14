@@ -4,7 +4,7 @@ from numpy.typing import NDArray
 from typing import Any
 from PIL import Image
 from gceutils import grepr_dataclass
-from .boundaries_to_cont import convert_boundaries_to_cont_areas, assign_borders_to_areas, classify_pixels_by_color, recalculate_bboxes_from_image, classify_continuous_areas
+from .boundaries_to_cont import convert_boundaries_to_cont_areas, assign_borders_to_areas, classify_pixels_by_color, recalculate_bboxes_from_image, classify_continuous_areas, clean_boundary_image
 from .cont_to_regions import convert_all_cont_areas_to_regions
 from .utils import NumberSeries
 
@@ -66,7 +66,7 @@ class MapTool:
         
         Args:
             land_image: PIL Image containing land/ocean/lake classification
-            boundary_image: PIL Image containing (country) boundaries and density information(in blue channel)
+            boundary_image: PIL Image containing (country) boundaries
             pixels_per_land_district: Approximate pixels per land district
             pixels_per_water_district: Approximate pixels per water district
             pixels_per_land_territory: Approximate pixels per land territory
@@ -137,7 +137,7 @@ class MapTool:
         areas_with_borders_image, cont_areas_data = convert_boundaries_to_cont_areas(
             self.boundary_image, 
             self.cont_areas_rng_seed,
-            min_area_pixels=50,  # Filter out tiny areas & islands
+            min_area_pixels=config.MIN_AREA_PIXELS,  # Filter out tiny areas & islands
             progress_callback=boundaries_progress
         )
         
@@ -188,7 +188,6 @@ class MapTool:
             ),
             rng_seed=self.districts_rng_seed,
             lloyd_iterations=self.lloyd_iterations,
-            density_image=self.boundary_image,
             tqdm_description="Generating districts from areas",
             tqdm_unit="areas",
             progress_callback=district_progress,
@@ -301,69 +300,15 @@ class MapTool:
 
     
     @staticmethod
-    def normalize_boundary_area_density(boundary_image: NDArray[np.uint8]) -> NDArray[np.uint8]:
+    def clean_boundary_image(boundary_image: Image.Image) -> Image.Image:
         """
-        Set the B channel to 128 (normal density) for all white areas in a boundary image.
-        Black borders (R+G < 100) are left unchanged.
-        
-        Args:
-            boundary_image: RGBA boundary image where R+G channels define borders/areas
-            
-        Returns:
-            New RGBA image with B channel normalized to 128 for all areas
-        """
-        result = boundary_image.copy()
-        
-        # Identify white areas (R and G are both bright, indicating non-border pixels)
-        is_area = (result[:, :, 0] > 100) & (result[:, :, 1] > 100)
-        
-        # Set B channel to 128 (normal density) for all areas
-        result[is_area, 2] = 128
-        
-        return result
-
-    @staticmethod
-    def convert_blue_density_to_grayscale(
-        boundary_image: NDArray[np.uint8],
-        black_threshold: int = 16,
-    ) -> NDArray[np.uint8]:
-        """
-        Convert a boundary+density image into strict grayscale density format.
-
-        Input format:
-        - Density is stored in the blue channel.
-        - Borders are black or near-black.
-
-        Output format:
-        - RGB are equal (grayscale).
-        - Borders are exactly 0.
-        - Non-border area pixels are in the range 1..255 (0 is reserved for borders).
-        - Alpha is set to 255.
+        Standardize a boundary image to strict black borders and gray areas.
 
         Args:
-            boundary_image: Input image as RGBA/RGB numpy array.
-            black_threshold: Max RGB channel value considered "near-black" border.
+            boundary_image: Input boundary image as PIL Image.
 
         Returns:
-            RGBA uint8 image in grayscale-density format.
+            Image with boundaries set to (0, 0, 0, 255)
+            and all other pixels set to (128, 128, 128, 255).
         """
-        if boundary_image.ndim != 3 or boundary_image.shape[2] < 3:
-            raise ValueError("boundary_image must have shape (H, W, C) with at least 3 channels")
-
-        rgb = boundary_image[:, :, :3].astype(np.uint8)
-        blue = rgb[:, :, 2]
-
-        # Border if all channels are near-black.
-        is_border = np.max(rgb, axis=2) <= int(black_threshold)
-
-        # Reserve 0 exclusively for borders.
-        gray = blue.copy()
-        gray[~is_border] = np.clip(gray[~is_border], 1, 255)
-        gray[is_border] = 0
-
-        result = np.empty((*gray.shape, 4), dtype=np.uint8)
-        result[:, :, 0] = gray
-        result[:, :, 1] = gray
-        result[:, :, 2] = gray
-        result[:, :, 3] = 255
-        return result
+        return Image.fromarray(clean_boundary_image(np.array(boundary_image.convert("RGBA"))))

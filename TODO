@@ -1,9 +1,13 @@
 TODOs:
-- move default images opening into layout creation
+- re-add default images
 - use seperate grayscale image instead of blue channel for density
 - maptool options for what images to produce? maybe chaching?
 - improve flappy bird and run in seperate process to avoid lags
 - add terms definition to README
+- remove weird attributes of MapToolWindow
+- fix imports
+- rewrite and update README
+- create slider for and adapt MIN_AREA_PIXELS
 
 Sources:
 - https://www.earthdata.nasa.gov/data/catalog/sedac-ciesin-sedac-gpwv4-popdens-4.0

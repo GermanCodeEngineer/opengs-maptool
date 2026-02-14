@@ -23,7 +23,7 @@ def main_automatic() -> None:
 
     maptool = DistrictMapTool(
         land_image=Image.open(input_directory / "land2.png"),
-        boundary_image=Image.open(input_directory / "bound2_orig_density.png"),#"bound2_density.png"),
+        boundary_image=Image.open(input_directory / "bound2_edited.png"),
     )
 
     result = maptool.generate()
