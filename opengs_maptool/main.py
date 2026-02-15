@@ -1,12 +1,13 @@
 import sys
+import json
+import argparse
 from pathlib import Path
 from PIL import Image
+import numpy as np
 from PyQt6.QtWidgets import QApplication
 from . import MapToolWindow, MapTool
 
 def main_automatic() -> None:
-    import json
-
     # Default paths
     input_directory = Path(__file__).parent / "examples" / "input"
     output_directory = Path(__file__).parent / "examples" / "output"
@@ -52,14 +53,68 @@ def main_automatic() -> None:
         provinces=result.province_data,
     )))
 
+def main_districts_from_areas(regenerate_areas: bool = False) -> None:
+    input_directory = Path(__file__).parent / "examples" / "input"
+    output_directory = Path(__file__).parent / "examples" / "output"
+
+    cont_areas_image_path = output_directory / "cont_areas_image.png"
+    cont_areas_data_path = output_directory / "cont_areas_data.json"
+
+    maptool = MapTool(
+        land_image=Image.open(input_directory / "land2.png"),
+        boundary_image=Image.open(input_directory / "bound2_edited.png"),
+    )
+
+    if regenerate_areas:
+        cont_areas_image, cont_areas_image_buffer, cont_areas_data = maptool._generate_cont_areas()
+        cont_areas_image.save(cont_areas_image_path)
+        cont_areas_data_path.write_text(json.dumps(cont_areas_data))
+    else:
+        if not cont_areas_image_path.exists() or not cont_areas_data_path.exists():
+            raise FileNotFoundError(
+                "Missing precomputed area files. Expected: "
+                f"{cont_areas_image_path} and {cont_areas_data_path}"
+            )
+
+        cont_areas_image_buffer = np.array(Image.open(cont_areas_image_path).convert("RGBA"), dtype=np.uint8)
+        cont_areas_data = json.loads(cont_areas_data_path.read_text())
+
+    class_image, class_image_buffer, class_counts = maptool._generate_type_classification()
+    district_image, _, district_data = maptool._generate_districts(
+        cont_areas_image=cont_areas_image_buffer,
+        cont_areas_data=cont_areas_data,
+        class_image=class_image_buffer,
+        class_counts=class_counts,
+    )
+
+    class_image.save(output_directory / "class_image.png")
+    district_image.save(output_directory / "district_image.png")
+    (output_directory / "district_data.json").write_text(json.dumps(district_data))
+
 def main_gui() -> None:
     app = QApplication(sys.argv)
     window = MapToolWindow()
     window.show()
     sys.exit(app.exec())
 
+
+def parse_args() -> argparse.Namespace:
+    parser = argparse.ArgumentParser(description="OpenGS MapTool entrypoints")
+    parser.add_argument("-gui", action="store_true", help="Launch the GUI")
+    parser.add_argument("-test-districts", action="store_true", help="Generate districts from precomputed areas")
+    parser.add_argument(
+        "-regenerate-areas",
+        action="store_true",
+        help="With -test-districts: regenerate continuous areas before district generation",
+    )
+    return parser.parse_args()
+
 if __name__ == "__main__":
-    if sys.argv[-1] == "-gui":
+    args = parse_args()
+
+    if args.gui:
         main_gui()
+    elif args.test_districts:
+        main_districts_from_areas(regenerate_areas=args.regenerate_areas)
     else:
         main_automatic()

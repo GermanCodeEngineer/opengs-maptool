@@ -1,6 +1,5 @@
 TODOs:
 - re-add default images
-- use seperate grayscale image instead of blue channel for density
 - maptool options for what images to produce? maybe chaching?
 - improve flappy bird and run in seperate process to avoid lags
 - add terms definition to README
@@ -11,5 +10,19 @@ TODOs:
 - optimize generation (including bbox calculation)
 - when centre not in region: use seed!
 - fix fragmentation issue with sea district in northern canada
+- add output/input filenames to config?
+- rename districts to density samples?
+- find some uniform format for seed, center, bbox coords
+
+WHEN DONE or for a later PR:
+- optimize border image manually (e.g. Greece, Israel, especially Chile too)
+
+New Features WHEN DONE:
+- **support for a different regional densities within bigger countries**
+- renewed guarantee of region continuity
+- guarantee  
+- seed coords
+
+
 Sources:
 - https://www.earthdata.nasa.gov/data/catalog/sedac-ciesin-sedac-gpwv4-popdens-4.0

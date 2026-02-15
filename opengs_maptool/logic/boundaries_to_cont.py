@@ -241,6 +241,7 @@ def convert_boundaries_to_cont_areas(boundaries_image: NDArray[np.uint8], rng_se
             "global_y": center_y,
             "bbox_local": bbox_local,
             "bbox": bbox_local,
+            "seed": [int(round(center_x)), int(round(center_y))],
             "density_multiplier": None,
         })
     

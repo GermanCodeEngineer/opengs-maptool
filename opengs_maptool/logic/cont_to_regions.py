@@ -182,6 +182,12 @@ def convert_all_cont_areas_to_regions(
                             float(by1 + y_min),
                         ],
                     )
+                seed = region.get("seed")
+                if isinstance(seed, (list, tuple)) and len(seed) == 2:
+                    region["seed"] = [
+                        int(round(float(seed[0]) + x_min)),
+                        int(round(float(seed[1]) + y_min)),
+                    ]
                 
                 updated_region_metadata.append(region)
             
@@ -281,6 +287,8 @@ def convert_cont_area_to_regions(args: AreaProcessingArgs) -> tuple[
         cx_cropped = round_float(cx_cropped, 2)
         cy_cropped = round_float(cy_cropped, 2)
         local_bbox = round_bbox(local_bbox)
+        seed_x = int(round(cx_cropped))
+        seed_y = int(round(cy_cropped))
 
         metadata = [{
             "region_type": area_type,
@@ -293,6 +301,7 @@ def convert_cont_area_to_regions(args: AreaProcessingArgs) -> tuple[
             "global_y": None,
             "bbox_local": local_bbox,
             "bbox": None,  # Set later (global bbox)
+            "seed": [seed_x, seed_y],
             "density_multiplier": round_float(density_multiplier, 2),
         }]
 
@@ -338,14 +347,14 @@ def convert_cont_area_to_regions(args: AreaProcessingArgs) -> tuple[
     )
     
     pmap = assign_regions(cropped_mask, seeds, start_index=0)
-    
+
     # Detect and fix territories split by narrow passages
-    pmap = defragment_regions(pmap, cropped_mask, seeds, size_threshold=100)
+    # pmap = defragment_regions(pmap, cropped_mask, seeds, size_threshold=100)
     
     metadata = build_metadata(
         pmap, seeds, 0, area_type, args.number_series, args.color_series,
         parent_id=args.area_meta["region_id"],
-        parent_density_multiplier=args.area_meta.get("density_multiplier") or 1.0
+        parent_density_multiplier=args.area_meta.get("density_multiplier") or 1.0,
     )
 
     # For districts, compute average density per generated region from the density image.

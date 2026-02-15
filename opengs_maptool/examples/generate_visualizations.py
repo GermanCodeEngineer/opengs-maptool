@@ -100,10 +100,10 @@ def save_generated_inputs(input_dir: Path, result: object) -> None:
     export_to_json(result.territory_data, input_dir / LEVEL_FILES["territories"]["data"])
     export_to_json(result.province_data, input_dir / LEVEL_FILES["provinces"]["data"])
 
-    export_to_csv(result.cont_areas_data, input_dir / LEVEL_FILES["areas"]["data"].replace(".json", ".csv"))
-    export_to_csv(result.district_data, input_dir / LEVEL_FILES["districts"]["data"].replace(".json", ".csv"))
-    export_to_csv(result.territory_data, input_dir / LEVEL_FILES["territories"]["data"].replace(".json", ".csv"))
-    export_to_csv(result.province_data, input_dir / LEVEL_FILES["provinces"]["data"].replace(".json", ".csv"))
+    #export_to_csv(result.cont_areas_data, input_dir / LEVEL_FILES["areas"]["data"].replace(".json", ".csv"))
+    #export_to_csv(result.district_data, input_dir / LEVEL_FILES["districts"]["data"].replace(".json", ".csv"))
+    #export_to_csv(result.territory_data, input_dir / LEVEL_FILES["territories"]["data"].replace(".json", ".csv"))
+    #export_to_csv(result.province_data, input_dir / LEVEL_FILES["provinces"]["data"].replace(".json", ".csv"))
 
 
 def generate_maps(input_dir: Path) -> None:

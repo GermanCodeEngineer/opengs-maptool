@@ -777,16 +777,28 @@ def build_metadata(
         if rid is None:
             continue
 
+        sx, sy = seeds[i]
         color_hex = color_series.get_color_hex(is_water=(region_type != "land"))
         if counts[i] <= 0:
-            sx, sy = seeds[i]
             cx, cy = float(sx), float(sy)
             bbox_local = [int(sx), int(sy), int(sx) + 1, int(sy) + 1]
         else:
             cx = float(sum_x[i] / counts[i])
             cy = float(sum_y[i] / counts[i])
             region_mask = pmap == (start_index + i)
-            cx, cy = ensure_point_in_mask(region_mask, cx, cy)
+
+            cx_i = int(round(cx))
+            cy_i = int(round(cy))
+            h, w = region_mask.shape
+            cx_i = max(0, min(w - 1, cx_i))
+            cy_i = max(0, min(h - 1, cy_i))
+
+            if not region_mask[cy_i, cx_i]:
+                if 0 <= sx < w and 0 <= sy < h and region_mask[sy, sx]:
+                    cx, cy = float(sx), float(sy)
+                else:
+                    cx, cy = ensure_point_in_mask(region_mask, float(sx), float(sy))
+
             # Convert to integers with floor/ceil for proper pixel coverage
             bbox_local = [int(min_x[i]), int(min_y[i]), int(max_x[i]) + 1, int(max_y[i]) + 1]
 
@@ -805,6 +817,7 @@ def build_metadata(
             "global_y": None,
             "bbox_local": bbox_local,
             "bbox": None,  # Set later (global bbox)
+            "seed": [int(sx), int(sy)],
             "density_multiplier": parent_density_multiplier or 1.0,
         }
         metadata.append(meta_dict)
