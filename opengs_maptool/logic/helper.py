@@ -1,5 +1,5 @@
 """
-Detect fragmented regions from a region image + metadata.
+Detect fragmented regions from a uint32 region map + metadata.
 
 Output image convention:
 - Non-fragmented pixels are rendered in grayscale.
@@ -12,12 +12,13 @@ is treated as a fragment.
 
 from __future__ import annotations
 
-import argparse
 import json
 import sys
 from pathlib import Path
 
 import numpy as np
+from numpy.typing import NDArray
+from typing import Any
 from PIL import Image
 from scipy import ndimage
 
@@ -25,7 +26,7 @@ if __package__ in (None, ""):
     sys.path.insert(0, str(Path(__file__).resolve().parents[2]))
 
 
-STRICT_FOUR_CONNECTED = np.array(
+FOUR_CONNECTED = np.array(
     [
         [0, 1, 0],
         [1, 1, 1],
@@ -144,11 +145,11 @@ def resolve_bbox(region: dict, width: int, height: int) -> tuple[int, int, int, 
 
 
 def detect_fragmented_regions(
-    image_rgba: np.ndarray,
+    region_map: NDArray[np.uint32],
     metadata: list[dict],
-) -> tuple[np.ndarray, dict[str, int], list[dict[str, object]]]:
-    height, width = image_rgba.shape[:2]
-    rgb_image = image_rgba[:, :, :3]
+) -> tuple[NDArray[np.uint8], dict[str, int], list[dict[str, Any]]]:
+    height, width = region_map.shape[:2]
+    invalid_region_id = np.iinfo(np.uint32).max
 
     output = np.zeros((height, width, 4), dtype=np.uint8)
     output[:, :, 3] = 255
@@ -160,41 +161,59 @@ def detect_fragmented_regions(
         "fragment_pixels": 0,
         "regions_missing_seed": 0,
     }
-    fragment_details: list[dict[str, object]] = []
+    fragment_details: list[dict[str, Any]] = []
 
     for region_index, region in enumerate(metadata):
         color_hex = region.get("color")
-        if not isinstance(color_hex, str):
-            continue
-
-        try:
-            region_rgb = hex_to_rgb(color_hex)
-        except ValueError:
-            continue
+        region_rgb: tuple[int, int, int] | None = None
+        if isinstance(color_hex, str):
+            try:
+                region_rgb = hex_to_rgb(color_hex)
+            except ValueError:
+                region_rgb = None
 
         x0, y0, x1, y1 = resolve_bbox(region, width, height)
         if x1 <= x0 or y1 <= y0:
             continue
 
-        rgb_window = rgb_image[y0:y1, x0:x1]
-        region_mask = np.all(rgb_window == np.array(region_rgb, dtype=np.uint8), axis=2)
+        seed_xy = resolve_seed(region, width, height)
+        if seed_xy is None:
+            stats["regions_missing_seed"] += 1
+            region_id_value = None
+        else:
+            sx, sy = seed_xy
+            seed_region_id = int(region_map[sy, sx])
+            region_id_value = None if seed_region_id == int(invalid_region_id) else seed_region_id
+
+        if region_id_value is None:
+            region_window_ids = region_map[y0:y1, x0:x1]
+            valid_window = region_window_ids != invalid_region_id
+            if not np.any(valid_window):
+                continue
+            candidate_ids = region_window_ids[valid_window]
+            unique_ids, counts = np.unique(candidate_ids, return_counts=True)
+            region_id_value = int(unique_ids[int(np.argmax(counts))])
+
+        region_window_ids = region_map[y0:y1, x0:x1]
+        region_mask = region_window_ids == np.uint32(region_id_value)
         if not np.any(region_mask):
             continue
 
         stats["regions_checked"] += 1
 
-        labels, num_components = ndimage.label(region_mask, structure=STRICT_FOUR_CONNECTED)
+        labels, num_components = ndimage.label(region_mask, structure=FOUR_CONNECTED)
 
-        gray = to_grayscale_value(region_rgb)
         window_out = output[y0:y1, x0:x1]
-        window_out[region_mask] = [gray, gray, gray, 255]
+        if region_rgb is not None:
+            gray = to_grayscale_value(region_rgb)
+            window_out[region_mask] = [gray, gray, gray, 255]
+        else:
+            window_out[region_mask] = [128, 128, 128, 255]
 
         if num_components <= 1:
             continue
 
-        seed_xy = resolve_seed(region, width, height)
         if seed_xy is None:
-            stats["regions_missing_seed"] += 1
             component_sizes = np.bincount(labels[region_mask])
             if component_sizes.size <= 1:
                 continue
@@ -229,6 +248,7 @@ def detect_fragmented_regions(
             fragment_details.append(
                 {
                     "region_id": region.get("region_id"),
+                    "map_region_id": int(region_id_value),
                     "component_id": int(component_id),
                     "pixel_count": int(np.count_nonzero(fragment_mask)),
                     "fragment_color": rgb_to_hex((r, g, b)),
@@ -240,69 +260,3 @@ def detect_fragmented_regions(
             stats["regions_fragmented"] += 1
 
     return output, stats, fragment_details
-
-
-def process_region_type(region_type: str, input_dir: Path, visualization_dir: Path) -> bool:
-    spec = REGION_FILE_SPECS[region_type]
-    image_path = input_dir / spec["image"]
-    metadata_path = input_dir / spec["metadata"]
-    output_path = visualization_dir / spec["output"]
-
-    if not image_path.exists() or not metadata_path.exists():
-        print(f"Skipping {region_type}: missing {image_path.name} or {metadata_path.name}")
-        return False
-
-    image_rgba = np.array(Image.open(image_path).convert("RGBA"), dtype=np.uint8)
-    metadata_raw = json.loads(metadata_path.read_text(encoding="utf-8"))
-
-    if not isinstance(metadata_raw, list):
-        raise ValueError(f"Metadata JSON for {region_type} must be a list of region dictionaries")
-
-    visualization, stats, fragment_details = detect_fragmented_regions(image_rgba, metadata_raw)
-
-    output_path.parent.mkdir(parents=True, exist_ok=True)
-    Image.fromarray(visualization).save(output_path)
-
-    print(f"Saved [{region_type}]: {output_path}")
-    print(
-        f"stats [{region_type}]:",
-        json.dumps(stats, indent=2),
-    )
-    print(
-        f"fragment_colors [{region_type}]:",
-        json.dumps(fragment_details, indent=2),
-    )
-    return True
-
-
-def main() -> None:
-    input_dir = Path(__file__).parent / "output"
-    visualization_dir = Path(__file__).parent / "visualization"
-    visualization_dir.mkdir(parents=True, exist_ok=True)
-
-    parser = argparse.ArgumentParser(description="Detect fragmented regions from map image and metadata")
-    parser.add_argument(
-        "--region-type",
-        choices=["all", *REGION_FILE_SPECS.keys()],
-        default="all",
-        help="Region type to process. Default: all available region types",
-    )
-    args = parser.parse_args()
-
-    requested_types = (
-        list(REGION_FILE_SPECS.keys())
-        if args.region_type == "all"
-        else [args.region_type]
-    )
-
-    processed_count = 0
-    for region_type in requested_types:
-        if process_region_type(region_type, input_dir, visualization_dir):
-            processed_count += 1
-
-    if processed_count == 0:
-        print("No region types processed. Generate outputs first, then rerun this script.")
-
-
-if __name__ == "__main__":
-    main()

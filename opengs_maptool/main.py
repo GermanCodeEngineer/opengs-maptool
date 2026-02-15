@@ -6,11 +6,32 @@ from PIL import Image
 import numpy as np
 from PyQt6.QtWidgets import QApplication
 from . import MapToolWindow, MapTool
+from .examples.detect_fragmented_regions import detect_fragmented_regions
+
+
+def save_district_fragment_detection(
+    district_image: Image.Image,
+    district_data: list[dict],
+    output_directory: Path,
+) -> None:
+    visualization_dir = Path(__file__).parent / "examples" / "visualization"
+    visualization_dir.mkdir(parents=True, exist_ok=True)
+
+    district_rgba = np.array(district_image.convert("RGBA"), dtype=np.uint8)
+    visualization, stats, fragment_details = detect_fragmented_regions(district_rgba, district_data)
+
+    output_path = visualization_dir / "district_fragments.png"
+    Image.fromarray(visualization).save(output_path)
+    (output_directory / "district_fragment_details.json").write_text(json.dumps(fragment_details, indent=2))
+
+    print(f"Saved [district fragments]: {output_path}")
+    print("stats [district fragments]:", json.dumps(stats, indent=2))
 
 def main_automatic() -> None:
     # Default paths
     input_directory = Path(__file__).parent / "examples" / "input"
     output_directory = Path(__file__).parent / "examples" / "output"
+    output_directory.mkdir(parents=True, exist_ok=True)
 
     class DistrictMapTool(MapTool):
         def on_cont_areas_generated(self, cont_areas_image, cont_areas_image_buffer, cont_areas_data):
@@ -56,6 +77,7 @@ def main_automatic() -> None:
 def main_districts_from_areas(regenerate_areas: bool = False) -> None:
     input_directory = Path(__file__).parent / "examples" / "input"
     output_directory = Path(__file__).parent / "examples" / "output"
+    output_directory.mkdir(parents=True, exist_ok=True)
 
     cont_areas_image_path = output_directory / "cont_areas_image.png"
     cont_areas_data_path = output_directory / "cont_areas_data.json"
@@ -90,6 +112,7 @@ def main_districts_from_areas(regenerate_areas: bool = False) -> None:
     class_image.save(output_directory / "class_image.png")
     district_image.save(output_directory / "district_image.png")
     (output_directory / "district_data.json").write_text(json.dumps(district_data))
+    save_district_fragment_detection(district_image, district_data, output_directory)
 
 def main_gui() -> None:
     app = QApplication(sys.argv)

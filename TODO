@@ -13,6 +13,9 @@ TODOs:
 - add output/input filenames to config?
 - rename districts to density samples?
 - find some uniform format for seed, center, bbox coords
+- add pixel count region field?
+- give proper IDs to areas
+- fix regions with 0 pixels
 
 WHEN DONE or for a later PR:
 - optimize border image manually (e.g. Greece, Israel, especially Chile too)
