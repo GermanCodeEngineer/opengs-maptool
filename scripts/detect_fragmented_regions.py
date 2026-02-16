@@ -21,8 +21,8 @@ import numpy as np
 from PIL import Image
 from scipy import ndimage
 
-if __package__ in (None, ""):
-    sys.path.insert(0, str(Path(__file__).resolve().parents[2]))
+#if __package__ in (None, ""):
+#    sys.path.insert(0, str(Path(__file__).resolve().parents[2]))
 
 
 STRICT_FOUR_CONNECTED = np.array(
@@ -276,8 +276,8 @@ def process_region_type(region_type: str, input_dir: Path, visualization_dir: Pa
 
 
 def main() -> None:
-    input_dir = Path(__file__).parent / "output"
-    visualization_dir = Path(__file__).parent / "visualization"
+    input_dir = Path(__file__).parent.parent / "examples" / "output"
+    visualization_dir = Path(__file__).parent.parent / "examples" / "visualization"
     visualization_dir.mkdir(parents=True, exist_ok=True)
 
     parser = argparse.ArgumentParser(description="Detect fragmented regions from map image and metadata")

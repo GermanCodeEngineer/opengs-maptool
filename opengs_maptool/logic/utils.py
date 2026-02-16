@@ -8,6 +8,7 @@ from numpy.typing import NDArray
 from typing import Any, Iterable
 from scipy.ndimage import distance_transform_edt, label as scipy_label
 from scipy.spatial import cKDTree
+from scipy.stats import mode
 from collections import deque
 
 
@@ -481,8 +482,7 @@ def assign_regions(mask: NDArray[np.bool], seeds: list[tuple[int, int]], start_i
     Assign each pixel in mask to nearest seed using geodesic (through-mask) distance.
     
     Uses distance transform and Voronoi-like assignment where distance is measured
-    through the valid mask pixels only. This naturally handles narrow straits and
-    ensures no region splits due to narrow passages.
+    through the valid mask pixels only. This naturally handles narrow straits and makes fragments rare.
     
     Args:
         mask: Boolean mask of valid pixels (True = valid)
@@ -570,236 +570,53 @@ def defragment_regions(
         Fixed pmap with defragmented regions
     """
     
+    # Use fix_region_connectivity to detect islands, but set all islands to -1
     pmap_fixed = pmap.copy()
     h, w = mask.shape
-
-    solved_fragments: list[dict[str, int]] = []
-
-    def record_solved_fragment(
-        phase: int,
-        source_region_id: int,
-        component_id: int,
-        pixel_count: int,
-        target_region_id: int,
-    ) -> None:
-        solved_fragments.append(
-            {
-                "phase": int(phase),
-                "source_region_id": int(source_region_id),
-                "component_id": int(component_id),
-                "pixel_count": int(pixel_count),
-                "target_region_id": int(target_region_id),
-            }
-        )
-    
-    # Phase 1: Merge small fragments to neighbors
+    # Set max_iters proportional to pixel count (at least 50)
+    pixel_count = np.count_nonzero(mask)
+    max_iters = max(50, int(pixel_count // 2))
+    # Explicitly set all fragments to -1 before filling
+    h, w = mask.shape
     valid_ids = set(np.unique(pmap[mask])) - {-1}
-    
     for region_id in valid_ids:
         region_mask = (pmap_fixed == region_id)
-        
-        # Detect connected components within this region
         components, num_components = scipy_label(region_mask, structure=FOUR_CONNECTED)
-        
         if num_components <= 1:
-            continue  # region is already contiguous
-        
-        # Analyze fragment sizes
-        fragment_sizes = np.bincount(components[region_mask])
-        largest_idx = np.argmax(fragment_sizes)
-        
-        # Merge only small fragments to neighbors
-        for frag_idx in range(1, num_components + 1):
-            if frag_idx == largest_idx or frag_idx == 0:
+            continue
+        # Find the largest component
+        component_sizes = np.bincount(components[region_mask])
+        largest_idx = np.argmax(component_sizes)
+        # Set all other components (islands) to -1
+        for comp_idx in range(1, num_components + 1):
+            if comp_idx == largest_idx or comp_idx == 0:
                 continue
-            
-            if fragment_sizes[frag_idx] >= size_threshold:
-                continue  # Skip large fragments in phase 1
-            
-            frag_mask = (components == frag_idx)
-            neighbor_counts: dict[int, int] = {}
-            
-            # Find neighbors
-            frag_coords = np.where(frag_mask)
-            for y, x in zip(frag_coords[0], frag_coords[1]):
-                for dy, dx in FOUR_NEIGHBOR_OFFSETS:
-                    ny, nx = y + dy, x + dx
-                    if 0 <= ny < h and 0 <= nx < w:
-                        neighbor_id = pmap_fixed[ny, nx]
-                        if neighbor_id >= 0 and neighbor_id != region_id:
-                            neighbor_counts[neighbor_id] = neighbor_counts.get(neighbor_id, 0) + 1
-            
-            # Merge to best neighbor if found
-            if neighbor_counts:
-                best_neighbor = max(neighbor_counts, key=neighbor_counts.get)
-                pmap_fixed[frag_mask] = best_neighbor
-                record_solved_fragment(
-                    phase=1,
-                    source_region_id=int(region_id),
-                    component_id=int(frag_idx),
-                    pixel_count=int(np.count_nonzero(frag_mask)),
-                    target_region_id=int(best_neighbor),
-                )
-    
-    # Phase 2: Reassign remaining fragmented regions to nearest other seeds
-    valid_ids_after_phase1 = set(np.unique(pmap_fixed[mask])) - {-1}
+            comp_mask = (components == comp_idx)
+            pmap_fixed[comp_mask] = -1
 
-    fragmented_after_phase1: list[tuple[int, int]] = []
-    for region_id in valid_ids_after_phase1:
-        region_mask = (pmap_fixed == region_id)
-        _, num_components = scipy_label(region_mask, structure=FOUR_CONNECTED)
-        if num_components > 1:
-            fragmented_after_phase1.append((region_id, int(num_components)))
-
-    if fragmented_after_phase1:
-        try:
-            debug_rgb = np.zeros((h, w, 3), dtype=np.uint8)
-            valid_pixels = mask & (pmap_fixed >= 0)
-
-            ids = pmap_fixed[valid_pixels].astype(np.uint32)
-            r = ((ids * 73) + 41) % 256
-            g = ((ids * 151) + 17) % 256
-            b = ((ids * 199) + 83) % 256
-            debug_rgb[valid_pixels] = np.stack([r, g, b], axis=1).astype(np.uint8)
-
-            # Highlight fragmented regions after phase 1 in magenta.
-            for region_id, _ in fragmented_after_phase1:
-                region_mask = (pmap_fixed == region_id) & mask
-                debug_rgb[region_mask] = [255, 0, 255]
-
-            debug_path = Path("defragment_phase1_debug.png")
-            Image.fromarray(debug_rgb).save(debug_path)
-        except Exception:
-            pass
-    
-    for region_id in valid_ids_after_phase1:
-        region_mask = (pmap_fixed == region_id)
-        
-        # Detect connected components again after phase 1
-        components, num_components = scipy_label(region_mask, structure=FOUR_CONNECTED)
-        
-        if num_components <= 1:
-            continue  # region is already contiguous
-        
-        # Find which seeds belong to this region
-        region_seed_indices = set()
-        for idx, (sx, sy) in enumerate(seeds):
-            if pmap_fixed[sy, sx] == region_id:
-                region_seed_indices.add(idx)
-        
-        # Reassign all pixels to nearest seed outside their region
-        region_coords = np.where(region_mask)
-        for y, x in zip(region_coords[0], region_coords[1]):
-            min_dist = np.inf
-            best_seed_id = region_id
-            
-            for idx, (sx, sy) in enumerate(seeds):
-                # Skip seeds of this region
-                if idx in region_seed_indices:
-                    continue
-                
-                dist = np.sqrt((x - sx) ** 2 + (y - sy) ** 2)
-                if dist < min_dist:
-                    min_dist = dist
-                    best_seed_id = idx
-            
-            if best_seed_id != region_id:
-                pmap_fixed[y, x] = best_seed_id
-    
-    # Phase 3: Strictly enforce one connected component per seed region
-    max_passes = 6
-    for _ in range(max_passes):
+    for _ in range(max_iters):
         changed = False
+        # Find all -1 (fragment) pixels inside the mask
+        island_mask = (pmap_fixed == -1) & mask
+        if not np.any(island_mask):
+            break
+        # Pad for neighbor access
+        padded = np.pad(pmap_fixed, pad_width=1, mode="constant", constant_values=-1)
+        n0 = padded[:-2, 1:-1]
+        n1 = padded[2:, 1:-1]
+        n2 = padded[1:-1, :-2]
+        n3 = padded[1:-1, 2:]
 
-        for i, (sx, sy) in enumerate(seeds):
-            region_id = i
-            if not (0 <= sx < w and 0 <= sy < h):
-                continue
-
-            region_mask = (pmap_fixed == region_id) & mask
-            if not np.any(region_mask):
-                continue
-
-            components, num_components = scipy_label(region_mask, structure=FOUR_CONNECTED)
-            if num_components <= 1:
-                continue
-
-            seed_component = int(components[sy, sx])
-            if seed_component <= 0:
-                component_sizes = np.bincount(components[region_mask])
-                if component_sizes.size <= 1:
-                    continue
-                component_sizes[0] = 0
-                seed_component = int(np.argmax(component_sizes))
-                if seed_component <= 0:
-                    continue
-
-            stray_component_ids = [
-                component_id
-                for component_id in range(1, num_components + 1)
-                if component_id != seed_component
-            ]
-
-            for component_id in stray_component_ids:
-                stray_component_mask = region_mask & (components == component_id)
-                if not np.any(stray_component_mask):
-                    continue
-
-                ys, xs = np.where(stray_component_mask)
-                center_x = float(np.mean(xs))
-                center_y = float(np.mean(ys))
-
-                best_region_id = region_id
-                best_dist_sq = np.inf
-                for j, (tx, ty) in enumerate(seeds):
-                    other_region_id = j
-                    if other_region_id == region_id:
-                        continue
-                    if not (0 <= tx < w and 0 <= ty < h):
-                        continue
-
-                    dx = center_x - float(tx)
-                    dy = center_y - float(ty)
-                    dist_sq = dx * dx + dy * dy
-                    if dist_sq < best_dist_sq:
-                        best_dist_sq = dist_sq
-                        best_region_id = other_region_id
-
-                if best_region_id != region_id:
-                    pmap_fixed[stray_component_mask] = best_region_id
-                    changed = True
-                    record_solved_fragment(
-                        phase=3,
-                        source_region_id=int(region_id),
-                        component_id=int(component_id),
-                        pixel_count=int(np.count_nonzero(stray_component_mask)),
-                        target_region_id=int(best_region_id),
-                    )
-
+        for y, x in zip(*np.where(island_mask)):
+            vals = [n0[y, x], n1[y, x], n2[y, x], n3[y, x]]
+            vals = [v for v in vals if v != -1]
+            if vals:
+                # Assign to majority neighbor
+                new_val = mode(vals, keepdims=False).mode
+                pmap_fixed[y, x] = new_val
+                changed = True
         if not changed:
             break
-
-    remaining_fragmented: list[dict[str, int]] = []
-    final_region_ids = set(np.unique(pmap_fixed[mask])) - {-1}
-    for region_id in final_region_ids:
-        region_mask = (pmap_fixed == region_id) & mask
-        _, num_components = scipy_label(region_mask, structure=FOUR_CONNECTED)
-        if num_components > 1:
-            remaining_fragmented.append(
-                {
-                    "region_id": int(region_id),
-                    "component_count": int(num_components),
-                }
-            )
-
-    if debug_info is not None:
-        debug_info.clear()
-        debug_info["solved_components"] = int(len(solved_fragments))
-        debug_info["solved_pixels"] = int(sum(f["pixel_count"] for f in solved_fragments))
-        debug_info["solved_fragments"] = solved_fragments
-        debug_info["remaining_fragmented_regions"] = int(len(remaining_fragmented))
-        debug_info["remaining_fragmented"] = remaining_fragmented
-
     return pmap_fixed
 
 

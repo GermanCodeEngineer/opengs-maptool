@@ -346,10 +346,10 @@ def convert_cont_area_to_regions(args: AreaProcessingArgs) -> tuple[
         boundary_mask=None,
     )
     
-    pmap = assign_regions(cropped_mask, seeds, start_index=0)
+    pmap = assign_regions(cropped_mask, seeds, start_index=0 )
 
     # Detect and fix territories split by narrow passages
-    # pmap = defragment_regions(pmap, cropped_mask, seeds, size_threshold=100)
+    pmap = defragment_regions(pmap, cropped_mask, seeds, size_threshold=100)
     
     metadata = build_metadata(
         pmap, seeds, 0, area_type, args.number_series, args.color_series,

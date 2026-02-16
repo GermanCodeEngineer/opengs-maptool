@@ -261,9 +261,9 @@ def make_density_heatmap_from_image(regions: list[dict], source_image: Image.Ima
 
 
 def main() -> None:
-    input_dir = Path(__file__).parent / "output"
+    input_dir = Path(__file__).parent.parent / "examples" / "output"
     input_dir.mkdir(parents=True, exist_ok=True)
-    output_dir = Path(__file__).parent / "visualization"
+    output_dir = Path(__file__).parent.parent / "examples" / "visualization"
     output_dir.mkdir(parents=True, exist_ok=True)
 
     print("Loading available images/data...")
