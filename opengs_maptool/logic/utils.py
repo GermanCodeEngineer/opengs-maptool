@@ -1,4 +1,4 @@
-from .. import config
+from opengs_maptool import config
 import math
 import warnings
 import numpy as np

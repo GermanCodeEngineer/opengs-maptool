@@ -3,8 +3,8 @@ import warnings
 from numpy.typing import NDArray
 from scipy import ndimage
 from tqdm import tqdm
-from .utils import ColorSeries, round_float, hex_to_rgb, get_area_pixel_mask, ensure_point_in_mask
-from .. import config
+from opengs_maptool.logic.utils import ColorSeries, round_float, hex_to_rgb, get_area_pixel_mask, ensure_point_in_mask
+from opengs_maptool import config
 
 NEIGHBOR_OFFSETS = [(-1, 0), (1, 0), (0, -1), (0, 1)]
 
@@ -12,7 +12,7 @@ NEIGHBOR_OFFSETS = [(-1, 0), (1, 0), (0, -1), (0, 1)]
 def clean_boundary_image(boundary_image: NDArray[np.uint8]) -> NDArray[np.uint8]:
     """
     Convert a boundary image to a strict two-color RGBA format.
-
+XI
     - Boundary pixels are set to pitch black: (0, 0, 0, 255)
     - All other pixels are set to medium gray: (128, 128, 128, 255)
 

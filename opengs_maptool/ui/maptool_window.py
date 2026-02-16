@@ -4,11 +4,11 @@ from typing import Callable
 from PyQt6.QtWidgets import QWidget, QVBoxLayout, QHBoxLayout, QTabWidget, QLabel, QPushButton, QMessageBox, QSpinBox, QSizePolicy
 from PyQt6.QtCore import Qt, QThread, pyqtSignal
 from PyQt6.QtGui import QPainter, QColor, QCloseEvent
-from ..logic.maptool import MapTool
-from .buttons import create_slider, create_button
-from .image_display import ImageDisplay
-from .flappy_bird_game import start_flappy_bird_process
-from .. import config
+from opengs_maptool.logic import MapTool
+from opengs_maptool.ui.buttons import create_slider, create_button
+from opengs_maptool.ui.image_display import ImageDisplay
+from opengs_maptool.ui.flappy_bird_game import start_flappy_bird_process
+from opengs_maptool import config
 
 
 class ProgressButton(QPushButton):

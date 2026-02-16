@@ -2,11 +2,11 @@ import numpy as np
 from numpy.typing import NDArray
 from PIL import Image
 from pathlib import Path
-from ..logic.export_module import export_to_json, export_to_csv
 from PyQt6.QtWidgets import QWidget, QGridLayout, QHBoxLayout, QLabel, QFileDialog, QPushButton
 from PyQt6.QtGui import QPixmap, QImage, QIcon
 from PyQt6.QtCore import Qt, QSize
-from .. import config
+from opengs_maptool.logic import export_to_json, export_to_csv
+from opengs_maptool import config
 
 
 class ImageDisplay(QWidget):

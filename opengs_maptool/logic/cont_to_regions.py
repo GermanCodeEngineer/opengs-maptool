@@ -4,13 +4,13 @@ from typing import Any, Callable
 from gceutils import grepr_dataclass
 from tqdm import tqdm
 from multiprocessing import Pool, cpu_count
-from .utils import (
+from opengs_maptool.logic.utils import (
     NumberSeries, ColorSeries,
     poisson_disk_samples, lloyd_relaxation, assign_regions, build_metadata, hex_to_rgb,
     round_float, round_bbox, defragment_regions, get_area_pixel_mask,
-    calculate_density_multiplier_from_masked_image, ensure_point_in_mask,
+    calculate_density_multiplier, ensure_point_in_mask,
 )
-from .. import config
+from opengs_maptool import config
 
 
 
@@ -246,7 +246,7 @@ def convert_cont_area_to_regions(args: AreaProcessingArgs) -> tuple[
     
     if args.override_density_multiplier:
         density_src = args.density_image[y_min:y_max, x_min:x_max]
-        density_multiplier = calculate_density_multiplier_from_masked_image(
+        density_multiplier = calculate_density_multiplier(
             density_src,
             mask=cropped_mask & get_area_pixel_mask(density_src, threshold=0),
             region_id=args.area_meta.get("region_id"),
@@ -307,7 +307,7 @@ def convert_cont_area_to_regions(args: AreaProcessingArgs) -> tuple[
 
         if args.override_density_multiplier:
             density_src = args.density_image[y_min:y_max, x_min:x_max]
-            region_density_multiplier = calculate_density_multiplier_from_masked_image(
+            region_density_multiplier = calculate_density_multiplier(
                 density_src,
                 mask=cropped_mask & get_area_pixel_mask(density_src, threshold=0),
                 region_id=args.area_meta.get("region_id"),
@@ -363,7 +363,7 @@ def convert_cont_area_to_regions(args: AreaProcessingArgs) -> tuple[
         is_area_pixel = get_area_pixel_mask(density_src, threshold=0)
 
         for i, region_meta in enumerate(metadata):
-            region_density_multiplier = calculate_density_multiplier_from_masked_image(
+            region_density_multiplier = calculate_density_multiplier(
                 density_src,
                 mask=(pmap == i) & cropped_mask & is_area_pixel,
                 region_id=args.area_meta.get("region_id"),

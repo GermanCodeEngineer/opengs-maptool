@@ -1,7 +1,7 @@
 ====================
 CORE FUNCTIONALITY & BUGS
 ====================
- fix fragmentation issue with sea district in northern canada
+[DONE] fix fragmentation issue with sea district in northern canada
  fix regions with 0 pixels
  when centre not in region: use seed!
  guarantee region continuity
@@ -9,7 +9,7 @@ CORE FUNCTIONALITY & BUGS
  add pixel count region field?
  find some uniform format for seed, center, bbox coords
  add output/input filenames to config?
- fix imports
+[DONE] fix imports
  remove weird attributes of MapToolWindow
 
 ====================
