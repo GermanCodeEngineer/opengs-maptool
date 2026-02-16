@@ -1,3 +1,7 @@
+# Minimum and maximum density multiplier for region density calculation
+DENSITY_MULTIPLIER_MIN = 0.25
+DENSITY_MULTIPLIER_NORMAL = 1.0
+DENSITY_MULTIPLIER_MAX = 4.0
 # Main Window
 TITLE = "OpenGS - Map Tool"
 VERSION = "0.2.5"

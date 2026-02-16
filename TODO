@@ -1,31 +1,46 @@
-TODOs:
-- re-add default images
-- maptool options for what images to produce? maybe chaching?
-- improve flappy bird and run in seperate process to avoid lags
-- add terms definition to README
-- remove weird attributes of MapToolWindow
-- fix imports
-- rewrite and update README
-- create slider for & adapt & fix MIN_AREA_PIXELS
-- optimize generation (including bbox calculation)
-- when centre not in region: use seed!
-- fix fragmentation issue with sea district in northern canada
-- add output/input filenames to config?
-- rename districts to density samples?
-- find some uniform format for seed, center, bbox coords
-- add pixel count region field?
-- give proper IDs to areas
-- fix regions with 0 pixels
+====================
+CORE FUNCTIONALITY & BUGS
+====================
+ fix fragmentation issue with sea district in northern canada
+ fix regions with 0 pixels
+ when centre not in region: use seed!
+ guarantee region continuity
+ give proper IDs to areas
+ add pixel count region field?
+ find some uniform format for seed, center, bbox coords
+ add output/input filenames to config?
+ fix imports
+ remove weird attributes of MapToolWindow
 
-WHEN DONE or for a later PR:
-- optimize border image manually (e.g. Greece, Israel, especially Chile too)
+====================
+IMAGE & DATA GENERATION
+====================
+ re-add default images
+ maptool options for what images to produce? maybe caching?
+ optimize generation (including bbox calculation)
+ create slider for & adapt & fix MIN_AREA_PIXELS
+ rename districts to density samples?
 
-New Features WHEN DONE:
-- **support for a different regional densities within bigger countries**
-- renewed guarantee of region continuity
-- guarantee  
-- seed coords
+====================
+DOCUMENTATION & UI
+====================
+ rewrite and update README
+ add terms definition to README
+ improve flappy bird and run in separate process to avoid lags
 
+====================
+FUTURE FEATURES
+====================
+ support for different regional densities within bigger countries
+ renewed guarantee of region continuity
+ seed coords
 
-Sources:
-- https://www.earthdata.nasa.gov/data/catalog/sedac-ciesin-sedac-gpwv4-popdens-4.0
+====================
+MANUAL/POSTPROCESSING (LATER PR)
+====================
+ optimize border image manually (e.g. Greece, Israel, especially Chile too)
+
+====================
+Sources
+====================
+ https://www.earthdata.nasa.gov/data/catalog/sedac-ciesin-sedac-gpwv4-popdens-4.0
