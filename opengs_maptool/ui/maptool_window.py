@@ -108,8 +108,8 @@ class MapToolWindow(QWidget):
     def __init__(self) -> None:
         super().__init__()
         # Initialize data storage
-        self._cont_areas_image_buffer = None
-        self._cont_areas_data = None
+        self._cont_area_image_buffer = None
+        self._cont_area_data = None
         self._class_image_buffer = None
         self._class_counts = None
         self._district_image_buffer = None
@@ -408,8 +408,8 @@ class MapToolWindow(QWidget):
     # TAB 4
     def on_button_generate_areas(self) -> None:
         def run_task(maptool: MapTool, progress_callback: Callable) -> tuple:
-            cont_areas_image, cont_areas_image_buffer, cont_areas_data = maptool._generate_cont_areas(progress_callback=progress_callback)
-            return (cont_areas_image, cont_areas_image_buffer, cont_areas_data)
+            cont_area_image, cont_area_image_buffer, cont_area_data = maptool._generate_cont_areas(progress_callback=progress_callback)
+            return (cont_area_image, cont_area_image_buffer, cont_area_data)
         
         def on_progress(value: int) -> None:
             self.button_generate_areas.set_progress(value)
@@ -417,12 +417,12 @@ class MapToolWindow(QWidget):
         def on_finished(result: tuple) -> None:
             self.button_generate_areas.reset_progress()
             self.button_generate_areas.setEnabled(True)
-            cont_areas_image, cont_areas_image_buffer, cont_areas_data = result
-            self.areas_image_display.set_image(cont_areas_image)
-            self.areas_image_display.set_data(cont_areas_data, "Continuous Area Data")
+            cont_area_image, cont_area_image_buffer, cont_area_data = result
+            self.areas_image_display.set_image(cont_area_image)
+            self.areas_image_display.set_data(cont_area_data, "Continuous Area Data")
             # Store for later use in territory/province generation
-            self._cont_areas_image_buffer = cont_areas_image_buffer
-            self._cont_areas_data = cont_areas_data
+            self._cont_area_image_buffer = cont_area_image_buffer
+            self._cont_area_data = cont_area_data
         
         def on_error(error: Exception) -> None:
             self.button_generate_areas.reset_progress()
@@ -436,14 +436,14 @@ class MapToolWindow(QWidget):
 
     # TAB 5
     def on_button_generate_districts(self) -> None:
-        if self._cont_areas_image_buffer is None:
+        if self._cont_area_image_buffer is None:
             QMessageBox.warning(self, "Warning", "Continuous areas must be generated first")
             return
 
         def run_task(maptool: MapTool, progress_callback: Callable) -> tuple:
             district_image, district_image_buffer, district_data = maptool._generate_districts(
-                self._cont_areas_image_buffer,
-                self._cont_areas_data,
+                self._cont_area_image_buffer,
+                self._cont_area_data,
                 self._class_image_buffer,
                 self._class_counts,
                 progress_callback=progress_callback,

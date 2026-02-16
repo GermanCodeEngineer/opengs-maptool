@@ -113,14 +113,14 @@ maptool = MapTool(
 result = maptool.generate()
 
 # Save result images
-result.cont_areas_image.save(output_dir / "cont_areas_image.png")
+result.cont_area_image.save(output_dir / "cont_area_image.png")
 result.territory_image.save(output_dir / "territory_image.png")
 result.province_image.save(output_dir / "province_image.png")
 result.class_image.save(output_dir / "class_image.png")
 
 # Save result data
 output_data = {
-    "cont_areas": result.cont_areas_data,
+    "cont_areas": result.cont_area_data,
     "territories": result.territory_data,
     "provinces": result.province_data,
     "class_counts": result.class_counts,
@@ -145,14 +145,14 @@ result = maptool.generate()
 ```
 
 ### Result Images
-- `result.cont_areas_image` - Colored continuous areas (if boundary provided)
+- `result.cont_area_image` - Colored continuous areas (if boundary provided)
 - `result.territory_image` - Colored territory map
 - `result.province_image` - Colored province map
 - `result.class_image` - Cleaned land/ocean/lake classification
 
 ### Result Data
 
-Each data field (`cont_areas_data`, `territory_data`, `province_data`) is a list of dictionaries representing regions. Each region dict contains:
+Each data field (`cont_area_data`, `territory_data`, `province_data`) is a list of dictionaries representing regions. Each region dict contains:
 
 | Field | Type | Description |
 |-------|------|-------------|
@@ -178,7 +178,7 @@ Each data field (`cont_areas_data`, `territory_data`, `province_data`) is a list
    "global_x": 2892.75,
    "global_y": 470.39,
    "bbox_local": [119, 66, 193, 129],
-   "bbox": [2861, 440, 2935, 503],
+   "bbox_global": [2861, 440, 2935, 503],
    "density_multiplier": 2.23
 }
 ```

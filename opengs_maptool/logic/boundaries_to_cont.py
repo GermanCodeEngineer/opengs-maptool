@@ -3,7 +3,8 @@ import warnings
 from numpy.typing import NDArray
 from scipy import ndimage
 from tqdm import tqdm
-from opengs_maptool.logic.utils import ColorSeries, round_float, hex_to_rgb, get_area_pixel_mask, ensure_point_in_mask
+from typing import Any
+from opengs_maptool.logic.utils import ColorSeries, hex_to_rgb, get_area_pixel_mask, ensure_point_in_mask
 from opengs_maptool import config
 
 NEIGHBOR_OFFSETS = [(-1, 0), (1, 0), (0, -1), (0, 1)]
@@ -89,7 +90,7 @@ def recalculate_bboxes_from_image(
         
         # Update bbox in metadata
         region["bbox_local"] = bbox_local
-        region["bbox"] = bbox_local
+        region["bbox_global"] = bbox_local
         updated_metadata.append(region)
     
     return updated_metadata
@@ -162,7 +163,7 @@ def convert_boundaries_to_cont_areas(boundaries_image: NDArray[np.uint8], rng_se
         progress_callback: Optional callback function(current, total) for progress reporting
     
     Returns:
-        Tuple of (cont_areas_image, metadata) where metadata contains:
+        Tuple of (cont_area_image, metadata) where metadata contains:
         - region_id: Region ID (1-indexed)
         - R, G, B: Area color
     """
@@ -214,34 +215,33 @@ def convert_boundaries_to_cont_areas(boundaries_image: NDArray[np.uint8], rng_se
         region_mask = labeled_array == region_id
         rows, cols = np.where(region_mask)
         
-        # Calculate center of mass (centroid) for local coordinates
-        center_x = float(np.mean(cols))
-        center_y = float(np.mean(rows))
+        # Calculate center of mass (centroid) for local coordinates and round to integer pixel coordinates
+        center_x = round(float(np.mean(cols)))
+        center_y = round(float(np.mean(rows)))
         center_x, center_y = ensure_point_in_mask(region_mask, center_x, center_y)
-        
+
         # BBox as integers: add 1 to max values to include the last pixel (exclusive end bound)
-        bbox_local = [
+        bbox = [
             int(cols.min()),
             int(rows.min()),
             int(cols.max()) + 1,
             int(rows.max()) + 1,
         ]
 
-        center_x = round_float(center_x, 2)
-        center_y = round_float(center_y, 2)
-
         metadata.append({
             "region_type": None,
             "region_id": region_id,
             "parent_id": None,
             "color": color_hex,
-            "local_x": center_x,
-            "local_y": center_y,
+            "local_x": None,
+            "local_y": None,
             "global_x": center_x,
             "global_y": center_y,
-            "bbox_local": bbox_local,
-            "bbox": bbox_local,
-            "seed": [int(round(center_x)), int(round(center_y))],
+            "bbox_local": None,
+            "bbox_global": bbox,
+            "local_seed": None,
+            "global_seed": [center_x, center_y],
+            "pixel_count": int(region_mask.sum()),
             "density_multiplier": None,
         })
     
@@ -251,10 +251,10 @@ def convert_boundaries_to_cont_areas(boundaries_image: NDArray[np.uint8], rng_se
     return regions_image, metadata
 
 def classify_continuous_areas(
-    cont_areas_image: NDArray[np.uint8],
+    cont_area_image: NDArray[np.uint8],
     class_image: NDArray[np.uint8],
-    cont_areas_metadata: list[dict],
-) -> list[dict]:
+    cont_areas_metadata: list[dict[str, Any]],
+) -> list[dict[str, Any]]:
     """
     Classify each continuous area as land, ocean, or lake based on its pixel composition.
     
@@ -262,7 +262,7 @@ def classify_continuous_areas(
     (land, ocean, lake) are most prevalent in each area.
     
     Args:
-        cont_areas_image: Image with continuous areas colored
+        cont_area_image: Image with continuous areas colored
         class_image: Classification image with land/ocean/lake colors
         cont_areas_metadata: Metadata list for continuous areas
     
@@ -286,7 +286,7 @@ def classify_continuous_areas(
             continue
         
         # Find all pixels of this continuous area
-        rgb_match = np.all(cont_areas_image[:, :, :3] == target_color, axis=2)
+        rgb_match = np.all(cont_area_image[:, :, :3] == target_color, axis=2)
         
         if not np.any(rgb_match):
             warnings.warn(

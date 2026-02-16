@@ -41,11 +41,6 @@ def hex_to_rgb(hex_color: str) -> tuple[int, int, int]:
     return tuple(int(hex_color[i:i+2], 16) for i in (0, 2, 4))
 
 
-def round_float(value: float, decimals: int = 2) -> float:
-    """Round a float value to a fixed number of decimals."""
-    return float(round(value, decimals))
-
-
 def round_bbox(
     bbox: list[float],
 ) -> list[int]:
@@ -64,29 +59,27 @@ def round_bbox(
     ]
 
 
-def ensure_point_in_mask(mask: NDArray[np.bool_], x: float, y: float) -> tuple[float, float]:
+def ensure_point_in_mask(mask: NDArray[np.bool_], x: int, y: int) -> tuple[int, int]:
     """Return a point guaranteed to be inside `mask`.
 
     If (x, y) rounds to a pixel inside the mask, that rounded point is returned.
     Otherwise, the nearest pixel in the mask is returned.
     """
     h, w = mask.shape
-    xi = int(round(x))
-    yi = int(round(y))
-    xi = max(0, min(w - 1, xi))
-    yi = max(0, min(h - 1, yi))
+    x = max(0, min(w - 1, x))
+    y = max(0, min(h - 1, y))
 
-    if mask[yi, xi]:
-        return float(xi), float(yi)
+    if mask[y, x]:
+        return (x, y)
 
     ys, xs = np.where(mask)
     if len(xs) == 0:
-        return float(xi), float(yi)
+        return (x, y)
 
-    dx = xs.astype(np.float64) - float(x)
-    dy = ys.astype(np.float64) - float(y)
+    dx = xs.astype(np.int32) - x
+    dy = ys.astype(np.int32) - y
     nearest_idx = int(np.argmin(dx * dx + dy * dy))
-    return float(xs[nearest_idx]), float(ys[nearest_idx])
+    return int(xs[nearest_idx]), int(ys[nearest_idx])
 
 
 def get_area_pixel_mask(image: NDArray[np.uint8], threshold: int) -> NDArray[np.bool_]:
@@ -574,30 +567,28 @@ def build_metadata(
         sx, sy = seeds[i]
         color_hex = color_series.get_color_hex(is_water=(region_type != "land"))
         if counts[i] <= 0:
-            cx, cy = float(sx), float(sy)
+            cx, cy = sx, sy
             bbox_local = [int(sx), int(sy), int(sx) + 1, int(sy) + 1]
+            pixel_count = 0
         else:
-            cx = float(sum_x[i] / counts[i])
-            cy = float(sum_y[i] / counts[i])
+            cx = round(float(sum_x[i] / counts[i]))
+            cy = round(float(sum_y[i] / counts[i]))
             region_mask = pmap == (start_index + i)
 
-            cx_i = int(round(cx))
-            cy_i = int(round(cy))
             h, w = region_mask.shape
-            cx_i = max(0, min(w - 1, cx_i))
-            cy_i = max(0, min(h - 1, cy_i))
+            cx = max(0, min(w - 1, cx))
+            cy = max(0, min(h - 1, cy))
 
-            if not region_mask[cy_i, cx_i]:
+            if not region_mask[cy, cx]:
                 if 0 <= sx < w and 0 <= sy < h and region_mask[sy, sx]:
-                    cx, cy = float(sx), float(sy)
+                    cx, cy = sx, sy
                 else:
-                    cx, cy = ensure_point_in_mask(region_mask, float(sx), float(sy))
+                    cx, cy = ensure_point_in_mask(region_mask, sx, sy)
 
             # Convert to integers with floor/ceil for proper pixel coverage
             bbox_local = [int(min_x[i]), int(min_y[i]), int(max_x[i]) + 1, int(max_y[i]) + 1]
+            pixel_count = int(region_mask.sum())
 
-        cx = round_float(cx, 2)
-        cy = round_float(cy, 2)
         bbox_local = round_bbox(bbox_local)
 
         meta_dict = {
@@ -610,8 +601,10 @@ def build_metadata(
             "global_x": None, # Set later
             "global_y": None,
             "bbox_local": bbox_local,
-            "bbox": None,  # Set later (global bbox)
-            "seed": [int(sx), int(sy)],
+            "bbox_global": None,  # Set later (global bbox)
+            "local_seed": [int(sx), int(sy)],
+            "global_seed": None, # Set later
+            "pixel_count": pixel_count,
             "density_multiplier": parent_density_multiplier or 1.0,
         }
         metadata.append(meta_dict)

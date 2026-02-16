@@ -33,8 +33,8 @@ LEVEL_STYLE = {
 
 LEVEL_FILES = {
     "areas": {
-        "data": "cont_areas_data.json",
-        "image": "cont_areas_image.png",
+        "data": "cont_area_data.json",
+        "image": "cont_area_image.png",
     },
     "districts": {
         "data": "district_data.json",
@@ -92,17 +92,17 @@ def resolve_existing_path(base_dir: Path, candidate: str) -> Path | None:
 def save_generated_inputs(input_dir: Path, result: object) -> None:
     input_dir.mkdir(parents=True, exist_ok=True)
 
-    result.cont_areas_image.save(input_dir / LEVEL_FILES["areas"]["image"])
+    result.cont_area_image.save(input_dir / LEVEL_FILES["areas"]["image"])
     result.district_image.save(input_dir / LEVEL_FILES["districts"]["image"])
     result.territory_image.save(input_dir / LEVEL_FILES["territories"]["image"])
     result.province_image.save(input_dir / LEVEL_FILES["provinces"]["image"])
 
-    export_to_json(result.cont_areas_data, input_dir / LEVEL_FILES["areas"]["data"])
+    export_to_json(result.cont_area_data, input_dir / LEVEL_FILES["areas"]["data"])
     export_to_json(result.district_data, input_dir / LEVEL_FILES["districts"]["data"])
     export_to_json(result.territory_data, input_dir / LEVEL_FILES["territories"]["data"])
     export_to_json(result.province_data, input_dir / LEVEL_FILES["provinces"]["data"])
 
-    #export_to_csv(result.cont_areas_data, input_dir / LEVEL_FILES["areas"]["data"].replace(".json", ".csv"))
+    #export_to_csv(result.cont_area_data, input_dir / LEVEL_FILES["areas"]["data"].replace(".json", ".csv"))
     #export_to_csv(result.district_data, input_dir / LEVEL_FILES["districts"]["data"].replace(".json", ".csv"))
     #export_to_csv(result.territory_data, input_dir / LEVEL_FILES["territories"]["data"].replace(".json", ".csv"))
     #export_to_csv(result.province_data, input_dir / LEVEL_FILES["provinces"]["data"].replace(".json", ".csv"))
@@ -180,7 +180,7 @@ def draw_bboxes(image: Image.Image, data: list[dict], width: int = 2, darken_fac
     draw = ImageDraw.Draw(img_copy)
 
     for region in data:
-        bbox = region.get("bbox") or region.get("bbox_local")
+        bbox = region.get("bbox_global") or region.get("bbox_local")
         if not bbox or len(bbox) != 4:
             continue
 

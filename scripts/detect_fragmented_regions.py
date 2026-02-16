@@ -37,8 +37,8 @@ STRICT_FOUR_CONNECTED = np.array(
 
 REGION_FILE_SPECS = {
     "areas": {
-        "image": "cont_areas_image.png",
-        "metadata": "cont_areas_data.json",
+        "image": "cont_area_image.png",
+        "metadata": "cont_area_data.json",
         "output": "fragments_cont_areas.png",
     },
     "districts": {
@@ -87,7 +87,7 @@ def highlight_color(region_index: int, fragment_index: int) -> tuple[int, int, i
 
 
 def resolve_seed(region: dict, width: int, height: int) -> tuple[int, int] | None:
-    seed = region.get("seed")
+    seed = region.get("seed_global")
     if isinstance(seed, (list, tuple)) and len(seed) == 2:
         sx = int(round(float(seed[0])))
         sy = int(round(float(seed[1])))
@@ -129,7 +129,7 @@ def choose_seed_component(
 
 
 def resolve_bbox(region: dict, width: int, height: int) -> tuple[int, int, int, int]:
-    bbox = region.get("bbox") or region.get("bbox_local")
+    bbox = region.get("bbox_global") or region.get("bbox_local")
     if not isinstance(bbox, (list, tuple)) or len(bbox) != 4:
         return 0, 0, width, height
 

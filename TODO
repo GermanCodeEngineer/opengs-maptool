@@ -3,13 +3,14 @@ CORE FUNCTIONALITY & BUGS
 ====================
 [DONE] fix fragmentation issue with sea district in northern canada
 [DONE] guarantee region continuity
- fix regions with 0 pixels
- when centre not in region: use seed!
- give proper IDs to areas
+[DONE] fix regions with 0 pixels
+[DONE] when centre not in region: use seed!
+[DONE] give proper IDs to areas & same global/local fields 
  add pixel count region field?
- find some uniform format for seed, center, bbox coords
+ create dataclass with serialization for region metadata
+ => find some uniform format for seed, center, bbox coords
  add output/input filenames to config?
-[DONE] fix imports
+ fix & sort imports
  remove weird attributes of MapToolWindow
 
 ====================
