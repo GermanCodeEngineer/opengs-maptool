@@ -135,13 +135,6 @@ class MapToolWindow(QWidget):
         self.tabs = QTabWidget()
         main_layout.addWidget(self.tabs, stretch=1)
 
-        #self.progress = QProgressBar()
-        #self.progress.setVisible(False)
-        #main_layout.addWidget(self.progress)
-        #self.progress.setMinimum(0)
-        #self.progress.setMaximum(100)
-        #self.progress.setValue(0)
-
         # Bottom bar with game button and version label
         bottom_layout = QHBoxLayout()
         self.button_flappy_bird = QPushButton("Play 🐦 While Waiting")
@@ -214,9 +207,10 @@ class MapToolWindow(QWidget):
             '<h3>Instructions:</h3>'
             '<p>1. Save the above boundary image</p>'
             '<p>2. Edit the image in an image editor (e.g., Paint.NET, Photoshop, GIMP)</p>'
-            '<p>3. Change the greyscale values for different territory & province density</p>'
+            '<p>3. Change the greyscale values for different territory & province density (1-255)</p>'
+            '<p>4. Greyscale value <b>1</b> results in 4x fewer provinces and Greyscale value <b>255</b> results in 4x more provinces</p>'
             '<p><b>Important:</b> Greyscale value <b>0 (black)</b> is reserved for boundaries and will be removed</p>'
-            '<p>4. Upload the edited image in the next tab</p>'
+            '<p>5. Upload the edited image in the next tab</p>'
         )
         instruction_label.setWordWrap(True)
         boundary_tab_layout.addWidget(instruction_label)
@@ -376,8 +370,12 @@ class MapToolWindow(QWidget):
         if image is None:
             return
 
-        cleaned_image = MapTool.clean_boundary_image(image)
-        self.adapt_boundary_image_display.set_image(cleaned_image)
+        try:
+            cleaned_image = MapTool.clean_boundary_image(image)
+            self.adapt_boundary_image_display.set_image(cleaned_image)
+
+        except Exception as error:
+            QMessageBox.critical(self, "Error", f"Error processing land image: {error}")
 
     # TAB 3
     def on_button_import_final_boundary(self) -> None:
@@ -390,30 +388,22 @@ class MapToolWindow(QWidget):
         if not self.land_image_display.import_image():
             return
 
-        self.button_import_land.reset_progress()
-        self.button_import_land.setEnabled(False)
-
+        image = self.land_image_display.get_image()
+        if image is None:
+            return
+        
         try:
-            self.button_import_land.set_progress(30)
-
-            image = self.land_image_display.get_image()
-            if image is None:
-                raise ValueError("No land image selected")
-
             cleaned_land_image = MapTool.clean_land_image(image)
             self.land_image_display.set_image(cleaned_land_image)
-
-            self.button_import_land.set_progress(80)
-            self._generate_type_classification()
+    
+            maptool = self._create_maptool()
+            _, self._class_image_buffer, self._class_counts = maptool._generate_type_classification()
+            
             if self._class_counts is not None:
                 self.land_image_display.set_data(self._class_counts, "Classification Counts")
 
-            self.button_import_land.set_progress(100)
         except Exception as error:
             QMessageBox.critical(self, "Error", f"Error processing land image: {error}")
-        finally:
-            self.button_import_land.reset_progress()
-            self.button_import_land.setEnabled(True)
 
     # TAB 4
     def on_button_generate_areas(self) -> None:
@@ -433,8 +423,6 @@ class MapToolWindow(QWidget):
             # Store for later use in territory/province generation
             self._cont_areas_image_buffer = cont_areas_image_buffer
             self._cont_areas_data = cont_areas_data
-            # Also generate type classification
-            self._generate_type_classification()
         
         def on_error(error: Exception) -> None:
             self.button_generate_areas.reset_progress()
@@ -483,10 +471,6 @@ class MapToolWindow(QWidget):
         self.button_gen_districts.setEnabled(False)
 
         self.districts_worker = self._create_background_worker(run_task, on_progress, on_finished, on_error)
-    
-    def _generate_type_classification(self) -> None:
-        maptool = self._create_maptool()
-        _, self._class_image_buffer, self._class_counts = maptool._generate_type_classification()
     
     # TAB 6
     def on_button_generate_territories(self) -> None:

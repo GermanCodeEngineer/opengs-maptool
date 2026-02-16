@@ -50,6 +50,8 @@ LEVEL_FILES = {
     },
 }
 
+EXAMPLES_DIR = Path(__file__).parent.parent / "opengs_maptool" / "examples"
+
 
 def hex_to_rgb(color: str) -> tuple[int, int, int]:
     color = color.lstrip("#")
@@ -107,7 +109,7 @@ def save_generated_inputs(input_dir: Path, result: object) -> None:
 
 
 def generate_maps(input_dir: Path) -> None:
-    example_input_dir = Path(__file__).parent / "input"
+    example_input_dir = EXAMPLES_DIR / "input"
     boundary_image_path = example_input_dir / "bound2_orig.png"
     land_image_path = example_input_dir / "land2.png"
 
@@ -261,9 +263,9 @@ def make_density_heatmap_from_image(regions: list[dict], source_image: Image.Ima
 
 
 def main() -> None:
-    input_dir = Path(__file__).parent.parent / "examples" / "output"
+    input_dir = EXAMPLES_DIR / "output"
     input_dir.mkdir(parents=True, exist_ok=True)
-    output_dir = Path(__file__).parent.parent / "examples" / "visualization"
+    output_dir = EXAMPLES_DIR / "visualization"
     output_dir.mkdir(parents=True, exist_ok=True)
 
     print("Loading available images/data...")

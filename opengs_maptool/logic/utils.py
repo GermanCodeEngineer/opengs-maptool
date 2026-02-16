@@ -149,10 +149,9 @@ class NumberSeries:
         self.id_length: int = len(str(number_end))
         self.number_next: int = number_start
 
-    def get_id(self) -> str | None:
+    def get_id(self) -> str:
         if self.number_next > self.number_end:
-            print("ERROR: No more available numbers!")
-            return None
+            raise ValueError("No more available numbers in NumberSeries")
 
         formatted_number: str = self.prefix + \
             str(self.number_next).zfill(self.id_length)
@@ -571,8 +570,6 @@ def build_metadata(
     metadata = []
     for i in range(len(seeds)):
         rid = series.get_id()
-        if rid is None:
-            continue
 
         sx, sy = seeds[i]
         color_hex = color_series.get_color_hex(is_water=(region_type != "land"))

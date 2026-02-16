@@ -14,28 +14,25 @@ def main_automatic() -> None:
     output_directory = Path(__file__).parent / "examples" / "output"
     output_directory.mkdir(parents=True, exist_ok=True)
 
-    class DistrictMapTool(MapTool):
+    class StepMapTool(MapTool):
         def on_cont_areas_generated(self, cont_areas_image, cont_areas_image_buffer, cont_areas_data):
             cont_areas_image.save(output_directory / "cont_areas_image.png")
             (output_directory / "cont_areas_data.json").write_text(json.dumps(cont_areas_data))
-            #input("Continue?")
 
         def on_districts_generated(self, districts_image, districts_image_buffer, districts_data):
             districts_image.save(output_directory / "district_image.png")
             (output_directory / "district_data.json").write_text(json.dumps(districts_data))
-            #input("Continue?")
         
         def on_territories_generated(self, territory_image, territory_image_buffer, territory_data):
             territory_image.save(output_directory / "territory_image.png")
             (output_directory / "territory_data.json").write_text(json.dumps(territory_data))
-            #input("Continue?")
         
         def on_provinces_generated(self, province_image, province_image_buffer, province_data):
             province_image.save(output_directory / "province_image.png")
             (output_directory / "province_data.json").write_text(json.dumps(province_data))
             
             
-    maptool = DistrictMapTool(
+    maptool = StepMapTool(
         land_image=Image.open(input_directory / "land2.png"),
         boundary_image=Image.open(input_directory / "bound2_edited.png"),
     )

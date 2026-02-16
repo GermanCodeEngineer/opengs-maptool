@@ -2,9 +2,9 @@
 CORE FUNCTIONALITY & BUGS
 ====================
 [DONE] fix fragmentation issue with sea district in northern canada
+[DONE] guarantee region continuity
  fix regions with 0 pixels
  when centre not in region: use seed!
- guarantee region continuity
  give proper IDs to areas
  add pixel count region field?
  find some uniform format for seed, center, bbox coords
@@ -20,6 +20,7 @@ IMAGE & DATA GENERATION
  optimize generation (including bbox calculation)
  create slider for & adapt & fix MIN_AREA_PIXELS
  rename districts to density samples?
+ use same default seeds everywhere
 
 ====================
 DOCUMENTATION & UI
@@ -27,6 +28,7 @@ DOCUMENTATION & UI
  rewrite and update README
  add terms definition to README
  improve flappy bird and run in separate process to avoid lags
+ move GUI docs into GUI itself
 
 ====================
 FUTURE FEATURES

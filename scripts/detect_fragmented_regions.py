@@ -39,24 +39,26 @@ REGION_FILE_SPECS = {
     "areas": {
         "image": "cont_areas_image.png",
         "metadata": "cont_areas_data.json",
-        "output": "cont_areas_fragments.png",
+        "output": "fragments_cont_areas.png",
     },
     "districts": {
         "image": "district_image.png",
         "metadata": "district_data.json",
-        "output": "district_fragments.png",
+        "output": "fragments_district.png",
     },
     "territories": {
         "image": "territory_image.png",
         "metadata": "territory_data.json",
-        "output": "territory_fragments.png",
+        "output": "fragments_territory.png",
     },
     "provinces": {
         "image": "province_image.png",
         "metadata": "province_data.json",
-        "output": "province_fragments.png",
+        "output": "fragments_province.png",
     },
 }
+
+EXAMPLES_DIR = Path(__file__).parent.parent / "opengs_maptool" / "examples"
 
 
 def hex_to_rgb(color: str) -> tuple[int, int, int]:
@@ -276,8 +278,8 @@ def process_region_type(region_type: str, input_dir: Path, visualization_dir: Pa
 
 
 def main() -> None:
-    input_dir = Path(__file__).parent.parent / "examples" / "output"
-    visualization_dir = Path(__file__).parent.parent / "examples" / "visualization"
+    input_dir = EXAMPLES_DIR / "output"
+    visualization_dir = EXAMPLES_DIR / "visualization"
     visualization_dir.mkdir(parents=True, exist_ok=True)
 
     parser = argparse.ArgumentParser(description="Detect fragmented regions from map image and metadata")
