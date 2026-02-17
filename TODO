@@ -5,13 +5,14 @@ CORE FUNCTIONALITY & BUGS
 [DONE] guarantee region continuity
 [DONE] fix regions with 0 pixels
 [DONE] when centre not in region: use seed!
-[DONE] give proper IDs to areas & same global/local fields 
- add pixel count region field?
- create dataclass with serialization for region metadata
+[DONE] give proper IDs to areas & same global/local fields
+[DONE] add pixel count region field?
+[DONE] create dataclass with serialization for region metadata
  => find some uniform format for seed, center, bbox coords
  add output/input filenames to config?
  fix & sort imports
  remove weird attributes of MapToolWindow
+ bbox global TODO
 
 ====================
 IMAGE & DATA GENERATION

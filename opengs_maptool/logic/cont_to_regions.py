@@ -5,7 +5,7 @@ from gceutils import grepr_dataclass
 from tqdm import tqdm
 from multiprocessing import Pool, cpu_count
 from opengs_maptool.logic.utils import (
-    NumberSeries, ColorSeries,
+    NumberSeries, ColorSeries, RegionMetadata,
     poisson_disk_samples, lloyd_relaxation, assign_regions, build_metadata, hex_to_rgb,
     round_bbox, defragment_regions, get_area_pixel_mask,
     calculate_density_multiplier, ensure_point_in_mask,
@@ -35,7 +35,7 @@ class AreaProcessingArgs:
         lloyd_iterations: Number of Lloyd relaxation iterations
         override_density_multiplier: Use own average density instead of parent density
     """
-    area_meta: dict[str, Any]
+    area_meta: RegionMetadata
     cont_area_image: NDArray[np.uint8]
     class_image: NDArray[np.uint8]
     density_image: NDArray[np.uint8] | None
@@ -52,13 +52,13 @@ class AreaProcessingArgs:
 
 def convert_all_cont_areas_to_regions(
         cont_area_image: NDArray[np.uint8],
-        cont_areas_metadata: list[dict[str, Any]],
+        cont_areas_metadata: list[RegionMetadata],
         class_image: NDArray[np.uint8],
         density_image: NDArray[np.uint8] | None,
         class_counts: dict[str, int],
         pixels_per_land_region: int,
         pixels_per_water_region: int,
-        fn_new_number_series: Callable[[dict[str, Any]], NumberSeries],
+        fn_new_number_series: Callable[[RegionMetadata], NumberSeries],
         rng_seed: int,
         lloyd_iterations: int,
         override_density_multiplier: bool = False,
@@ -66,7 +66,7 @@ def convert_all_cont_areas_to_regions(
         tqdm_description: str = "Converting areas to regions",
         tqdm_unit: str = "area",
         progress_callback: Callable[[int, int], None] | None = None,
-    ) -> tuple[NDArray[np.uint8], list[dict[str, Any]]]:
+    ) -> tuple[NDArray[np.uint8], list[RegionMetadata]]:
     """
     Convert all continuous areas into regions and combine into a single image.
     Uses multiprocessing to parallelize processing of independent areas.
@@ -112,7 +112,7 @@ def convert_all_cont_areas_to_regions(
             class_counts=class_counts,
             pixels_per_land_region=pixels_per_land_region,
             pixels_per_water_region=pixels_per_water_region,
-            filter_color=(*hex_to_rgb(area_meta["color"]), 255),
+            filter_color=(*hex_to_rgb(area_meta.color), 255),
             number_series=fn_new_number_series(area_meta),
             color_series=ColorSeries(color_seed, exclude_values=[(0, 0, 0)]),
             poisson_rng_seed=poisson_seed,
@@ -151,14 +151,14 @@ def convert_all_cont_areas_to_regions(
             # Check for color collisions and replace with new colors
             updated_region_metadata = []
             for region in region_metadata:
-                color_hex = region["color"]
+                color_hex = region.color
                 
                 # If color collision detected, find a new color
                 while color_hex in existing_colors:
-                    new_color_rgb, new_color_hex = color_series.get_color_rgb_hex(is_water=(region["region_type"] != "land"))
+                    new_color_rgb, new_color_hex = color_series.get_color_rgb_hex(is_water=(region.region_type != "land"))
                     r_old, g_old, b_old = hex_to_rgb(color_hex)
                     r_new, g_new, b_new = new_color_rgb
-                    region["color"] = new_color_hex
+                    region.color = new_color_hex
                     
                     # Update region_image pixels with new color
                     old_rgb = np.array([r_old, g_old, b_old], dtype=np.uint8)
@@ -170,11 +170,11 @@ def convert_all_cont_areas_to_regions(
                 existing_colors.add(color_hex)
                 
                 # Calculate global coordinates from local coordinates
-                region["global_x"] = int(round(region["local_x"] + x_min))
-                region["global_y"] = int(round(region["local_y"] + y_min))
-                if region.get("bbox_local") is not None:
-                    bx0, by0, bx1, by1 = region["bbox_local"]
-                    region["bbox_global"] = round_bbox(
+                region.global_x = int(round(region.local_x + x_min))
+                region.global_y = int(round(region.local_y + y_min))
+                if region.bbox_local is not None:
+                    bx0, by0, bx1, by1 = region.bbox_local
+                    region.bbox_global = round_bbox(
                         [
                             float(bx0 + x_min),
                             float(by0 + y_min),
@@ -182,9 +182,9 @@ def convert_all_cont_areas_to_regions(
                             float(by1 + y_min),
                         ],
                     )
-                seed = region.get("seed_local")
+                seed = region.seed_local
                 if isinstance(seed, list) and len(seed) == 2:
-                    region["seed_global"] = [
+                    region.seed_global = [
                         int(seed[0] + x_min),
                         int(seed[1] + y_min),
                     ]
@@ -199,7 +199,7 @@ def convert_all_cont_areas_to_regions(
     return combined_image, combined_metadata
 
 def convert_cont_area_to_regions(args: AreaProcessingArgs) -> tuple[
-        NDArray[np.uint8], list[dict[str, Any]], 
+        NDArray[np.uint8], list[RegionMetadata], 
         tuple[int, int, int, int] | None, ColorSeries,
     ]:
     """
@@ -249,11 +249,11 @@ def convert_cont_area_to_regions(args: AreaProcessingArgs) -> tuple[
         density_multiplier = calculate_density_multiplier(
             density_src,
             mask=cropped_mask & get_area_pixel_mask(density_src, threshold=0),
-            region_id=args.area_meta.get("region_id"),
+            region_id=args.area_meta.region_id,
             use_rgb_average=False,
         )
     else:
-        density_multiplier = args.area_meta.get("density_multiplier") or 1.0
+        density_multiplier = args.area_meta.density_multiplier or 1.0
 
     # Calculate regions: areas smaller than 0.5 regions get 0 territories (skip them)
     num_area_regions = max(1, round(pixel_count / pixels_per_region * density_multiplier))
@@ -290,34 +290,34 @@ def convert_cont_area_to_regions(args: AreaProcessingArgs) -> tuple[
         local_bbox = round_bbox(local_bbox)
         seed_x = cx_cropped
         seed_y = cy_cropped
-
-        metadata = [{
-            "region_type": area_type,
-            "region_id": region_id,
-            "parent_id": args.area_meta["region_id"],
-            "color": color_hex,
-            "local_x": cx_cropped,
-            "local_y": cy_cropped,
-            "global_x": None, # Set later
-            "global_y": None,
-            "bbox_local": local_bbox,
-            "bbox_global": None,  # Set later (global bbox)
-            "local_seed": [seed_x, seed_y],
-            "global_seed": None, # Set later
-            "pixel_count": pixel_count,
-            "density_multiplier": round(density_multiplier, ndigits=2),
-        }]
+    
+        metadata = [RegionMetadata(
+            region_type=area_type,
+            region_id=region_id,
+            parent_id=args.area_meta.region_id,
+            color=color_hex,
+            local_x=cx_cropped,
+            local_y=cy_cropped,
+            global_x=None, # Set later
+            global_y=None,
+            bbox_local=local_bbox,
+            bbox_global=None,  # Set later (global bbox)
+            local_seed=[seed_x, seed_y],
+            global_seed=None, # Set later
+            pixel_count=pixel_count,
+            density_multiplier=round(density_multiplier, ndigits=2),
+        )]
 
         if args.override_density_multiplier:
             density_src = args.density_image[y_min:y_max, x_min:x_max]
             region_density_multiplier = calculate_density_multiplier(
                 density_src,
                 mask=cropped_mask & get_area_pixel_mask(density_src, threshold=0),
-                region_id=args.area_meta.get("region_id"),
+                region_id=args.area_meta.region_id,
                 use_rgb_average=False,
             )
 
-            metadata[0]["density_multiplier"] = round(region_density_multiplier, ndigits=2)
+            metadata[0].density_multiplier = round(region_density_multiplier, ndigits=2)
         
         # Fill only masked pixels with single region color
         h, w = cropped_mask.shape
@@ -356,8 +356,8 @@ def convert_cont_area_to_regions(args: AreaProcessingArgs) -> tuple[
     
     metadata = build_metadata(
         pmap, seeds, 0, area_type, args.number_series, args.color_series,
-        parent_id=args.area_meta["region_id"],
-        parent_density_multiplier=args.area_meta.get("density_multiplier") or 1.0,
+        parent_id=args.area_meta.region_id,
+        parent_density_multiplier=args.area_meta.density_multiplier or 1.0,
     )
 
     # For districts, compute average density per generated region from the density image.
@@ -369,18 +369,18 @@ def convert_cont_area_to_regions(args: AreaProcessingArgs) -> tuple[
             region_density_multiplier = calculate_density_multiplier(
                 density_src,
                 mask=(pmap == i) & cropped_mask & is_area_pixel,
-                region_id=args.area_meta.get("region_id"),
+                region_id=args.area_meta.region_id,
                 use_rgb_average=False,
             )
 
-            region_meta["density_multiplier"] = round(region_density_multiplier, ndigits=2)
+            region_meta.density_multiplier = round(region_density_multiplier, ndigits=2)
     
     # Convert province map to colored image
     h, w = cropped_mask.shape
     cropped_image = np.zeros((h, w, 4), dtype=np.uint8)
     
     if metadata:
-        color_lut = np.array([[*hex_to_rgb(d["color"]), 255] for d in metadata], dtype=np.uint8)
+        color_lut = np.array([[*hex_to_rgb(d.color), 255] for d in metadata], dtype=np.uint8)
         valid = pmap >= 0
         cropped_image[valid] = color_lut[pmap[valid]]
     

@@ -5,7 +5,7 @@ from PIL import Image
 from gceutils import grepr_dataclass
 from opengs_maptool.logic.boundaries_to_cont import convert_boundaries_to_cont_areas, assign_borders_to_areas, classify_pixels_by_color, recalculate_bboxes_from_image, classify_continuous_areas, clean_boundary_image
 from opengs_maptool.logic.cont_to_regions import convert_all_cont_areas_to_regions
-from opengs_maptool.logic.utils import NumberSeries
+from opengs_maptool.logic.utils import NumberSeries, RegionMetadata
 from opengs_maptool import config
 
 
@@ -19,15 +19,15 @@ class MapToolResult:
     - data of continuous areas, districts, territories & provinces 
     """
     cont_area_image: Image.Image
-    cont_area_data: list[dict[str, Any]]
+    cont_area_data: list[RegionMetadata]
     class_image: Image.Image
     class_counts: dict[str, int]
     district_image: Image.Image
-    district_data: list[dict[str, Any]]
+    district_data: list[RegionMetadata]
     territory_image: Image.Image
-    territory_data: list[dict[str, Any]]
+    territory_data: list[RegionMetadata]
     province_image: Image.Image
-    province_data: list[dict[str, Any]]
+    province_data: list[RegionMetadata]
 
 @grepr_dataclass(init=False)
 class MapTool:
@@ -125,7 +125,7 @@ class MapTool:
             province_image, province_data,
         )
     
-    def _generate_cont_areas(self, progress_callback=None) -> tuple[Image.Image, NDArray[np.uint8], list[dict[str, Any]]]:
+    def _generate_cont_areas(self, progress_callback=None) -> tuple[Image.Image, NDArray[np.uint8], list[RegionMetadata]]:
         if progress_callback:
             progress_callback(0, 100)
 
@@ -172,7 +172,7 @@ class MapTool:
         # Assign proper region_ids (like for territories)
         number_series = NumberSeries(config.AREA_ID_PREFIX, config.SERIES_ID_START, config.SERIES_ID_END)
         for region in cont_area_data:
-            region["region_id"] = number_series.get_id()
+            region.region_id = number_series.get_id()
 
         args = (Image.fromarray(cont_area_image), cont_area_image, cont_area_data)
         if callable(getattr(self, "on_cont_areas_generated", None)):
@@ -187,10 +187,10 @@ class MapTool:
         return args
     
     def _generate_districts(self,
-        cont_area_image: NDArray[np.uint8], cont_area_data: list[dict[str, Any]],
+        cont_area_image: NDArray[np.uint8], cont_area_data: list[RegionMetadata],
         class_image: NDArray[np.uint8], class_counts: dict[str, int],
         progress_callback=None,
-    ) -> tuple[Image.Image, NDArray[np.uint8], list[dict[str, Any]]]:
+    ) -> tuple[Image.Image, NDArray[np.uint8], list[RegionMetadata]]:
         def district_progress(current: int, total: int) -> None:
             if progress_callback:
                 # Map progress (0-100) to overall progress (0-90)
@@ -205,7 +205,7 @@ class MapTool:
             pixels_per_land_region=self.pixels_per_land_district,
             pixels_per_water_region=self.pixels_per_water_district,
             fn_new_number_series=lambda area_meta: NumberSeries(
-                f"{area_meta['region_id']}-TEMP", config.SERIES_ID_START, config.SERIES_ID_END
+                f"{area_meta.region_id}-TEMP", config.SERIES_ID_START, config.SERIES_ID_END
             ),
             rng_seed=self.districts_rng_seed,
             lloyd_iterations=self.lloyd_iterations,
@@ -220,7 +220,7 @@ class MapTool:
 
         number_series = NumberSeries(config.DISTRICT_ID_PREFIX, config.SERIES_ID_START, config.SERIES_ID_END)
         for district in district_data:
-            district["region_id"] = number_series.get_id()
+            district.region_id = number_series.get_id()
 
         if progress_callback:
             progress_callback(100, 100)
@@ -231,10 +231,10 @@ class MapTool:
         return args
     
     def _generate_territories(self,
-        district_image: NDArray[np.uint8], district_data: list[dict[str, Any]],
+        district_image: NDArray[np.uint8], district_data: list[RegionMetadata],
         class_image: NDArray[np.uint8], class_counts: dict[str, int],
         progress_callback=None,
-    ) -> tuple[Image.Image, NDArray[np.uint8], list[dict[str, Any]]]:
+    ) -> tuple[Image.Image, NDArray[np.uint8], list[RegionMetadata]]:
         def territory_progress(current: int, total: int) -> None:
             if progress_callback:
                 # Map progress (0-100) to overall progress (0-90)
@@ -249,7 +249,7 @@ class MapTool:
             pixels_per_land_region=self.pixels_per_land_territory,
             pixels_per_water_region=self.pixels_per_water_territory,
             fn_new_number_series=lambda area_meta: NumberSeries(
-                f"{area_meta['region_id']}-TEMP", config.SERIES_ID_START, config.SERIES_ID_END
+                f"{area_meta.region_id}-TEMP", config.SERIES_ID_START, config.SERIES_ID_END
             ),
             rng_seed=self.territories_rng_seed,
             lloyd_iterations=self.lloyd_iterations,
@@ -265,7 +265,7 @@ class MapTool:
         
         number_series = NumberSeries(config.TERRITORY_ID_PREFIX, config.SERIES_ID_START, config.SERIES_ID_END)
         for territory in territory_data:
-            territory["region_id"] = number_series.get_id()
+            territory.region_id = number_series.get_id()
         
         if progress_callback:
             progress_callback(100, 100)
@@ -276,10 +276,10 @@ class MapTool:
         return args
 
     def _generate_provinces(self,
-        territory_image: NDArray[np.uint8], territory_data: list[dict[str, Any]],
+        territory_image: NDArray[np.uint8], territory_data: list[RegionMetadata],
         class_image: NDArray[np.uint8], class_counts: dict[str, int],
         progress_callback=None,
-    ) -> tuple[Image.Image, NDArray[np.uint8], list[dict[str, Any]]]:
+    ) -> tuple[Image.Image, NDArray[np.uint8], list[RegionMetadata]]:
         def province_progress(current: int, total: int) -> None:
             if progress_callback:
                 # Map progress (0-100) to overall progress (0-90)
@@ -294,7 +294,7 @@ class MapTool:
             pixels_per_land_region=self.pixels_per_land_province,
             pixels_per_water_region=self.pixels_per_water_province,
             fn_new_number_series=lambda territory_meta: NumberSeries(
-                f"{territory_meta['region_id']}-TEMP", config.SERIES_ID_START, config.SERIES_ID_END
+                f"{territory_meta.region_id}-TEMP", config.SERIES_ID_START, config.SERIES_ID_END
             ),
             rng_seed=self.provinces_rng_seed,
             lloyd_iterations=self.lloyd_iterations,
@@ -309,7 +309,7 @@ class MapTool:
 
         number_series = NumberSeries(config.PROVINCE_ID_PREFIX, config.SERIES_ID_START, config.SERIES_ID_END)
         for territory in territory_data:
-            territory["region_id"] = number_series.get_id()
+            territory.region_id = number_series.get_id()
 
         args = (Image.fromarray(province_image), province_image, province_data)
         if callable(getattr(self, "on_provinces_generated", None)):
@@ -318,15 +318,15 @@ class MapTool:
 
 
     def on_cont_areas_generated(self,
-        cont_area_image: Image.Image, cont_area_image_buffer: NDArray[np.uint8], cont_area_data: list[dict[str, Any]]) -> None: ...
+        cont_area_image: Image.Image, cont_area_image_buffer: NDArray[np.uint8], cont_area_data: list[RegionMetadata]) -> None: ...
     def on_type_classification_generated(self,
         class_image: Image.Image, class_image_buffer: NDArray[np.uint8], class_counts: dict[str, int]) -> None: ...
     def on_districts_generated(self,
-        district_image: Image.Image, district_image_buffer: NDArray[np.uint8], district_data: list[dict[str, Any]]) -> None: ...
+        district_image: Image.Image, district_image_buffer: NDArray[np.uint8], district_data: list[RegionMetadata]) -> None: ...
     def on_territories_generated(self,
-        territory_image: Image.Image, territory_image_buffer: NDArray[np.uint8], territory_data: list[dict[str, Any]]) -> None: ...
+        territory_image: Image.Image, territory_image_buffer: NDArray[np.uint8], territory_data: list[RegionMetadata]) -> None: ...
     def on_provinces_generated(self,
-        province_image: Image.Image, province_image_buffer: NDArray[np.uint8], province_data: list[dict[str, Any]]) -> None: ...
+        province_image: Image.Image, province_image_buffer: NDArray[np.uint8], province_data: list[RegionMetadata]) -> None: ...
 
     
     @staticmethod

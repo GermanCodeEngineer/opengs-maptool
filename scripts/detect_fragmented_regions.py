@@ -14,15 +14,12 @@ from __future__ import annotations
 
 import argparse
 import json
-import sys
 from pathlib import Path
-
+from typing import Any
 import numpy as np
 from PIL import Image
 from scipy import ndimage
-
-#if __package__ in (None, ""):
-#    sys.path.insert(0, str(Path(__file__).resolve().parents[2]))
+from opengs_maptool import RegionMetadata, import_from_json
 
 
 STRICT_FOUR_CONNECTED = np.array(
@@ -86,17 +83,17 @@ def highlight_color(region_index: int, fragment_index: int) -> tuple[int, int, i
     return int(r), int(g), int(b)
 
 
-def resolve_seed(region: dict, width: int, height: int) -> tuple[int, int] | None:
-    seed = region.get("seed_global")
+def resolve_seed(region: RegionMetadata, width: int, height: int) -> tuple[int, int] | None:
+    seed = region.global_seed
     if isinstance(seed, (list, tuple)) and len(seed) == 2:
         sx = int(round(float(seed[0])))
         sy = int(round(float(seed[1])))
-    elif "global_x" in region and "global_y" in region:
-        sx = int(round(float(region["global_x"])))
-        sy = int(round(float(region["global_y"])))
-    elif "local_x" in region and "local_y" in region:
-        sx = int(round(float(region["local_x"])))
-        sy = int(round(float(region["local_y"])))
+    elif region.global_x is not None and region.global_y is not None:
+        sx = int(round(float(region.global_x)))
+        sy = int(round(float(region.global_y)))
+    elif region.local_x is not None and region.local_y is not None:
+        sx = int(round(float(region.local_x)))
+        sy = int(round(float(region.local_y)))
     else:
         return None
 
@@ -128,8 +125,8 @@ def choose_seed_component(
     return int(labels[int(ys[nearest_idx]), int(xs[nearest_idx])])
 
 
-def resolve_bbox(region: dict, width: int, height: int) -> tuple[int, int, int, int]:
-    bbox = region.get("bbox_global") or region.get("bbox_local")
+def resolve_bbox(region: RegionMetadata, width: int, height: int) -> tuple[int, int, int, int]:
+    bbox = region.bbox_global or region.bbox_local
     if not isinstance(bbox, (list, tuple)) or len(bbox) != 4:
         return 0, 0, width, height
 
@@ -147,8 +144,8 @@ def resolve_bbox(region: dict, width: int, height: int) -> tuple[int, int, int, 
 
 def detect_fragmented_regions(
     image_rgba: np.ndarray,
-    metadata: list[dict],
-) -> tuple[np.ndarray, dict[str, int], list[dict[str, object]]]:
+    metadata: list[RegionMetadata],
+) -> tuple[np.ndarray, dict[str, int], list[dict[str, Any]]]:
     height, width = image_rgba.shape[:2]
     rgb_image = image_rgba[:, :, :3]
 
@@ -162,10 +159,10 @@ def detect_fragmented_regions(
         "fragment_pixels": 0,
         "regions_missing_seed": 0,
     }
-    fragment_details: list[dict[str, object]] = []
+    fragment_details: list[dict[str, Any]] = []
 
     for region_index, region in enumerate(metadata):
-        color_hex = region.get("color")
+        color_hex = region.color
         if not isinstance(color_hex, str):
             continue
 
@@ -230,7 +227,7 @@ def detect_fragmented_regions(
             window_out[fragment_mask] = [r, g, b, 255]
             fragment_details.append(
                 {
-                    "region_id": region.get("region_id"),
+                    "region_id": region.region_id,
                     "component_id": int(component_id),
                     "pixel_count": int(np.count_nonzero(fragment_mask)),
                     "fragment_color": rgb_to_hex((r, g, b)),
@@ -255,12 +252,12 @@ def process_region_type(region_type: str, input_dir: Path, visualization_dir: Pa
         return False
 
     image_rgba = np.array(Image.open(image_path).convert("RGBA"), dtype=np.uint8)
-    metadata_raw = json.loads(metadata_path.read_text(encoding="utf-8"))
+    metadata = import_from_json(metadata_path)
 
-    if not isinstance(metadata_raw, list):
-        raise ValueError(f"Metadata JSON for {region_type} must be a list of region dictionaries")
+    if not isinstance(metadata, list):
+        raise ValueError(f"Metadata JSON for {region_type} must be a list of regions")
 
-    visualization, stats, fragment_details = detect_fragmented_regions(image_rgba, metadata_raw)
+    visualization, stats, fragment_details = detect_fragmented_regions(image_rgba, metadata)
 
     output_path.parent.mkdir(parents=True, exist_ok=True)
     Image.fromarray(visualization).save(output_path)

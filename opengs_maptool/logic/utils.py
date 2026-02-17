@@ -2,14 +2,13 @@ from opengs_maptool import config
 import math
 import warnings
 import numpy as np
-from pathlib import Path
-from PIL import Image, ImageDraw
 from numpy.typing import NDArray
-from typing import Any, Iterable
+from typing import Any, Iterable, Literal
 from scipy.ndimage import distance_transform_edt, label as scipy_label
 from scipy.spatial import cKDTree
 from scipy.stats import mode
 from collections import deque
+from gceutils import grepr_dataclass
 
 
 FOUR_CONNECTED = np.array(
@@ -177,6 +176,24 @@ class ColorSeries:
     def get_color_rgb_hex(self, is_water: bool) -> tuple[tuple[int, int, int], str]:
         rgb = self.get_color_rgb(is_water=is_water)
         return (rgb, rgb_to_hex(rgb))
+
+
+@grepr_dataclass(validate=False)
+class RegionMetadata:
+    region_type: Literal["land", "ocean", "lake"] | None = None
+    region_id: str
+    parent_id: str | None = None
+    color: str # "#00aa99"
+    local_x: int | None = None
+    local_y: int | None = None
+    global_x: int | None = None
+    global_y: int | None = None
+    bbox_local: list[int] | None = None # (MIN_X, MIN_Y, MAX_X, MAX_Y)
+    bbox_global: list[int] | None = None # (MIN_X, MIN_Y, MAX_X, MAX_Y)
+    local_seed: list[int] | None = None # (X, Y)
+    global_seed: list[int] | None = None # (X, Y)
+    pixel_count: int
+    density_multiplier: float | None = None
 
 
 def poisson_disk_samples(
@@ -530,7 +547,7 @@ def build_metadata(
     color_series: ColorSeries,
     parent_id: str | None = None,
     parent_density_multiplier: float | None = None,
-) -> list[dict[str, Any]]:
+) -> list[RegionMetadata]:
     if pmap.size == 0 or not seeds:
         return []
 
@@ -590,23 +607,21 @@ def build_metadata(
             pixel_count = int(region_mask.sum())
 
         bbox_local = round_bbox(bbox_local)
-
-        meta_dict = {
-            "region_type": region_type,
-            "region_id": rid,
-            "parent_id": parent_id,
-            "color": color_hex,
-            "local_x": cx,
-            "local_y": cy,
-            "global_x": None, # Set later
-            "global_y": None,
-            "bbox_local": bbox_local,
-            "bbox_global": None,  # Set later (global bbox)
-            "local_seed": [int(sx), int(sy)],
-            "global_seed": None, # Set later
-            "pixel_count": pixel_count,
-            "density_multiplier": parent_density_multiplier or 1.0,
-        }
-        metadata.append(meta_dict)
-
+        meta = RegionMetadata(
+            region_type=region_type,
+            region_id=rid,
+            parent_id=parent_id,
+            color=color_hex,
+            local_x=cx,
+            local_y=cy,
+            global_x=None, # Set later
+            global_y=None,
+            bbox_local=bbox_local,
+            bbox_global=None, # Set later
+            local_seed=[int(sx), int(sy)],
+            global_seed=None, # Set later
+            pixel_count=pixel_count,
+            density_multiplier=parent_density_multiplier or 1.0,
+        )
+        metadata.append(meta)
     return metadata

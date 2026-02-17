@@ -9,7 +9,6 @@ This script:
 
 from __future__ import annotations
 
-import json
 import sys
 from pathlib import Path
 
@@ -19,7 +18,7 @@ from PIL import Image, ImageDraw
 if __package__ in (None, ""):
     sys.path.insert(0, str(Path(__file__).resolve().parents[2]))
 
-from opengs_maptool import MapTool, export_to_csv, export_to_json
+from opengs_maptool import MapTool, RegionMetadata, export_to_csv, export_to_json, import_from_json
 
 
 LEVEL_ORDER = ["areas", "districts", "territories", "provinces"]
@@ -127,8 +126,8 @@ def generate_maps(input_dir: Path) -> None:
     save_generated_inputs(input_dir, result)
 
 
-def load_available_levels(input_dir: Path) -> dict[str, tuple[list[dict], Image.Image]]:
-    loaded: dict[str, tuple[list[dict], Image.Image]] = {}
+def load_available_levels(input_dir: Path) -> dict[str, tuple[list[RegionMetadata], Image.Image]]:
+    loaded: dict[str, tuple[list[RegionMetadata], Image.Image]] = {}
 
     for level in LEVEL_ORDER:
         level_paths = LEVEL_FILES[level]
@@ -138,7 +137,7 @@ def load_available_levels(input_dir: Path) -> dict[str, tuple[list[dict], Image.
         if data_path is None or image_path is None:
             continue
 
-        data = json.loads(data_path.read_text(encoding="utf-8"))
+        data = import_from_json(data_path)
         if not isinstance(data, list):
             continue
 
@@ -150,7 +149,7 @@ def load_available_levels(input_dir: Path) -> dict[str, tuple[list[dict], Image.
 
 def draw_centers(
     image: Image.Image,
-    data: list[dict],
+    data: list[dict[str, object]],
     circle_radius: int,
     outline_color: str,
 ) -> Image.Image:
@@ -175,7 +174,7 @@ def draw_centers(
     return img_copy
 
 
-def draw_bboxes(image: Image.Image, data: list[dict], width: int = 2, darken_factor: float = 0.6) -> Image.Image:
+def draw_bboxes(image: Image.Image, data: list[dict[str, object]], width: int = 2, darken_factor: float = 0.6) -> Image.Image:
     img_copy = image.copy()
     draw = ImageDraw.Draw(img_copy)
 
@@ -203,7 +202,7 @@ def draw_bboxes(image: Image.Image, data: list[dict], width: int = 2, darken_fac
     return img_copy
 
 
-def make_density_heatmap_from_image(regions: list[dict], source_image: Image.Image) -> Image.Image:
+def make_density_heatmap_from_image(regions: list[RegionMetadata], source_image: Image.Image) -> Image.Image:
     source = np.array(source_image.convert("RGB"))
 
     density_by_color: dict[tuple[int, int, int], float] = {}

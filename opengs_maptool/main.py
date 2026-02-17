@@ -1,11 +1,10 @@
 import sys
-import json
 import argparse
 from pathlib import Path
 from PIL import Image
 import numpy as np
 from PyQt6.QtWidgets import QApplication
-from . import MapToolWindow, MapTool
+from . import MapToolWindow, MapTool, export_to_json, import_from_json
 
 
 def main_automatic() -> None:
@@ -17,19 +16,18 @@ def main_automatic() -> None:
     class StepMapTool(MapTool):
         def on_cont_areas_generated(self, cont_area_image, cont_area_image_buffer, cont_area_data):
             cont_area_image.save(output_directory / "cont_area_image.png")
-            (output_directory / "cont_area_data.json").write_text(json.dumps(cont_area_data))
-
+            export_to_json(cont_area_data, output_directory / "cont_area_data.json")
         def on_districts_generated(self, district_image, district_image_buffer, district_data):
             district_image.save(output_directory / "district_image.png")
-            (output_directory / "district_data.json").write_text(json.dumps(district_data))
+            export_to_json(district_data, output_directory / "district_data.json")
         
         def on_territories_generated(self, territory_image, territory_image_buffer, territory_data):
             territory_image.save(output_directory / "territory_image.png")
-            (output_directory / "territory_data.json").write_text(json.dumps(territory_data))
+            export_to_json(territory_data, output_directory / "territory_data.json")
         
         def on_provinces_generated(self, province_image, province_image_buffer, province_data):
             province_image.save(output_directory / "province_image.png")
-            (output_directory / "province_data.json").write_text(json.dumps(province_data))
+            export_to_json(province_data, output_directory / "province_data.json")
             
             
     maptool = StepMapTool(
@@ -43,7 +41,7 @@ def main_automatic() -> None:
     result.district_image.save(output_directory / "district_image.png")
     result.territory_image.save(output_directory / "territory_image.png")
     result.province_image.save(output_directory / "province_image.png")
-    (output_directory / "data.json").write_text(json.dumps(dict(
+    (output_directory / "data.json").write_text(export_to_json(dict(
         cont_areas=result.cont_area_data,
         class_counts=result.class_counts,
         districts=result.district_data,
@@ -67,7 +65,7 @@ def main_districts_from_areas(regenerate_areas: bool = False) -> None:
     if regenerate_areas:
         cont_area_image, cont_area_image_buffer, cont_area_data = maptool._generate_cont_areas()
         cont_area_image.save(cont_area_image_path)
-        cont_area_data_path.write_text(json.dumps(cont_area_data))
+        export_to_json(cont_area_data, cont_area_data_path)
     else:
         if not cont_area_image_path.exists() or not cont_area_data_path.exists():
             raise FileNotFoundError(
@@ -76,7 +74,7 @@ def main_districts_from_areas(regenerate_areas: bool = False) -> None:
             )
 
         cont_area_image_buffer = np.array(Image.open(cont_area_image_path).convert("RGBA"), dtype=np.uint8)
-        cont_area_data = json.loads(cont_area_data_path.read_text())
+        cont_area_data = import_from_json(cont_area_data_path)
 
     class_image, class_image_buffer, class_counts = maptool._generate_type_classification()
     district_image, _, district_data = maptool._generate_districts(
@@ -88,7 +86,7 @@ def main_districts_from_areas(regenerate_areas: bool = False) -> None:
 
     class_image.save(output_directory / "class_image.png")
     district_image.save(output_directory / "district_image.png")
-    (output_directory / "district_data.json").write_text(json.dumps(district_data))
+    export_to_json(district_data, output_directory / "district_data.json")
 
 def main_gui() -> None:
     app = QApplication(sys.argv)
@@ -138,12 +136,12 @@ def main_selective_steps(generate_steps=None, regenerate_areas=False):
     if "cont_areas" in generate_steps or regenerate_areas:
         cont_area_image, cont_area_image_buffer, cont_area_data = maptool._generate_cont_areas()
         cont_area_image.save(paths["cont_areas"]["image"])
-        paths["cont_areas"]["data"].write_text(json.dumps(cont_area_data))
+        export_to_json(cont_area_data, paths["cont_areas"]["data"])
     else:
         if not paths["cont_areas"]["image"].exists() or not paths["cont_areas"]["data"].exists():
             raise FileNotFoundError("Missing precomputed area files.")
         cont_area_image_buffer = np.array(Image.open(paths["cont_areas"]["image"]).convert("RGBA"), dtype=np.uint8)
-        cont_area_data = json.loads(paths["cont_areas"]["data"].read_text())
+        cont_area_data = import_from_json(paths["cont_areas"]["data"])
 
     # Load or generate class image
     class_image, class_image_buffer, class_counts = maptool._generate_type_classification()
@@ -158,11 +156,11 @@ def main_selective_steps(generate_steps=None, regenerate_areas=False):
             class_counts=class_counts,
         )
         district_image.save(paths["districts"]["image"])
-        paths["districts"]["data"].write_text(json.dumps(district_data))
+        export_to_json(district_data, paths["districts"]["data"])
     else:
         if paths["districts"]["image"].exists() and paths["districts"]["data"].exists():
             district_image = Image.open(paths["districts"]["image"])
-            district_data = json.loads(paths["districts"]["data"].read_text())
+            district_data = import_from_json(paths["districts"]["data"])
         else:
             district_image, _, district_data = maptool._generate_districts(
                 cont_area_image=cont_area_image_buffer,
@@ -171,7 +169,7 @@ def main_selective_steps(generate_steps=None, regenerate_areas=False):
                 class_counts=class_counts,
             )
             district_image.save(paths["districts"]["image"])
-            paths["districts"]["data"].write_text(json.dumps(district_data))
+            export_to_json(district_data, paths["districts"]["data"])
 
     # Repeat for territories
     if "territories" in generate_steps:
@@ -180,11 +178,11 @@ def main_selective_steps(generate_steps=None, regenerate_areas=False):
             district_data=district_data,
         )
         territory_image.save(paths["territories"]["image"])
-        paths["territories"]["data"].write_text(json.dumps(territory_data))
+        export_to_json(territory_data, paths["territories"]["data"])
     else:
         if paths["territories"]["image"].exists() and paths["territories"]["data"].exists():
             territory_image = Image.open(paths["territories"]["image"])
-            territory_data = json.loads(paths["territories"]["data"].read_text())
+            territory_data = import_from_json(paths["territories"]["data"])
         else:
             territory_image, _, territory_data = maptool._generate_territories(
                 district_image=np.array(district_image.convert("RGBA"), dtype=np.uint8),
@@ -193,7 +191,7 @@ def main_selective_steps(generate_steps=None, regenerate_areas=False):
                 class_counts=class_counts,
             )
             territory_image.save(paths["territories"]["image"])
-            paths["territories"]["data"].write_text(json.dumps(territory_data))
+            export_to_json(territory_data, paths["territories"]["data"])
 
     # Repeat for provinces
     if "provinces" in generate_steps:
@@ -202,11 +200,11 @@ def main_selective_steps(generate_steps=None, regenerate_areas=False):
             territory_data=territory_data,
         )
         province_image.save(paths["provinces"]["image"])
-        paths["provinces"]["data"].write_text(json.dumps(province_data))
+        export_to_json(province_data, paths["provinces"]["data"])
     else:
         if paths["provinces"]["image"].exists() and paths["provinces"]["data"].exists():
             province_image = Image.open(paths["provinces"]["image"])
-            province_data = json.loads(paths["provinces"]["data"].read_text())
+            province_data = import_from_json(paths["provinces"]["data"])
         else:
             province_image, _, province_data = maptool._generate_provinces(
                 territory_image=np.array(territory_image.convert("RGBA"), dtype=np.uint8),
@@ -215,10 +213,10 @@ def main_selective_steps(generate_steps=None, regenerate_areas=False):
                 class_counts=class_counts,
             )
             province_image.save(paths["provinces"]["image"])
-            paths["provinces"]["data"].write_text(json.dumps(province_data))
+            export_to_json(province_data, paths["provinces"]["data"])
 
     # Save summary data
-    (output_directory / "data.json").write_text(json.dumps(dict(
+    (output_directory / "data.json").write_text(export_to_json(dict(
         cont_areas=cont_area_data,
         class_counts=class_counts,
         districts=district_data,

@@ -88,7 +88,7 @@ For programmatic map generation, use the `MapTool` class directly:
 from pathlib import Path
 from PIL import Image
 from logic.maptool import MapTool
-import json
+# TODO: COMPLETELY REDO, ALL DEPRECATED
 
 # Define input/output directories
 input_dir = Path("examples/input")

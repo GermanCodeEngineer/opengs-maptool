@@ -4,7 +4,7 @@ from numpy.typing import NDArray
 from scipy import ndimage
 from tqdm import tqdm
 from typing import Any
-from opengs_maptool.logic.utils import ColorSeries, hex_to_rgb, get_area_pixel_mask, ensure_point_in_mask
+from opengs_maptool.logic.utils import ColorSeries, RegionMetadata, hex_to_rgb, get_area_pixel_mask, ensure_point_in_mask
 from opengs_maptool import config
 
 NEIGHBOR_OFFSETS = [(-1, 0), (1, 0), (0, -1), (0, 1)]
@@ -39,8 +39,8 @@ XI
 
 def recalculate_bboxes_from_image(
     image: NDArray[np.uint8],
-    metadata: list[dict],
-) -> list[dict]:
+    metadata: list[RegionMetadata],
+) -> list[RegionMetadata]:
     """
     Recalculate bounding boxes for all regions from the image.
     
@@ -58,7 +58,7 @@ def recalculate_bboxes_from_image(
     updated_metadata = []
     
     for region in tqdm(metadata, desc="Recalculating bboxes", unit="regions"):
-        color_hex = region.get("color", "")
+        color_hex = region.color
         try:
             color_rgb = hex_to_rgb(color_hex)
             target_color = np.array(color_rgb, dtype=np.uint8)
@@ -72,7 +72,7 @@ def recalculate_bboxes_from_image(
         
         if not np.any(rgb_match):
             warnings.warn(
-                f"No pixels found for region_id {region.get('region_id')} (color={color_hex}) while recalculating bboxes.",
+                f"No pixels found for region_id {region.region_id} (color={color_hex}) while recalculating bboxes.",
                 stacklevel=2,
             )
             # No pixels found, keep original bbox
@@ -89,8 +89,8 @@ def recalculate_bboxes_from_image(
         ]
         
         # Update bbox in metadata
-        region["bbox_local"] = bbox_local
-        region["bbox_global"] = bbox_local
+        region.bbox_local = bbox_local
+        region.bbox_global = bbox_local # TODO
         updated_metadata.append(region)
     
     return updated_metadata
@@ -152,7 +152,7 @@ def classify_pixels_by_color(
     }
     return result, counts
 
-def convert_boundaries_to_cont_areas(boundaries_image: NDArray[np.uint8], rng_seed: int, min_area_pixels: int = 50, progress_callback=None) -> tuple[NDArray[np.uint8], list[dict]]:
+def convert_boundaries_to_cont_areas(boundaries_image: NDArray[np.uint8], rng_seed: int, min_area_pixels: int = 50, progress_callback=None) -> tuple[NDArray[np.uint8], list[RegionMetadata]]:
     """
     Convert the boundary image into an image of continuous areas(usually countries).
     
@@ -228,22 +228,22 @@ def convert_boundaries_to_cont_areas(boundaries_image: NDArray[np.uint8], rng_se
             int(rows.max()) + 1,
         ]
 
-        metadata.append({
-            "region_type": None,
-            "region_id": region_id,
-            "parent_id": None,
-            "color": color_hex,
-            "local_x": None,
-            "local_y": None,
-            "global_x": center_x,
-            "global_y": center_y,
-            "bbox_local": None,
-            "bbox_global": bbox,
-            "local_seed": None,
-            "global_seed": [center_x, center_y],
-            "pixel_count": int(region_mask.sum()),
-            "density_multiplier": None,
-        })
+        metadata.append(RegionMetadata(
+            region_type=None,
+            region_id=region_id,
+            parent_id=None,
+            color=color_hex,
+            local_x=None,
+            local_y=None,
+            global_x=center_x,
+            global_y=center_y,
+            bbox_local=None,
+            bbox_global=bbox,
+            local_seed=None,
+            global_seed=[center_x, center_y],
+            pixel_count=int(region_mask.sum()),
+            density_multiplier=None,
+        ))
     
     if progress_callback:
         progress_callback(100, 100)
@@ -253,8 +253,8 @@ def convert_boundaries_to_cont_areas(boundaries_image: NDArray[np.uint8], rng_se
 def classify_continuous_areas(
     cont_area_image: NDArray[np.uint8],
     class_image: NDArray[np.uint8],
-    cont_areas_metadata: list[dict[str, Any]],
-) -> list[dict[str, Any]]:
+    cont_areas_metadata: list[RegionMetadata],
+) -> list[RegionMetadata]:
     """
     Classify each continuous area as land, ocean, or lake based on its pixel composition.
     
@@ -276,12 +276,12 @@ def classify_continuous_areas(
     land_color = np.array(config.LAND_COLOR, dtype=np.uint8)
     
     for region in cont_areas_metadata:
-        color_hex = region.get("color", "")
+        color_hex = region.color
         try:
             color_rgb = hex_to_rgb(color_hex)
             target_color = np.array(color_rgb, dtype=np.uint8)
         except (ValueError, AttributeError):
-            region["region_type"] = "unknown"
+            region.region_type = "unknown"
             updated_metadata.append(region)
             continue
         
@@ -290,10 +290,10 @@ def classify_continuous_areas(
         
         if not np.any(rgb_match):
             warnings.warn(
-                f"No pixels found for region_id {region.get('region_id')} (color={color_hex}) while classifying continuous areas.",
+                f"No pixels found for region_id {region.region_id} (color={color_hex}) while classifying continuous areas.",
                 stacklevel=2,
             )
-            region["region_type"] = "unknown"
+            region.region_type = "unknown"
             updated_metadata.append(region)
             continue
         
@@ -308,13 +308,13 @@ def classify_continuous_areas(
         # Determine predominant type
         total = ocean_pixels + lake_pixels + land_pixels
         if total == 0:
-            region["region_type"] = "unknown"
+            region.region_type = "unknown"
         elif land_pixels > ocean_pixels + lake_pixels:
-            region["region_type"] = "land"
+            region.region_type = "land"
         elif ocean_pixels > lake_pixels:
-            region["region_type"] = "ocean"
+            region.region_type = "ocean"
         else:
-            region["region_type"] = "lake"
+            region.region_type = "lake"
         
         updated_metadata.append(region)
     
