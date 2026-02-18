@@ -1,4 +1,3 @@
-from pathlib import Path
 from PIL import Image
 from typing import Callable
 from PyQt6.QtWidgets import QWidget, QVBoxLayout, QHBoxLayout, QTabWidget, QLabel, QPushButton, QMessageBox, QSpinBox, QSizePolicy
@@ -179,6 +178,7 @@ class MapToolWindow(QWidget):
             self.flappy_bird_process = None
         super().closeEvent(event)
 
+    # TAB 1
     def create_start_tab(self) -> None:
         self.readme_tab = QWidget()
         start_layout = QVBoxLayout(self.readme_tab)
@@ -191,13 +191,14 @@ class MapToolWindow(QWidget):
         self.readme_label.setAlignment(Qt.AlignmentFlag.AlignCenter)
         start_layout.addWidget(self.readme_label)
 
+    # TAB 2
     def create_boundary_tab(self) -> None:
         self.boundary_tab = QWidget()
         boundary_tab_layout = QVBoxLayout(self.boundary_tab)
         
-        create_button(boundary_tab_layout, "Import and Clean Boundary Image", self.on_button_import_boundary)
+        create_button(boundary_tab_layout, f"Import and Clean {config.BOUNDARY_IMAGE_FILENAME}", self.on_button_import_boundary)
 
-        self.adapt_boundary_image_display = ImageDisplay(name="Boundary Image")
+        self.adapt_boundary_image_display = ImageDisplay(name=config.BOUNDARY_IMAGE_FILENAME)
         self.adapt_boundary_image_display.set_image(EMPTY_IMAGE)
         boundary_tab_layout.addWidget(self.adapt_boundary_image_display, stretch=1)
         
@@ -213,24 +214,26 @@ class MapToolWindow(QWidget):
         instruction_label.setWordWrap(True)
         boundary_tab_layout.addWidget(instruction_label)
     
+    # TAB 3
     def create_input_images_tab(self) -> None:
         self.input_tab = QWidget()
         input_tab_layout = QVBoxLayout(self.input_tab)
         
         boundary_button_row = QHBoxLayout()
         input_tab_layout.addLayout(boundary_button_row)
-        create_button(boundary_button_row, "Import Final Boundary && Density Image", self.on_button_import_final_boundary)
+        create_button(boundary_button_row, f"Import {config.FINAL_BOUNDARY_IMAGE_FILENAME}", self.on_button_import_final_boundary)
         create_button(boundary_button_row, "Keep Generated Image", self.on_button_keep_generated_boundary)
 
-        self.final_boundary_image_display = ImageDisplay(name="Final Boundary && Density Image")
+        self.final_boundary_image_display = ImageDisplay(name=config.FINAL_BOUNDARY_IMAGE_FILENAME)
         self.final_boundary_image_display.set_image(EMPTY_IMAGE)
         input_tab_layout.addWidget(self.final_boundary_image_display, stretch=1)
 
-        create_button(input_tab_layout, "Import and Clean Land Image", self.on_button_import_land)
-        self.land_image_display = ImageDisplay(name="Land Image")
-        self.land_image_display.set_image(EMPTY_IMAGE)
-        input_tab_layout.addWidget(self.land_image_display, stretch=1)
+        create_button(input_tab_layout, f"Import and Clean {config.CLASS_IMAGE_FILENAME}", self.on_button_import_class)
+        self.class_image_display = ImageDisplay(name=config.CLASS_IMAGE_FILENAME)
+        self.class_image_display.set_image(EMPTY_IMAGE)
+        input_tab_layout.addWidget(self.class_image_display, stretch=1)
 
+    # TAB 4-7
     def create_areas_tab(self) -> None:
         self.areas_tab = QWidget()
         areas_tab_layout = QVBoxLayout(self.areas_tab)
@@ -245,9 +248,45 @@ class MapToolWindow(QWidget):
         self.button_generate_areas.clicked.connect(self.on_button_generate_areas)
         areas_tab_layout.addWidget(self.button_generate_areas)
 
-        self.areas_image_display = ImageDisplay(name="Continuous Areas Image", csv_export=True)
+        self.areas_image_display = ImageDisplay(name=config.CONTINUOUS_AREA_IMAGE_FILENAME, csv_export=True)
         self.areas_image_display.set_image(EMPTY_IMAGE)
         areas_tab_layout.addWidget(self.areas_image_display, stretch=1)
+
+    def create_district_tab(self) -> None:
+        self.district_tab = QWidget()
+        district_tab_layout = QVBoxLayout(self.district_tab)
+
+        self.districts_rng_seed_input = self._create_seed_input(
+            district_tab_layout,
+            "Districts RNG Seed:",
+            int(1_500_000),
+        )
+
+        self.pixels_per_land_district_slider = create_slider(district_tab_layout,
+            "Pixels per Land district:",
+            config.PIXELS_PER_LAND_DISTRICT_MIN,
+            config.PIXELS_PER_LAND_DISTRICT_MAX,
+            config.PIXELS_PER_LAND_DISTRICT_DEFAULT,
+            config.PIXELS_PER_LAND_DISTRICT_TICK,
+            config.PIXELS_PER_LAND_DISTRICT_STEP,
+        )
+
+        self.pixels_per_water_district_slider = create_slider(district_tab_layout,
+            "Pixels per Water district:",
+            config.PIXELS_PER_WATER_DISTRICT_MIN,
+            config.PIXELS_PER_WATER_DISTRICT_MAX,
+            config.PIXELS_PER_WATER_DISTRICT_DEFAULT,
+            config.PIXELS_PER_WATER_DISTRICT_TICK,
+            config.PIXELS_PER_WATER_DISTRICT_STEP,
+        )
+
+        self.button_gen_districts = ProgressButton("Generate Districts")
+        self.button_gen_districts.clicked.connect(self.on_button_generate_districts)
+        district_tab_layout.addWidget(self.button_gen_districts)
+
+        self.district_image_display = ImageDisplay(name=config.DISTRICT_IMAGE_FILENAME, csv_export=True)
+        self.district_image_display.set_image(EMPTY_IMAGE)
+        district_tab_layout.addWidget(self.district_image_display, stretch=1)
 
     def create_territory_tab(self) -> None:
         self.territory_tab = QWidget()
@@ -282,45 +321,9 @@ class MapToolWindow(QWidget):
         self.button_gen_territories.clicked.connect(self.on_button_generate_territories)
         territory_tab_layout.addWidget(self.button_gen_territories)
 
-        self.territory_image_display = ImageDisplay(name="Territory Image", csv_export=True)
+        self.territory_image_display = ImageDisplay(name=config.TERRITORY_IMAGE_FILENAME, csv_export=True)
         self.territory_image_display.set_image(EMPTY_IMAGE)
         territory_tab_layout.addWidget(self.territory_image_display, stretch=1)
-
-    def create_district_tab(self) -> None:
-        self.district_tab = QWidget()
-        district_tab_layout = QVBoxLayout(self.district_tab)
-
-        self.districts_rng_seed_input = self._create_seed_input(
-            district_tab_layout,
-            "Districts RNG Seed:",
-            int(1_500_000),
-        )
-
-        self.pixels_per_land_district_slider = create_slider(district_tab_layout,
-            "Pixels per Land district:",
-            config.PIXELS_PER_LAND_DISTRICT_MIN,
-            config.PIXELS_PER_LAND_DISTRICT_MAX,
-            config.PIXELS_PER_LAND_DISTRICT_DEFAULT,
-            config.PIXELS_PER_LAND_DISTRICT_TICK,
-            config.PIXELS_PER_LAND_DISTRICT_STEP,
-        )
-
-        self.pixels_per_water_district_slider = create_slider(district_tab_layout,
-            "Pixels per Water district:",
-            config.PIXELS_PER_WATER_DISTRICT_MIN,
-            config.PIXELS_PER_WATER_DISTRICT_MAX,
-            config.PIXELS_PER_WATER_DISTRICT_DEFAULT,
-            config.PIXELS_PER_WATER_DISTRICT_TICK,
-            config.PIXELS_PER_WATER_DISTRICT_STEP,
-        )
-
-        self.button_gen_districts = ProgressButton("Generate Districts")
-        self.button_gen_districts.clicked.connect(self.on_button_generate_districts)
-        district_tab_layout.addWidget(self.button_gen_districts)
-
-        self.district_image_display = ImageDisplay(name="District Image", csv_export=True)
-        self.district_image_display.set_image(EMPTY_IMAGE)
-        district_tab_layout.addWidget(self.district_image_display, stretch=1)
 
     def create_province_tab(self) -> None:
         self.province_tab = QWidget()
@@ -355,9 +358,10 @@ class MapToolWindow(QWidget):
         self.button_gen_provinces.clicked.connect(self.on_button_generate_provinces)
         province_tab_layout.addWidget(self.button_gen_provinces)
     
-        self.province_image_display = ImageDisplay(name="Province Image", csv_export=True)
+        self.province_image_display = ImageDisplay(name=config.PROVINCE_IMAGE_FILENAME, csv_export=True)
         self.province_image_display.set_image(EMPTY_IMAGE)
         province_tab_layout.addWidget(self.province_image_display, stretch=1)
+
 
     # TAB 2
     def on_button_import_boundary(self) -> None:
@@ -373,7 +377,7 @@ class MapToolWindow(QWidget):
             self.adapt_boundary_image_display.set_image(cleaned_image)
 
         except Exception as error:
-            QMessageBox.critical(self, "Error", f"Error processing land image: {error}")
+            QMessageBox.critical(self, "Error", f"Error processing classification image: {error}")
 
     # TAB 3
     def on_button_import_final_boundary(self) -> None:
@@ -382,21 +386,21 @@ class MapToolWindow(QWidget):
     def on_button_keep_generated_boundary(self) -> None:
         self.final_boundary_image_display.set_image(self.adapt_boundary_image_display.get_image() or EMPTY_IMAGE)
 
-    def on_button_import_land(self) -> None:
-        if not self.land_image_display.import_image():
+    def on_button_import_class(self) -> None:
+        if not self.class_image_display.import_image():
             return
 
-        image = self.land_image_display.get_image()
+        image = self.class_image_display.get_image()
         if image is None:
             return
         
         try:
-            cleaned_land_image = MapTool.clean_land_image(image)
-            self.land_image_display.set_image(cleaned_land_image)
+            cleaned_class_image = MapTool.clean_class_image(image)
+            self.class_image_display.set_image(cleaned_class_image)
         except Exception as error:
-            QMessageBox.critical(self, "Error", f"Error processing land image: {error}")
+            QMessageBox.critical(self, "Error", f"Error processing classification image: {error}")
 
-    # TAB 4
+    # TAB 4-7
     def on_button_generate_areas(self) -> None:
         def run_task(maptool: MapTool, progress_callback: Callable) -> tuple:
             cont_area_image, cont_area_image_buffer, cont_area_data = maptool._generate_cont_areas(progress_callback=progress_callback)
@@ -425,7 +429,6 @@ class MapToolWindow(QWidget):
         
         self.areas_worker = self._create_background_worker(run_task, on_progress, on_finished, on_error)
 
-    # TAB 5
     def on_button_generate_districts(self) -> None:
         if self._cont_area_image_buffer is None:
             QMessageBox.warning(self, "Warning", "Continuous areas must be generated first")
@@ -461,7 +464,6 @@ class MapToolWindow(QWidget):
 
         self.districts_worker = self._create_background_worker(run_task, on_progress, on_finished, on_error)
     
-    # TAB 6
     def on_button_generate_territories(self) -> None:
         if self._district_image_buffer is None:
             QMessageBox.warning(self, "Warning", "Districts must be generated first")
@@ -498,7 +500,6 @@ class MapToolWindow(QWidget):
         
         self.territories_worker = self._create_background_worker(run_task, on_progress, on_finished, on_error)
 
-    # TAB 7
     def on_button_generate_provinces(self) -> None:
         if self._territory_image_buffer is None:
             QMessageBox.warning(self, "Warning", "Territories must be generated first")
@@ -539,7 +540,7 @@ class MapToolWindow(QWidget):
 
     def _create_maptool(self) -> MapTool:
         return MapTool(
-            land_image=self.land_image_display.get_image(),
+            class_image=self.class_image_display.get_image(),
             boundary_image=self.final_boundary_image_display.get_image(),
             pixels_per_land_territory=self.pixels_per_land_territory_slider.value(),
             pixels_per_water_territory=self.pixels_per_water_territory_slider.value(),

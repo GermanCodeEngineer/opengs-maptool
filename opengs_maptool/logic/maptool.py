@@ -31,7 +31,7 @@ class MapTool:
     """
     Open Grand Strategy Map Tool, which can be directly used in python.
     """
-    land_image: NDArray[np.uint8]
+    class_image: NDArray[np.uint8]
     boundary_image: NDArray[np.uint8]
     pixels_per_land_territory: int
     pixels_per_water_territory: int
@@ -44,7 +44,7 @@ class MapTool:
     provinces_rng_seed: int
 
     def __init__(self,
-            land_image: Image.Image,
+            class_image: Image.Image,
             boundary_image: Image.Image,
             pixels_per_land_district: int = config.PIXELS_PER_LAND_DISTRICT_DEFAULT,
             pixels_per_water_district: int = config.PIXELS_PER_WATER_DISTRICT_DEFAULT,
@@ -62,7 +62,7 @@ class MapTool:
         Initialize MapTool with input images and parameters.
         
         Args:
-            land_image: **CLEANED** PIL Image containing land/ocean/lake classification (see clean_land_image)
+            class_image: **CLEANED** PIL Image containing land/ocean/lake classification (see clean_class_image)
             boundary_image: **CLEANED** PIL Image containing (country) boundaries (see clean_boundary_image)
             pixels_per_land_district: Approximate pixels per land district
             pixels_per_water_district: Approximate pixels per water district
@@ -78,7 +78,7 @@ class MapTool:
         """
         super().__init__()
 
-        self.land_image = np.array(land_image.convert("RGBA"))
+        self.class_image = np.array(class_image.convert("RGBA"))
         self.boundary_image = np.array(boundary_image.convert("RGBA"))
         self.pixels_per_land_district = pixels_per_land_district
         self.pixels_per_water_district = pixels_per_water_district
@@ -105,10 +105,6 @@ class MapTool:
         4. Generates provinces from territories
         """
         cont_area_image, cont_area_image_buffer, cont_area_data = self._generate_cont_areas()
-        
-        # Classify continuous areas by land/ocean/lake type
-        cont_area_data = classify_continuous_areas(cont_area_image_buffer, np.array(self.land_image), cont_area_data)
-        
         district_image, district_image_buffer, district_data = self._generate_districts(cont_area_image_buffer, cont_area_data)
         territory_image, territory_image_buffer, territory_data = self._generate_territories(district_image_buffer, district_data)
         province_image, province_image_buffer, province_data = self._generate_provinces(territory_image_buffer, territory_data)
@@ -130,7 +126,7 @@ class MapTool:
 
         areas_with_borders_image, cont_area_data = convert_boundaries_to_cont_areas(
             self.boundary_image,
-            self.land_image,
+            self.class_image,
             self.cont_areas_rng_seed,
             min_area_pixels=config.MIN_AREA_PIXELS,  # Filter out tiny areas & islands
             progress_callback=boundaries_progress
@@ -185,7 +181,7 @@ class MapTool:
 
         district_image, district_data = convert_all_cont_areas_to_regions(
             cont_area_image=cont_area_image,
-            cont_areas_metadata=cont_area_data,
+            cont_area_metadata=cont_area_data,
             density_image=self.boundary_image,
             pixels_per_land_region=self.pixels_per_land_district,
             pixels_per_water_region=self.pixels_per_water_district,
@@ -226,7 +222,7 @@ class MapTool:
         
         territory_image, territory_data = convert_all_cont_areas_to_regions(
             cont_area_image=district_image,
-            cont_areas_metadata=district_data,
+            cont_area_metadata=district_data,
             density_image=self.boundary_image,
             pixels_per_land_region=self.pixels_per_land_territory,
             pixels_per_water_region=self.pixels_per_water_territory,
@@ -268,7 +264,7 @@ class MapTool:
         
         province_image, province_data = convert_all_cont_areas_to_regions(
             cont_area_image=territory_image,
-            cont_areas_metadata=territory_data,
+            cont_area_metadata=territory_data,
             density_image=self.boundary_image,
             pixels_per_land_region=self.pixels_per_land_province,
             pixels_per_water_region=self.pixels_per_water_province,
@@ -309,18 +305,18 @@ class MapTool:
 
     
     @staticmethod
-    def clean_land_image(land_image: Image.Image) -> Image.Image:
+    def clean_class_image(class_image: Image.Image) -> Image.Image:
         """
-        Standardize a land image to configured ocean/lake/land colors.
+        Standardize a type classification image to configured ocean/lake/land colors.
 
         Args:
-            land_image: Input land image as PIL Image.
+            class_image: Input classification image as PIL Image.
 
         Returns:
             RGBA image where each pixel is reassigned to the nearest of
             `config.OCEAN_COLOR`, `config.LAKE_COLOR`, or `config.LAND_COLOR`.
         """
-        class_image = classify_pixels_by_color(np.array(land_image.convert("RGBA")))
+        class_image = classify_pixels_by_color(np.array(class_image.convert("RGBA")))
         return Image.fromarray(class_image)
 
     @staticmethod

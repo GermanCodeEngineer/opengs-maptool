@@ -11,11 +11,12 @@ CORE FUNCTIONALITY & BUGS
 [DONE] => find some uniform format for seed, center, bbox coords
 [DONE] => use tuples for coords
 [DONE] ensure bbox coords are ordered correctly
- add output/input filenames to config?
+[DONE] add output/input filenames to config?
  fix & sort imports
  remove weird attributes of MapToolWindow
  test JSON & CSV exporting & importing
  ensure bbox visualization is perfect still
+ make tool work with only one of boundary/class image?
 
 ====================
 IMAGE & DATA GENERATION

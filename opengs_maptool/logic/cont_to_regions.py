@@ -48,7 +48,7 @@ class AreaProcessingArgs:
 
 def convert_all_cont_areas_to_regions(
         cont_area_image: NDArray[np.uint8],
-        cont_areas_metadata: list[RegionMetadata],
+        cont_area_metadata: list[RegionMetadata],
         density_image: NDArray[np.uint8] | None,
         pixels_per_land_region: int,
         pixels_per_water_region: int,
@@ -68,7 +68,7 @@ def convert_all_cont_areas_to_regions(
     
     Args:
         cont_area_image: Continuous areas image
-        cont_areas_metadata: Metadata list with area colors
+        cont_area_metadata: Metadata list with area colors
         density_image: Optional greyscale density image for density multiplier calculations
         pixels_per_land_region: Average pixels per region for land areas
         pixels_per_water_region: Average pixels per region for ocean/lake areas
@@ -91,9 +91,9 @@ def convert_all_cont_areas_to_regions(
         
     # Prepare arguments for each area
     ss = np.random.SeedSequence(rng_seed)
-    color_seeds = ss.spawn(len(cont_areas_metadata))
-    lloyd_seeds = ss.spawn(len(cont_areas_metadata))
-    poisson_seeds = ss.spawn(len(cont_areas_metadata))
+    color_seeds = ss.spawn(len(cont_area_metadata))
+    lloyd_seeds = ss.spawn(len(cont_area_metadata))
+    poisson_seeds = ss.spawn(len(cont_area_metadata))
     
     task_args = [
         AreaProcessingArgs(
@@ -111,19 +111,19 @@ def convert_all_cont_areas_to_regions(
             override_density_multiplier=override_density_multiplier,
         )
         for parent_area, color_seed, poisson_seed, lloyd_seed 
-        in zip(cont_areas_metadata, color_seeds, poisson_seeds, lloyd_seeds)
+        in zip(cont_area_metadata, color_seeds, poisson_seeds, lloyd_seeds)
     ]
     
     # Process areas in parallel with progress bar
     with Pool(num_processes) as pool:
         tqdm_iter = tqdm(
             pool.imap_unordered(convert_cont_area_to_regions, task_args),
-            total=len(cont_areas_metadata),
+            total=len(cont_area_metadata),
             desc=tqdm_description,
             unit=tqdm_unit,
         )
         results = [
-            (result, progress_callback(i, len(cont_areas_metadata)))[0] # keep result, call progress callback
+            (result, progress_callback(i, len(cont_area_metadata)))[0] # keep result, call progress callback
             for i, result in enumerate(tqdm_iter, 1)
         ]
     

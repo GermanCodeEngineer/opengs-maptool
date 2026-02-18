@@ -50,7 +50,7 @@ The graphical interface provides an interactive, step-by-step workflow:
 
 #### 3. **Input Images**
    - Import your final boundary image
-   - Import and clean your land/ocean image
+   - Import and clean your class image
      - Ocean must be RGB `(5, 20, 18)`
      - Everything else is considered land
    - Both images must have the same dimensions
@@ -96,7 +96,7 @@ output_dir = Path("examples/output")
 
 # Create MapTool instance
 maptool = MapTool(
-    land_image=Image.open(input_dir / "land2.png"),
+    class_image=Image.open(input_dir / "land2.png"),
     boundary_image=Image.open(input_dir / "bound2_density.png"),
     pixels_per_land_territory=6000,      # Adjust territory size
     pixels_per_water_territory=35000,
@@ -223,12 +223,12 @@ Use the blue channel to control region density in different areas:
 1. Divide large oceans and countries for better results
 2. Use density control to create varied region sizes (e.g., small provinces in densely populated areas, large ones in sparse regions)
 
-### Land Image
+### Classification Image
 Specifies ocean vs. land areas. Ocean pixels should be **RGB `(5, 20, 18)`** (dark teal).
 Everything else is considered land.
 <br>**Examples:**
-![](examples/input/land.png)
-![](examples/input/land2.png)
+![](examples/input/class.png)
+![](examples/input/class2.png)
 
 **Note:** You need at least one input image (boundary or land). Both are optional but must have the same dimensions if used together.
 

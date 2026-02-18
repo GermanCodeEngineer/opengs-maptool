@@ -29,10 +29,10 @@ def main_automatic() -> None:
             province_image.save(output_directory / "province_image.png")
             export_to_json(province_data, output_directory / "province_data.json")
             
-    land_image = MapTool.clean_land_image(Image.open(input_directory / "land2.png"))
-    land_image.save(output_directory / "land_image.png")
+    class_image = MapTool.clean_class_image(Image.open(input_directory / "class2.png"))
+    class_image.save(output_directory / "class_image.png")
     maptool = StepMapTool(
-        land_image=land_image,
+        class_image=class_image,
         boundary_image=Image.open(input_directory / "bound2_edited.png"),
     )
 
@@ -92,7 +92,7 @@ def main_selective_steps(generate_steps=None, regenerate_areas=False, export_csv
     }
 
     maptool = MapTool(
-        land_image=MapTool.clean_land_image(Image.open(input_directory / "land2.png")),
+        class_image=MapTool.clean_class_image(Image.open(input_directory / "class2.png")),
         boundary_image=Image.open(input_directory / "bound2_edited.png"),
     )
 

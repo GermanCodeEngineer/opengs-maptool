@@ -18,7 +18,7 @@ from PIL import Image, ImageDraw
 if __package__ in (None, ""):
     sys.path.insert(0, str(Path(__file__).resolve().parents[2]))
 
-from opengs_maptool import MapTool, RegionMetadata, export_to_csv, export_to_json, import_from_json
+from opengs_maptool import MapTool, MapToolResult, RegionMetadata, export_to_csv, export_to_json, import_from_json
 
 
 LEVEL_ORDER = ["areas", "districts", "territories", "provinces"]
@@ -88,7 +88,7 @@ def resolve_existing_path(base_dir: Path, candidate: str) -> Path | None:
     return None
 
 
-def save_generated_inputs(input_dir: Path, result: object) -> None:
+def save_generated_inputs(input_dir: Path, result: MapToolResult) -> None:
     input_dir.mkdir(parents=True, exist_ok=True)
 
     result.cont_area_image.save(input_dir / LEVEL_FILES["areas"]["image"])
@@ -110,16 +110,16 @@ def save_generated_inputs(input_dir: Path, result: object) -> None:
 def generate_maps(input_dir: Path) -> None:
     example_input_dir = EXAMPLES_DIR / "input"
     boundary_image_path = example_input_dir / "bound2_orig.png"
-    land_image_path = example_input_dir / "land2.png"
+    class_image_path = example_input_dir / "class2.png"
 
     if not example_input_dir.exists():
         raise FileNotFoundError(f"Example input directory not found: {example_input_dir}")
-    if not boundary_image_path.exists() or not land_image_path.exists():
+    if not boundary_image_path.exists() or not class_image_path.exists():
         raise FileNotFoundError(f"Required input files not found in {example_input_dir}")
 
     print("Generating maps with MapTool...")
     maptool = MapTool(
-        land_image=Image.open(land_image_path),
+        class_image=Image.open(class_image_path),
         boundary_image=Image.open(boundary_image_path),
     )
     result = maptool.generate()

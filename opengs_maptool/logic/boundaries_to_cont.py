@@ -94,13 +94,13 @@ def recalculate_bboxes_from_image(
     
     return updated_metadata
 
-def classify_pixels_by_color(land_image: NDArray[np.uint8]) -> NDArray[np.uint8]:
+def classify_pixels_by_color(class_image: NDArray[np.uint8]) -> NDArray[np.uint8]:
     """
     Classify each pixel as ocean (0), lake (1), or land (2) based on closest color match.
     Return classification image.
     
     Args:
-        land_image: Input image
+        class_image: Input image
     
     Returns:
         RGBA image (h, w, 4) with actual config colors
@@ -114,7 +114,7 @@ def classify_pixels_by_color(land_image: NDArray[np.uint8]) -> NDArray[np.uint8]
     ], dtype=np.float32)
     
     # Get pixel colors (h, w, 3)
-    pixels = land_image[:, :, :3].astype(np.float32)
+    pixels = class_image[:, :, :3].astype(np.float32)
     
     # Compute squared distances to all 3 colors at once (vectorized)
     diff = pixels[:, :, None, :] - ref_colors[None, None, :, :]
@@ -167,11 +167,11 @@ def convert_boundaries_to_cont_areas(
 
     # Filter out small areas
     if min_area_pixels > 0:
-        region_sizes = np.bincount(labeled_array.ravel())
-        small_regions = np.where(region_sizes < min_area_pixels)[0]
-        for small_region in small_regions:
-            if small_region > 0:  # Skip background (0)
-                labeled_array[labeled_array == small_region] = 0
+        area_sizes = np.bincount(labeled_array.ravel())
+        small_areas = np.where(area_sizes < min_area_pixels)[0]
+        for small_area in small_areas:
+            if small_area > 0:  # Skip background (0)
+                labeled_array[labeled_array == small_area] = 0
         
         # Relabel to have consecutive IDs
         unique_labels = np.unique(labeled_array[labeled_array > 0])
@@ -184,29 +184,29 @@ def convert_boundaries_to_cont_areas(
     if progress_callback:
         progress_callback(20, 100)
 
-    # Create image from regions using the labeled array
-    regions_image = np.full((*boundaries_image.shape[:2], 4), [0, 0, 0, 255], dtype=np.uint8)
+    # Create image from areas using the labeled array
+    area_image = np.full((*boundaries_image.shape[:2], 4), [0, 0, 0, 255], dtype=np.uint8)
     color_series = ColorSeries(rng_seed, exclude_values=[(0, 0, 0)])
-    region_to_color = {}
+    area_to_color = {}
     metadata = []
     
     # Vectorized color assignment
-    for idx, region_id in enumerate(tqdm(range(1, num_features + 1), desc="Processing boundaries into areas", unit="areas"), start=1):
+    for idx, area_id in enumerate(tqdm(range(1, num_features + 1), desc="Processing boundaries into areas", unit="areas"), start=1):
         if progress_callback and idx % max(1, num_features // 20) == 0:  # Report every 5%
             progress_callback(20 + int((idx / num_features) * 80), 100)
         
         color_rgb, color_hex = color_series.get_color_rgb_hex(is_water=False)
-        region_to_color[region_id] = (*color_rgb, 255)
-        regions_image[labeled_array == region_id] = region_to_color[region_id]
+        area_to_color[area_id] = (*color_rgb, 255)
+        area_image[labeled_array == area_id] = area_to_color[area_id]
         
-        region_mask = labeled_array == region_id
-        rows, cols = np.where(region_mask)
+        area_mask = labeled_array == area_id
+        rows, cols = np.where(area_mask)
         
         # ====
         y_min, y_max = int(rows.min()), int(rows.max()) + 1
         x_min, x_max = int(cols.min()), int(cols.max()) + 1
         global_bbox = (x_min, y_min, x_max, y_max)
-        cropped_mask = region_mask[y_min:y_max, x_min:x_max]
+        cropped_mask = area_mask[y_min:y_max, x_min:x_max]
         cropped_class_image = class_image[y_min:y_max, x_min:x_max]
 
         # Determine area type by checking the most common type in this area
@@ -222,21 +222,21 @@ def convert_boundaries_to_cont_areas(
         water_pixels = ocean_pixels + lake_pixels
         land_pixels = int(np.sum(np.all(cropped_rgb[cropped_mask] == land_color, axis=1)))
         
-        # Determine predominant type and calculate number of regions
+        # Determine predominant type and calculate number of areas
         if land_pixels > water_pixels:
-            region_type = "land"
+            area_type = "land"
         else:
-            region_type = "ocean" if ocean_pixels > lake_pixels else "lake"
+            area_type = "ocean" if ocean_pixels > lake_pixels else "lake"
 
         # Calculate center of mass (centroid) for local coordinates and round to integer pixel coordinates
         center_x = round(float(np.mean(cols)))
         center_y = round(float(np.mean(rows)))
-        center_x, center_y = ensure_point_in_mask(region_mask, center_x, center_y)
+        center_x, center_y = ensure_point_in_mask(area_mask, center_x, center_y)
 
         # Create Area
         metadata.append(RegionMetadata(
-            region_id=region_id,
-            region_type=region_type,
+            area_id=area_id,
+            area_type=area_type,
             color=color_hex,
             pixel_count=land_pixels + water_pixels,
             parent_id=None, # Areas have no parent
@@ -252,12 +252,14 @@ def convert_boundaries_to_cont_areas(
     if progress_callback:
         progress_callback(100, 100)
     
-    return regions_image, metadata
+    cont_area_data = classify_continuous_areas(area_image, class_image, cont_area_data)
+    
+    return area_image, metadata
 
 def classify_continuous_areas(
     cont_area_image: NDArray[np.uint8],
     class_image: NDArray[np.uint8],
-    cont_areas_metadata: list[RegionMetadata],
+    cont_area_metadata: list[RegionMetadata],
 ) -> list[RegionMetadata]:
     """
     Classify each continuous area as land, ocean, or lake based on its pixel composition.
@@ -268,7 +270,7 @@ def classify_continuous_areas(
     Args:
         cont_area_image: Image with continuous areas colored
         class_image: Classification image with land/ocean/lake colors
-        cont_areas_metadata: Metadata list for continuous areas
+        cont_area_metadata: Metadata list for continuous areas
     """
     updated_metadata = []
     
@@ -276,7 +278,7 @@ def classify_continuous_areas(
     lake_color = np.array(config.LAKE_COLOR, dtype=np.uint8)
     land_color = np.array(config.LAND_COLOR, dtype=np.uint8)
     
-    for region in cont_areas_metadata:
+    for region in cont_area_metadata:
         color_hex = region.color
         try:
             color_rgb = hex_to_rgb(color_hex)
@@ -322,7 +324,7 @@ def classify_continuous_areas(
     return updated_metadata
 
 def assign_borders_to_areas(
-    regions_image: NDArray[np.uint8],
+    region_image: NDArray[np.uint8],
     max_iters: int = 50,
     progress_callback = None,
 ) -> NDArray[np.uint8]:
@@ -330,7 +332,7 @@ def assign_borders_to_areas(
     Assign black pixels to neighboring areas by 4-neighbor majority vote.
 
     Args:
-        regions_image: RGBA image where non-black pixels represent area colors.
+        region_image: RGBA image where non-black pixels represent area colors.
         max_iters: Max number of propagation iterations.
         progress_callback: Optional callable that takes (current, total) for progress updates.
 
@@ -338,7 +340,7 @@ def assign_borders_to_areas(
         Updated RGBA image with black pixels filled when possible.
     """
 
-    result = regions_image.copy()
+    result = region_image.copy()
     rgb = result[:, :, :3]
     alpha = result[:, :, 3]
 
