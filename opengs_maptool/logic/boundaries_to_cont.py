@@ -4,6 +4,7 @@ from numpy.typing import NDArray
 from scipy import ndimage
 from tqdm import tqdm
 from typing import Any
+
 from opengs_maptool.logic.utils import ColorSeries, RegionMetadata, hex_to_rgb, get_area_pixel_mask, ensure_point_in_mask
 from opengs_maptool import config
 

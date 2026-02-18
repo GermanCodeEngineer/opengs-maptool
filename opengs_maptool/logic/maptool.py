@@ -3,6 +3,7 @@ from numpy.typing import NDArray
 from typing import Any
 from PIL import Image
 from gceutils import grepr_dataclass
+
 from opengs_maptool.logic.boundaries_to_cont import convert_boundaries_to_cont_areas, assign_borders_to_areas, classify_pixels_by_color, recalculate_bboxes_from_image, classify_continuous_areas, clean_boundary_image
 from opengs_maptool.logic.cont_to_regions import convert_all_cont_areas_to_regions
 from opengs_maptool.logic.utils import NumberSeries, RegionMetadata

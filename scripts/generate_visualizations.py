@@ -8,15 +8,9 @@ This script:
 """
 
 from __future__ import annotations
-
-import sys
 from pathlib import Path
-
 import numpy as np
 from PIL import Image, ImageDraw
-
-if __package__ in (None, ""):
-    sys.path.insert(0, str(Path(__file__).resolve().parents[2]))
 
 from opengs_maptool import MapTool, MapToolResult, RegionMetadata, export_to_csv, export_to_json, import_from_json
 

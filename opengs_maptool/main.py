@@ -4,6 +4,7 @@ from pathlib import Path
 from PIL import Image
 import numpy as np
 from PyQt6.QtWidgets import QApplication
+
 from . import MapToolWindow, MapTool, export_to_json, export_to_csv, import_from_json
 
 

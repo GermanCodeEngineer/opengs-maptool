@@ -3,6 +3,7 @@ import csv
 import dataclasses
 from pathlib import Path
 from typing import Any
+
 from opengs_maptool.logic.utils import RegionMetadata
 
 

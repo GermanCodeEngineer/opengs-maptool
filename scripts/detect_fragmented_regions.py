@@ -11,7 +11,6 @@ is treated as a fragment.
 """
 
 from __future__ import annotations
-
 import argparse
 import json
 from pathlib import Path
@@ -19,6 +18,7 @@ from typing import Any
 import numpy as np
 from PIL import Image
 from scipy import ndimage
+
 from opengs_maptool import RegionMetadata, import_from_json
 
 
