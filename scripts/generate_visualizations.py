@@ -101,10 +101,10 @@ def save_generated_inputs(input_dir: Path, result: object) -> None:
     export_to_json(result.territory_data, input_dir / LEVEL_FILES["territories"]["data"])
     export_to_json(result.province_data, input_dir / LEVEL_FILES["provinces"]["data"])
 
-    #export_to_csv(result.cont_area_data, input_dir / LEVEL_FILES["areas"]["data"].replace(".json", ".csv"))
-    #export_to_csv(result.district_data, input_dir / LEVEL_FILES["districts"]["data"].replace(".json", ".csv"))
-    #export_to_csv(result.territory_data, input_dir / LEVEL_FILES["territories"]["data"].replace(".json", ".csv"))
-    #export_to_csv(result.province_data, input_dir / LEVEL_FILES["provinces"]["data"].replace(".json", ".csv"))
+    export_to_csv(result.cont_area_data, input_dir / LEVEL_FILES["areas"]["data"].replace(".json", ".csv"))
+    export_to_csv(result.district_data, input_dir / LEVEL_FILES["districts"]["data"].replace(".json", ".csv"))
+    export_to_csv(result.territory_data, input_dir / LEVEL_FILES["territories"]["data"].replace(".json", ".csv"))
+    export_to_csv(result.province_data, input_dir / LEVEL_FILES["provinces"]["data"].replace(".json", ".csv"))
 
 
 def generate_maps(input_dir: Path) -> None:
@@ -127,7 +127,7 @@ def generate_maps(input_dir: Path) -> None:
 
 
 def load_available_levels(input_dir: Path) -> dict[str, tuple[list[RegionMetadata], Image.Image]]:
-    loaded: dict[str, tuple[list[RegionMetadata], Image.Image]] = {}
+    loaded = {}
 
     for level in LEVEL_ORDER:
         level_paths = LEVEL_FILES[level]
@@ -149,7 +149,7 @@ def load_available_levels(input_dir: Path) -> dict[str, tuple[list[RegionMetadat
 
 def draw_centers(
     image: Image.Image,
-    data: list[dict[str, object]],
+    data: list[RegionMetadata],
     circle_radius: int,
     outline_color: str,
 ) -> Image.Image:
@@ -157,44 +157,32 @@ def draw_centers(
     draw = ImageDraw.Draw(img_copy)
 
     for region in data:
-        if "global_x" in region and "global_y" in region:
-            x = region["global_x"]
-            y = region["global_y"]
-        elif "local_x" in region and "local_y" in region:
-            x = region["local_x"]
-            y = region["local_y"]
+        if region.global_center is not None:
+            x, y = region.global_center
         else:
             continue
 
-        xi = int(round(float(x)))
-        yi = int(round(float(y)))
         r = circle_radius
-        draw.ellipse([xi - r, yi - r, xi + r, yi + r], outline=outline_color, width=2)
+        draw.ellipse([x - r, y - r, x + r, y + r], outline=outline_color, width=2)
 
     return img_copy
 
 
-def draw_bboxes(image: Image.Image, data: list[dict[str, object]], width: int = 2, darken_factor: float = 0.6) -> Image.Image:
+def draw_bboxes(image: Image.Image, data: list[RegionMetadata], width: int = 2, darken_factor: float = 0.6) -> Image.Image:
     img_copy = image.copy()
     draw = ImageDraw.Draw(img_copy)
 
     for region in data:
-        bbox = region.get("bbox_global") or region.get("bbox_local")
+        bbox = region.global_bbox
         if not bbox or len(bbox) != 4:
             continue
 
-        color_hex = region.get("color", "#808080")
         try:
-            outline_color = darken_color(hex_to_rgb(str(color_hex)), darken_factor)
+            outline_color = darken_color(hex_to_rgb(str(region.color)), darken_factor)
         except (ValueError, AttributeError):
             outline_color = (128, 128, 128)
 
-        x0, y0, x1, y1 = [int(round(float(v))) for v in bbox]
-        if x1 < x0:
-            x0, x1 = x1, x0
-        if y1 < y0:
-            y0, y1 = y1, y0
-
+        x0, y0, x1, y1 = bbox
         bbox_size = min(x1 - x0, y1 - y0)
         border_width = 1 if bbox_size < 30 else width
         draw.rectangle([x0, y0, x1, y1], outline=outline_color, width=border_width)
@@ -209,8 +197,8 @@ def make_density_heatmap_from_image(regions: list[RegionMetadata], source_image:
     densities: list[float] = []
 
     for region in regions:
-        color = region.get("color")
-        density = region.get("density_multiplier")
+        color = region.color
+        density = region.density_multiplier
         if color is None or density is None:
             continue
 

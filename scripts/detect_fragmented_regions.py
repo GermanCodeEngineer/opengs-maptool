@@ -88,12 +88,12 @@ def resolve_seed(region: RegionMetadata, width: int, height: int) -> tuple[int, 
     if isinstance(seed, (list, tuple)) and len(seed) == 2:
         sx = int(round(float(seed[0])))
         sy = int(round(float(seed[1])))
-    elif region.global_x is not None and region.global_y is not None:
-        sx = int(round(float(region.global_x)))
-        sy = int(round(float(region.global_y)))
-    elif region.local_x is not None and region.local_y is not None:
-        sx = int(round(float(region.local_x)))
-        sy = int(round(float(region.local_y)))
+    elif region.global_center is not None:
+        sx = int(round(float(region.global_center[0])))
+        sy = int(round(float(region.global_center[1])))
+    elif region.local_center is not None:
+        sx = int(round(float(region.local_center[0])))
+        sy = int(round(float(region.local_center[1])))
     else:
         return None
 
@@ -126,7 +126,9 @@ def choose_seed_component(
 
 
 def resolve_bbox(region: RegionMetadata, width: int, height: int) -> tuple[int, int, int, int]:
-    bbox = region.bbox_global or region.bbox_local
+    bbox = region.global_bbox
+    if bbox is None:
+        raise Exception(f"Expected global bounding box for Region {region.region_id}")
     if not isinstance(bbox, (list, tuple)) or len(bbox) != 4:
         return 0, 0, width, height
 

@@ -22,7 +22,11 @@ class RegionDeserializer(json.JSONDecoder):
     def object_hook(self, obj: dict) -> RegionMetadata | dict:
         if "__type__" in obj and obj["__type__"] == "RegionMetadata":
             try:
+                # Replace lists with tuples & pass all items to RegionMetadata
                 obj.pop("__type__")
+                for key, value in obj.items():
+                    if isinstance(value, list):
+                        obj[key] = tuple(value)
                 return RegionMetadata(**obj)
             except TypeError as error:
                 raise json.JSONDecodeError(f"Could not deserialize RegionMetadata: {error}", doc=str(obj), pos=0) from error

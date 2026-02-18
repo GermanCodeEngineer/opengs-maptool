@@ -4,15 +4,18 @@ CORE FUNCTIONALITY & BUGS
 [DONE] fix fragmentation issue with sea district in northern canada
 [DONE] guarantee region continuity
 [DONE] fix regions with 0 pixels
-[DONE] when centre not in region: use seed!
+[DONE] when center not in region: use seed!
 [DONE] give proper IDs to areas & same global/local fields
 [DONE] add pixel count region field?
 [DONE] create dataclass with serialization for region metadata
- => find some uniform format for seed, center, bbox coords
+[DONE] => find some uniform format for seed, center, bbox coords
+[DONE] => use tuples for coords
+[DONE] ensure bbox coords are ordered correctly
  add output/input filenames to config?
  fix & sort imports
  remove weird attributes of MapToolWindow
- bbox global TODO
+ test JSON & CSV exporting & importing
+ ensure bbox visualization is perfect still
 
 ====================
 IMAGE & DATA GENERATION

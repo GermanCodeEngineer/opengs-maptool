@@ -110,8 +110,6 @@ class MapToolWindow(QWidget):
         # Initialize data storage
         self._cont_area_image_buffer = None
         self._cont_area_data = None
-        self._class_image_buffer = None
-        self._class_counts = None
         self._district_image_buffer = None
         self._district_data = None
         self._territory_image_buffer = None
@@ -395,13 +393,6 @@ class MapToolWindow(QWidget):
         try:
             cleaned_land_image = MapTool.clean_land_image(image)
             self.land_image_display.set_image(cleaned_land_image)
-    
-            maptool = self._create_maptool()
-            _, self._class_image_buffer, self._class_counts = maptool._generate_type_classification()
-            
-            if self._class_counts is not None:
-                self.land_image_display.set_data(self._class_counts, "Classification Counts")
-
         except Exception as error:
             QMessageBox.critical(self, "Error", f"Error processing land image: {error}")
 
@@ -444,8 +435,6 @@ class MapToolWindow(QWidget):
             district_image, district_image_buffer, district_data = maptool._generate_districts(
                 self._cont_area_image_buffer,
                 self._cont_area_data,
-                self._class_image_buffer,
-                self._class_counts,
                 progress_callback=progress_callback,
             )
             return (district_image, district_image_buffer, district_data)
@@ -482,8 +471,6 @@ class MapToolWindow(QWidget):
             territory_image, territory_image_buffer, territory_data = maptool._generate_territories(
                 self._district_image_buffer,
                 self._district_data,
-                self._class_image_buffer,
-                self._class_counts,
                 progress_callback=progress_callback,
             )
             return (territory_image, territory_image_buffer, territory_data)
@@ -521,8 +508,6 @@ class MapToolWindow(QWidget):
             province_image, province_image_buffer, province_data = maptool._generate_provinces(
                 self._territory_image_buffer,
                 self._territory_data,
-                self._class_image_buffer,
-                self._class_counts,
                 progress_callback=progress_callback,
             )
             return (province_image, province_image_buffer, province_data)

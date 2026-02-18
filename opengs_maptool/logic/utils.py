@@ -40,24 +40,6 @@ def hex_to_rgb(hex_color: str) -> tuple[int, int, int]:
     return tuple(int(hex_color[i:i+2], 16) for i in (0, 2, 4))
 
 
-def round_bbox(
-    bbox: list[float],
-) -> list[int]:
-    """Convert bbox to integers.
-
-    For pixel coordinates, we use floor for min values and ceil for max values
-    to ensure the bbox fully encompasses the region.
-    """
-    
-    # bbox format: [x0, y0, x1, y1]
-    return [
-        int(math.floor(bbox[0])),  # x0: floor to include leftmost
-        int(math.floor(bbox[1])),  # y0: floor to include topmost
-        int(math.ceil(bbox[2])),   # x1: ceil to include rightmost
-        int(math.ceil(bbox[3])),   # y1: ceil to include bottommost
-    ]
-
-
 def ensure_point_in_mask(mask: NDArray[np.bool_], x: int, y: int) -> tuple[int, int]:
     """Return a point guaranteed to be inside `mask`.
 
@@ -180,20 +162,19 @@ class ColorSeries:
 
 @grepr_dataclass(validate=False)
 class RegionMetadata:
-    region_type: Literal["land", "ocean", "lake"] | None = None
     region_id: str
-    parent_id: str | None = None
+    region_type: Literal["land", "ocean", "lake", "unknown"]
     color: str # "#00aa99"
-    local_x: int | None = None
-    local_y: int | None = None
-    global_x: int | None = None
-    global_y: int | None = None
-    bbox_local: list[int] | None = None # (MIN_X, MIN_Y, MAX_X, MAX_Y)
-    bbox_global: list[int] | None = None # (MIN_X, MIN_Y, MAX_X, MAX_Y)
-    local_seed: list[int] | None = None # (X, Y)
-    global_seed: list[int] | None = None # (X, Y)
     pixel_count: int
+    parent_id: str | None = None
+    local_bbox: tuple[int, int, int, int] | None = None # (x_min, y_min, x_max, y_max) / cols.min, rows.min, cols.max, rows.max
+    local_center: tuple[int, int] | None = None # (x, y)
+    local_seed: tuple[int, int] | None = None # (x, y)
+    global_bbox: tuple[int, int, int, int] | None = None # (x_min, y_min, x_max, y_max)
+    global_center: tuple[int, int] | None = None # (x, y)
+    global_seed: tuple[int, int] | None = None # (x, y)
     density_multiplier: float | None = None
+    # See README for an exact description
 
 
 def poisson_disk_samples(
@@ -579,13 +560,13 @@ def build_metadata(
 
     metadata = []
     for i in range(len(seeds)):
-        rid = series.get_id()
+        region_id = series.get_id()
 
         sx, sy = seeds[i]
         color_hex = color_series.get_color_hex(is_water=(region_type != "land"))
         if counts[i] <= 0:
             cx, cy = sx, sy
-            bbox_local = [int(sx), int(sy), int(sx) + 1, int(sy) + 1]
+            local_bbox = (int(sx), int(sy), int(sx) + 1, int(sy) + 1)
             pixel_count = 0
         else:
             cx = round(float(sum_x[i] / counts[i]))
@@ -603,24 +584,22 @@ def build_metadata(
                     cx, cy = ensure_point_in_mask(region_mask, sx, sy)
 
             # Convert to integers with floor/ceil for proper pixel coverage
-            bbox_local = [int(min_x[i]), int(min_y[i]), int(max_x[i]) + 1, int(max_y[i]) + 1]
+            local_bbox = (int(min_x[i]),  int(min_y[i]), int(max_x[i]) + 1, int(max_y[i]) + 1)
             pixel_count = int(region_mask.sum())
 
-        bbox_local = round_bbox(bbox_local)
+        # Create Region (e.g. Territory or Province)
         meta = RegionMetadata(
+            region_id=region_id,
             region_type=region_type,
-            region_id=rid,
-            parent_id=parent_id,
             color=color_hex,
-            local_x=cx,
-            local_y=cy,
-            global_x=None, # Set later
-            global_y=None,
-            bbox_local=bbox_local,
-            bbox_global=None, # Set later
-            local_seed=[int(sx), int(sy)],
-            global_seed=None, # Set later
             pixel_count=pixel_count,
+            parent_id=parent_id,
+            local_bbox=local_bbox,
+            local_center=(cx, cy),
+            local_seed=(int(sx), int(sy)),
+            global_bbox=None, # Set later
+            global_center=None, # Set later
+            global_seed=None, # Set later
             density_multiplier=parent_density_multiplier or 1.0,
         )
         metadata.append(meta)

@@ -163,7 +163,7 @@ Each data field (`cont_area_data`, `territory_data`, `province_data`) is a list 
 | `density_multiplier` | float | Density factor applied (from boundary blue channel, only set for areas and inherited by territories) |
 | `local_x`, `local_y` | float | Centroid coordinates: for territories/provinces = within parent(see `parent_id`) area; for areas = global |
 | `global_x`, `global_y` | float | Centroid coordinates in the full map |
-| `bbox_local` | list[int] | Bounding box: for territories/provinces = within parent area; for areas = global |
+| `local_bbox` | list[int] | Bounding box: for territories/provinces = within parent area; for areas = global |
 | `bbox` | list[int] | Bounding box in global coordinates |
 
 **Example region:**
@@ -177,8 +177,8 @@ Each data field (`cont_area_data`, `territory_data`, `province_data`) is a list 
    "local_y": 96.39,
    "global_x": 2892.75,
    "global_y": 470.39,
-   "bbox_local": [119, 66, 193, 129],
-   "bbox_global": [2861, 440, 2935, 503],
+   "local_bbox": [119, 66, 193, 129],
+   "global_bbox": [2861, 440, 2935, 503],
    "density_multiplier": 2.23
 }
 ```
