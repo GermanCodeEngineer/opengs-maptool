@@ -1,0 +1,54 @@
+[
+  {
+    "__type__": "RegionMetadata",
+    "region_id": "AREA000001",
+    "region_type": "unknown",
+    "color": "#ad69c1",
+    "pixel_count": 0,
+    "parent_id": null,
+    "local_bbox": null,
+    "local_center": null,
+    "local_seed": null,
+    "global_bbox": [
+      0,
+      0,
+      5632,
+      2112
+    ],
+    "global_center": [
+      2816,
+      1057
+    ],
+    "global_seed": [
+      2816,
+      1057
+    ],
+    "density_multiplier": null
+  },
+  {
+    "__type__": "RegionMetadata",
+    "region_id": "AREA000002",
+    "region_type": "unknown",
+    "color": "#352f8b",
+    "pixel_count": 0,
+    "parent_id": null,
+    "local_bbox": null,
+    "local_center": null,
+    "local_seed": null,
+    "global_bbox": [
+      1522,
+      455,
+      1548,
+      477
+    ],
+    "global_center": [
+      1536,
+      459
+    ],
+    "global_seed": [
+      1536,
+      459
+    ],
+    "density_multiplier": null
+  }
+]

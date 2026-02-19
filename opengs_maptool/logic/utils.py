@@ -1,14 +1,14 @@
-from opengs_maptool import config
-import math
-import warnings
+from collections import deque
+from gceutils import grepr_dataclass
+import logging
 import numpy as np
 from numpy.typing import NDArray
-from typing import Any, Iterable, Literal
 from scipy.ndimage import distance_transform_edt, label as scipy_label
 from scipy.spatial import cKDTree
 from scipy.stats import mode
-from collections import deque
-from gceutils import grepr_dataclass
+from typing import Any, Iterable, Literal
+
+from opengs_maptool import config
 
 
 FOUR_CONNECTED = np.array(
@@ -91,9 +91,8 @@ def calculate_density_multiplier(
     """
     if not np.any(mask):
         if warn_on_empty:
-            warnings.warn(
+            logging.warning(
                 f"No pixels found for region_id {region_id} while calculating density multiplier.",
-                stacklevel=2,
             )
         avg_brightness = fallback
     else:
@@ -167,7 +166,7 @@ class RegionMetadata:
     color: str # "#00aa99"
     pixel_count: int
     parent_id: str | None = None
-    local_bbox: tuple[int, int, int, int] | None = None # (x_min, y_min, x_max, y_max) / cols.min, rows.min, cols.max, rows.max
+    local_bbox: tuple[int, int, int, int] | None = None # (x_min, y_min, x_max, y_max)
     local_center: tuple[int, int] | None = None # (x, y)
     local_seed: tuple[int, int] | None = None # (x, y)
     global_bbox: tuple[int, int, int, int] | None = None # (x_min, y_min, x_max, y_max)

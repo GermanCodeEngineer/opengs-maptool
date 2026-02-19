@@ -1,9 +1,9 @@
-import sys
 import argparse
+import numpy as np
 from pathlib import Path
 from PIL import Image
-import numpy as np
 from PyQt6.QtWidgets import QApplication
+import sys
 
 from . import MapToolWindow, MapTool, export_to_json, export_to_csv, import_from_json
 
@@ -30,10 +30,8 @@ def main_automatic() -> None:
             province_image.save(output_directory / "province_image.png")
             export_to_json(province_data, output_directory / "province_data.json")
             
-    class_image = MapTool.clean_class_image(Image.open(input_directory / "class2.png"))
-    class_image.save(output_directory / "class_image.png")
     maptool = StepMapTool(
-        class_image=class_image,
+        class_image=Image.open(input_directory / "class2_clean.png"),
         boundary_image=Image.open(input_directory / "bound2_edited.png"),
     )
 
@@ -42,12 +40,12 @@ def main_automatic() -> None:
     result.dens_samp_image.save(output_directory / "dens_samp_image.png")
     result.territory_image.save(output_directory / "territory_image.png")
     result.province_image.save(output_directory / "province_image.png")
-    (output_directory / "data.json").write_text(export_to_json(dict(
+    export_to_json(dict(
         cont_areas=result.cont_area_data,
         dens_samps=result.dens_samp_data,
         territories=result.territory_data,
         provinces=result.province_data,
-    )))
+    ), output_directory / "data.json")
 
 def main_gui() -> None:
     app = QApplication(sys.argv)
@@ -92,7 +90,7 @@ def main_selective_steps(generate_steps=None, regenerate_areas=False, export_csv
     }
 
     maptool = MapTool(
-        class_image=MapTool.clean_class_image(Image.open(input_directory / "class2.png")),
+        class_image=MapTool.clean_class_image(Image.open(input_directory / "class2_clean.png")),
         boundary_image=Image.open(input_directory / "bound2_edited.png"),
     )
 
@@ -163,12 +161,12 @@ def main_selective_steps(generate_steps=None, regenerate_areas=False, export_csv
             export_formats(province_data, paths["provinces"]["data"])
 
     # Save summary data
-    (output_directory / "data.json").write_text(export_to_json(dict(
+    export_to_json(dict(
         cont_areas=cont_area_data,
         dens_samps=dens_samp_data,
         territories=territory_data,
         provinces=province_data,
-    )))
+    ), output_directory / "data.json")
 
 def parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser(description="OpenGS MapTool entrypoints")

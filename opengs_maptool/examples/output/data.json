@@ -1,0 +1,266 @@
+{
+  "cont_areas": [
+    {
+      "__type__": "RegionMetadata",
+      "region_id": "AREA000001",
+      "region_type": "unknown",
+      "color": "#ad69c1",
+      "pixel_count": 0,
+      "parent_id": null,
+      "local_bbox": null,
+      "local_center": null,
+      "local_seed": null,
+      "global_bbox": [
+        0,
+        0,
+        5632,
+        2112
+      ],
+      "global_center": [
+        2816,
+        1057
+      ],
+      "global_seed": [
+        2816,
+        1057
+      ],
+      "density_multiplier": null
+    },
+    {
+      "__type__": "RegionMetadata",
+      "region_id": "AREA000002",
+      "region_type": "unknown",
+      "color": "#352f8b",
+      "pixel_count": 0,
+      "parent_id": null,
+      "local_bbox": null,
+      "local_center": null,
+      "local_seed": null,
+      "global_bbox": [
+        1522,
+        455,
+        1548,
+        477
+      ],
+      "global_center": [
+        1536,
+        459
+      ],
+      "global_seed": [
+        1536,
+        459
+      ],
+      "density_multiplier": null
+    }
+  ],
+  "dens_samps": [
+    {
+      "__type__": "RegionMetadata",
+      "region_id": "DST000001",
+      "region_type": "unknown",
+      "color": "#1d3a6b",
+      "pixel_count": 0,
+      "parent_id": "AREA000002",
+      "local_bbox": [
+        1522,
+        455,
+        1548,
+        477
+      ],
+      "local_center": [
+        12,
+        8
+      ],
+      "local_seed": [
+        12,
+        8
+      ],
+      "global_bbox": [
+        3044,
+        910,
+        3070,
+        932
+      ],
+      "global_center": [
+        1534,
+        463
+      ],
+      "global_seed": null,
+      "density_multiplier": 1.0
+    },
+    {
+      "__type__": "RegionMetadata",
+      "region_id": "DST000002",
+      "region_type": "unknown",
+      "color": "#281b86",
+      "pixel_count": 0,
+      "parent_id": "AREA000001",
+      "local_bbox": [
+        0,
+        0,
+        5632,
+        2112
+      ],
+      "local_center": [
+        2816,
+        1056
+      ],
+      "local_seed": [
+        2816,
+        1056
+      ],
+      "global_bbox": [
+        0,
+        0,
+        5632,
+        2112
+      ],
+      "global_center": [
+        2816,
+        1056
+      ],
+      "global_seed": null,
+      "density_multiplier": 0.69
+    }
+  ],
+  "territories": [
+    {
+      "__type__": "RegionMetadata",
+      "region_id": "PRV000001",
+      "region_type": "unknown",
+      "color": "#291f95",
+      "pixel_count": 0,
+      "parent_id": "DST000001",
+      "local_bbox": [
+        1522,
+        455,
+        1548,
+        477
+      ],
+      "local_center": [
+        12,
+        8
+      ],
+      "local_seed": [
+        12,
+        8
+      ],
+      "global_bbox": [
+        3044,
+        910,
+        3070,
+        932
+      ],
+      "global_center": [
+        1534,
+        463
+      ],
+      "global_seed": null,
+      "density_multiplier": 1.0
+    },
+    {
+      "__type__": "RegionMetadata",
+      "region_id": "PRV000002",
+      "region_type": "unknown",
+      "color": "#1005b0",
+      "pixel_count": 0,
+      "parent_id": "DST000002",
+      "local_bbox": [
+        0,
+        0,
+        5632,
+        2112
+      ],
+      "local_center": [
+        2816,
+        1056
+      ],
+      "local_seed": [
+        2816,
+        1056
+      ],
+      "global_bbox": [
+        0,
+        0,
+        5632,
+        2112
+      ],
+      "global_center": [
+        2816,
+        1056
+      ],
+      "global_seed": null,
+      "density_multiplier": 0.69
+    }
+  ],
+  "provinces": [
+    {
+      "__type__": "RegionMetadata",
+      "region_id": "TRT000001-TEMP000001",
+      "region_type": "unknown",
+      "color": "#1e1a73",
+      "pixel_count": 0,
+      "parent_id": "TRT000001",
+      "local_bbox": [
+        1522,
+        455,
+        1548,
+        477
+      ],
+      "local_center": [
+        12,
+        8
+      ],
+      "local_seed": [
+        12,
+        8
+      ],
+      "global_bbox": [
+        3044,
+        910,
+        3070,
+        932
+      ],
+      "global_center": [
+        1534,
+        463
+      ],
+      "global_seed": null,
+      "density_multiplier": 1.0
+    },
+    {
+      "__type__": "RegionMetadata",
+      "region_id": "TRT000002-TEMP000001",
+      "region_type": "unknown",
+      "color": "#3949a8",
+      "pixel_count": 0,
+      "parent_id": "TRT000002",
+      "local_bbox": [
+        0,
+        0,
+        5632,
+        2112
+      ],
+      "local_center": [
+        2816,
+        1056
+      ],
+      "local_seed": [
+        2816,
+        1056
+      ],
+      "global_bbox": [
+        0,
+        0,
+        5632,
+        2112
+      ],
+      "global_center": [
+        2816,
+        1056
+      ],
+      "global_seed": null,
+      "density_multiplier": 0.69
+    }
+  ]
+}

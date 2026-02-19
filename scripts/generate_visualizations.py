@@ -104,7 +104,7 @@ def save_generated_inputs(input_dir: Path, result: MapToolResult) -> None:
 def generate_maps(input_dir: Path) -> None:
     example_input_dir = EXAMPLES_DIR / "input"
     boundary_image_path = example_input_dir / "bound2_orig.png"
-    class_image_path = example_input_dir / "class2.png"
+    class_image_path = example_input_dir / "class2_clean.png"
 
     if not example_input_dir.exists():
         raise FileNotFoundError(f"Example input directory not found: {example_input_dir}")

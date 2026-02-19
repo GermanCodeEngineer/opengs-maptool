@@ -1,0 +1,70 @@
+[
+  {
+    "__type__": "RegionMetadata",
+    "region_id": "TRT000001-TEMP000001",
+    "region_type": "unknown",
+    "color": "#1e1a73",
+    "pixel_count": 0,
+    "parent_id": "TRT000001",
+    "local_bbox": [
+      1522,
+      455,
+      1548,
+      477
+    ],
+    "local_center": [
+      12,
+      8
+    ],
+    "local_seed": [
+      12,
+      8
+    ],
+    "global_bbox": [
+      3044,
+      910,
+      3070,
+      932
+    ],
+    "global_center": [
+      1534,
+      463
+    ],
+    "global_seed": null,
+    "density_multiplier": 1.0
+  },
+  {
+    "__type__": "RegionMetadata",
+    "region_id": "TRT000002-TEMP000001",
+    "region_type": "unknown",
+    "color": "#3949a8",
+    "pixel_count": 0,
+    "parent_id": "TRT000002",
+    "local_bbox": [
+      0,
+      0,
+      5632,
+      2112
+    ],
+    "local_center": [
+      2816,
+      1056
+    ],
+    "local_seed": [
+      2816,
+      1056
+    ],
+    "global_bbox": [
+      0,
+      0,
+      5632,
+      2112
+    ],
+    "global_center": [
+      2816,
+      1056
+    ],
+    "global_seed": null,
+    "density_multiplier": 0.69
+  }
+]

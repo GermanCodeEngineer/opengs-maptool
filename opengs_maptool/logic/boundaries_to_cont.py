@@ -1,9 +1,8 @@
+import logging
 import numpy as np
-import warnings
 from numpy.typing import NDArray
 from scipy import ndimage
 from tqdm import tqdm
-from typing import Any
 
 from opengs_maptool.logic.utils import ColorSeries, RegionMetadata, hex_to_rgb, get_area_pixel_mask, ensure_point_in_mask
 from opengs_maptool import config
@@ -72,9 +71,8 @@ def recalculate_bboxes_from_image(
         rgb_match = np.all(image[:, :, :3] == target_color, axis=2)
         
         if not np.any(rgb_match):
-            warnings.warn(
+            logging.warning(
                 f"No pixels found for region_id {region.region_id} (color={color_hex}) while recalculating bboxes.",
-                stacklevel=2,
             )
             # No pixels found, keep original bbox
             updated_metadata.append(region)
@@ -236,8 +234,8 @@ def convert_boundaries_to_cont_areas(
 
         # Create Area
         metadata.append(RegionMetadata(
-            area_id=area_id,
-            area_type=area_type,
+            region_id=area_id,
+            region_type=area_type,
             color=color_hex,
             pixel_count=land_pixels + water_pixels,
             parent_id=None, # Areas have no parent
@@ -253,7 +251,7 @@ def convert_boundaries_to_cont_areas(
     if progress_callback:
         progress_callback(100, 100)
     
-    cont_area_data = classify_continuous_areas(area_image, class_image, cont_area_data)
+    metadata = classify_continuous_areas(area_image, class_image, metadata)
     
     return area_image, metadata
 
@@ -293,9 +291,8 @@ def classify_continuous_areas(
         rgb_match = np.all(cont_area_image[:, :, :3] == target_color, axis=2)
         
         if not np.any(rgb_match):
-            warnings.warn(
+            logging.warning(
                 f"No pixels found for region_id {region.region_id} (color={color_hex}) while classifying continuous areas.",
-                stacklevel=2,
             )
             region.region_type = "unknown"
             updated_metadata.append(region)

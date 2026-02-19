@@ -1,7 +1,7 @@
 import numpy as np
 from numpy.typing import NDArray
-from PIL import Image
 from pathlib import Path
+from PIL import Image
 from PyQt6.QtWidgets import QWidget, QGridLayout, QHBoxLayout, QLabel, QFileDialog, QPushButton
 from PyQt6.QtGui import QPixmap, QImage, QIcon
 from PyQt6.QtCore import Qt, QSize

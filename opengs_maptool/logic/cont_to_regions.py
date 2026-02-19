@@ -1,9 +1,9 @@
+from gceutils import grepr_dataclass
+from multiprocessing import Pool, cpu_count
 import numpy as np
 from numpy.typing import NDArray
-from typing import Callable
-from gceutils import grepr_dataclass
 from tqdm import tqdm
-from multiprocessing import Pool, cpu_count
+from typing import Callable
 
 from opengs_maptool.logic.utils import (
     NumberSeries, ColorSeries, RegionMetadata,
@@ -11,8 +11,6 @@ from opengs_maptool.logic.utils import (
     defragment_regions, get_area_pixel_mask,
     calculate_density_multiplier, ensure_point_in_mask,
 )
-
-
 
 
 @grepr_dataclass(validate=False, frozen=True)
@@ -167,8 +165,10 @@ def convert_all_cont_areas_to_regions(
                         region.local_bbox[2] + x_min,
                         region.local_bbox[3] + y_min,
                     )
-                region.global_center[0] = int(round(region.local_center[0] + x_min))
-                region.global_center[1] = int(round(region.local_center[1] + y_min))
+                region.global_center = (
+                    int(round(region.local_center[0] + x_min)),
+                    int(round(region.local_center[1] + y_min)),
+                )
 
                 seed = region.local_seed
                 if isinstance(seed, list) and len(seed) == 2:

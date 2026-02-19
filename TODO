@@ -12,8 +12,9 @@ CORE FUNCTIONALITY & BUGS
 [DONE] => use tuples for coords
 [DONE] ensure bbox coords are ordered correctly
 [DONE] add output/input filenames to config?
- optionally hide dens_samps(density samples)
- fix & sort imports
+[DONE] optionally hide dens_samps(density samples)
+[DONE] fix & sort imports
+ fix generation, there shouldn't be only one region
  remove weird attributes of MapToolWindow
  test JSON & CSV exporting & importing
  ensure bbox visualization is perfect still

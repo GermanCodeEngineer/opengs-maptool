@@ -1,8 +1,10 @@
+import logging
 from PIL import Image
-from typing import Callable
 from PyQt6.QtWidgets import QWidget, QVBoxLayout, QHBoxLayout, QTabWidget, QLabel, QPushButton, QMessageBox, QSpinBox, QSizePolicy
 from PyQt6.QtCore import Qt, QThread, pyqtSignal
 from PyQt6.QtGui import QPainter, QColor, QCloseEvent
+import traceback
+from typing import Callable
 
 from opengs_maptool.logic import MapTool
 from opengs_maptool.ui.buttons import create_slider, create_button
@@ -10,6 +12,12 @@ from opengs_maptool.ui.image_display import ImageDisplay
 from opengs_maptool.ui.flappy_bird_game import start_flappy_bird_process
 from opengs_maptool import config
 
+def log_error_with_traceback(error: Exception, message: str) -> None:
+    try: # Use a trick to insert the message before the error
+        raise RuntimeError(f"{message}: {error}") from error
+    except RuntimeError as runtime_error:
+        tb_str = ''.join(traceback.format_exception(type(runtime_error), runtime_error, runtime_error.__traceback__))
+        logging.error(f" {tb_str}")
 
 class ProgressButton(QPushButton):
     """Button with integrated progress bar background."""
@@ -151,8 +159,9 @@ class MapToolWindow(QWidget):
         self.tabs.addTab(self.input_tab, "Input Images")
         self.create_areas_tab()
         self.tabs.addTab(self.areas_tab, "Generate Areas")
-        self.create_dens_samp_tab()
-        self.tabs.addTab(self.dens_samp_tab, "Generate Density Samples")
+        #self.create_dens_samp_tab()
+        #if config.SHOW_DENS_SAMPS:
+        #    self.tabs.addTab(self.dens_samp_tab, "Generate Density Samples")
         self.create_territory_tab()
         self.tabs.addTab(self.territory_tab, "Generate Territories")
         self.create_province_tab()
@@ -170,6 +179,8 @@ class MapToolWindow(QWidget):
             self.flappy_bird_process = start_flappy_bird_process()
         except Exception as error:
             self.flappy_bird_process = None
+        except Exception as error:
+            log_error_with_traceback(error, "Failed to start Flappy Bird")
             QMessageBox.critical(self, "Flappy Bird", f"Failed to start Flappy Bird: {error}")
 
     def closeEvent(self, event: QCloseEvent) -> None:
@@ -253,17 +264,7 @@ class MapToolWindow(QWidget):
         self.areas_image_display.set_image(EMPTY_IMAGE)
         areas_tab_layout.addWidget(self.areas_image_display, stretch=1)
 
-    def create_dens_samp_tab(self) -> None:
-        self.dens_samp_tab = QWidget()
-        dens_samp_tab_layout = QVBoxLayout(self.dens_samp_tab)
-
-        self.dens_samps_rng_seed_input = self._create_seed_input(
-            dens_samp_tab_layout,
-            "Density Samples RNG Seed:",
-            int(1_500_000),
-        )
-
-        self.pixels_per_land_dens_samp_slider = create_slider(dens_samp_tab_layout,
+        self.pixels_per_land_dens_samp_slider = create_slider(areas_tab_layout,
             "Pixels per land density sample:",
             config.PIXELS_PER_LAND_DENS_SAMP_MIN,
             config.PIXELS_PER_LAND_DENS_SAMP_MAX,
@@ -272,7 +273,7 @@ class MapToolWindow(QWidget):
             config.PIXELS_PER_LAND_DENS_SAMP_STEP,
         )
 
-        self.pixels_per_water_dens_samp_slider = create_slider(dens_samp_tab_layout,
+        self.pixels_per_water_dens_samp_slider = create_slider(areas_tab_layout,
             "Pixels per water density sample:",
             config.PIXELS_PER_WATER_DENS_SAMP_MIN,
             config.PIXELS_PER_WATER_DENS_SAMP_MAX,
@@ -283,11 +284,7 @@ class MapToolWindow(QWidget):
 
         self.button_gen_dens_samps = ProgressButton("Generate Density Samples")
         self.button_gen_dens_samps.clicked.connect(self.on_button_generate_dens_samps)
-        dens_samp_tab_layout.addWidget(self.button_gen_dens_samps)
-
-        self.dens_samp_image_display = ImageDisplay(name=config.DENS_SAMP_IMAGE_FILENAME, csv_export=True)
-        self.dens_samp_image_display.set_image(EMPTY_IMAGE)
-        dens_samp_tab_layout.addWidget(self.dens_samp_image_display, stretch=1)
+        areas_tab_layout.addWidget(self.button_gen_dens_samps)
 
     def create_territory_tab(self) -> None:
         self.territory_tab = QWidget()
@@ -378,7 +375,8 @@ class MapToolWindow(QWidget):
             self.adapt_boundary_image_display.set_image(cleaned_image)
 
         except Exception as error:
-            QMessageBox.critical(self, "Error", f"Error processing classification image: {error}")
+            log_error_with_traceback(error, "Error processing boundary image")
+            QMessageBox.critical(self, "Error", f"Error processing boundary image: {error}")
 
     # TAB 3
     def on_button_import_final_boundary(self) -> None:
@@ -399,6 +397,7 @@ class MapToolWindow(QWidget):
             cleaned_class_image = MapTool.clean_class_image(image)
             self.class_image_display.set_image(cleaned_class_image)
         except Exception as error:
+            log_error_with_traceback(error, "Error processing classification image")
             QMessageBox.critical(self, "Error", f"Error processing classification image: {error}")
 
     # TAB 4-7
@@ -423,6 +422,7 @@ class MapToolWindow(QWidget):
         def on_error(error: Exception) -> None:
             self.button_generate_areas.reset_progress()
             self.button_generate_areas.setEnabled(True)
+            log_error_with_traceback(error, "Error generating areas")
             QMessageBox.critical(self, "Error", f"Error generating areas: {error}")
 
         self.button_generate_areas.reset_progress()
@@ -450,14 +450,13 @@ class MapToolWindow(QWidget):
             self.button_gen_dens_samps.reset_progress()
             self.button_gen_dens_samps.setEnabled(True)
             dens_samp_image, dens_samp_image_buffer, dens_samp_data = result
-            self.dens_samp_image_display.set_image(dens_samp_image)
-            self.dens_samp_image_display.set_data(dens_samp_data, "Density Samples Data")
             self._dens_samp_image_buffer = dens_samp_image_buffer
             self._dens_samp_data = dens_samp_data
 
         def on_error(error: Exception) -> None:
             self.button_gen_dens_samps.reset_progress()
             self.button_gen_dens_samps.setEnabled(True)
+            log_error_with_traceback(error, "Error generating density samples")
             QMessageBox.critical(self, "Error", f"Error generating density samples: {error}")
 
         self.button_gen_dens_samps.reset_progress()
@@ -494,6 +493,7 @@ class MapToolWindow(QWidget):
         def on_error(error: Exception) -> None:
             self.button_gen_territories.reset_progress()
             self.button_gen_territories.setEnabled(True)
+            log_error_with_traceback(error, "Error generating territories")
             QMessageBox.critical(self, "Error", f"Error generating territories: {error}")
 
         self.button_gen_territories.reset_progress()
@@ -531,6 +531,7 @@ class MapToolWindow(QWidget):
         def on_error(error: Exception) -> None:
             self.button_gen_provinces.reset_progress()
             self.button_gen_provinces.setEnabled(True)
+            log_error_with_traceback(error, "Error generating provinces")
             QMessageBox.critical(self, "Error", f"Error generating provinces: {error}")
 
         self.button_gen_provinces.reset_progress()
@@ -550,7 +551,7 @@ class MapToolWindow(QWidget):
             pixels_per_land_dens_samp=self.pixels_per_land_dens_samp_slider.value(),
             pixels_per_water_dens_samp=self.pixels_per_water_dens_samp_slider.value(),
             cont_areas_rng_seed=self.cont_areas_rng_seed_input.value(),
-            dens_samps_rng_seed=self.dens_samps_rng_seed_input.value(),
+            dens_samps_rng_seed=int(1_500_000),
             territories_rng_seed=self.territories_rng_seed_input.value(),
             provinces_rng_seed=self.provinces_rng_seed_input.value(),
         )

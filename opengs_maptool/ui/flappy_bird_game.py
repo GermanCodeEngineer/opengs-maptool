@@ -1,11 +1,11 @@
 """Simple Flappy Bird game implementation using PyQt6."""
 
 import multiprocessing as mp
-import random
-import sys
 from PyQt6.QtWidgets import QApplication, QWidget
 from PyQt6.QtCore import Qt, QTimer
 from PyQt6.QtGui import QPainter, QColor, QFont
+import random
+import sys
 
 
 class FlappyBirdGame(QWidget):
