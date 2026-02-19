@@ -125,8 +125,8 @@ class MapTool:
                 progress_callback(int((current / total) * 40), 100)
 
         areas_with_borders_image, cont_area_data = convert_boundaries_to_cont_areas(
-            self.boundary_image,
             self.class_image,
+            self.boundary_image,
             self.cont_areas_rng_seed,
             min_area_pixels=config.MIN_AREA_PIXELS,  # Filter out tiny areas & islands
             progress_callback=boundaries_progress

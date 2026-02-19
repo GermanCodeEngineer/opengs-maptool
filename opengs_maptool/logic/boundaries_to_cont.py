@@ -135,7 +135,7 @@ def classify_pixels_by_color(class_image: NDArray[np.uint8]) -> NDArray[np.uint8
     return result
 
 def convert_boundaries_to_cont_areas(
-        class_image: NDArray[np.uint8], boundaries_image: NDArray[np.uint8], 
+        class_image: NDArray[np.uint8], boundary_image: NDArray[np.uint8], 
         rng_seed: int, min_area_pixels: int = 50, progress_callback=None,
     ) -> tuple[NDArray[np.uint8], list[RegionMetadata]]:
     """
@@ -143,7 +143,7 @@ def convert_boundaries_to_cont_areas(
     
     Args:
         class_image: Type/classification image
-        boundaries_image: Input boundary image
+        boundary_image: Input boundary image
         rng_seed: Random seed for color generation
         min_area_pixels: Minimum pixel count for a continuous area to be kept (smaller areas are merged into background)
         progress_callback: Optional callback function(current, total) for progress reporting
@@ -155,7 +155,7 @@ def convert_boundaries_to_cont_areas(
     """
 
     # Vectorized mask creation for both legacy and grayscale boundary formats.
-    is_white = get_area_pixel_mask(boundaries_image, threshold=0)
+    is_white = get_area_pixel_mask(boundary_image, threshold=0)
 
     # Use scipy's label function for connected component analysis (rel. fast)
     white_mask = is_white.astype(np.uint8)
@@ -184,20 +184,20 @@ def convert_boundaries_to_cont_areas(
         progress_callback(20, 100)
 
     # Create image from areas using the labeled array
-    area_image = np.full((*boundaries_image.shape[:2], 4), [0, 0, 0, 255], dtype=np.uint8)
+    area_image = np.full((*boundary_image.shape[:2], 4), [0, 0, 0, 255], dtype=np.uint8)
     color_series = ColorSeries(rng_seed, exclude_values=[(0, 0, 0)])
     area_to_color = {}
     metadata = []
-    
+
     # Vectorized color assignment
     for idx, area_id in enumerate(tqdm(range(1, num_features + 1), desc="Processing boundaries into areas", unit="areas"), start=1):
         if progress_callback and idx % max(1, num_features // 20) == 0:  # Report every 5%
             progress_callback(20 + int((idx / num_features) * 80), 100)
-        
+
         color_rgb, color_hex = color_series.get_color_rgb_hex(is_water=False)
         area_to_color[area_id] = (*color_rgb, 255)
         area_image[labeled_array == area_id] = area_to_color[area_id]
-        
+
         area_mask = labeled_array == area_id
         rows, cols = np.where(area_mask)
         
@@ -212,10 +212,10 @@ def convert_boundaries_to_cont_areas(
         ocean_color = np.array(config.OCEAN_COLOR, dtype=np.uint8)
         lake_color = np.array(config.LAKE_COLOR, dtype=np.uint8)
         land_color = np.array(config.LAND_COLOR, dtype=np.uint8)
-        
+
         # Get only RGB channels (first 3) for comparison
         cropped_rgb = cropped_class_image[:, :, :3]
-        
+
         ocean_pixels = int(np.sum(np.all(cropped_rgb[cropped_mask] == ocean_color, axis=1)))
         lake_pixels = int(np.sum(np.all(cropped_rgb[cropped_mask] == lake_color, axis=1)))
         water_pixels = ocean_pixels + lake_pixels
