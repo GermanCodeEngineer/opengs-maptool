@@ -18,9 +18,9 @@ def main_automatic() -> None:
         def on_cont_areas_generated(self, cont_area_image, cont_area_image_buffer, cont_area_data):
             cont_area_image.save(output_directory / "cont_area_image.png")
             export_to_json(cont_area_data, output_directory / "cont_area_data.json")
-        def on_districts_generated(self, district_image, district_image_buffer, district_data):
-            district_image.save(output_directory / "district_image.png")
-            export_to_json(district_data, output_directory / "district_data.json")
+        def on_dens_samps_generated(self, dens_samp_image, dens_samp_image_buffer, dens_samp_data):
+            dens_samp_image.save(output_directory / "dens_samp_image.png")
+            export_to_json(dens_samp_data, output_directory / "dens_samp_data.json")
         
         def on_territories_generated(self, territory_image, territory_image_buffer, territory_data):
             territory_image.save(output_directory / "territory_image.png")
@@ -39,13 +39,12 @@ def main_automatic() -> None:
 
     result = maptool.generate()
     result.cont_area_image.save(output_directory / "cont_area_image.png")
-    result.district_image.save(output_directory / "district_image.png")
+    result.dens_samp_image.save(output_directory / "dens_samp_image.png")
     result.territory_image.save(output_directory / "territory_image.png")
     result.province_image.save(output_directory / "province_image.png")
     (output_directory / "data.json").write_text(export_to_json(dict(
         cont_areas=result.cont_area_data,
-        class_counts=result.class_counts,
-        districts=result.district_data,
+        dens_samps=result.dens_samp_data,
         territories=result.territory_data,
         provinces=result.province_data,
     )))
@@ -59,7 +58,7 @@ def main_gui() -> None:
 
 def main_selective_steps(generate_steps=None, regenerate_areas=False, export_csv=False):
     """
-    Entrypoint to selectively generate steps (cont_areas, districts, territories, provinces).
+    Entrypoint to selectively generate steps (cont_areas, dens_samps, territories, provinces).
     Steps not specified are loaded from files if they exist.
     """
 
@@ -78,9 +77,9 @@ def main_selective_steps(generate_steps=None, regenerate_areas=False, export_csv
             "image": output_directory / "cont_area_image.png",
             "data": output_directory / "cont_area_data.json",
         },
-        "districts": {
-            "image": output_directory / "district_image.png",
-            "data": output_directory / "district_data.json",
+        "dens_samps": {
+            "image": output_directory / "dens_samp_image.png",
+            "data": output_directory / "dens_samp_data.json",
         },
         "territories": {
             "image": output_directory / "territory_image.png",
@@ -109,25 +108,25 @@ def main_selective_steps(generate_steps=None, regenerate_areas=False, export_csv
         cont_area_image_buffer = np.array(Image.open(paths["cont_areas"]["image"]).convert("RGBA"), dtype=np.uint8)
         cont_area_data = import_from_json(paths["cont_areas"]["data"])
 
-    # Load or generate districts
-    if "districts" in generate_steps:
-        district_image, _, district_data = maptool._generate_districts(cont_area_image_buffer, cont_area_data)
-        district_image.save(paths["districts"]["image"])
-        export_formats(district_data, paths["districts"]["data"])
+    # Load or generate dens_samps
+    if "dens_samps" in generate_steps:
+        dens_samp_image, _, dens_samp_data = maptool._generate_dens_samps(cont_area_image_buffer, cont_area_data)
+        dens_samp_image.save(paths["dens_samps"]["image"])
+        export_formats(dens_samp_data, paths["dens_samps"]["data"])
     else:
-        if paths["districts"]["image"].exists() and paths["districts"]["data"].exists():
-            district_image = Image.open(paths["districts"]["image"])
-            district_data = import_from_json(paths["districts"]["data"])
+        if paths["dens_samps"]["image"].exists() and paths["dens_samps"]["data"].exists():
+            dens_samp_image = Image.open(paths["dens_samps"]["image"])
+            dens_samp_data = import_from_json(paths["dens_samps"]["data"])
         else:
-            district_image, _, district_data = maptool._generate_districts(cont_area_image_buffer, cont_area_data)
-            district_image.save(paths["districts"]["image"])
-            export_formats(district_data, paths["districts"]["data"])
+            dens_samp_image, _, dens_samp_data = maptool._generate_dens_samps(cont_area_image_buffer, cont_area_data)
+            dens_samp_image.save(paths["dens_samps"]["image"])
+            export_formats(dens_samp_data, paths["dens_samps"]["data"])
 
     # Repeat for territories
     if "territories" in generate_steps:
         territory_image, _, territory_data = maptool._generate_territories(
-            district_image=np.array(district_image.convert("RGBA"), dtype=np.uint8),
-            district_data=district_data,
+            dens_samp_image=np.array(dens_samp_image.convert("RGBA"), dtype=np.uint8),
+            dens_samp_data=dens_samp_data,
         )
         territory_image.save(paths["territories"]["image"])
         export_formats(territory_data, paths["territories"]["data"])
@@ -137,8 +136,8 @@ def main_selective_steps(generate_steps=None, regenerate_areas=False, export_csv
             territory_data = import_from_json(paths["territories"]["data"])
         else:
             territory_image, _, territory_data = maptool._generate_territories(
-                district_image=np.array(district_image.convert("RGBA"), dtype=np.uint8),
-                district_data=district_data,
+                dens_samp_image=np.array(dens_samp_image.convert("RGBA"), dtype=np.uint8),
+                dens_samp_data=dens_samp_data,
             )
             territory_image.save(paths["territories"]["image"])
             export_formats(territory_data, paths["territories"]["data"])
@@ -166,7 +165,7 @@ def main_selective_steps(generate_steps=None, regenerate_areas=False, export_csv
     # Save summary data
     (output_directory / "data.json").write_text(export_to_json(dict(
         cont_areas=cont_area_data,
-        districts=district_data,
+        dens_samps=dens_samp_data,
         territories=territory_data,
         provinces=province_data,
     )))
@@ -174,7 +173,7 @@ def main_selective_steps(generate_steps=None, regenerate_areas=False, export_csv
 def parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser(description="OpenGS MapTool entrypoints")
     parser.add_argument("-gui", action="store_true", help="Launch the GUI")
-    parser.add_argument("-steps", nargs="*", default=[], help="Steps to generate: cont_areas, districts, territories, provinces")
+    parser.add_argument("-steps", nargs="*", default=[], help="Steps to generate: cont_areas, dens_samps, territories, provinces")
     parser.add_argument("-regenerate-areas", action="store_true", help="Regenerate continuous areas before other steps")
     return parser.parse_args()
 

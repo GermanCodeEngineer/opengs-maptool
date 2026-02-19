@@ -104,7 +104,7 @@ maptool = MapTool(
     pixels_per_water_province=7000,
     lloyd_iterations=2,                  # Quality of Voronoi relaxation
     cont_areas_rng_seed = int(1e6),
-    districts_rng_seed = int(2e6),
+    dens_samps_rng_seed = int(2e6),
     territories_rng_seed = int(3e6),
     provinces_rng_seed = int(4e6),
 )

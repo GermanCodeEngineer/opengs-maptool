@@ -1,14 +1,14 @@
 Fragmentation proof:
-Kazakhstan has three districts: a western, a central and an eastern one:
+Kazakhstan has three density samples: a western, a central and an eastern one:
 ![](normal.png)
 
-To test defragmentation i merged the eastern district into the western one (ran with defragmentation disabled):
+To test defragmentation i merged the eastern density sample into the western one (ran with defragmentation disabled):
 ![](fragmented.png) 
 
-The fragmentation detection now detects that the seed of the merged district lies within the western portion and the eastern protion is a fragment:
+The fragmentation detection now detects that the seed of the merged density sample lies within the western portion and the eastern protion is a fragment:
 ![](fragment_detected.png)
 
-Running with defragmentation enabled splits the fragment up between neighbour districts (it only has one neighbour, the central district):
+Running with defragmentation enabled splits the fragment up between neighbour density samples (it only has one neighbour, the central density sample):
 ![](fragment_resolved.png)
 
 Code to merge two regions:

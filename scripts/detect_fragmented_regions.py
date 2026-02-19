@@ -38,10 +38,10 @@ REGION_FILE_SPECS = {
         "metadata": "cont_area_data.json",
         "output": "fragments_cont_areas.png",
     },
-    "districts": {
-        "image": "district_image.png",
-        "metadata": "district_data.json",
-        "output": "fragments_district.png",
+    "dens_samps": {
+        "image": "dens_samp_image.png",
+        "metadata": "dens_samp_data.json",
+        "output": "fragments_dens_samp.png",
     },
     "territories": {
         "image": "territory_image.png",

@@ -1,5 +1,5 @@
 """
-Generate visualization overlays for areas, districts, territories, and provinces.
+Generate visualization overlays for areas, dens_samps, territories, and provinces.
 
 This script:
 1. Loads existing map image/data pairs from examples/output
@@ -15,11 +15,11 @@ from PIL import Image, ImageDraw
 from opengs_maptool import MapTool, MapToolResult, RegionMetadata, export_to_csv, export_to_json, import_from_json
 
 
-LEVEL_ORDER = ["areas", "districts", "territories", "provinces"]
+LEVEL_ORDER = ["areas", "dens_samps", "territories", "provinces"]
 
 LEVEL_STYLE = {
     "areas": {"radius": 8, "color": "lime"},
-    "districts": {"radius": 7, "color": "cyan"},
+    "dens_samps": {"radius": 7, "color": "cyan"},
     "territories": {"radius": 6, "color": "blue"},
     "provinces": {"radius": 4, "color": "yellow"},
 }
@@ -29,9 +29,9 @@ LEVEL_FILES = {
         "data": "cont_area_data.json",
         "image": "cont_area_image.png",
     },
-    "districts": {
-        "data": "district_data.json",
-        "image": "district_image.png",
+    "dens_samps": {
+        "data": "dens_samp_data.json",
+        "image": "dens_samp_image.png",
     },
     "territories": {
         "data": "territory_data.json",
@@ -86,17 +86,17 @@ def save_generated_inputs(input_dir: Path, result: MapToolResult) -> None:
     input_dir.mkdir(parents=True, exist_ok=True)
 
     result.cont_area_image.save(input_dir / LEVEL_FILES["areas"]["image"])
-    result.district_image.save(input_dir / LEVEL_FILES["districts"]["image"])
+    result.dens_samp_image.save(input_dir / LEVEL_FILES["dens_samps"]["image"])
     result.territory_image.save(input_dir / LEVEL_FILES["territories"]["image"])
     result.province_image.save(input_dir / LEVEL_FILES["provinces"]["image"])
 
     export_to_json(result.cont_area_data, input_dir / LEVEL_FILES["areas"]["data"])
-    export_to_json(result.district_data, input_dir / LEVEL_FILES["districts"]["data"])
+    export_to_json(result.dens_samp_data, input_dir / LEVEL_FILES["dens_samps"]["data"])
     export_to_json(result.territory_data, input_dir / LEVEL_FILES["territories"]["data"])
     export_to_json(result.province_data, input_dir / LEVEL_FILES["provinces"]["data"])
 
     export_to_csv(result.cont_area_data, input_dir / LEVEL_FILES["areas"]["data"].replace(".json", ".csv"))
-    export_to_csv(result.district_data, input_dir / LEVEL_FILES["districts"]["data"].replace(".json", ".csv"))
+    export_to_csv(result.dens_samp_data, input_dir / LEVEL_FILES["dens_samps"]["data"].replace(".json", ".csv"))
     export_to_csv(result.territory_data, input_dir / LEVEL_FILES["territories"]["data"].replace(".json", ".csv"))
     export_to_csv(result.province_data, input_dir / LEVEL_FILES["provinces"]["data"].replace(".json", ".csv"))
 

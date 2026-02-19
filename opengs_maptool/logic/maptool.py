@@ -15,13 +15,13 @@ class MapToolResult:
     """
     Dataclass Containing Results of the Map Tool
     - continuous areas map
-    - district, territory and province maps
-    - data of continuous areas, districts, territories & provinces 
+    - density samples, territory and province maps
+    - data of continuous areas, density samples, territories & provinces 
     """
     cont_area_image: Image.Image
     cont_area_data: list[RegionMetadata]
-    district_image: Image.Image
-    district_data: list[RegionMetadata]
+    dens_samp_image: Image.Image
+    dens_samp_data: list[RegionMetadata]
     territory_image: Image.Image
     territory_data: list[RegionMetadata]
     province_image: Image.Image
@@ -40,22 +40,22 @@ class MapTool:
     pixels_per_water_province: int
     lloyd_iterations: int
     cont_areas_rng_seed: int
-    districts_rng_seed: int
+    dens_samps_rng_seed: int
     territories_rng_seed: int
     provinces_rng_seed: int
 
     def __init__(self,
             class_image: Image.Image,
             boundary_image: Image.Image,
-            pixels_per_land_district: int = config.PIXELS_PER_LAND_DISTRICT_DEFAULT,
-            pixels_per_water_district: int = config.PIXELS_PER_WATER_DISTRICT_DEFAULT,
+            pixels_per_land_dens_samp: int = config.PIXELS_PER_LAND_DENS_SAMP_DEFAULT,
+            pixels_per_water_dens_samp: int = config.PIXELS_PER_WATER_DENS_SAMP_DEFAULT,
             pixels_per_land_territory: int = config.PIXELS_PER_LAND_TERRITORY_DEFAULT,
             pixels_per_water_territory: int = config.PIXELS_PER_WATER_TERRITORY_DEFAULT,
             pixels_per_land_province: int = config.PIXELS_PER_LAND_PROVINCE_DEFAULT,
             pixels_per_water_province: int = config.PIXELS_PER_WATER_PROVINCE_DEFAULT, # 1/5th
             lloyd_iterations: int = 2,
             cont_areas_rng_seed: int = int(1e6),
-            districts_rng_seed: int = int(2e6),
+            dens_samps_rng_seed: int = int(2e6),
             territories_rng_seed: int = int(3e6),
             provinces_rng_seed: int = int(4e6),
         ) -> None:
@@ -65,15 +65,15 @@ class MapTool:
         Args:
             class_image: **CLEANED** PIL Image containing land/ocean/lake classification (see clean_class_image)
             boundary_image: **CLEANED** PIL Image containing (country) boundaries (see clean_boundary_image)
-            pixels_per_land_district: Approximate pixels per land district
-            pixels_per_water_district: Approximate pixels per water district
+            pixels_per_land_dens_samp: Approximate pixels per land dens_samp
+            pixels_per_water_dens_samp: Approximate pixels per water dens_samp
             pixels_per_land_territory: Approximate pixels per land territory
             pixels_per_water_territory: Approximate pixels per water territory
             pixels_per_land_province: Approximate pixels per land province
             pixels_per_water_province: Approximate pixels per water province
             lloyd_iterations: Number of Lloyd's algorithm iterations for province and territory generation 
             cont_areas_rng_seed: RNG seed used for continuous area generation
-            districts_rng_seed: RNG seed used for district generation
+            dens_samps_rng_seed: RNG seed used for dens_samp generation
             territories_rng_seed: RNG seed used for territory generation
             provinces_rng_seed: RNG seed used for province generation
         """
@@ -81,15 +81,15 @@ class MapTool:
 
         self.class_image = np.array(class_image.convert("RGBA"))
         self.boundary_image = np.array(boundary_image.convert("RGBA"))
-        self.pixels_per_land_district = pixels_per_land_district
-        self.pixels_per_water_district = pixels_per_water_district
+        self.pixels_per_land_dens_samp = pixels_per_land_dens_samp
+        self.pixels_per_water_dens_samp = pixels_per_water_dens_samp
         self.pixels_per_land_territory = pixels_per_land_territory
         self.pixels_per_water_territory = pixels_per_water_territory
         self.pixels_per_land_province = pixels_per_land_province
         self.pixels_per_water_province = pixels_per_water_province
         self.lloyd_iterations = lloyd_iterations
         self.cont_areas_rng_seed = cont_areas_rng_seed
-        self.districts_rng_seed = districts_rng_seed
+        self.dens_samps_rng_seed = dens_samps_rng_seed
         self.territories_rng_seed = territories_rng_seed
         self.provinces_rng_seed = provinces_rng_seed
     
@@ -101,17 +101,17 @@ class MapTool:
         
         This method orchestrates the full map generation pipeline:
         1. Converts boundaries to continuous areas
-        2. Generates districts from continuous areas
-        3. Generates territories from districts
+        2. Generates density samples from continuous areas
+        3. Generates territories from density samples
         4. Generates provinces from territories
         """
         cont_area_image, cont_area_image_buffer, cont_area_data = self._generate_cont_areas()
-        district_image, district_image_buffer, district_data = self._generate_districts(cont_area_image_buffer, cont_area_data)
-        territory_image, territory_image_buffer, territory_data = self._generate_territories(district_image_buffer, district_data)
+        dens_samp_image, dens_samp_image_buffer, dens_samp_data = self._generate_dens_samps(cont_area_image_buffer, cont_area_data)
+        territory_image, territory_image_buffer, territory_data = self._generate_territories(dens_samp_image_buffer, dens_samp_data)
         province_image, province_image_buffer, province_data = self._generate_provinces(territory_image_buffer, territory_data)
         return MapToolResult(
             cont_area_image, cont_area_data,
-            district_image, district_data,
+            dens_samp_image, dens_samp_data,
             territory_image, territory_data,
             province_image, province_data,
         )
@@ -171,49 +171,49 @@ class MapTool:
             self.on_cont_areas_generated(*args)
         return args
     
-    def _generate_districts(self,
+    def _generate_dens_samps(self,
         cont_area_image: NDArray[np.uint8], cont_area_data: list[RegionMetadata],
         progress_callback=None,
     ) -> tuple[Image.Image, NDArray[np.uint8], list[RegionMetadata]]:
-        def district_progress(current: int, total: int) -> None:
+        def dens_samp_progress(current: int, total: int) -> None:
             if progress_callback:
                 # Map progress (0-100) to overall progress (0-90)
                 progress_callback(int((current / total) * 90), 100)
 
-        district_image, district_data = convert_all_cont_areas_to_regions(
+        dens_samp_image, dens_samp_data = convert_all_cont_areas_to_regions(
             cont_area_image=cont_area_image,
             cont_area_metadata=cont_area_data,
             density_image=self.boundary_image,
-            pixels_per_land_region=self.pixels_per_land_district,
-            pixels_per_water_region=self.pixels_per_water_district,
+            pixels_per_land_region=self.pixels_per_land_dens_samp,
+            pixels_per_water_region=self.pixels_per_water_dens_samp,
             fn_new_number_series=lambda area_meta: NumberSeries(
                 f"{area_meta.region_id}-TEMP", config.SERIES_ID_START, config.SERIES_ID_END
             ),
-            rng_seed=self.districts_rng_seed,
+            rng_seed=self.dens_samps_rng_seed,
             lloyd_iterations=self.lloyd_iterations,
             override_density_multiplier=True,
-            tqdm_description="Generating districts from areas",
+            tqdm_description="Generating density samples from areas",
             tqdm_unit="areas",
-            progress_callback=district_progress,
+            progress_callback=dens_samp_progress,
         )
 
         if progress_callback:
             progress_callback(90, 100)
 
-        number_series = NumberSeries(config.DISTRICT_ID_PREFIX, config.SERIES_ID_START, config.SERIES_ID_END)
-        for district in district_data:
-            district.region_id = number_series.get_id()
+        number_series = NumberSeries(config.DENS_SAMP_ID_PREFIX, config.SERIES_ID_START, config.SERIES_ID_END)
+        for dens_samp in dens_samp_data:
+            dens_samp.region_id = number_series.get_id()
 
         if progress_callback:
             progress_callback(100, 100)
 
-        args = (Image.fromarray(district_image), district_image, district_data)
-        if callable(getattr(self, "on_districts_generated", None)):
-            self.on_districts_generated(*args)
+        args = (Image.fromarray(dens_samp_image), dens_samp_image, dens_samp_data)
+        if callable(getattr(self, "on_dens_samps_generated", None)):
+            self.on_dens_samps_generated(*args)
         return args
     
     def _generate_territories(self,
-        district_image: NDArray[np.uint8], district_data: list[RegionMetadata],
+        dens_samp_image: NDArray[np.uint8], dens_samp_data: list[RegionMetadata],
         progress_callback=None,
     ) -> tuple[Image.Image, NDArray[np.uint8], list[RegionMetadata]]:
         def territory_progress(current: int, total: int) -> None:
@@ -222,8 +222,8 @@ class MapTool:
                 progress_callback(int((current / total) * 90), 100)
         
         territory_image, territory_data = convert_all_cont_areas_to_regions(
-            cont_area_image=district_image,
-            cont_area_metadata=district_data,
+            cont_area_image=dens_samp_image,
+            cont_area_metadata=dens_samp_data,
             density_image=self.boundary_image,
             pixels_per_land_region=self.pixels_per_land_territory,
             pixels_per_water_region=self.pixels_per_water_territory,
@@ -233,8 +233,8 @@ class MapTool:
             rng_seed=self.territories_rng_seed,
             lloyd_iterations=self.lloyd_iterations,
             override_density_multiplier=False,
-            tqdm_description="Generating territories from districts",
-            tqdm_unit="districts",
+            tqdm_description="Generating territories from density samples",
+            tqdm_unit="density samples",
             progress_callback=territory_progress,
         )
 
@@ -297,8 +297,8 @@ class MapTool:
         cont_area_image: Image.Image, cont_area_image_buffer: NDArray[np.uint8], cont_area_data: list[RegionMetadata]) -> None: ...
     def on_type_classification_generated(self,
         class_image: Image.Image, class_image_buffer: NDArray[np.uint8], class_counts: dict[str, int]) -> None: ...
-    def on_districts_generated(self,
-        district_image: Image.Image, district_image_buffer: NDArray[np.uint8], district_data: list[RegionMetadata]) -> None: ...
+    def on_dens_samps_generated(self,
+        dens_samp_image: Image.Image, dens_samp_image_buffer: NDArray[np.uint8], dens_samp_data: list[RegionMetadata]) -> None: ...
     def on_territories_generated(self,
         territory_image: Image.Image, territory_image_buffer: NDArray[np.uint8], territory_data: list[RegionMetadata]) -> None: ...
     def on_provinces_generated(self,

@@ -110,8 +110,8 @@ class MapToolWindow(QWidget):
         # Initialize data storage
         self._cont_area_image_buffer = None
         self._cont_area_data = None
-        self._district_image_buffer = None
-        self._district_data = None
+        self._dens_samp_image_buffer = None
+        self._dens_samp_data = None
         self._territory_image_buffer = None
         self._territory_data = None
         self._province_image_buffer = None
@@ -151,8 +151,8 @@ class MapToolWindow(QWidget):
         self.tabs.addTab(self.input_tab, "Input Images")
         self.create_areas_tab()
         self.tabs.addTab(self.areas_tab, "Generate Areas")
-        self.create_district_tab()
-        self.tabs.addTab(self.district_tab, "Generate Districts")
+        self.create_dens_samp_tab()
+        self.tabs.addTab(self.dens_samp_tab, "Generate Density Samples")
         self.create_territory_tab()
         self.tabs.addTab(self.territory_tab, "Generate Territories")
         self.create_province_tab()
@@ -253,41 +253,41 @@ class MapToolWindow(QWidget):
         self.areas_image_display.set_image(EMPTY_IMAGE)
         areas_tab_layout.addWidget(self.areas_image_display, stretch=1)
 
-    def create_district_tab(self) -> None:
-        self.district_tab = QWidget()
-        district_tab_layout = QVBoxLayout(self.district_tab)
+    def create_dens_samp_tab(self) -> None:
+        self.dens_samp_tab = QWidget()
+        dens_samp_tab_layout = QVBoxLayout(self.dens_samp_tab)
 
-        self.districts_rng_seed_input = self._create_seed_input(
-            district_tab_layout,
-            "Districts RNG Seed:",
+        self.dens_samps_rng_seed_input = self._create_seed_input(
+            dens_samp_tab_layout,
+            "Density Samples RNG Seed:",
             int(1_500_000),
         )
 
-        self.pixels_per_land_district_slider = create_slider(district_tab_layout,
-            "Pixels per Land district:",
-            config.PIXELS_PER_LAND_DISTRICT_MIN,
-            config.PIXELS_PER_LAND_DISTRICT_MAX,
-            config.PIXELS_PER_LAND_DISTRICT_DEFAULT,
-            config.PIXELS_PER_LAND_DISTRICT_TICK,
-            config.PIXELS_PER_LAND_DISTRICT_STEP,
+        self.pixels_per_land_dens_samp_slider = create_slider(dens_samp_tab_layout,
+            "Pixels per land density sample:",
+            config.PIXELS_PER_LAND_DENS_SAMP_MIN,
+            config.PIXELS_PER_LAND_DENS_SAMP_MAX,
+            config.PIXELS_PER_LAND_DENS_SAMP_DEFAULT,
+            config.PIXELS_PER_LAND_DENS_SAMP_TICK,
+            config.PIXELS_PER_LAND_DENS_SAMP_STEP,
         )
 
-        self.pixels_per_water_district_slider = create_slider(district_tab_layout,
-            "Pixels per Water district:",
-            config.PIXELS_PER_WATER_DISTRICT_MIN,
-            config.PIXELS_PER_WATER_DISTRICT_MAX,
-            config.PIXELS_PER_WATER_DISTRICT_DEFAULT,
-            config.PIXELS_PER_WATER_DISTRICT_TICK,
-            config.PIXELS_PER_WATER_DISTRICT_STEP,
+        self.pixels_per_water_dens_samp_slider = create_slider(dens_samp_tab_layout,
+            "Pixels per water density sample:",
+            config.PIXELS_PER_WATER_DENS_SAMP_MIN,
+            config.PIXELS_PER_WATER_DENS_SAMP_MAX,
+            config.PIXELS_PER_WATER_DENS_SAMP_DEFAULT,
+            config.PIXELS_PER_WATER_DENS_SAMP_TICK,
+            config.PIXELS_PER_WATER_DENS_SAMP_STEP,
         )
 
-        self.button_gen_districts = ProgressButton("Generate Districts")
-        self.button_gen_districts.clicked.connect(self.on_button_generate_districts)
-        district_tab_layout.addWidget(self.button_gen_districts)
+        self.button_gen_dens_samps = ProgressButton("Generate Density Samples")
+        self.button_gen_dens_samps.clicked.connect(self.on_button_generate_dens_samps)
+        dens_samp_tab_layout.addWidget(self.button_gen_dens_samps)
 
-        self.district_image_display = ImageDisplay(name=config.DISTRICT_IMAGE_FILENAME, csv_export=True)
-        self.district_image_display.set_image(EMPTY_IMAGE)
-        district_tab_layout.addWidget(self.district_image_display, stretch=1)
+        self.dens_samp_image_display = ImageDisplay(name=config.DENS_SAMP_IMAGE_FILENAME, csv_export=True)
+        self.dens_samp_image_display.set_image(EMPTY_IMAGE)
+        dens_samp_tab_layout.addWidget(self.dens_samp_image_display, stretch=1)
 
     def create_territory_tab(self) -> None:
         self.territory_tab = QWidget()
@@ -301,7 +301,7 @@ class MapToolWindow(QWidget):
 
         # Buttons
         self.pixels_per_land_territory_slider = create_slider(territory_tab_layout,
-            "Pixels per Land territory:",
+            "Pixels per land territory:",
             config.PIXELS_PER_LAND_TERRITORY_MIN,
             config.PIXELS_PER_LAND_TERRITORY_MAX,
             config.PIXELS_PER_LAND_TERRITORY_DEFAULT,
@@ -310,7 +310,7 @@ class MapToolWindow(QWidget):
         )
 
         self.pixels_per_water_territory_slider = create_slider(territory_tab_layout,
-            "Pixels per Water territory:",
+            "Pixels per water territory:",
             config.PIXELS_PER_WATER_TERRITORY_MIN,
             config.PIXELS_PER_WATER_TERRITORY_MAX,
             config.PIXELS_PER_WATER_TERRITORY_DEFAULT,
@@ -338,7 +338,7 @@ class MapToolWindow(QWidget):
 
         # Buttons
         self.pixels_per_land_province_slider = create_slider(province_tab_layout,
-            "Pixels per Land province:",
+            "Pixels per land province:",
             config.PIXELS_PER_LAND_PROVINCE_MIN,
             config.PIXELS_PER_LAND_PROVINCE_MAX,
             config.PIXELS_PER_LAND_PROVINCE_DEFAULT,
@@ -347,7 +347,7 @@ class MapToolWindow(QWidget):
         )
 
         self.pixels_per_water_province_slider = create_slider(province_tab_layout,
-            "Pixels per Water province:",
+            "Pixels per water province:",
             config.PIXELS_PER_WATER_PROVINCE_MIN,
             config.PIXELS_PER_WATER_PROVINCE_MAX,
             config.PIXELS_PER_WATER_PROVINCE_DEFAULT,
@@ -430,50 +430,50 @@ class MapToolWindow(QWidget):
         
         self.areas_worker = self._create_background_worker(run_task, on_progress, on_finished, on_error)
 
-    def on_button_generate_districts(self) -> None:
+    def on_button_generate_dens_samps(self) -> None:
         if self._cont_area_image_buffer is None:
             QMessageBox.warning(self, "Warning", "Continuous areas must be generated first")
             return
 
         def run_task(maptool: MapTool, progress_callback: Callable) -> tuple:
-            district_image, district_image_buffer, district_data = maptool._generate_districts(
+            dens_samp_image, dens_samp_image_buffer, dens_samp_data = maptool._generate_dens_samps(
                 self._cont_area_image_buffer,
                 self._cont_area_data,
                 progress_callback=progress_callback,
             )
-            return (district_image, district_image_buffer, district_data)
+            return (dens_samp_image, dens_samp_image_buffer, dens_samp_data)
 
         def on_progress(value: int) -> None:
-            self.button_gen_districts.set_progress(value)
+            self.button_gen_dens_samps.set_progress(value)
 
         def on_finished(result: tuple) -> None:
-            self.button_gen_districts.reset_progress()
-            self.button_gen_districts.setEnabled(True)
-            district_image, district_image_buffer, district_data = result
-            self.district_image_display.set_image(district_image)
-            self.district_image_display.set_data(district_data, "District Data")
-            self._district_image_buffer = district_image_buffer
-            self._district_data = district_data
+            self.button_gen_dens_samps.reset_progress()
+            self.button_gen_dens_samps.setEnabled(True)
+            dens_samp_image, dens_samp_image_buffer, dens_samp_data = result
+            self.dens_samp_image_display.set_image(dens_samp_image)
+            self.dens_samp_image_display.set_data(dens_samp_data, "Density Samples Data")
+            self._dens_samp_image_buffer = dens_samp_image_buffer
+            self._dens_samp_data = dens_samp_data
 
         def on_error(error: Exception) -> None:
-            self.button_gen_districts.reset_progress()
-            self.button_gen_districts.setEnabled(True)
-            QMessageBox.critical(self, "Error", f"Error generating districts: {error}")
+            self.button_gen_dens_samps.reset_progress()
+            self.button_gen_dens_samps.setEnabled(True)
+            QMessageBox.critical(self, "Error", f"Error generating density samples: {error}")
 
-        self.button_gen_districts.reset_progress()
-        self.button_gen_districts.setEnabled(False)
+        self.button_gen_dens_samps.reset_progress()
+        self.button_gen_dens_samps.setEnabled(False)
 
-        self.districts_worker = self._create_background_worker(run_task, on_progress, on_finished, on_error)
+        self.dens_samps_worker = self._create_background_worker(run_task, on_progress, on_finished, on_error)
     
     def on_button_generate_territories(self) -> None:
-        if self._district_image_buffer is None:
-            QMessageBox.warning(self, "Warning", "Districts must be generated first")
+        if self._dens_samp_image_buffer is None:
+            QMessageBox.warning(self, "Warning", "Density Samples must be generated first")
             return
         
         def run_task(maptool: MapTool, progress_callback: Callable) -> tuple:
             territory_image, territory_image_buffer, territory_data = maptool._generate_territories(
-                self._district_image_buffer,
-                self._district_data,
+                self._dens_samp_image_buffer,
+                self._dens_samp_data,
                 progress_callback=progress_callback,
             )
             return (territory_image, territory_image_buffer, territory_data)
@@ -547,10 +547,10 @@ class MapToolWindow(QWidget):
             pixels_per_water_territory=self.pixels_per_water_territory_slider.value(),
             pixels_per_land_province=self.pixels_per_land_province_slider.value(),
             pixels_per_water_province=self.pixels_per_water_province_slider.value(),
-            pixels_per_land_district=self.pixels_per_land_district_slider.value(),
-            pixels_per_water_district=self.pixels_per_water_district_slider.value(),
+            pixels_per_land_dens_samp=self.pixels_per_land_dens_samp_slider.value(),
+            pixels_per_water_dens_samp=self.pixels_per_water_dens_samp_slider.value(),
             cont_areas_rng_seed=self.cont_areas_rng_seed_input.value(),
-            districts_rng_seed=self.districts_rng_seed_input.value(),
+            dens_samps_rng_seed=self.dens_samps_rng_seed_input.value(),
             territories_rng_seed=self.territories_rng_seed_input.value(),
             provinces_rng_seed=self.provinces_rng_seed_input.value(),
         )

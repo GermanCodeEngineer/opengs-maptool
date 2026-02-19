@@ -305,7 +305,7 @@ def convert_cont_area_to_regions(args: AreaProcessingArgs) -> tuple[
         parent_density_multiplier=args.parent_area.density_multiplier or 1.0,
     )
 
-    # For districts, compute average density **per generated region** from the density image.
+    # For density samples, compute average density **per generated region** from the density image.
     if args.override_density_multiplier:
         for i, region_meta in enumerate(metadata):
             region_density_multiplier = calculate_density_multiplier(

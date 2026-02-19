@@ -1,7 +1,7 @@
 ====================
 CORE FUNCTIONALITY & BUGS
 ====================
-[DONE] fix fragmentation issue with sea district in northern canada
+[DONE] fix fragmentation issue with sea dens_samp in northern canada
 [DONE] guarantee region continuity
 [DONE] fix regions with 0 pixels
 [DONE] when center not in region: use seed!
@@ -12,6 +12,7 @@ CORE FUNCTIONALITY & BUGS
 [DONE] => use tuples for coords
 [DONE] ensure bbox coords are ordered correctly
 [DONE] add output/input filenames to config?
+ optionally hide dens_samps(density samples)
  fix & sort imports
  remove weird attributes of MapToolWindow
  test JSON & CSV exporting & importing
@@ -25,8 +26,8 @@ IMAGE & DATA GENERATION
  maptool options for what images to produce? maybe caching?
  optimize generation (including bbox calculation)
  create slider for & adapt & fix MIN_AREA_PIXELS
- rename districts to density samples?
  use same default seeds everywhere
+ warn parent regions aren't bigger than child regions
 
 ====================
 DOCUMENTATION & UI
@@ -39,9 +40,9 @@ DOCUMENTATION & UI
 ====================
 FUTURE FEATURES
 ====================
- support for different regional densities within bigger countries
- renewed guarantee of region continuity
- seed coords
+[DONE] support for different regional densities within bigger countries
+[DONE] renewed guarantee of region continuity
+[DONE] seed coords
 
 ====================
 MANUAL/POSTPROCESSING (LATER PR)
