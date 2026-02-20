@@ -35,7 +35,7 @@ IMAGE & DATA GENERATION
 ====================
 DOCUMENTATION & UI
 ====================
-[NEXT] clean up confusing MapToolWindow code
+[DONE] clean up confusing MapToolWindow code
  add image display zooming & scrolling
  rewrite and update README
  add terms definition to README
