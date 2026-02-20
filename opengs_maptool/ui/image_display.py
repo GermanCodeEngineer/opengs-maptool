@@ -10,6 +10,8 @@ from opengs_maptool.logic import export_to_json, export_to_csv
 from opengs_maptool import config
 
 
+EMPTY_IMAGE = Image.new("RGB", (16, 9), color=(100, 100, 100))
+
 class ImageDisplay(QWidget):
     """Widget that displays an image with export controls.
 
@@ -114,6 +116,7 @@ class ImageDisplay(QWidget):
         self._original_pixmap = None
         self._data = None
         self._data_name = "Data"
+        self.set_image(EMPTY_IMAGE)
 
     def set_image(self, image: Image.Image) -> None:
         if image.mode != "RGBA":
@@ -157,16 +160,24 @@ class ImageDisplay(QWidget):
         self._scale_image_to_fit()
 
     def get_image(self) -> Image.Image | None:
-        return self._image
+        if (self._image is None) or (self._image is EMPTY_IMAGE):
+            return None
+        else:
+            return self._image
     
     def get_image_buffer(self) -> NDArray[np.uint8] | None:
-        if self._image is None:
+        image = self.get_image()
+        if image is None:
             return None
-        return np.array(self._image.convert("RGBA"), dtype=np.uint8)
+        return np.array(image.convert("RGBA"), dtype=np.uint8)
+    
+    def get_data(self) -> dict | list | None:
+        return self._data
     
     def _on_download(self) -> None:
         """Save the current image to a file."""
-        if self._image is None:
+        image = self.get_image()
+        if image is None:
             return
         
         Image.MAX_IMAGE_PIXELS = config.MAX_IMAGE_PIXELS
@@ -180,7 +191,7 @@ class ImageDisplay(QWidget):
         if path and not(path_lower.endswith(".png") or path_lower.endswith(".jpg") or path_lower.endswith(".bmp")):
             path += ".png"
         if path:
-            self._image.save(path)
+            image.save(path)
     
     def _on_download_json(self) -> None:
         """Save the current data as JSON."""

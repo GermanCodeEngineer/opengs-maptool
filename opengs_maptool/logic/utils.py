@@ -3,6 +3,7 @@ from gceutils import grepr_dataclass
 import logging
 import numpy as np
 from numpy.typing import NDArray
+from PIL import Image
 from scipy.ndimage import distance_transform_edt, label as scipy_label
 from scipy.spatial import cKDTree
 from scipy.stats import mode
@@ -38,6 +39,13 @@ def hex_to_rgb(hex_color: str) -> tuple[int, int, int]:
     """Convert hex color string (e.g., '#aabbcc') to RGB tuple"""
     hex_color = hex_color.lstrip('#')
     return tuple(int(hex_color[i:i+2], 16) for i in (0, 2, 4))
+
+
+def to_image_buffer(image: Image.Image | NDArray[np.uint8]) -> NDArray[np.uint8]:
+    return np.array(image.convert("RGBA"), dtype=np.uint8) if isinstance(image, Image.Image) else image
+
+def to_pil_image(image: Image.Image | NDArray[np.uint8]) -> Image.Image:
+    return Image.fromarray(image) if isinstance(image, np.ndarray) else image
 
 
 def ensure_point_in_mask(mask: NDArray[np.bool_], x: int, y: int) -> tuple[int, int]:

@@ -5,7 +5,7 @@ from PIL import Image
 
 from opengs_maptool.logic.boundaries_to_cont import convert_boundaries_to_cont_areas, assign_borders_to_areas, classify_pixels_by_color, recalculate_bboxes_from_image, classify_continuous_areas, clean_boundary_image
 from opengs_maptool.logic.cont_to_regions import convert_all_cont_areas_to_regions
-from opengs_maptool.logic.utils import NumberSeries, RegionMetadata
+from opengs_maptool.logic.utils import NumberSeries, RegionMetadata, to_image_buffer, to_pil_image
 from opengs_maptool import config
 
 
@@ -26,8 +26,187 @@ class MapToolResult:
     province_image: Image.Image
     province_data: list[RegionMetadata]
 
+class InstancelessMapTool:
+    def generate_cont_areas(self, class_image: NDArray[np.uint8], boundary_image: NDArray[np.uint8], rng_seed: int, progress_callback=None) -> tuple[NDArray[np.uint8], list[RegionMetadata]]:
+       
+        if progress_callback:
+            progress_callback(0, 100)
+
+        def boundaries_progress(current, total):
+            if progress_callback:
+                # Map progress (0-100) to overall progress (0-40)
+                progress_callback(int((current / total) * 40), 100)
+
+        areas_with_borders_image, cont_area_data = convert_boundaries_to_cont_areas(
+            class_image,
+            boundary_image,
+            rng_seed,
+            min_area_pixels=config.MIN_AREA_PIXELS,  # Filter out tiny areas & islands
+            progress_callback=boundaries_progress
+        )
+
+        if progress_callback:
+            progress_callback(40, 100)
+
+        def border_progress(current, total):
+            if progress_callback:
+                # Map iteration progress (0-100) to overall progress (40-80)
+                progress_callback(40 + int((current / total) * 40), 100)
+
+        cont_area_image = assign_borders_to_areas(areas_with_borders_image, progress_callback=border_progress)
+
+        if progress_callback:
+            progress_callback(80, 100)
+
+        def bbox_progress(current, total):
+            if progress_callback:
+                # Map bbox progress (0-100) to overall progress (80-100)
+                progress_callback(80 + int((current / total) * 20), 100)
+
+        # Recalculate bboxes from the final image after border assignment, with progress
+        # recalculate_bboxes_from_image does not support progress_callback, so simulate it
+        total_regions = len(cont_area_data)
+        updated_metadata = []
+        for idx, region in enumerate(cont_area_data):
+            updated_metadata.append(region)
+            if progress_callback and total_regions > 0:
+                bbox_progress(idx + 1, total_regions)
+        cont_area_data = recalculate_bboxes_from_image(cont_area_image, cont_area_data)
+
+        # Assign proper region_ids (like for territories)
+        number_series = NumberSeries(config.AREA_ID_PREFIX, config.SERIES_ID_START, config.SERIES_ID_END)
+        for region in cont_area_data:
+            region.region_id = number_series.get_id()
+
+        args = (Image.fromarray(cont_area_image), cont_area_image, cont_area_data)
+        if callable(getattr(self, "on_cont_areas_generated", None)):
+            self.on_cont_areas_generated(*args)
+        return args
+    
+    def _generate_dens_samps(self,
+        cont_area_image: NDArray[np.uint8], cont_area_data: list[RegionMetadata],
+        progress_callback=None,
+    ) -> tuple[Image.Image, NDArray[np.uint8], list[RegionMetadata]]:
+        def dens_samp_progress(current: int, total: int) -> None:
+            if progress_callback:
+                # Map progress (0-100) to overall progress (0-90)
+                progress_callback(int((current / total) * 90), 100)
+
+        dens_samp_image, dens_samp_data = convert_all_cont_areas_to_regions(
+            cont_area_image=cont_area_image,
+            cont_area_metadata=cont_area_data,
+            density_image=self.boundary_image,
+            pixels_per_land_region=self.pixels_per_land_dens_samp,
+            pixels_per_water_region=self.pixels_per_water_dens_samp,
+            fn_new_number_series=lambda area_meta: NumberSeries(
+                f"{area_meta.region_id}-TEMP", config.SERIES_ID_START, config.SERIES_ID_END
+            ),
+            rng_seed=self.dens_samps_rng_seed,
+            lloyd_iterations=self.lloyd_iterations,
+            override_density_multiplier=True,
+            tqdm_description="Generating density samples from areas",
+            tqdm_unit="areas",
+            progress_callback=dens_samp_progress,
+        )
+
+        if progress_callback:
+            progress_callback(90, 100)
+
+        number_series = NumberSeries(config.DENS_SAMP_ID_PREFIX, config.SERIES_ID_START, config.SERIES_ID_END)
+        for dens_samp in dens_samp_data:
+            dens_samp.region_id = number_series.get_id()
+
+        if progress_callback:
+            progress_callback(100, 100)
+
+        args = (Image.fromarray(dens_samp_image), dens_samp_image, dens_samp_data)
+        if callable(getattr(self, "on_dens_samps_generated", None)):
+            self.on_dens_samps_generated(*args)
+        return args
+    
+    def _generate_territories(self,
+        dens_samp_image: NDArray[np.uint8], dens_samp_data: list[RegionMetadata],
+        progress_callback=None,
+    ) -> tuple[Image.Image, NDArray[np.uint8], list[RegionMetadata]]:
+        def territory_progress(current: int, total: int) -> None:
+            if progress_callback:
+                # Map progress (0-100) to overall progress (0-90)
+                progress_callback(int((current / total) * 90), 100)
+        
+        territory_image, territory_data = convert_all_cont_areas_to_regions(
+            cont_area_image=dens_samp_image,
+            cont_area_metadata=dens_samp_data,
+            density_image=self.boundary_image,
+            pixels_per_land_region=self.pixels_per_land_territory,
+            pixels_per_water_region=self.pixels_per_water_territory,
+            fn_new_number_series=lambda area_meta: NumberSeries(
+                f"{area_meta.region_id}-TEMP", config.SERIES_ID_START, config.SERIES_ID_END
+            ),
+            rng_seed=self.territories_rng_seed,
+            lloyd_iterations=self.lloyd_iterations,
+            override_density_multiplier=False,
+            tqdm_description="Generating territories from density samples",
+            tqdm_unit="density samples",
+            progress_callback=territory_progress,
+        )
+
+        # Replace ids with correct format
+        if progress_callback:
+            progress_callback(90, 100)
+        
+        number_series = NumberSeries(config.TERRITORY_ID_PREFIX, config.SERIES_ID_START, config.SERIES_ID_END)
+        for territory in territory_data:
+            territory.region_id = number_series.get_id()
+        
+        if progress_callback:
+            progress_callback(100, 100)
+        
+        args = (Image.fromarray(territory_image), territory_image, territory_data)
+        if callable(getattr(self, "on_territories_generated", None)):
+            self.on_territories_generated(*args)
+        return args
+
+    def _generate_provinces(self,
+        territory_image: NDArray[np.uint8], territory_data: list[RegionMetadata],
+        progress_callback=None,
+    ) -> tuple[Image.Image, NDArray[np.uint8], list[RegionMetadata]]:
+        def province_progress(current: int, total: int) -> None:
+            if progress_callback:
+                # Map progress (0-100) to overall progress (0-90)
+                progress_callback(int((current / total) * 90), 100)
+        
+        province_image, province_data = convert_all_cont_areas_to_regions(
+            cont_area_image=territory_image,
+            cont_area_metadata=territory_data,
+            density_image=self.boundary_image,
+            pixels_per_land_region=self.pixels_per_land_province,
+            pixels_per_water_region=self.pixels_per_water_province,
+            fn_new_number_series=lambda territory_meta: NumberSeries(
+                f"{territory_meta.region_id}-TEMP", config.SERIES_ID_START, config.SERIES_ID_END
+            ),
+            rng_seed=self.provinces_rng_seed,
+            lloyd_iterations=self.lloyd_iterations,
+            override_density_multiplier=False,
+            tqdm_description="Generating provinces from territories",
+            tqdm_unit="territories",
+            progress_callback=province_progress,
+        )
+
+        if progress_callback:
+            progress_callback(100, 100)
+
+        number_series = NumberSeries(config.PROVINCE_ID_PREFIX, config.SERIES_ID_START, config.SERIES_ID_END)
+        for territory in territory_data:
+            territory.region_id = number_series.get_id()
+
+        args = (Image.fromarray(province_image), province_image, province_data)
+        if callable(getattr(self, "on_provinces_generated", None)):
+            self.on_provinces_generated(*args)
+        return args
+    
+
 @grepr_dataclass(init=False)
-class MapTool:
+class MapTool(InstancelessMapTool):
     """
     Open Grand Strategy Map Tool, which can be directly used in python.
     """
