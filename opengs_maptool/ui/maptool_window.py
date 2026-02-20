@@ -1,16 +1,16 @@
 import logging
-from PIL import Image
 from PyQt6.QtWidgets import QWidget, QVBoxLayout, QHBoxLayout, QTabWidget, QLabel, QPushButton, QMessageBox, QSpinBox, QSizePolicy
 from PyQt6.QtCore import Qt, QThread, pyqtSignal
 from PyQt6.QtGui import QPainter, QColor, QCloseEvent
 import traceback
 from typing import Callable
 
-from opengs_maptool.logic import MapTool
+from opengs_maptool.logic import StepMapTool
 from opengs_maptool.ui.buttons import create_slider, create_button
 from opengs_maptool.ui.image_display import ImageDisplay, EMPTY_IMAGE
 from opengs_maptool.ui.flappy_bird_game import start_flappy_bird_process
 from opengs_maptool import config
+
 
 def log_error_with_traceback(error: Exception, message: str) -> None:
     try: # Use a trick to insert the message before the error
@@ -151,9 +151,6 @@ class MapToolWindow(QWidget):
         self.tabs.addTab(self.input_tab, "Input Images")
         self.create_areas_tab()
         self.tabs.addTab(self.areas_tab, "Generate Areas")
-        #self.create_dens_samp_tab()
-        #if config.SHOW_DENS_SAMPS:
-        #    self.tabs.addTab(self.dens_samp_tab, "Generate Density Samples")
         self.create_territory_tab()
         self.tabs.addTab(self.territory_tab, "Generate Territories")
         self.create_province_tab()
@@ -209,7 +206,7 @@ class MapToolWindow(QWidget):
             '<h3>Instructions:</h3>'
             '<p>1. Save the above boundary image</p>'
             '<p>2. Edit the image in an image editor (e.g., Paint.NET, Photoshop, GIMP)</p>'
-            '<p>3. Change the greyscale values for different territory & province density (1-255)</p>'
+            '<p>3. Change the greyscale values for different territory and province density (1-255)</p>'
             '<p>4. Greyscale value <b>1</b> results in 4x fewer provinces and Greyscale value <b>255</b> results in 4x more provinces</p>'
             '<p><b>Important:</b> Greyscale value <b>0 (black)</b> is reserved for boundaries and will be removed</p>'
             '<p>5. Upload the edited image in the next tab</p>'
@@ -238,19 +235,13 @@ class MapToolWindow(QWidget):
     def create_areas_tab(self) -> None:
         self.areas_tab = QWidget()
         areas_tab_layout = QVBoxLayout(self.areas_tab)
-
-        self.cont_areas_rng_seed_input = self._create_seed_input(
-            areas_tab_layout,
-            "Continuous Areas RNG Seed:",
-            int(1e6),
-        )
         
         self.button_generate_areas = ProgressButton("Generate Continuous Areas")
         self.button_generate_areas.clicked.connect(self.on_button_generate_areas)
         areas_tab_layout.addWidget(self.button_generate_areas)
 
-        self.areas_image_display = ImageDisplay(name=config.CONTINUOUS_AREA_IMAGE_FILENAME, csv_export=True)
-        areas_tab_layout.addWidget(self.areas_image_display, stretch=1)
+        self.area_image_display = ImageDisplay(name=config.CONTINUOUS_AREA_IMAGE_FILENAME, csv_export=True)
+        areas_tab_layout.addWidget(self.area_image_display, stretch=1)
 
         self.pixels_per_land_dens_samp_slider = create_slider(areas_tab_layout,
             "Pixels per land density sample:",
@@ -281,7 +272,7 @@ class MapToolWindow(QWidget):
         self.territories_rng_seed_input = self._create_seed_input(
             territory_tab_layout,
             "Territories RNG Seed:",
-            int(2e6),
+            config.DEFAULT_TERRITORIES_RNG_SEED,
         )
 
         # Buttons
@@ -317,7 +308,7 @@ class MapToolWindow(QWidget):
         self.provinces_rng_seed_input = self._create_seed_input(
             province_tab_layout,
             "Provinces RNG Seed:",
-            int(3e6),
+            config.DEFAULT_PROVINCES_RNG_SEED,
         )
 
         # Buttons
@@ -357,7 +348,7 @@ class MapToolWindow(QWidget):
             return
 
         try:
-            cleaned_image = MapTool.clean_boundary_image(image)
+            cleaned_image = StepMapTool.clean_boundary_image(image)
             self.adapt_boundary_image_display.set_image(cleaned_image)
 
         except Exception as error:
@@ -380,7 +371,7 @@ class MapToolWindow(QWidget):
             return
         
         try:
-            cleaned_class_image = MapTool.clean_class_image(image)
+            cleaned_class_image = StepMapTool.clean_class_image(image)
             self.class_image_display.set_image(cleaned_class_image)
         except Exception as error:
             log_error_with_traceback(error, "Error processing classification image")
@@ -388,9 +379,8 @@ class MapToolWindow(QWidget):
 
     # TAB 4-7
     def on_button_generate_areas(self) -> None:
-        def run_task(maptool: MapTool, progress_callback: Callable) -> tuple:
-            cont_area_image, cont_area_image_buffer, cont_area_data = maptool._generate_cont_areas(progress_callback=progress_callback)
-            return (cont_area_image, cont_area_image_buffer, cont_area_data)
+        def run_task(progress_callback: Callable, **kwargs) -> tuple:
+            return StepMapTool.generate_cont_areas(**kwargs, progress_callback=progress_callback)
         
         def on_progress(value: int) -> None:
             self.button_generate_areas.set_progress(value)
@@ -398,9 +388,9 @@ class MapToolWindow(QWidget):
         def on_finished(result: tuple) -> None:
             self.button_generate_areas.reset_progress()
             self.button_generate_areas.setEnabled(True)
-            cont_area_image, cont_area_image_buffer, cont_area_data = result
-            self.areas_image_display.set_image(cont_area_image)
-            self.areas_image_display.set_data(cont_area_data, "Continuous Area Data")
+            cont_area_image_buffer, cont_area_data = result
+            self.area_image_display.set_image_buffer(cont_area_image_buffer)
+            self.area_image_display.set_data(cont_area_data, "Continuous Area Data")
         
         def on_error(error: Exception) -> None:
             self.button_generate_areas.reset_progress()
@@ -411,20 +401,20 @@ class MapToolWindow(QWidget):
         self.button_generate_areas.reset_progress()
         self.button_generate_areas.setEnabled(False)
         
-        self.areas_worker = self._create_background_worker(run_task, on_progress, on_finished, on_error)
+        self.areas_worker = self._create_background_worker(
+            run_task, on_progress, on_finished, on_error,
+            class_image=self.class_image_display.get_image_buffer(),
+            boundary_image=self.final_boundary_image_display.get_image_buffer(),
+            rng_seed=config.DEFAULT_CONT_AREAS_RNG_SEED,
+        )
 
     def on_button_generate_dens_samps(self) -> None:
-        if self.areas_image_display.get_image() is None:
+        if self.area_image_display.get_data() is None:
             QMessageBox.warning(self, "Warning", "Continuous areas must be generated first")
             return
 
-        def run_task(maptool: MapTool, progress_callback: Callable) -> tuple:
-            dens_samp_image, dens_samp_image_buffer, dens_samp_data = maptool._generate_dens_samps(
-                self.areas_image_display.get_image_buffer(),
-                self.areas_image_display.get_data(),
-                progress_callback=progress_callback,
-            )
-            return (dens_samp_image, dens_samp_image_buffer, dens_samp_data)
+        def run_task(progress_callback: Callable, **kwargs) -> tuple:
+            return StepMapTool.generate_dens_samps(**kwargs, progress_callback=progress_callback)
 
         def on_progress(value: int) -> None:
             self.button_gen_dens_samps.set_progress(value)
@@ -432,9 +422,7 @@ class MapToolWindow(QWidget):
         def on_finished(result: tuple) -> None:
             self.button_gen_dens_samps.reset_progress()
             self.button_gen_dens_samps.setEnabled(True)
-            dens_samp_image, dens_samp_image_buffer, dens_samp_data = result
-            self._dens_samp_image_buffer = dens_samp_image_buffer
-            self._dens_samp_data = dens_samp_data
+            self._dens_samp_image_buffer, self._dens_samp_data = result
 
         def on_error(error: Exception) -> None:
             self.button_gen_dens_samps.reset_progress()
@@ -445,20 +433,23 @@ class MapToolWindow(QWidget):
         self.button_gen_dens_samps.reset_progress()
         self.button_gen_dens_samps.setEnabled(False)
 
-        self.dens_samps_worker = self._create_background_worker(run_task, on_progress, on_finished, on_error)
+        self.dens_samps_worker = self._create_background_worker(
+            run_task, on_progress, on_finished, on_error,
+            boundary_image=self.final_boundary_image_display.get_image_buffer(),
+            cont_area_image=self.area_image_display.get_image_buffer(),
+            cont_area_data=self.area_image_display.get_data(),
+            pixels_per_land_dens_samp=self.pixels_per_land_dens_samp_slider.value(),
+            pixels_per_water_dens_samp=self.pixels_per_water_dens_samp_slider.value(),
+            rng_seed=config.DEFAULT_DENS_SAMPS_RNG_SEED,
+        )
     
     def on_button_generate_territories(self) -> None:
-        if self._dens_samp_image_buffer is None:
+        if self._dens_samp_data is None:
             QMessageBox.warning(self, "Warning", "Density Samples must be generated first")
             return
         
-        def run_task(maptool: MapTool, progress_callback: Callable) -> tuple:
-            territory_image, territory_image_buffer, territory_data = maptool._generate_territories(
-                self._dens_samp_image_buffer,
-                self._dens_samp_data,
-                progress_callback=progress_callback,
-            )
-            return (territory_image, territory_image_buffer, territory_data)
+        def run_task(progress_callback: Callable, **kwargs) -> tuple:
+            return StepMapTool.generate_territories(**kwargs, progress_callback=progress_callback)
         
         def on_progress(value: int) -> None:
             self.button_gen_territories.set_progress(value)
@@ -466,8 +457,8 @@ class MapToolWindow(QWidget):
         def on_finished(result: tuple) -> None:
             self.button_gen_territories.reset_progress()
             self.button_gen_territories.setEnabled(True)
-            territory_image, territory_image_buffer, territory_data = result
-            self.territory_image_display.set_image(territory_image)
+            territory_image_buffer, territory_data = result
+            self.territory_image_display.set_image_buffer(territory_image_buffer)
             self.territory_image_display.set_data(territory_data, "Territory Data")
         
         def on_error(error: Exception) -> None:
@@ -479,20 +470,23 @@ class MapToolWindow(QWidget):
         self.button_gen_territories.reset_progress()
         self.button_gen_territories.setEnabled(False)
         
-        self.territories_worker = self._create_background_worker(run_task, on_progress, on_finished, on_error)
+        self.dens_samps_worker = self._create_background_worker(
+            run_task, on_progress, on_finished, on_error,
+            boundary_image=self.final_boundary_image_display.get_image_buffer(),
+            dens_samp_image=self._dens_samp_image_buffer,
+            dens_samp_data=self._dens_samp_data,
+            pixels_per_land_territory=self.pixels_per_land_territory_slider.value(),
+            pixels_per_water_territory=self.pixels_per_water_territory_slider.value(),
+            rng_seed=config.DEFAULT_TERRITORIES_RNG_SEED,
+        )
 
     def on_button_generate_provinces(self) -> None:
-        if self.territory_image_display.get_image() is None:
+        if self.territory_image_display.get_data() is None:
             QMessageBox.warning(self, "Warning", "Territories must be generated first")
             return
         
-        def run_task(maptool: MapTool, progress_callback: Callable) -> tuple:
-            province_image, province_image_buffer, province_data = maptool._generate_provinces(
-                self.territory_image_display.get_image_buffer(),
-                self.territory_image_display.get_data(),
-                progress_callback=progress_callback,
-            )
-            return (province_image, province_image_buffer, province_data)
+        def run_task(progress_callback: Callable, **kwargs) -> tuple:
+            return StepMapTool.generate_provinces(**kwargs, progress_callback=progress_callback)
         
         def on_progress(value: int) -> None:
             self.button_gen_provinces.set_progress(value)
@@ -500,8 +494,8 @@ class MapToolWindow(QWidget):
         def on_finished(result: tuple) -> None:
             self.button_gen_provinces.reset_progress()
             self.button_gen_provinces.setEnabled(True)
-            province_image, province_image_buffer, province_data = result
-            self.province_image_display.set_image(province_image)
+            province_image_buffer, province_data = result
+            self.province_image_display.set_image_buffer(province_image_buffer)
             self.province_image_display.set_data(province_data, "Province Data")
         
         def on_error(error: Exception) -> None:
@@ -513,24 +507,16 @@ class MapToolWindow(QWidget):
         self.button_gen_provinces.reset_progress()
         self.button_gen_provinces.setEnabled(False)
         
-        self.provinces_worker = self._create_background_worker(run_task, on_progress, on_finished, on_error)
-
-
-    def _create_maptool(self) -> MapTool:
-        return MapTool(
-            class_image=self.class_image_display.get_image(),
-            boundary_image=self.final_boundary_image_display.get_image(),
-            pixels_per_land_territory=self.pixels_per_land_territory_slider.value(),
-            pixels_per_water_territory=self.pixels_per_water_territory_slider.value(),
+        self.dens_samps_worker = self._create_background_worker(
+            run_task, on_progress, on_finished, on_error,
+            boundary_image=self.final_boundary_image_display.get_image_buffer(),
+            cont_area_image=self.territory_image_display.get_image_buffer(),
+            cont_area_data=self.territory_image_display.get_data(),
             pixels_per_land_province=self.pixels_per_land_province_slider.value(),
             pixels_per_water_province=self.pixels_per_water_province_slider.value(),
-            pixels_per_land_dens_samp=self.pixels_per_land_dens_samp_slider.value(),
-            pixels_per_water_dens_samp=self.pixels_per_water_dens_samp_slider.value(),
-            cont_areas_rng_seed=self.cont_areas_rng_seed_input.value(),
-            dens_samps_rng_seed=int(1_500_000),
-            territories_rng_seed=self.territories_rng_seed_input.value(),
-            provinces_rng_seed=self.provinces_rng_seed_input.value(),
+            rng_seed=config.DEFAULT_TERRITORIES_RNG_SEED,
         )
+    
 
     def _create_seed_input(self, parent_layout: QVBoxLayout, label_text: str, default_value: int) -> QSpinBox:
         row = QHBoxLayout()
@@ -548,11 +534,10 @@ class MapToolWindow(QWidget):
 
         return spinbox
     
-    def _create_background_worker(self, run_task: Callable, on_progress: Callable, on_finished: Callable, on_error: Callable) -> BackgroundWorker:
-        worker = BackgroundWorker(run_task, self._create_maptool())
+    def _create_background_worker(self, run_task: Callable, on_progress: Callable, on_finished: Callable, on_error: Callable, *args, **kwargs) -> BackgroundWorker:
+        worker = BackgroundWorker(run_task, *args, **kwargs)
         worker.progress.connect(on_progress)
         worker.finished.connect(on_finished)
         worker.error.connect(on_error)
         worker.start()
         return worker
-

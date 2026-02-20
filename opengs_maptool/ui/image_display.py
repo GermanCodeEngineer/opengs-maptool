@@ -131,6 +131,9 @@ class ImageDisplay(QWidget):
         self._original_pixmap = QPixmap.fromImage(qimage)
         self._scale_image_to_fit()
     
+    def set_image_buffer(self, image: NDArray[np.uint8]):
+        self.set_image(Image.fromarray(image))
+    
     def set_data(self, data: dict | list, data_name: str = "Data") -> None:
         """Attach JSON/CSV-exportable data to this widget.
 

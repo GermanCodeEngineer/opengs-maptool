@@ -16,7 +16,7 @@ CORE FUNCTIONALITY & BUGS
 [DONE] fix & sort imports
 [DONE] fix generation, there shouldn't be only one region
 [DONE] remove weird attributes of MapToolWindow
- implement instanceless MapTool / rename MapTool and other
+[DONE] implement instanceless MapTool / rename ProcessMapTool and other
  test JSON & CSV exporting & importing
  ensure bbox visualization is perfect still
  make tool work with only one of boundary/class image?
@@ -28,12 +28,14 @@ IMAGE & DATA GENERATION
  maptool options for what images to produce? maybe caching?
  optimize generation (including bbox calculation)
  create slider for & adapt & fix MIN_AREA_PIXELS
- use same default seeds everywhere
+[DONE] use same default seeds & lloyd_iterations everywhere
+ use sea colors for areas + forbid land colors to be sea colors
  warn parent regions aren't bigger than child regions
 
 ====================
 DOCUMENTATION & UI
 ====================
+[NEXT] clean up confusing MapToolWindow code
  add image display zooming & scrolling
  rewrite and update README
  add terms definition to README

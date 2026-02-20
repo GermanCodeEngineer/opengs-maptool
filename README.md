@@ -82,20 +82,20 @@ The graphical interface provides an interactive, step-by-step workflow:
 
 ### Python/Terminal Usage
 
-For programmatic map generation, use the `MapTool` class directly:
+For programmatic map generation, use the `ProcessMapTool` class directly:
 
 ```python
 from pathlib import Path
 from PIL import Image
-from logic.maptool import MapTool
+from logic.maptool import ProcessMapTool
 # TODO: COMPLETELY REDO, ALL DEPRECATED
 
 # Define input/output directories
 input_dir = Path("examples/input")
 output_dir = Path("examples/output")
 
-# Create MapTool instance
-maptool = MapTool(
+# Create ProcessMapTool instance
+ProcessMapTool = ProcessMapTool(
     class_image=Image.open(input_dir / "land2.png"),
     boundary_image=Image.open(input_dir / "bound2_density.png"),
     pixels_per_land_territory=6000,      # Adjust territory size
@@ -110,7 +110,7 @@ maptool = MapTool(
 )
 
 # Generate all maps
-result = maptool.generate()
+result = ProcessMapTool.generate()
 
 # Save result images
 result.cont_area_image.save(output_dir / "cont_area_image.png")
@@ -141,7 +141,7 @@ output_data = {
 The `generate()` method returns a `MapToolResult` object containing both images and metadata:
 
 ```python
-result = maptool.generate()
+result = ProcessMapTool.generate()
 ```
 
 ### Result Images

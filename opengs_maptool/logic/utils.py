@@ -41,13 +41,6 @@ def hex_to_rgb(hex_color: str) -> tuple[int, int, int]:
     return tuple(int(hex_color[i:i+2], 16) for i in (0, 2, 4))
 
 
-def to_image_buffer(image: Image.Image | NDArray[np.uint8]) -> NDArray[np.uint8]:
-    return np.array(image.convert("RGBA"), dtype=np.uint8) if isinstance(image, Image.Image) else image
-
-def to_pil_image(image: Image.Image | NDArray[np.uint8]) -> Image.Image:
-    return Image.fromarray(image) if isinstance(image, np.ndarray) else image
-
-
 def ensure_point_in_mask(mask: NDArray[np.bool_], x: int, y: int) -> tuple[int, int]:
     """Return a point guaranteed to be inside `mask`.
 

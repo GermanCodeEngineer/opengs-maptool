@@ -56,6 +56,11 @@ LLOYD_ALGO_ITERATIONS_STEP = 1
 
 MIN_AREA_PIXELS = 50
 
+DEFAULT_CONT_AREAS_RNG_SEED = 1_000_000
+DEFAULT_DENS_SAMPS_RNG_SEED = 2_000_000
+DEFAULT_TERRITORIES_RNG_SEED = 3_000_000
+DEFAULT_PROVINCES_RNG_SEED = 4_000_000
+
 # Land Map Color Code
 OCEAN_COLOR = (5, 20, 18)  # RGB
 LAND_COLOR = (150, 68, 192)  # RGB
@@ -66,7 +71,7 @@ MAX_IMAGE_PIXELS = 300_000_000
 
 # Image Export (file extension is added later)
 BOUNDARY_IMAGE_FILENAME = "Boundary Image"
-FINAL_BOUNDARY_IMAGE_FILENAME = "Final Boundary && Density Image" # "&&"" results in one "&" in Qt UI
+FINAL_BOUNDARY_IMAGE_FILENAME = "Final Boundary and Density Image"
 CLASS_IMAGE_FILENAME = "Classification Image"
 CONTINUOUS_AREA_IMAGE_FILENAME = "Continuous Area Image"
 DENS_SAMP_IMAGE_FILENAME = "Density Samples Image"

@@ -3,7 +3,7 @@ Generate visualization overlays for areas, dens_samps, territories, and province
 
 This script:
 1. Loads existing map image/data pairs from examples/output
-2. Falls back to generating maps with MapTool when none are available
+2. Falls back to generating maps with ProcessMapTool when none are available
 3. Writes center, bbox, and density overlays for each available map level
 """
 
@@ -12,7 +12,7 @@ from pathlib import Path
 import numpy as np
 from PIL import Image, ImageDraw
 
-from opengs_maptool import MapTool, MapToolResult, RegionMetadata, export_to_csv, export_to_json, import_from_json
+from opengs_maptool import ProcessMapTool, MapToolResult, RegionMetadata, export_to_csv, export_to_json, import_from_json
 
 
 LEVEL_ORDER = ["areas", "dens_samps", "territories", "provinces"]
@@ -112,11 +112,11 @@ def generate_maps(input_dir: Path) -> None:
         raise FileNotFoundError(f"Required input files not found in {example_input_dir}")
 
     print("Generating maps with MapTool...")
-    maptool = MapTool(
+    ProcessMapTool = ProcessMapTool(
         class_image=Image.open(class_image_path),
         boundary_image=Image.open(boundary_image_path),
     )
-    result = maptool.generate()
+    result = ProcessMapTool.generate()
     save_generated_inputs(input_dir, result)
 
 
