@@ -132,10 +132,10 @@ def resolve_bbox(region: RegionMetadata, width: int, height: int) -> tuple[int, 
     if not isinstance(bbox, (list, tuple)) or len(bbox) != 4:
         return 0, 0, width, height
 
-    x0 = int(np.floor(float(bbox[0])))
-    y0 = int(np.floor(float(bbox[1])))
-    x1 = int(np.ceil(float(bbox[2])))
-    y1 = int(np.ceil(float(bbox[3])))
+    x0 = int(bbox[0])
+    y0 = int(bbox[1])
+    x1 = int(bbox[2]) + 1
+    y1 = int(bbox[3]) + 1
 
     x0 = max(0, min(width, x0))
     y0 = max(0, min(height, y0))

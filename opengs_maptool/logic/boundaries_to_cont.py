@@ -83,8 +83,8 @@ def recalculate_bboxes_from_image(
         bbox = (
             int(cols.min()),
             int(rows.min()),
-            int(cols.max()) + 1,
-            int(rows.max()) + 1,
+            int(cols.max()),
+            int(rows.max()),
         )
         
         # Update bbox in metadata
@@ -202,11 +202,11 @@ def convert_boundaries_to_cont_areas(
         rows, cols = np.where(area_mask)
         
         # ====
-        y_min, y_max = int(rows.min()), int(rows.max()) + 1
-        x_min, x_max = int(cols.min()), int(cols.max()) + 1
+        y_min, y_max = int(rows.min()), int(rows.max())
+        x_min, x_max = int(cols.min()), int(cols.max())
         global_bbox = (x_min, y_min, x_max, y_max)
-        cropped_mask = area_mask[y_min:y_max, x_min:x_max]
-        cropped_class_image = class_image[y_min:y_max, x_min:x_max]
+        cropped_mask = area_mask[y_min:(y_max+1), x_min:(x_max+1)]
+        cropped_class_image = class_image[y_min:(y_max+1), x_min:(x_max+1)]
 
         # Determine area type by checking the most common type in this area
         ocean_color = np.array(config.OCEAN_COLOR, dtype=np.uint8)

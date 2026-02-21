@@ -18,7 +18,9 @@ CORE FUNCTIONALITY & BUGS
 [DONE] remove weird attributes of MapToolWindow
 [DONE] implement instanceless MapTool / rename ProcessMapTool and other
  test JSON & CSV exporting & importing
- ensure bbox visualization is perfect still
+[DONE] ensure bbox visualization is perfect still
+[DONE] remove +1 offset for xmax and ymax of bboxes
+[DONE] fix false bounding boxes of dens samps
  make tool work with only one of boundary/class image?
 
 ====================
@@ -27,7 +29,8 @@ IMAGE & DATA GENERATION
  re-add default images
  maptool options for what images to produce? maybe caching?
  optimize generation (including bbox calculation)
- create slider for & adapt & fix MIN_AREA_PIXELS
+ create slider for & adapt & fix MIN_AREA_PIXELS (e.g. Taiwan was sunk)
+ => fix land area/sample being detected as ocean (e.g. Eastern Philipines Island)
 [DONE] use same default seeds & lloyd_iterations everywhere
  use sea colors for areas + forbid land colors to be sea colors
  warn parent regions aren't bigger than child regions
@@ -36,6 +39,7 @@ IMAGE & DATA GENERATION
 DOCUMENTATION & UI
 ====================
 [DONE] clean up confusing MapToolWindow code
+ explain local vs. global fields and how to crop with global and local bbox
  add image display zooming & scrolling
  rewrite and update README
  add terms definition to README
@@ -52,6 +56,7 @@ FUTURE FEATURES
 ====================
 MANUAL/POSTPROCESSING (LATER PR)
 ====================
+ explain why density image should not be a seperate image from boundary image
  optimize border image manually (e.g. Greece, Israel, especially Chile too)
 
 ====================

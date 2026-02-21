@@ -566,7 +566,7 @@ def build_metadata(
         color_hex = color_series.get_color_hex(is_water=(region_type != "land"))
         if counts[i] <= 0:
             cx, cy = sx, sy
-            local_bbox = (int(sx), int(sy), int(sx) + 1, int(sy) + 1)
+            local_bbox = (int(sx), int(sy), int(sx), int(sy))
             pixel_count = 0
         else:
             cx = round(float(sum_x[i] / counts[i]))
@@ -584,7 +584,7 @@ def build_metadata(
                     cx, cy = ensure_point_in_mask(region_mask, sx, sy)
 
             # Convert to integers with floor/ceil for proper pixel coverage
-            local_bbox = (int(min_x[i]),  int(min_y[i]), int(max_x[i]) + 1, int(max_y[i]) + 1)
+            local_bbox = (int(min_x[i]),  int(min_y[i]), int(max_x[i]), int(max_y[i]))
             pixel_count = int(region_mask.sum())
 
         # Create Region (e.g. Territory or Province)

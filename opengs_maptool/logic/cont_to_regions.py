@@ -157,31 +157,27 @@ def convert_all_cont_areas_to_regions(
                 
                 existing_colors.add(color_hex)
                 
-                # Calculate global coordinates from local coordinates
-                if region.local_bbox is not None:
-                    region.global_bbox = (
-                        region.local_bbox[0] + x_min,
-                        region.local_bbox[1] + y_min,
-                        region.local_bbox[2] + x_min,
-                        region.local_bbox[3] + y_min,
-                    )
-                region.global_center = (
-                    int(round(region.local_center[0] + x_min)),
-                    int(round(region.local_center[1] + y_min)),
+                # local fields are guaranteed to not be None for these regions:
+                region.global_bbox = ( 
+                    region.local_bbox[0] + x_min,
+                    region.local_bbox[1] + y_min,
+                    region.local_bbox[2] + x_min,
+                    region.local_bbox[3] + y_min,
                 )
-
-                seed = region.local_seed
-                if isinstance(seed, list) and len(seed) == 2:
-                    region.global_seed = [
-                        int(seed[0] + x_min),
-                        int(seed[1] + y_min),
-                    ]
+                region.global_center = (
+                    region.local_center[0] + x_min,
+                    region.local_center[1] + y_min,
+                )
+                region.global_seed = [
+                    region.local_seed[0] + x_min,
+                    region.local_seed[1] + y_min,
+                ]
                 
                 updated_region_metadata.append(region)
             
             # Only copy pixels with alpha > 0 to avoid overwriting with transparency
             alpha_mask = region_image[:, :, 3] > 0
-            combined_image[y_min:y_max, x_min:x_max][alpha_mask] = region_image[alpha_mask]
+            combined_image[y_min:(y_max+1), x_min:(x_max+1)][alpha_mask] = region_image[alpha_mask]
             combined_metadata.extend(updated_region_metadata)
     
     return combined_image, combined_metadata
@@ -203,10 +199,10 @@ def convert_cont_area_to_regions(args: AreaProcessingArgs) -> tuple[
     if len(rows) == 0:
         return np.zeros((10, 10, 4), dtype=np.uint8), [], None, args.color_series
     
-    y_min, y_max = int(rows.min()), int(rows.max()) + 1
-    x_min, x_max = int(cols.min()), int(cols.max()) + 1
+    y_min, y_max = int(rows.min()), int(rows.max())
+    x_min, x_max = int(cols.min()), int(cols.max())
     bbox = (x_min, y_min, x_max, y_max)
-    cropped_mask = mask[y_min:y_max, x_min:x_max]
+    cropped_mask = mask[y_min:(y_max+1), x_min:(x_max+1)]
     
     region_type = args.parent_area.region_type
     pixel_count = args.parent_area.pixel_count
@@ -214,7 +210,7 @@ def convert_cont_area_to_regions(args: AreaProcessingArgs) -> tuple[
     
     # Compute average density for the whole parent area to calculate subdivision count
     if args.override_density_multiplier:
-        density_src = args.density_image[y_min:y_max, x_min:x_max]
+        density_src = args.density_image[y_min:(y_max+1), x_min:(x_max+1)]
         density_mask = cropped_mask & get_area_pixel_mask(density_src, threshold=0)
         density_multiplier = calculate_density_multiplier(
             density_src,
@@ -255,7 +251,7 @@ def convert_cont_area_to_regions(args: AreaProcessingArgs) -> tuple[
             color=color_hex,
             pixel_count=pixel_count,
             parent_id=args.parent_area.region_id,
-            local_bbox=bbox,
+            local_bbox=(0, 0, x_max - x_min, y_max - y_min), # full cropped area
             local_center=(cx_cropped, cy_cropped),
             local_seed=(seed_x, seed_y),
             global_bbox=None,  # Set later

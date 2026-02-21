@@ -112,11 +112,11 @@ def generate_maps(input_dir: Path) -> None:
         raise FileNotFoundError(f"Required input files not found in {example_input_dir}")
 
     print("Generating maps with MapTool...")
-    ProcessMapTool = ProcessMapTool(
+    maptool = ProcessMapTool(
         class_image=Image.open(class_image_path),
         boundary_image=Image.open(boundary_image_path),
     )
-    result = ProcessMapTool.generate()
+    result = maptool.generate()
     save_generated_inputs(input_dir, result)
 
 
@@ -177,9 +177,13 @@ def draw_bboxes(image: Image.Image, data: list[RegionMetadata], width: int = 2, 
             outline_color = (128, 128, 128)
 
         x0, y0, x1, y1 = bbox
-        bbox_size = min(x1 - x0, y1 - y0)
-        border_width = 1 if bbox_size < 30 else width
-        draw.rectangle([x0, y0, x1, y1], outline=outline_color, width=border_width)
+
+        border_width = 1
+        x1_adj = x1 - 0 # HERE WORKS? TODO
+        y1_adj = y1 - 0
+        # Only draw if box is valid
+        if x1_adj >= x0 and y1_adj >= y0:
+            draw.rectangle([x0, y0, x1_adj, y1_adj], outline=outline_color, width=border_width)
 
     return img_copy
 

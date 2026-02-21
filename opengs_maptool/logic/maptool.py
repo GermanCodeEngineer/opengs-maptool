@@ -368,7 +368,7 @@ class ProcessMapTool:
         self.dens_samps_rng_seed = dens_samps_rng_seed
         self.territories_rng_seed = territories_rng_seed
         self.provinces_rng_seed = provinces_rng_seed
-        self.progress_callback = progress_callback
+        self.progress_callback = progress_callback or (lambda num, denom: None)
    
     def generate(self) -> MapToolResult:
         """
@@ -420,10 +420,10 @@ class ProcessMapTool:
             self.on_provinces_generated(province_image, province_image_buffer, province_data)
 
         return MapToolResult(
-            cont_area_image_buffer, cont_area_data,
-            dens_samp_image_buffer, dens_samp_data,
-            territory_image_buffer, territory_data,
-            province_image_buffer , province_data ,
+            cont_area_image, cont_area_data,
+            dens_samp_image, dens_samp_data,
+            territory_image, territory_data,
+             province_image,  province_data,
         )
 
     def on_cont_areas_generated(self,

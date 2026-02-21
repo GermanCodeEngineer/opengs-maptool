@@ -39,149 +39,101 @@ def main_gui() -> None:
     sys.exit(app.exec())
 
 
-def main_selective_steps(generate_steps=None, regenerate_areas=False, export_csv=False):
-    """
-    Entrypoint to selectively generate steps (cont_areas, dens_samps, territories, provinces).
-    Steps not specified are loaded from files if they exist.
-    """
 
-    def export_formats(data, path: Path) -> None:
-        export_to_json(data, path)
-        if export_csv:
-            export_to_csv(data, path)
-
+def main_stepwise_export():
+    """
+    New entry point: runs the full StepMapTool pipeline, exporting after each step to separate files.
+    """
     input_directory = Path(__file__).parent / "examples" / "input"
     output_directory = Path(__file__).parent / "examples" / "output"
     output_directory.mkdir(parents=True, exist_ok=True)
 
-    # Step file paths
-    paths = {
-        "cont_areas": {
-            "image": output_directory / "cont_area_image.png",
-            "data": output_directory / "cont_area_data.json",
-        },
-        "dens_samps": {
-            "image": output_directory / "dens_samp_image.png",
-            "data": output_directory / "dens_samp_data.json",
-        },
-        "territories": {
-            "image": output_directory / "territory_image.png",
-            "data": output_directory / "territory_data.json",
-        },
-        "provinces": {
-            "image": output_directory / "province_image.png",
-            "data": output_directory / "province_data.json",
-        },
-    }
+    def export_formats(data, path: Path):
+        export_to_json(data, path)
 
-    class_image = StepMapTool.clean_class_image(Image.open(input_directory / "class2_clean.png"))
-    boundary_image = Image.open(input_directory / "bound2_edited.png")
+    class_image_buffer = np.array(StepMapTool.clean_class_image(Image.open(input_directory / "class2_clean.png")))
+    boundary_image_buffer = np.array(Image.open(input_directory / "bound2_edited.png").convert("RGBA"))
 
-    # Use StepMapTool for stepwise generation
-    # Load or generate cont_areas
-    if "cont_areas" in generate_steps or regenerate_areas:
+    regenerate = getattr(sys.modules["__main__"], "args", None)
+    regenerate = getattr(regenerate, "regenerate", False)
+
+    # Step 1: cont_areas
+    cont_area_img_path = output_directory / "cont_area_image.png"
+    cont_area_data_path = output_directory / "cont_area_data.json"
+    if regenerate or not (cont_area_img_path.exists() and cont_area_data_path.exists()):
         cont_area_image_buffer, cont_area_data = StepMapTool.generate_cont_areas(
-            class_image, np.array(boundary_image.convert("RGBA")),
+            class_image_buffer, boundary_image_buffer,
         )
-        Image.fromarray(cont_area_image_buffer).save(paths["cont_areas"]["image"])
-        export_formats(cont_area_data, paths["cont_areas"]["data"])
+        Image.fromarray(cont_area_image_buffer).save(cont_area_img_path)
+        export_formats(cont_area_data, cont_area_data_path)
     else:
-        if not paths["cont_areas"]["image"].exists() or not paths["cont_areas"]["data"].exists():
-            raise FileNotFoundError("Missing precomputed area files.")
-        cont_area_image_buffer = np.array(Image.open(paths["cont_areas"]["image"]).convert("RGBA"), dtype=np.uint8)
-        cont_area_data = import_from_json(paths["cont_areas"]["data"])
+        cont_area_image_buffer = np.array(Image.open(cont_area_img_path).convert("RGBA"))
+        cont_area_data = import_from_json(cont_area_data_path)
 
-    # Load or generate dens_samps
-    if "dens_samps" in generate_steps:
+    # Step 2: dens_samps
+    dens_samp_img_path = output_directory / "dens_samp_image.png"
+    dens_samp_data_path = output_directory / "dens_samp_data.json"
+    if regenerate or not (dens_samp_img_path.exists() and dens_samp_data_path.exists()):
         dens_samp_image_buffer, dens_samp_data = StepMapTool.generate_dens_samps(
-            np.array(boundary_image.convert("RGBA")),
+            boundary_image_buffer,
             cont_area_image_buffer,
             cont_area_data,
-            pixels_per_land_dens_samp=1000,
-            pixels_per_water_dens_samp=1000,
+            pixels_per_land_dens_samp=config.PIXELS_PER_LAND_DENS_SAMP_DEFAULT,
+            pixels_per_water_dens_samp=config.PIXELS_PER_WATER_DENS_SAMP_DEFAULT,
         )
-        Image.fromarray(dens_samp_image_buffer).save(paths["dens_samps"]["image"])
-        export_formats(dens_samp_data, paths["dens_samps"]["data"])
+        Image.fromarray(dens_samp_image_buffer).save(dens_samp_img_path)
+        export_formats(dens_samp_data, dens_samp_data_path)
     else:
-        if paths["dens_samps"]["image"].exists() and paths["dens_samps"]["data"].exists():
-            dens_samp_image_buffer = np.array(Image.open(paths["dens_samps"]["image"]).convert("RGBA"), dtype=np.uint8)
-            dens_samp_data = import_from_json(paths["dens_samps"]["data"])
-        else:
-            dens_samp_image_buffer, dens_samp_data = StepMapTool.generate_dens_samps(
-                np.array(boundary_image.convert("RGBA")),
-                cont_area_image_buffer,
-                cont_area_data,
-                pixels_per_land_dens_samp=1000,
-                pixels_per_water_dens_samp=1000,
-            )
-            Image.fromarray(dens_samp_image_buffer).save(paths["dens_samps"]["image"])
-            export_formats(dens_samp_data, paths["dens_samps"]["data"])
+        dens_samp_image_buffer = np.array(Image.open(dens_samp_img_path).convert("RGBA"))
+        dens_samp_data = import_from_json(dens_samp_data_path)
 
-    # Repeat for territories
-    if "territories" in generate_steps:
+    # Step 3: territories
+    territory_img_path = output_directory / "territory_image.png"
+    territory_data_path = output_directory / "territory_data.json"
+    if regenerate or not (territory_img_path.exists() and territory_data_path.exists()):
         territory_image_buffer, territory_data = StepMapTool.generate_territories(
-            np.array(boundary_image.convert("RGBA")),
+            boundary_image_buffer,
             dens_samp_image_buffer,
             dens_samp_data,
-            pixels_per_land_territory=1000,
-            pixels_per_water_territory=1000,
+            pixels_per_land_territory=config.PIXELS_PER_LAND_TERRITORY_DEFAULT,
+            pixels_per_water_territory=config.PIXELS_PER_WATER_TERRITORY_DEFAULT,
         )
-        Image.fromarray(territory_image_buffer).save(paths["territories"]["image"])
-        export_formats(territory_data, paths["territories"]["data"])
+        Image.fromarray(territory_image_buffer).save(territory_img_path)
+        export_formats(territory_data, territory_data_path)
     else:
-        if paths["territories"]["image"].exists() and paths["territories"]["data"].exists():
-            territory_image_buffer = np.array(Image.open(paths["territories"]["image"]).convert("RGBA"), dtype=np.uint8)
-            territory_data = import_from_json(paths["territories"]["data"])
-        else:
-            territory_image_buffer, territory_data = StepMapTool.generate_territories(
-                np.array(boundary_image.convert("RGBA")),
-                dens_samp_image_buffer,
-                dens_samp_data,
-                pixels_per_land_territory=1000,
-                pixels_per_water_territory=1000,
-            )
-            Image.fromarray(territory_image_buffer).save(paths["territories"]["image"])
-            export_formats(territory_data, paths["territories"]["data"])
+        territory_image_buffer = np.array(Image.open(territory_img_path).convert("RGBA"))
+        territory_data = import_from_json(territory_data_path)
 
-    # Repeat for provinces
-    if "provinces" in generate_steps:
+    # Step 4: provinces
+    province_img_path = output_directory / "province_image.png"
+    province_data_path = output_directory / "province_data.json"
+    if regenerate or not (province_img_path.exists() and province_data_path.exists()):
         province_image_buffer, province_data = StepMapTool.generate_provinces(
-            np.array(boundary_image.convert("RGBA")),
+            boundary_image_buffer,
             territory_image_buffer,
             territory_data,
-            pixels_per_land_province=1000,
-            pixels_per_water_province=1000,
+            pixels_per_land_province=config.PIXELS_PER_LAND_PROVINCE_DEFAULT,
+            pixels_per_water_province=config.PIXELS_PER_WATER_PROVINCE_DEFAULT,
         )
-        Image.fromarray(province_image_buffer).save(paths["provinces"]["image"])
-        export_formats(province_data, paths["provinces"]["data"])
+        Image.fromarray(province_image_buffer).save(province_img_path)
+        export_formats(province_data, province_data_path)
     else:
-        if paths["provinces"]["image"].exists() and paths["provinces"]["data"].exists():
-            province_image_buffer = np.array(Image.open(paths["provinces"]["image"]).convert("RGBA"), dtype=np.uint8)
-            province_data = import_from_json(paths["provinces"]["data"])
-        else:
-            province_image_buffer, province_data = StepMapTool.generate_provinces(
-                np.array(boundary_image.convert("RGBA")),
-                territory_image_buffer,
-                territory_data,
-                pixels_per_land_province=1000,
-                pixels_per_water_province=1000,
-            )
-            Image.fromarray(province_image_buffer).save(paths["provinces"]["image"])
-            export_formats(province_data, paths["provinces"]["data"])
+        province_image_buffer = np.array(Image.open(province_img_path).convert("RGBA"))
+        province_data = import_from_json(province_data_path)
 
     # Save summary data
-    export_to_json(dict(
-        cont_areas=cont_area_data,
-        dens_samps=dens_samp_data,
-        territories=territory_data,
-        provinces=province_data,
-    ), output_directory / "data.json")
+    export_to_json({
+        "cont_areas": cont_area_data,
+        "dens_samps": dens_samp_data,
+        "territories": territory_data,
+        "provinces": province_data,
+    }, output_directory / "data.json")
 
 def parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser(description="OpenGS MapTool entrypoints")
     parser.add_argument("-gui", action="store_true", help="Launch the GUI")
-    parser.add_argument("-steps", nargs="*", default=[], help="Steps to generate: cont_areas, dens_samps, territories, provinces")
-    parser.add_argument("-regenerate-areas", action="store_true", help="Regenerate continuous areas before other steps")
+    parser.add_argument("-stepwise-export", action="store_true", help="Run the full stepwise pipeline and export after each step")
+    parser.add_argument("-regenerate", action="store_true", help="Regenerate all outputs even if files exist")
     return parser.parse_args()
 
 if __name__ == "__main__":
@@ -189,7 +141,7 @@ if __name__ == "__main__":
 
     if args.gui:
         main_gui()
-    elif args.steps:
-        main_selective_steps(generate_steps=args.steps, regenerate_areas=args.regenerate_areas)
+    elif hasattr(args, "stepwise_export") and args.stepwise_export:
+        main_stepwise_export()
     else:
         main_automatic()
