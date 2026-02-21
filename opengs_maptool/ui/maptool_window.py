@@ -1,6 +1,8 @@
 import logging
+from pathlib import Path
+from PIL import Image
 from PyQt6.QtCore import Qt, QThread, pyqtSignal
-from PyQt6.QtGui import QCloseEvent
+from PyQt6.QtGui import QCloseEvent, QCursor
 from PyQt6.QtWidgets import (
     QWidget, QVBoxLayout, QHBoxLayout, QTabWidget, QLabel,
     QPushButton, QMessageBox, QSpinBox, QSizePolicy, QScrollArea,
@@ -14,6 +16,10 @@ from opengs_maptool.ui.image_display import ImageDisplay, EMPTY_IMAGE
 from opengs_maptool.ui.flappy_bird_game import start_flappy_bird_process
 from opengs_maptool import config
 
+
+EXAMPLE_INPUT_DIR = Path(__file__).parent.parent / "examples" / "input"
+EXAMPLE_BOUNDARY_IMAGE_PATH = EXAMPLE_INPUT_DIR / "bound2_norm.png"
+EXAMPLE_CLASS_IAMGE_PATH = EXAMPLE_INPUT_DIR / "class2_clean.png"
 
 def log_error_with_traceback(error: Exception, message: str) -> None:
     try: # Use a trick to insert the message before the error
@@ -101,7 +107,7 @@ class MapToolWindow(QWidget):
 
         self.create_start_tab()
         self.tabs.addTab(self.readme_tab, "Getting Started")
-        self.create_boundary_tab()
+        self.create_density_tab()
         self.tabs.addTab(self.boundary_tab, "Create Density Image")
         self.create_input_images_tab()
         self.tabs.addTab(self.input_tab, "Input Images")
@@ -153,15 +159,18 @@ class MapToolWindow(QWidget):
         self.readme_tab = scroll
 
     # TAB 2
-    def create_boundary_tab(self) -> None:
-        
+    def create_density_tab(self) -> None:
         content_widget = QWidget()
-        boundary_tab_layout = QVBoxLayout(content_widget)
-        create_button(boundary_tab_layout, f"Import and Clean {config.BOUNDARY_IMAGE_FILENAME}", self.on_button_import_boundary)
+        density_tab_layout = QVBoxLayout(content_widget)
+        
+        boundary_button_row = QHBoxLayout()
+        density_tab_layout.addLayout(boundary_button_row)
+        create_button(boundary_button_row, f"Import and Clean {config.BOUNDARY_IMAGE_FILENAME}", self.on_button_import_boundary)
+        create_button(boundary_button_row, "Load Example", self.on_button_load_example_boundary)
 
         self.adapt_boundary_image_display = ImageDisplay(name=config.BOUNDARY_IMAGE_FILENAME)
         self.adapt_boundary_image_display.setMinimumHeight(int(self.height() * 0.7) if self.height() > 0 else 200)
-        boundary_tab_layout.addWidget(self.adapt_boundary_image_display, stretch=1)
+        density_tab_layout.addWidget(self.adapt_boundary_image_display, stretch=1)
 
         instruction_label = QLabel(
             "<h3>Instructions:</h3>"
@@ -173,7 +182,7 @@ class MapToolWindow(QWidget):
             "<p>5. Upload the edited image in the next tab</p>"
         )
         instruction_label.setWordWrap(True)
-        boundary_tab_layout.addWidget(instruction_label)
+        density_tab_layout.addWidget(instruction_label)
         scroll = QScrollArea()
         scroll.setWidgetResizable(True)
         scroll.setWidget(content_widget)
@@ -190,10 +199,14 @@ class MapToolWindow(QWidget):
         create_button(boundary_button_row, "Keep Generated Image", self.on_button_keep_generated_boundary)
 
         self.final_boundary_image_display = ImageDisplay(name=config.FINAL_BOUNDARY_IMAGE_FILENAME)
+        
         self.final_boundary_image_display.setMinimumHeight(int(self.height() * 0.7) if self.height() > 0 else 200)
         input_tab_layout.addWidget(self.final_boundary_image_display, stretch=1)
 
-        create_button(input_tab_layout, f"Import and Clean {config.CLASS_IMAGE_FILENAME}", self.on_button_import_class)
+        class_button_row = QHBoxLayout()
+        input_tab_layout.addLayout(class_button_row)
+        create_button(class_button_row, f"Import and Clean {config.CLASS_IMAGE_FILENAME}", self.on_button_import_class)
+        create_button(class_button_row, "Load Example", self.on_button_load_example_class)
         self.class_image_display = ImageDisplay(name=config.CLASS_IMAGE_FILENAME)
         self.class_image_display.setMinimumHeight(int(self.height() * 0.7) if self.height() > 0 else 200)
         input_tab_layout.addWidget(self.class_image_display, stretch=1)
@@ -345,6 +358,14 @@ class MapToolWindow(QWidget):
             log_error_with_traceback(error, "Error processing boundary image")
             QMessageBox.critical(self, "Error", f"Error processing boundary image: {error}")
 
+    def on_button_load_example_boundary(self) -> None:
+        try:
+            img = Image.open(EXAMPLE_BOUNDARY_IMAGE_PATH)
+            self.adapt_boundary_image_display.set_image(img)
+        except Exception as error:
+            log_error_with_traceback(error, "Error loading example image")
+            QMessageBox.critical(self, "Error", f"Error loading example image: {error}")
+
     # TAB 3
     def on_button_import_final_boundary(self) -> None:
         self.final_boundary_image_display.import_image()
@@ -366,7 +387,15 @@ class MapToolWindow(QWidget):
         except Exception as error:
             log_error_with_traceback(error, "Error processing classification image")
             QMessageBox.critical(self, "Error", f"Error processing classification image: {error}")
-
+    
+    def on_button_load_example_class(self) -> None:
+        try:
+            img = Image.open(EXAMPLE_CLASS_IAMGE_PATH)
+            self.class_image_display.set_image(img)
+        except Exception as error:
+            log_error_with_traceback(error, "Error loading example image")
+            QMessageBox.critical(self, "Error", f"Error loading example image: {error}")
+    
     # TAB 4-7
     def on_button_generate_areas(self) -> None:
         self._start_generation(

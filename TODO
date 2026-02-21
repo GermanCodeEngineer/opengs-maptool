@@ -25,8 +25,8 @@ CORE FUNCTIONALITY & BUGS
 ====================
 IMAGE & DATA GENERATION
 ====================
- re-add default images
- maptool options for what images to produce? maybe caching?
+[DONE] re-add default images
+ allow importing area/region images
  optimize generation (including bbox calculation)
  create slider for & adapt & fix MIN_AREA_PIXELS (e.g. Taiwan was sunk)
  => fix land area/sample being detected as ocean (e.g. Eastern Philipines Island)

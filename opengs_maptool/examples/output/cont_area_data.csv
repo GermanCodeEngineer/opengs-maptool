@@ -1,0 +1,2 @@
+region_id,region_type,color,pixel_count,parent_id,local_bbox_min_x,local_bbox_min_y,local_bbox_max_x,local_bbox_max_y,local_center_x,local_center_y,local_seed_x,local_seed_y,global_bbox_min_x,global_bbox_min_y,global_bbox_max_x,global_bbox_max_y,global_center_x,global_center_y,global_seed_x,global_seed_y
+AREA000001,land,#ad69c1,1440000,,,,,,,,,,0,0,1599,899,800,450,800,450

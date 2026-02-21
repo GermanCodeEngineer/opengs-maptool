@@ -131,6 +131,29 @@ class ImageDisplay(QWidget):
         button_layout.setSpacing(5)
         button_layout.addStretch()
 
+        # Example image button (icon, leftmost)
+        self._example_image_button = QPushButton()
+        example_icon_path = Path(__file__).resolve().parent / "assets" / "example-icon.svg"
+        if example_icon_path.exists():
+            self._example_image_button.setIcon(QIcon(str(example_icon_path)))
+            self._example_image_button.setIconSize(QSize(24, 24))
+        else:
+            self._example_image_button.setText("Ex")
+        self._example_image_button.setMaximumSize(40, 40)
+        self._example_image_button.setStyleSheet(
+            "QPushButton { "
+            "  background-color: rgba(0, 0, 0, 150); "
+            "  border: none; "
+            "  border-radius: 5px; "
+            "  padding: 5px; "
+            "} "
+            "QPushButton:hover { background-color: rgba(0, 0, 0, 200); }"
+        )
+        self._example_image_button.clicked.connect(self._on_load_example_image)
+        self._example_image_button.setVisible(False)
+        # Move to leftmost position
+        button_layout.insertWidget(0, self._example_image_button)
+
         # JSON export button
         self._download_json_button = QPushButton()
         json_icon_path = Path(__file__).resolve().parent / "assets" / "json-icon.svg"
@@ -305,6 +328,14 @@ class ImageDisplay(QWidget):
             path += ".csv"
         if path and len(self._data) > 0:
             export_to_csv(self._data, path)
+
+    def _on_load_example_image(self) -> None:
+        if self.example_image_path:
+            try:
+                img = Image.open(self.example_image_path)
+                self.set_image(img)
+            except Exception as e:
+                print(f"Failed to load example image: {e}")
 
     def import_image(self) -> bool:
         Image.MAX_IMAGE_PIXELS = config.MAX_IMAGE_PIXELS

@@ -1,0 +1,8606 @@
+[
+  {
+    "region_id": "TRT000001",
+    "region_type": "land",
+    "color": "#b2639d",
+    "pixel_count": 5476,
+    "density_multiplier": 1.0,
+    "parent_id": "DST000001",
+    "local_bbox": [
+      5,
+      70,
+      117,
+      146
+    ],
+    "local_center": [
+      63,
+      109
+    ],
+    "local_seed": [
+      65,
+      111
+    ],
+    "global_bbox": [
+      790,
+      238,
+      902,
+      314
+    ],
+    "global_center": [
+      848,
+      277
+    ],
+    "global_seed": [
+      850,
+      279
+    ]
+  },
+  {
+    "region_id": "TRT000002",
+    "region_type": "land",
+    "color": "#170752",
+    "pixel_count": 7757,
+    "density_multiplier": 1.0,
+    "parent_id": "DST000001",
+    "local_bbox": [
+      99,
+      92,
+      195,
+      201
+    ],
+    "local_center": [
+      148,
+      149
+    ],
+    "local_seed": [
+      148,
+      149
+    ],
+    "global_bbox": [
+      884,
+      260,
+      980,
+      369
+    ],
+    "global_center": [
+      933,
+      317
+    ],
+    "global_seed": [
+      933,
+      317
+    ]
+  },
+  {
+    "region_id": "TRT000003",
+    "region_type": "land",
+    "color": "#700c49",
+    "pixel_count": 7107,
+    "density_multiplier": 1.0,
+    "parent_id": "DST000001",
+    "local_bbox": [
+      82,
+      1,
+      178,
+      106
+    ],
+    "local_center": [
+      126,
+      56
+    ],
+    "local_seed": [
+      124,
+      55
+    ],
+    "global_bbox": [
+      867,
+      169,
+      963,
+      274
+    ],
+    "global_center": [
+      911,
+      224
+    ],
+    "global_seed": [
+      909,
+      223
+    ]
+  },
+  {
+    "region_id": "TRT000004",
+    "region_type": "land",
+    "color": "#96ea1b",
+    "pixel_count": 4667,
+    "density_multiplier": 1.0,
+    "parent_id": "DST000001",
+    "local_bbox": [
+      15,
+      127,
+      106,
+      195
+    ],
+    "local_center": [
+      58,
+      163
+    ],
+    "local_seed": [
+      56,
+      164
+    ],
+    "global_bbox": [
+      800,
+      295,
+      891,
+      363
+    ],
+    "global_center": [
+      843,
+      331
+    ],
+    "global_seed": [
+      841,
+      332
+    ]
+  },
+  {
+    "region_id": "TRT000005",
+    "region_type": "land",
+    "color": "#d0b962",
+    "pixel_count": 5690,
+    "density_multiplier": 1.0,
+    "parent_id": "DST000001",
+    "local_bbox": [
+      0,
+      0,
+      90,
+      97
+    ],
+    "local_center": [
+      45,
+      46
+    ],
+    "local_seed": [
+      42,
+      47
+    ],
+    "global_bbox": [
+      785,
+      168,
+      875,
+      265
+    ],
+    "global_center": [
+      830,
+      214
+    ],
+    "global_seed": [
+      827,
+      215
+    ]
+  },
+  {
+    "region_id": "TRT000006",
+    "region_type": "land",
+    "color": "#4812f5",
+    "pixel_count": 7144,
+    "density_multiplier": 1.0,
+    "parent_id": "DST000002",
+    "local_bbox": [
+      0,
+      65,
+      94,
+      180
+    ],
+    "local_center": [
+      45,
+      127
+    ],
+    "local_seed": [
+      45,
+      125
+    ],
+    "global_bbox": [
+      958,
+      364,
+      1052,
+      479
+    ],
+    "global_center": [
+      1003,
+      426
+    ],
+    "global_seed": [
+      1003,
+      424
+    ]
+  },
+  {
+    "region_id": "TRT000007",
+    "region_type": "land",
+    "color": "#88ed85",
+    "pixel_count": 5968,
+    "density_multiplier": 1.0,
+    "parent_id": "DST000002",
+    "local_bbox": [
+      76,
+      98,
+      164,
+      188
+    ],
+    "local_center": [
+      125,
+      149
+    ],
+    "local_seed": [
+      132,
+      153
+    ],
+    "global_bbox": [
+      1034,
+      397,
+      1122,
+      487
+    ],
+    "global_center": [
+      1083,
+      448
+    ],
+    "global_seed": [
+      1090,
+      452
+    ]
+  },
+  {
+    "region_id": "TRT000008",
+    "region_type": "land",
+    "color": "#15b099",
+    "pixel_count": 7966,
+    "density_multiplier": 1.0,
+    "parent_id": "DST000002",
+    "local_bbox": [
+      6,
+      13,
+      132,
+      113
+    ],
+    "local_center": [
+      75,
+      61
+    ],
+    "local_seed": [
+      82,
+      65
+    ],
+    "global_bbox": [
+      964,
+      312,
+      1090,
+      412
+    ],
+    "global_center": [
+      1033,
+      360
+    ],
+    "global_seed": [
+      1040,
+      364
+    ]
+  },
+  {
+    "region_id": "TRT000009",
+    "region_type": "land",
+    "color": "#1af5f3",
+    "pixel_count": 3959,
+    "density_multiplier": 1.0,
+    "parent_id": "DST000002",
+    "local_bbox": [
+      165,
+      113,
+      220,
+      196
+    ],
+    "local_center": [
+      193,
+      154
+    ],
+    "local_seed": [
+      196,
+      153
+    ],
+    "global_bbox": [
+      1123,
+      412,
+      1178,
+      495
+    ],
+    "global_center": [
+      1151,
+      453
+    ],
+    "global_seed": [
+      1154,
+      452
+    ]
+  },
+  {
+    "region_id": "TRT000010",
+    "region_type": "land",
+    "color": "#0fa299",
+    "pixel_count": 5182,
+    "density_multiplier": 1.0,
+    "parent_id": "DST000002",
+    "local_bbox": [
+      127,
+      41,
+      220,
+      123
+    ],
+    "local_center": [
+      177,
+      87
+    ],
+    "local_seed": [
+      180,
+      86
+    ],
+    "global_bbox": [
+      1085,
+      340,
+      1178,
+      422
+    ],
+    "global_center": [
+      1135,
+      386
+    ],
+    "global_seed": [
+      1138,
+      385
+    ]
+  },
+  {
+    "region_id": "TRT000011",
+    "region_type": "land",
+    "color": "#40bb09",
+    "pixel_count": 5128,
+    "density_multiplier": 1.0,
+    "parent_id": "DST000002",
+    "local_bbox": [
+      104,
+      0,
+      212,
+      72
+    ],
+    "local_center": [
+      158,
+      31
+    ],
+    "local_seed": [
+      158,
+      30
+    ],
+    "global_bbox": [
+      1062,
+      299,
+      1170,
+      371
+    ],
+    "global_center": [
+      1116,
+      330
+    ],
+    "global_seed": [
+      1116,
+      329
+    ]
+  },
+  {
+    "region_id": "TRT000012",
+    "region_type": "land",
+    "color": "#4a8377",
+    "pixel_count": 4948,
+    "density_multiplier": 1.0,
+    "parent_id": "DST000003",
+    "local_bbox": [
+      5,
+      31,
+      89,
+      121
+    ],
+    "local_center": [
+      39,
+      77
+    ],
+    "local_seed": [
+      36,
+      73
+    ],
+    "global_bbox": [
+      846,
+      31,
+      930,
+      121
+    ],
+    "global_center": [
+      880,
+      77
+    ],
+    "global_seed": [
+      877,
+      73
+    ]
+  },
+  {
+    "region_id": "TRT000013",
+    "region_type": "land",
+    "color": "#0da3c1",
+    "pixel_count": 6618,
+    "density_multiplier": 1.0,
+    "parent_id": "DST000003",
+    "local_bbox": [
+      82,
+      79,
+      173,
+      182
+    ],
+    "local_center": [
+      130,
+      119
+    ],
+    "local_seed": [
+      129,
+      118
+    ],
+    "global_bbox": [
+      923,
+      79,
+      1014,
+      182
+    ],
+    "global_center": [
+      971,
+      119
+    ],
+    "global_seed": [
+      970,
+      118
+    ]
+  },
+  {
+    "region_id": "TRT000014",
+    "region_type": "land",
+    "color": "#3c5cb4",
+    "pixel_count": 5791,
+    "density_multiplier": 1.0,
+    "parent_id": "DST000003",
+    "local_bbox": [
+      87,
+      0,
+      170,
+      80
+    ],
+    "local_center": [
+      129,
+      41
+    ],
+    "local_seed": [
+      130,
+      41
+    ],
+    "global_bbox": [
+      928,
+      0,
+      1011,
+      80
+    ],
+    "global_center": [
+      970,
+      41
+    ],
+    "global_seed": [
+      971,
+      41
+    ]
+  },
+  {
+    "region_id": "TRT000015",
+    "region_type": "land",
+    "color": "#ab97af",
+    "pixel_count": 6287,
+    "density_multiplier": 1.0,
+    "parent_id": "DST000003",
+    "local_bbox": [
+      8,
+      98,
+      113,
+      189
+    ],
+    "local_center": [
+      59,
+      146
+    ],
+    "local_seed": [
+      59,
+      144
+    ],
+    "global_bbox": [
+      849,
+      98,
+      954,
+      189
+    ],
+    "global_center": [
+      900,
+      146
+    ],
+    "global_seed": [
+      900,
+      144
+    ]
+  },
+  {
+    "region_id": "TRT000016",
+    "region_type": "land",
+    "color": "#0691a7",
+    "pixel_count": 4489,
+    "density_multiplier": 1.0,
+    "parent_id": "DST000003",
+    "local_bbox": [
+      0,
+      0,
+      101,
+      65
+    ],
+    "local_center": [
+      55,
+      24
+    ],
+    "local_seed": [
+      58,
+      24
+    ],
+    "global_bbox": [
+      841,
+      0,
+      942,
+      65
+    ],
+    "global_center": [
+      896,
+      24
+    ],
+    "global_seed": [
+      899,
+      24
+    ]
+  },
+  {
+    "region_id": "TRT000017",
+    "region_type": "land",
+    "color": "#90958f",
+    "pixel_count": 7244,
+    "density_multiplier": 1.0,
+    "parent_id": "DST000004",
+    "local_bbox": [
+      8,
+      0,
+      128,
+      89
+    ],
+    "local_center": [
+      80,
+      38
+    ],
+    "local_seed": [
+      84,
+      34
+    ],
+    "global_bbox": [
+      759,
+      356,
+      879,
+      445
+    ],
+    "global_center": [
+      831,
+      394
+    ],
+    "global_seed": [
+      835,
+      390
+    ]
+  },
+  {
+    "region_id": "TRT000018",
+    "region_type": "land",
+    "color": "#2d2df9",
+    "pixel_count": 5064,
+    "density_multiplier": 1.0,
+    "parent_id": "DST000004",
+    "local_bbox": [
+      126,
+      8,
+      218,
+      70
+    ],
+    "local_center": [
+      168,
+      40
+    ],
+    "local_seed": [
+      170,
+      43
+    ],
+    "global_bbox": [
+      877,
+      364,
+      969,
+      426
+    ],
+    "global_center": [
+      919,
+      396
+    ],
+    "global_seed": [
+      921,
+      399
+    ]
+  },
+  {
+    "region_id": "TRT000019",
+    "region_type": "land",
+    "color": "#907395",
+    "pixel_count": 6736,
+    "density_multiplier": 1.0,
+    "parent_id": "DST000004",
+    "local_bbox": [
+      51,
+      82,
+      153,
+      182
+    ],
+    "local_center": [
+      108,
+      144
+    ],
+    "local_seed": [
+      113,
+      142
+    ],
+    "global_bbox": [
+      802,
+      438,
+      904,
+      538
+    ],
+    "global_center": [
+      859,
+      500
+    ],
+    "global_seed": [
+      864,
+      498
+    ]
+  },
+  {
+    "region_id": "TRT000020",
+    "region_type": "land",
+    "color": "#2775e0",
+    "pixel_count": 8060,
+    "density_multiplier": 1.0,
+    "parent_id": "DST000004",
+    "local_bbox": [
+      0,
+      42,
+      95,
+      185
+    ],
+    "local_center": [
+      40,
+      109
+    ],
+    "local_seed": [
+      43,
+      106
+    ],
+    "global_bbox": [
+      751,
+      398,
+      846,
+      541
+    ],
+    "global_center": [
+      791,
+      465
+    ],
+    "global_seed": [
+      794,
+      462
+    ]
+  },
+  {
+    "region_id": "TRT000021",
+    "region_type": "land",
+    "color": "#13e532",
+    "pixel_count": 3890,
+    "density_multiplier": 1.0,
+    "parent_id": "DST000004",
+    "local_bbox": [
+      153,
+      97,
+      227,
+      180
+    ],
+    "local_center": [
+      187,
+      143
+    ],
+    "local_seed": [
+      193,
+      140
+    ],
+    "global_bbox": [
+      904,
+      453,
+      978,
+      536
+    ],
+    "global_center": [
+      938,
+      499
+    ],
+    "global_seed": [
+      944,
+      496
+    ]
+  },
+  {
+    "region_id": "TRT000022",
+    "region_type": "land",
+    "color": "#b47bea",
+    "pixel_count": 4665,
+    "density_multiplier": 1.0,
+    "parent_id": "DST000004",
+    "local_bbox": [
+      115,
+      69,
+      227,
+      132
+    ],
+    "local_center": [
+      169,
+      93
+    ],
+    "local_seed": [
+      169,
+      96
+    ],
+    "global_bbox": [
+      866,
+      425,
+      978,
+      488
+    ],
+    "global_center": [
+      920,
+      449
+    ],
+    "global_seed": [
+      920,
+      452
+    ]
+  },
+  {
+    "region_id": "TRT000023",
+    "region_type": "land",
+    "color": "#23089a",
+    "pixel_count": 6815,
+    "density_multiplier": 1.0,
+    "parent_id": "DST000005",
+    "local_bbox": [
+      56,
+      132,
+      184,
+      200
+    ],
+    "local_center": [
+      123,
+      171
+    ],
+    "local_seed": [
+      114,
+      173
+    ],
+    "global_bbox": [
+      1227,
+      401,
+      1355,
+      469
+    ],
+    "global_center": [
+      1294,
+      440
+    ],
+    "global_seed": [
+      1285,
+      442
+    ]
+  },
+  {
+    "region_id": "TRT000024",
+    "region_type": "land",
+    "color": "#81f428",
+    "pixel_count": 4759,
+    "density_multiplier": 1.0,
+    "parent_id": "DST000005",
+    "local_bbox": [
+      47,
+      58,
+      132,
+      142
+    ],
+    "local_center": [
+      96,
+      103
+    ],
+    "local_seed": [
+      96,
+      102
+    ],
+    "global_bbox": [
+      1218,
+      327,
+      1303,
+      411
+    ],
+    "global_center": [
+      1267,
+      372
+    ],
+    "global_seed": [
+      1267,
+      371
+    ]
+  },
+  {
+    "region_id": "TRT000025",
+    "region_type": "land",
+    "color": "#6b3cbc",
+    "pixel_count": 7386,
+    "density_multiplier": 1.0,
+    "parent_id": "DST000005",
+    "local_bbox": [
+      123,
+      23,
+      200,
+      161
+    ],
+    "local_center": [
+      163,
+      90
+    ],
+    "local_seed": [
+      163,
+      95
+    ],
+    "global_bbox": [
+      1294,
+      292,
+      1371,
+      430
+    ],
+    "global_center": [
+      1334,
+      359
+    ],
+    "global_seed": [
+      1334,
+      364
+    ]
+  },
+  {
+    "region_id": "TRT000026",
+    "region_type": "land",
+    "color": "#afdcae",
+    "pixel_count": 6740,
+    "density_multiplier": 1.0,
+    "parent_id": "DST000005",
+    "local_bbox": [
+      0,
+      73,
+      78,
+      199
+    ],
+    "local_center": [
+      34,
+      142
+    ],
+    "local_seed": [
+      31,
+      140
+    ],
+    "global_bbox": [
+      1171,
+      342,
+      1249,
+      468
+    ],
+    "global_center": [
+      1205,
+      411
+    ],
+    "global_seed": [
+      1202,
+      409
+    ]
+  },
+  {
+    "region_id": "TRT000027",
+    "region_type": "land",
+    "color": "#59f430",
+    "pixel_count": 7211,
+    "density_multiplier": 1.0,
+    "parent_id": "DST000005",
+    "local_bbox": [
+      0,
+      0,
+      141,
+      92
+    ],
+    "local_center": [
+      71,
+      48
+    ],
+    "local_seed": [
+      70,
+      48
+    ],
+    "global_bbox": [
+      1171,
+      269,
+      1312,
+      361
+    ],
+    "global_center": [
+      1242,
+      317
+    ],
+    "global_seed": [
+      1241,
+      317
+    ]
+  },
+  {
+    "region_id": "TRT000028",
+    "region_type": "land",
+    "color": "#2b91e4",
+    "pixel_count": 6507,
+    "density_multiplier": 1.0,
+    "parent_id": "DST000009",
+    "local_bbox": [
+      34,
+      93,
+      132,
+      205
+    ],
+    "local_center": [
+      87,
+      158
+    ],
+    "local_seed": [
+      87,
+      154
+    ],
+    "global_bbox": [
+      702,
+      93,
+      800,
+      205
+    ],
+    "global_center": [
+      755,
+      158
+    ],
+    "global_seed": [
+      755,
+      154
+    ]
+  },
+  {
+    "region_id": "TRT000029",
+    "region_type": "land",
+    "color": "#6e2df5",
+    "pixel_count": 7053,
+    "density_multiplier": 1.0,
+    "parent_id": "DST000009",
+    "local_bbox": [
+      95,
+      0,
+      178,
+      95
+    ],
+    "local_center": [
+      139,
+      47
+    ],
+    "local_seed": [
+      141,
+      48
+    ],
+    "global_bbox": [
+      763,
+      0,
+      846,
+      95
+    ],
+    "global_center": [
+      807,
+      47
+    ],
+    "global_seed": [
+      809,
+      48
+    ]
+  },
+  {
+    "region_id": "TRT000030",
+    "region_type": "land",
+    "color": "#5ab938",
+    "pixel_count": 7430,
+    "density_multiplier": 1.0,
+    "parent_id": "DST000009",
+    "local_bbox": [
+      11,
+      0,
+      107,
+      94
+    ],
+    "local_center": [
+      60,
+      41
+    ],
+    "local_seed": [
+      62,
+      41
+    ],
+    "global_bbox": [
+      679,
+      0,
+      775,
+      94
+    ],
+    "global_center": [
+      728,
+      41
+    ],
+    "global_seed": [
+      730,
+      41
+    ]
+  },
+  {
+    "region_id": "TRT000031",
+    "region_type": "land",
+    "color": "#cc516c",
+    "pixel_count": 5993,
+    "density_multiplier": 1.0,
+    "parent_id": "DST000009",
+    "local_bbox": [
+      0,
+      67,
+      81,
+      184
+    ],
+    "local_center": [
+      32,
+      121
+    ],
+    "local_seed": [
+      30,
+      120
+    ],
+    "global_bbox": [
+      668,
+      67,
+      749,
+      184
+    ],
+    "global_center": [
+      700,
+      121
+    ],
+    "global_seed": [
+      698,
+      120
+    ]
+  },
+  {
+    "region_id": "TRT000032",
+    "region_type": "land",
+    "color": "#b6224f",
+    "pixel_count": 5848,
+    "density_multiplier": 1.0,
+    "parent_id": "DST000009",
+    "local_bbox": [
+      101,
+      91,
+      180,
+      190
+    ],
+    "local_center": [
+      147,
+      134
+    ],
+    "local_seed": [
+      148,
+      136
+    ],
+    "global_bbox": [
+      769,
+      91,
+      848,
+      190
+    ],
+    "global_center": [
+      815,
+      134
+    ],
+    "global_seed": [
+      816,
+      136
+    ]
+  },
+  {
+    "region_id": "TRT000033",
+    "region_type": "land",
+    "color": "#a4dbf3",
+    "pixel_count": 5910,
+    "density_multiplier": 1.0,
+    "parent_id": "DST000007",
+    "local_bbox": [
+      136,
+      79,
+      217,
+      178
+    ],
+    "local_center": [
+      184,
+      127
+    ],
+    "local_seed": [
+      184,
+      125
+    ],
+    "global_bbox": [
+      1085,
+      553,
+      1166,
+      652
+    ],
+    "global_center": [
+      1133,
+      601
+    ],
+    "global_seed": [
+      1133,
+      599
+    ]
+  },
+  {
+    "region_id": "TRT000034",
+    "region_type": "land",
+    "color": "#61de59",
+    "pixel_count": 7150,
+    "density_multiplier": 1.0,
+    "parent_id": "DST000007",
+    "local_bbox": [
+      115,
+      11,
+      214,
+      96
+    ],
+    "local_center": [
+      164,
+      52
+    ],
+    "local_seed": [
+      167,
+      49
+    ],
+    "global_bbox": [
+      1064,
+      485,
+      1163,
+      570
+    ],
+    "global_center": [
+      1113,
+      526
+    ],
+    "global_seed": [
+      1116,
+      523
+    ]
+  },
+  {
+    "region_id": "TRT000035",
+    "region_type": "land",
+    "color": "#1240e5",
+    "pixel_count": 7073,
+    "density_multiplier": 1.0,
+    "parent_id": "DST000007",
+    "local_bbox": [
+      0,
+      50,
+      120,
+      129
+    ],
+    "local_center": [
+      53,
+      92
+    ],
+    "local_seed": [
+      59,
+      91
+    ],
+    "global_bbox": [
+      949,
+      524,
+      1069,
+      603
+    ],
+    "global_center": [
+      1002,
+      566
+    ],
+    "global_seed": [
+      1008,
+      565
+    ]
+  },
+  {
+    "region_id": "TRT000036",
+    "region_type": "land",
+    "color": "#e857e1",
+    "pixel_count": 5934,
+    "density_multiplier": 1.0,
+    "parent_id": "DST000007",
+    "local_bbox": [
+      83,
+      89,
+      169,
+      199
+    ],
+    "local_center": [
+      122,
+      149
+    ],
+    "local_seed": [
+      122,
+      151
+    ],
+    "global_bbox": [
+      1032,
+      563,
+      1118,
+      673
+    ],
+    "global_center": [
+      1071,
+      623
+    ],
+    "global_seed": [
+      1071,
+      625
+    ]
+  },
+  {
+    "region_id": "TRT000037",
+    "region_type": "land",
+    "color": "#ef49d8",
+    "pixel_count": 5932,
+    "density_multiplier": 1.0,
+    "parent_id": "DST000007",
+    "local_bbox": [
+      5,
+      0,
+      121,
+      73
+    ],
+    "local_center": [
+      69,
+      34
+    ],
+    "local_seed": [
+      69,
+      32
+    ],
+    "global_bbox": [
+      954,
+      474,
+      1070,
+      547
+    ],
+    "global_center": [
+      1018,
+      508
+    ],
+    "global_seed": [
+      1018,
+      506
+    ]
+  },
+  {
+    "region_id": "TRT000038",
+    "region_type": "land",
+    "color": "#6241c9",
+    "pixel_count": 4917,
+    "density_multiplier": 1.0,
+    "parent_id": "DST000007",
+    "local_bbox": [
+      14,
+      125,
+      99,
+      210
+    ],
+    "local_center": [
+      57,
+      167
+    ],
+    "local_seed": [
+      55,
+      167
+    ],
+    "global_bbox": [
+      963,
+      599,
+      1048,
+      684
+    ],
+    "global_center": [
+      1006,
+      641
+    ],
+    "global_seed": [
+      1004,
+      641
+    ]
+  },
+  {
+    "region_id": "TRT000039",
+    "region_type": "land",
+    "color": "#d00dd5",
+    "pixel_count": 5117,
+    "density_multiplier": 1.0,
+    "parent_id": "DST000006",
+    "local_bbox": [
+      89,
+      95,
+      172,
+      178
+    ],
+    "local_center": [
+      131,
+      132
+    ],
+    "local_seed": [
+      135,
+      133
+    ],
+    "global_bbox": [
+      1207,
+      212,
+      1290,
+      295
+    ],
+    "global_center": [
+      1249,
+      249
+    ],
+    "global_seed": [
+      1253,
+      250
+    ]
+  },
+  {
+    "region_id": "TRT000040",
+    "region_type": "land",
+    "color": "#83f92d",
+    "pixel_count": 5639,
+    "density_multiplier": 1.0,
+    "parent_id": "DST000006",
+    "local_bbox": [
+      50,
+      0,
+      127,
+      111
+    ],
+    "local_center": [
+      89,
+      53
+    ],
+    "local_seed": [
+      92,
+      58
+    ],
+    "global_bbox": [
+      1168,
+      117,
+      1245,
+      228
+    ],
+    "global_center": [
+      1207,
+      170
+    ],
+    "global_seed": [
+      1210,
+      175
+    ]
+  },
+  {
+    "region_id": "TRT000041",
+    "region_type": "land",
+    "color": "#c9b758",
+    "pixel_count": 6808,
+    "density_multiplier": 1.0,
+    "parent_id": "DST000006",
+    "local_bbox": [
+      9,
+      106,
+      105,
+      200
+    ],
+    "local_center": [
+      55,
+      151
+    ],
+    "local_seed": [
+      58,
+      154
+    ],
+    "global_bbox": [
+      1127,
+      223,
+      1223,
+      317
+    ],
+    "global_center": [
+      1173,
+      268
+    ],
+    "global_seed": [
+      1176,
+      271
+    ]
+  },
+  {
+    "region_id": "TRT000042",
+    "region_type": "land",
+    "color": "#59097c",
+    "pixel_count": 3905,
+    "density_multiplier": 1.0,
+    "parent_id": "DST000006",
+    "local_bbox": [
+      117,
+      26,
+      178,
+      104
+    ],
+    "local_center": [
+      149,
+      66
+    ],
+    "local_seed": [
+      150,
+      65
+    ],
+    "global_bbox": [
+      1235,
+      143,
+      1296,
+      221
+    ],
+    "global_center": [
+      1267,
+      183
+    ],
+    "global_seed": [
+      1268,
+      182
+    ]
+  },
+  {
+    "region_id": "TRT000043",
+    "region_type": "land",
+    "color": "#a5a219",
+    "pixel_count": 5750,
+    "density_multiplier": 1.0,
+    "parent_id": "DST000006",
+    "local_bbox": [
+      0,
+      4,
+      73,
+      121
+    ],
+    "local_center": [
+      33,
+      68
+    ],
+    "local_seed": [
+      34,
+      69
+    ],
+    "global_bbox": [
+      1118,
+      121,
+      1191,
+      238
+    ],
+    "global_center": [
+      1151,
+      185
+    ],
+    "global_seed": [
+      1152,
+      186
+    ]
+  },
+  {
+    "region_id": "TRT000044",
+    "region_type": "land",
+    "color": "#3d8b8b",
+    "pixel_count": 7124,
+    "density_multiplier": 1.0,
+    "parent_id": "DST000008",
+    "local_bbox": [
+      0,
+      0,
+      78,
+      125
+    ],
+    "local_center": [
+      30,
+      60
+    ],
+    "local_seed": [
+      31,
+      59
+    ],
+    "global_bbox": [
+      1171,
+      0,
+      1249,
+      125
+    ],
+    "global_center": [
+      1201,
+      60
+    ],
+    "global_seed": [
+      1202,
+      59
+    ]
+  },
+  {
+    "region_id": "TRT000045",
+    "region_type": "land",
+    "color": "#905bc8",
+    "pixel_count": 6233,
+    "density_multiplier": 1.0,
+    "parent_id": "DST000008",
+    "local_bbox": [
+      35,
+      70,
+      153,
+      158
+    ],
+    "local_center": [
+      97,
+      116
+    ],
+    "local_seed": [
+      97,
+      114
+    ],
+    "global_bbox": [
+      1206,
+      70,
+      1324,
+      158
+    ],
+    "global_center": [
+      1268,
+      116
+    ],
+    "global_seed": [
+      1268,
+      114
+    ]
+  },
+  {
+    "region_id": "TRT000046",
+    "region_type": "land",
+    "color": "#d8d5c2",
+    "pixel_count": 4484,
+    "density_multiplier": 1.0,
+    "parent_id": "DST000008",
+    "local_bbox": [
+      43,
+      0,
+      154,
+      69
+    ],
+    "local_center": [
+      94,
+      25
+    ],
+    "local_seed": [
+      96,
+      24
+    ],
+    "global_bbox": [
+      1214,
+      0,
+      1325,
+      69
+    ],
+    "global_center": [
+      1265,
+      25
+    ],
+    "global_seed": [
+      1267,
+      24
+    ]
+  },
+  {
+    "region_id": "TRT000047",
+    "region_type": "land",
+    "color": "#b1e678",
+    "pixel_count": 3578,
+    "density_multiplier": 1.0,
+    "parent_id": "DST000008",
+    "local_bbox": [
+      90,
+      5,
+      154,
+      111
+    ],
+    "local_center": [
+      133,
+      62
+    ],
+    "local_seed": [
+      134,
+      62
+    ],
+    "global_bbox": [
+      1261,
+      5,
+      1325,
+      111
+    ],
+    "global_center": [
+      1304,
+      62
+    ],
+    "global_seed": [
+      1305,
+      62
+    ]
+  },
+  {
+    "region_id": "TRT000048",
+    "region_type": "land",
+    "color": "#13279f",
+    "pixel_count": 5837,
+    "density_multiplier": 1.0,
+    "parent_id": "DST000010",
+    "local_bbox": [
+      3,
+      104,
+      82,
+      189
+    ],
+    "local_center": [
+      41,
+      145
+    ],
+    "local_seed": [
+      42,
+      150
+    ],
+    "global_bbox": [
+      1167,
+      573,
+      1246,
+      658
+    ],
+    "global_center": [
+      1205,
+      614
+    ],
+    "global_seed": [
+      1206,
+      619
+    ]
+  },
+  {
+    "region_id": "TRT000049",
+    "region_type": "land",
+    "color": "#ded8c8",
+    "pixel_count": 5795,
+    "density_multiplier": 1.0,
+    "parent_id": "DST000010",
+    "local_bbox": [
+      81,
+      98,
+      182,
+      179
+    ],
+    "local_center": [
+      124,
+      143
+    ],
+    "local_seed": [
+      121,
+      144
+    ],
+    "global_bbox": [
+      1245,
+      567,
+      1346,
+      648
+    ],
+    "global_center": [
+      1288,
+      612
+    ],
+    "global_seed": [
+      1285,
+      613
+    ]
+  },
+  {
+    "region_id": "TRT000050",
+    "region_type": "land",
+    "color": "#ed9679",
+    "pixel_count": 5719,
+    "density_multiplier": 1.0,
+    "parent_id": "DST000010",
+    "local_bbox": [
+      57,
+      1,
+      144,
+      116
+    ],
+    "local_center": [
+      95,
+      70
+    ],
+    "local_seed": [
+      95,
+      71
+    ],
+    "global_bbox": [
+      1221,
+      470,
+      1308,
+      585
+    ],
+    "global_center": [
+      1259,
+      539
+    ],
+    "global_seed": [
+      1259,
+      540
+    ]
+  },
+  {
+    "region_id": "TRT000051",
+    "region_type": "land",
+    "color": "#da726a",
+    "pixel_count": 6061,
+    "density_multiplier": 1.0,
+    "parent_id": "DST000010",
+    "local_bbox": [
+      74,
+      0,
+      210,
+      80
+    ],
+    "local_center": [
+      147,
+      30
+    ],
+    "local_seed": [
+      142,
+      28
+    ],
+    "global_bbox": [
+      1238,
+      469,
+      1374,
+      549
+    ],
+    "global_center": [
+      1311,
+      499
+    ],
+    "global_seed": [
+      1306,
+      497
+    ]
+  },
+  {
+    "region_id": "TRT000052",
+    "region_type": "land",
+    "color": "#8a96f4",
+    "pixel_count": 7536,
+    "density_multiplier": 1.0,
+    "parent_id": "DST000010",
+    "local_bbox": [
+      139,
+      39,
+      238,
+      172
+    ],
+    "local_center": [
+      191,
+      99
+    ],
+    "local_seed": [
+      190,
+      102
+    ],
+    "global_bbox": [
+      1303,
+      508,
+      1402,
+      641
+    ],
+    "global_center": [
+      1355,
+      568
+    ],
+    "global_seed": [
+      1354,
+      571
+    ]
+  },
+  {
+    "region_id": "TRT000053",
+    "region_type": "land",
+    "color": "#887fe5",
+    "pixel_count": 6759,
+    "density_multiplier": 1.0,
+    "parent_id": "DST000010",
+    "local_bbox": [
+      0,
+      0,
+      73,
+      108
+    ],
+    "local_center": [
+      33,
+      52
+    ],
+    "local_seed": [
+      30,
+      62
+    ],
+    "global_bbox": [
+      1164,
+      469,
+      1237,
+      577
+    ],
+    "global_center": [
+      1197,
+      521
+    ],
+    "global_seed": [
+      1194,
+      531
+    ]
+  },
+  {
+    "region_id": "TRT000054",
+    "region_type": "land",
+    "color": "#f26881",
+    "pixel_count": 6591,
+    "density_multiplier": 1.0,
+    "parent_id": "DST000013",
+    "local_bbox": [
+      66,
+      0,
+      153,
+      100
+    ],
+    "local_center": [
+      110,
+      42
+    ],
+    "local_seed": [
+      108,
+      41
+    ],
+    "global_bbox": [
+      1389,
+      0,
+      1476,
+      100
+    ],
+    "global_center": [
+      1433,
+      42
+    ],
+    "global_seed": [
+      1431,
+      41
+    ]
+  },
+  {
+    "region_id": "TRT000055",
+    "region_type": "land",
+    "color": "#976674",
+    "pixel_count": 6024,
+    "density_multiplier": 1.0,
+    "parent_id": "DST000013",
+    "local_bbox": [
+      2,
+      0,
+      70,
+      106
+    ],
+    "local_center": [
+      33,
+      46
+    ],
+    "local_seed": [
+      31,
+      45
+    ],
+    "global_bbox": [
+      1325,
+      0,
+      1393,
+      106
+    ],
+    "global_center": [
+      1356,
+      46
+    ],
+    "global_seed": [
+      1354,
+      45
+    ]
+  },
+  {
+    "region_id": "TRT000056",
+    "region_type": "land",
+    "color": "#1aa3b5",
+    "pixel_count": 7982,
+    "density_multiplier": 1.0,
+    "parent_id": "DST000013",
+    "local_bbox": [
+      0,
+      68,
+      140,
+      147
+    ],
+    "local_center": [
+      74,
+      115
+    ],
+    "local_seed": [
+      73,
+      114
+    ],
+    "global_bbox": [
+      1323,
+      68,
+      1463,
+      147
+    ],
+    "global_center": [
+      1397,
+      115
+    ],
+    "global_seed": [
+      1396,
+      114
+    ]
+  },
+  {
+    "region_id": "TRT000057",
+    "region_type": "land",
+    "color": "#93dd1c",
+    "pixel_count": 5068,
+    "density_multiplier": 1.0,
+    "parent_id": "DST000011",
+    "local_bbox": [
+      0,
+      0,
+      77,
+      96
+    ],
+    "local_center": [
+      34,
+      54
+    ],
+    "local_seed": [
+      33,
+      57
+    ],
+    "global_bbox": [
+      1291,
+      141,
+      1368,
+      237
+    ],
+    "global_center": [
+      1325,
+      195
+    ],
+    "global_seed": [
+      1324,
+      198
+    ]
+  },
+  {
+    "region_id": "TRT000058",
+    "region_type": "land",
+    "color": "#5aa27b",
+    "pixel_count": 4968,
+    "density_multiplier": 1.0,
+    "parent_id": "DST000011",
+    "local_bbox": [
+      42,
+      1,
+      135,
+      89
+    ],
+    "local_center": [
+      89,
+      36
+    ],
+    "local_seed": [
+      88,
+      34
+    ],
+    "global_bbox": [
+      1333,
+      142,
+      1426,
+      230
+    ],
+    "global_center": [
+      1380,
+      177
+    ],
+    "global_seed": [
+      1379,
+      175
+    ]
+  },
+  {
+    "region_id": "TRT000059",
+    "region_type": "land",
+    "color": "#e8ef01",
+    "pixel_count": 7252,
+    "density_multiplier": 1.0,
+    "parent_id": "DST000011",
+    "local_bbox": [
+      67,
+      84,
+      162,
+      191
+    ],
+    "local_center": [
+      111,
+      139
+    ],
+    "local_seed": [
+      108,
+      136
+    ],
+    "global_bbox": [
+      1358,
+      225,
+      1453,
+      332
+    ],
+    "global_center": [
+      1402,
+      280
+    ],
+    "global_seed": [
+      1399,
+      277
+    ]
+  },
+  {
+    "region_id": "TRT000060",
+    "region_type": "land",
+    "color": "#e09847",
+    "pixel_count": 5867,
+    "density_multiplier": 1.0,
+    "parent_id": "DST000011",
+    "local_bbox": [
+      103,
+      7,
+      186,
+      117
+    ],
+    "local_center": [
+      148,
+      59
+    ],
+    "local_seed": [
+      148,
+      61
+    ],
+    "global_bbox": [
+      1394,
+      148,
+      1477,
+      258
+    ],
+    "global_center": [
+      1439,
+      200
+    ],
+    "global_seed": [
+      1439,
+      202
+    ]
+  },
+  {
+    "region_id": "TRT000061",
+    "region_type": "land",
+    "color": "#bdf1b7",
+    "pixel_count": 4719,
+    "density_multiplier": 1.0,
+    "parent_id": "DST000011",
+    "local_bbox": [
+      0,
+      88,
+      81,
+      177
+    ],
+    "local_center": [
+      42,
+      125
+    ],
+    "local_seed": [
+      40,
+      129
+    ],
+    "global_bbox": [
+      1291,
+      229,
+      1372,
+      318
+    ],
+    "global_center": [
+      1333,
+      266
+    ],
+    "global_seed": [
+      1331,
+      270
+    ]
+  },
+  {
+    "region_id": "TRT000062",
+    "region_type": "land",
+    "color": "#17826a",
+    "pixel_count": 7204,
+    "density_multiplier": 1.0,
+    "parent_id": "DST000012",
+    "local_bbox": [
+      0,
+      59,
+      115,
+      165
+    ],
+    "local_center": [
+      50,
+      111
+    ],
+    "local_seed": [
+      55,
+      111
+    ],
+    "global_bbox": [
+      1352,
+      367,
+      1467,
+      473
+    ],
+    "global_center": [
+      1402,
+      419
+    ],
+    "global_seed": [
+      1407,
+      419
+    ]
+  },
+  {
+    "region_id": "TRT000063",
+    "region_type": "land",
+    "color": "#d19de6",
+    "pixel_count": 6140,
+    "density_multiplier": 1.0,
+    "parent_id": "DST000012",
+    "local_bbox": [
+      128,
+      68,
+      247,
+      167
+    ],
+    "local_center": [
+      190,
+      115
+    ],
+    "local_seed": [
+      189,
+      115
+    ],
+    "global_bbox": [
+      1480,
+      376,
+      1599,
+      475
+    ],
+    "global_center": [
+      1542,
+      423
+    ],
+    "global_seed": [
+      1541,
+      423
+    ]
+  },
+  {
+    "region_id": "TRT000064",
+    "region_type": "land",
+    "color": "#083bdc",
+    "pixel_count": 5467,
+    "density_multiplier": 1.0,
+    "parent_id": "DST000012",
+    "local_bbox": [
+      105,
+      26,
+      209,
+      128
+    ],
+    "local_center": [
+      147,
+      75
+    ],
+    "local_seed": [
+      156,
+      73
+    ],
+    "global_bbox": [
+      1457,
+      334,
+      1561,
+      436
+    ],
+    "global_center": [
+      1499,
+      383
+    ],
+    "global_seed": [
+      1508,
+      381
+    ]
+  },
+  {
+    "region_id": "TRT000065",
+    "region_type": "land",
+    "color": "#1c725e",
+    "pixel_count": 6383,
+    "density_multiplier": 1.0,
+    "parent_id": "DST000012",
+    "local_bbox": [
+      20,
+      0,
+      130,
+      89
+    ],
+    "local_center": [
+      76,
+      43
+    ],
+    "local_seed": [
+      80,
+      42
+    ],
+    "global_bbox": [
+      1372,
+      308,
+      1482,
+      397
+    ],
+    "global_center": [
+      1428,
+      351
+    ],
+    "global_seed": [
+      1432,
+      350
+    ]
+  },
+  {
+    "region_id": "TRT000066",
+    "region_type": "land",
+    "color": "#07bae5",
+    "pixel_count": 7461,
+    "density_multiplier": 1.0,
+    "parent_id": "DST000012",
+    "local_bbox": [
+      4,
+      122,
+      145,
+      218
+    ],
+    "local_center": [
+      75,
+      169
+    ],
+    "local_seed": [
+      77,
+      170
+    ],
+    "global_bbox": [
+      1356,
+      430,
+      1497,
+      526
+    ],
+    "global_center": [
+      1427,
+      477
+    ],
+    "global_seed": [
+      1429,
+      478
+    ]
+  },
+  {
+    "region_id": "TRT000067",
+    "region_type": "land",
+    "color": "#a334d9",
+    "pixel_count": 4841,
+    "density_multiplier": 1.0,
+    "parent_id": "DST000015",
+    "local_bbox": [
+      81,
+      61,
+      154,
+      156
+    ],
+    "local_center": [
+      124,
+      105
+    ],
+    "local_seed": [
+      127,
+      108
+    ],
+    "global_bbox": [
+      1526,
+      234,
+      1599,
+      329
+    ],
+    "global_center": [
+      1569,
+      278
+    ],
+    "global_seed": [
+      1572,
+      281
+    ]
+  },
+  {
+    "region_id": "TRT000068",
+    "region_type": "land",
+    "color": "#79b064",
+    "pixel_count": 6535,
+    "density_multiplier": 1.0,
+    "parent_id": "DST000015",
+    "local_bbox": [
+      37,
+      0,
+      154,
+      74
+    ],
+    "local_center": [
+      105,
+      32
+    ],
+    "local_seed": [
+      107,
+      32
+    ],
+    "global_bbox": [
+      1482,
+      173,
+      1599,
+      247
+    ],
+    "global_center": [
+      1550,
+      205
+    ],
+    "global_seed": [
+      1552,
+      205
+    ]
+  },
+  {
+    "region_id": "TRT000069",
+    "region_type": "land",
+    "color": "#1f6d13",
+    "pixel_count": 7656,
+    "density_multiplier": 1.0,
+    "parent_id": "DST000015",
+    "local_bbox": [
+      0,
+      1,
+      91,
+      150
+    ],
+    "local_center": [
+      43,
+      85
+    ],
+    "local_seed": [
+      45,
+      81
+    ],
+    "global_bbox": [
+      1445,
+      174,
+      1536,
+      323
+    ],
+    "global_center": [
+      1488,
+      258
+    ],
+    "global_seed": [
+      1490,
+      254
+    ]
+  },
+  {
+    "region_id": "TRT000070",
+    "region_type": "land",
+    "color": "#cbd52f",
+    "pixel_count": 6587,
+    "density_multiplier": 1.0,
+    "parent_id": "DST000015",
+    "local_bbox": [
+      23,
+      118,
+      154,
+      217
+    ],
+    "local_center": [
+      101,
+      164
+    ],
+    "local_seed": [
+      97,
+      162
+    ],
+    "global_bbox": [
+      1468,
+      291,
+      1599,
+      390
+    ],
+    "global_center": [
+      1546,
+      337
+    ],
+    "global_seed": [
+      1542,
+      335
+    ]
+  },
+  {
+    "region_id": "TRT000071",
+    "region_type": "land",
+    "color": "#e8c303",
+    "pixel_count": 6004,
+    "density_multiplier": 1.0,
+    "parent_id": "DST000017",
+    "local_bbox": [
+      0,
+      0,
+      91,
+      73
+    ],
+    "local_center": [
+      47,
+      34
+    ],
+    "local_seed": [
+      48,
+      33
+    ],
+    "global_bbox": [
+      1002,
+      0,
+      1093,
+      73
+    ],
+    "global_center": [
+      1049,
+      34
+    ],
+    "global_seed": [
+      1050,
+      33
+    ]
+  },
+  {
+    "region_id": "TRT000072",
+    "region_type": "land",
+    "color": "#118626",
+    "pixel_count": 5745,
+    "density_multiplier": 1.0,
+    "parent_id": "DST000017",
+    "local_bbox": [
+      80,
+      71,
+      169,
+      159
+    ],
+    "local_center": [
+      122,
+      112
+    ],
+    "local_seed": [
+      122,
+      112
+    ],
+    "global_bbox": [
+      1082,
+      71,
+      1171,
+      159
+    ],
+    "global_center": [
+      1124,
+      112
+    ],
+    "global_seed": [
+      1124,
+      112
+    ]
+  },
+  {
+    "region_id": "TRT000073",
+    "region_type": "land",
+    "color": "#9acb54",
+    "pixel_count": 5514,
+    "density_multiplier": 1.0,
+    "parent_id": "DST000017",
+    "local_bbox": [
+      8,
+      66,
+      91,
+      153
+    ],
+    "local_center": [
+      51,
+      105
+    ],
+    "local_seed": [
+      52,
+      105
+    ],
+    "global_bbox": [
+      1010,
+      66,
+      1093,
+      153
+    ],
+    "global_center": [
+      1053,
+      105
+    ],
+    "global_seed": [
+      1054,
+      105
+    ]
+  },
+  {
+    "region_id": "TRT000074",
+    "region_type": "land",
+    "color": "#928281",
+    "pixel_count": 5958,
+    "density_multiplier": 1.0,
+    "parent_id": "DST000017",
+    "local_bbox": [
+      89,
+      0,
+      169,
+      82
+    ],
+    "local_center": [
+      130,
+      38
+    ],
+    "local_seed": [
+      132,
+      38
+    ],
+    "global_bbox": [
+      1091,
+      0,
+      1171,
+      82
+    ],
+    "global_center": [
+      1132,
+      38
+    ],
+    "global_seed": [
+      1134,
+      38
+    ]
+  },
+  {
+    "region_id": "TRT000075",
+    "region_type": "land",
+    "color": "#fc6906",
+    "pixel_count": 6180,
+    "density_multiplier": 1.0,
+    "parent_id": "DST000016",
+    "local_bbox": [
+      85,
+      103,
+      171,
+      198
+    ],
+    "local_center": [
+      120,
+      146
+    ],
+    "local_seed": [
+      118,
+      140
+    ],
+    "global_bbox": [
+      1447,
+      673,
+      1533,
+      768
+    ],
+    "global_center": [
+      1482,
+      716
+    ],
+    "global_seed": [
+      1480,
+      710
+    ]
+  },
+  {
+    "region_id": "TRT000076",
+    "region_type": "land",
+    "color": "#865f77",
+    "pixel_count": 5229,
+    "density_multiplier": 1.0,
+    "parent_id": "DST000016",
+    "local_bbox": [
+      78,
+      20,
+      171,
+      102
+    ],
+    "local_center": [
+      118,
+      68
+    ],
+    "local_seed": [
+      119,
+      65
+    ],
+    "global_bbox": [
+      1440,
+      590,
+      1533,
+      672
+    ],
+    "global_center": [
+      1480,
+      638
+    ],
+    "global_seed": [
+      1481,
+      635
+    ]
+  },
+  {
+    "region_id": "TRT000077",
+    "region_type": "land",
+    "color": "#92c719",
+    "pixel_count": 5590,
+    "density_multiplier": 1.0,
+    "parent_id": "DST000016",
+    "local_bbox": [
+      145,
+      59,
+      237,
+      156
+    ],
+    "local_center": [
+      191,
+      105
+    ],
+    "local_seed": [
+      191,
+      105
+    ],
+    "global_bbox": [
+      1507,
+      629,
+      1599,
+      726
+    ],
+    "global_center": [
+      1553,
+      675
+    ],
+    "global_seed": [
+      1553,
+      675
+    ]
+  },
+  {
+    "region_id": "TRT000078",
+    "region_type": "land",
+    "color": "#a9da0e",
+    "pixel_count": 5527,
+    "density_multiplier": 1.0,
+    "parent_id": "DST000016",
+    "local_bbox": [
+      6,
+      97,
+      84,
+      190
+    ],
+    "local_center": [
+      52,
+      137
+    ],
+    "local_seed": [
+      52,
+      140
+    ],
+    "global_bbox": [
+      1368,
+      667,
+      1446,
+      760
+    ],
+    "global_center": [
+      1414,
+      707
+    ],
+    "global_seed": [
+      1414,
+      710
+    ]
+  },
+  {
+    "region_id": "TRT000079",
+    "region_type": "land",
+    "color": "#b45e0d",
+    "pixel_count": 6582,
+    "density_multiplier": 1.0,
+    "parent_id": "DST000016",
+    "local_bbox": [
+      0,
+      0,
+      88,
+      100
+    ],
+    "local_center": [
+      45,
+      54
+    ],
+    "local_seed": [
+      45,
+      55
+    ],
+    "global_bbox": [
+      1362,
+      570,
+      1450,
+      670
+    ],
+    "global_center": [
+      1407,
+      624
+    ],
+    "global_seed": [
+      1407,
+      625
+    ]
+  },
+  {
+    "region_id": "TRT000080",
+    "region_type": "land",
+    "color": "#1d423e",
+    "pixel_count": 6090,
+    "density_multiplier": 1.0,
+    "parent_id": "DST000018",
+    "local_bbox": [
+      81,
+      1,
+      173,
+      96
+    ],
+    "local_center": [
+      126,
+      50
+    ],
+    "local_seed": [
+      128,
+      50
+    ],
+    "global_bbox": [
+      1029,
+      137,
+      1121,
+      232
+    ],
+    "global_center": [
+      1074,
+      186
+    ],
+    "global_seed": [
+      1076,
+      186
+    ]
+  },
+  {
+    "region_id": "TRT000081",
+    "region_type": "land",
+    "color": "#4272e9",
+    "pixel_count": 7370,
+    "density_multiplier": 1.0,
+    "parent_id": "DST000018",
+    "local_bbox": [
+      11,
+      95,
+      113,
+      191
+    ],
+    "local_center": [
+      63,
+      142
+    ],
+    "local_seed": [
+      66,
+      141
+    ],
+    "global_bbox": [
+      959,
+      231,
+      1061,
+      327
+    ],
+    "global_center": [
+      1011,
+      278
+    ],
+    "global_seed": [
+      1014,
+      277
+    ]
+  },
+  {
+    "region_id": "TRT000082",
+    "region_type": "land",
+    "color": "#a0b3a0",
+    "pixel_count": 7148,
+    "density_multiplier": 1.0,
+    "parent_id": "DST000018",
+    "local_bbox": [
+      0,
+      0,
+      94,
+      109
+    ],
+    "local_center": [
+      50,
+      59
+    ],
+    "local_seed": [
+      52,
+      58
+    ],
+    "global_bbox": [
+      948,
+      136,
+      1042,
+      245
+    ],
+    "global_center": [
+      998,
+      195
+    ],
+    "global_seed": [
+      1000,
+      194
+    ]
+  },
+  {
+    "region_id": "TRT000083",
+    "region_type": "land",
+    "color": "#e4db2b",
+    "pixel_count": 6019,
+    "density_multiplier": 1.0,
+    "parent_id": "DST000018",
+    "local_bbox": [
+      100,
+      80,
+      185,
+      174
+    ],
+    "local_center": [
+      143,
+      128
+    ],
+    "local_seed": [
+      146,
+      126
+    ],
+    "global_bbox": [
+      1048,
+      216,
+      1133,
+      310
+    ],
+    "global_center": [
+      1091,
+      264
+    ],
+    "global_seed": [
+      1094,
+      262
+    ]
+  },
+  {
+    "region_id": "TRT000084",
+    "region_type": "land",
+    "color": "#47de7b",
+    "pixel_count": 5826,
+    "density_multiplier": 1.0,
+    "parent_id": "DST000014",
+    "local_bbox": [
+      84,
+      0,
+      173,
+      98
+    ],
+    "local_center": [
+      130,
+      50
+    ],
+    "local_seed": [
+      132,
+      50
+    ],
+    "global_bbox": [
+      939,
+      676,
+      1028,
+      774
+    ],
+    "global_center": [
+      985,
+      726
+    ],
+    "global_seed": [
+      987,
+      726
+    ]
+  },
+  {
+    "region_id": "TRT000085",
+    "region_type": "land",
+    "color": "#479862",
+    "pixel_count": 6779,
+    "density_multiplier": 1.0,
+    "parent_id": "DST000014",
+    "local_bbox": [
+      0,
+      28,
+      118,
+      131
+    ],
+    "local_center": [
+      66,
+      81
+    ],
+    "local_seed": [
+      71,
+      81
+    ],
+    "global_bbox": [
+      855,
+      704,
+      973,
+      807
+    ],
+    "global_center": [
+      921,
+      757
+    ],
+    "global_seed": [
+      926,
+      757
+    ]
+  },
+  {
+    "region_id": "TRT000086",
+    "region_type": "land",
+    "color": "#38bece",
+    "pixel_count": 5949,
+    "density_multiplier": 1.0,
+    "parent_id": "DST000014",
+    "local_bbox": [
+      98,
+      90,
+      194,
+      180
+    ],
+    "local_center": [
+      148,
+      134
+    ],
+    "local_seed": [
+      153,
+      139
+    ],
+    "global_bbox": [
+      953,
+      766,
+      1049,
+      856
+    ],
+    "global_center": [
+      1003,
+      810
+    ],
+    "global_seed": [
+      1008,
+      815
+    ]
+  },
+  {
+    "region_id": "TRT000087",
+    "region_type": "land",
+    "color": "#12cc4e",
+    "pixel_count": 4410,
+    "density_multiplier": 1.0,
+    "parent_id": "DST000014",
+    "local_bbox": [
+      126,
+      160,
+      221,
+      223
+    ],
+    "local_center": [
+      171,
+      198
+    ],
+    "local_seed": [
+      174,
+      201
+    ],
+    "global_bbox": [
+      981,
+      836,
+      1076,
+      899
+    ],
+    "global_center": [
+      1026,
+      874
+    ],
+    "global_seed": [
+      1029,
+      877
+    ]
+  },
+  {
+    "region_id": "TRT000088",
+    "region_type": "land",
+    "color": "#347c0f",
+    "pixel_count": 6956,
+    "density_multiplier": 1.0,
+    "parent_id": "DST000014",
+    "local_bbox": [
+      16,
+      130,
+      132,
+      223
+    ],
+    "local_center": [
+      81,
+      187
+    ],
+    "local_seed": [
+      84,
+      184
+    ],
+    "global_bbox": [
+      871,
+      806,
+      987,
+      899
+    ],
+    "global_center": [
+      936,
+      863
+    ],
+    "global_seed": [
+      939,
+      860
+    ]
+  },
+  {
+    "region_id": "TRT000089",
+    "region_type": "land",
+    "color": "#4aeae8",
+    "pixel_count": 5196,
+    "density_multiplier": 1.0,
+    "parent_id": "DST000014",
+    "local_bbox": [
+      1,
+      82,
+      80,
+      214
+    ],
+    "local_center": [
+      32,
+      139
+    ],
+    "local_seed": [
+      30,
+      139
+    ],
+    "global_bbox": [
+      856,
+      758,
+      935,
+      890
+    ],
+    "global_center": [
+      887,
+      815
+    ],
+    "global_seed": [
+      885,
+      815
+    ]
+  },
+  {
+    "region_id": "TRT000090",
+    "region_type": "land",
+    "color": "#a2a766",
+    "pixel_count": 5411,
+    "density_multiplier": 1.0,
+    "parent_id": "DST000022",
+    "local_bbox": [
+      115,
+      68,
+      205,
+      148
+    ],
+    "local_center": [
+      161,
+      109
+    ],
+    "local_seed": [
+      157,
+      107
+    ],
+    "global_bbox": [
+      1509,
+      494,
+      1599,
+      574
+    ],
+    "global_center": [
+      1555,
+      535
+    ],
+    "global_seed": [
+      1551,
+      533
+    ]
+  },
+  {
+    "region_id": "TRT000091",
+    "region_type": "land",
+    "color": "#4c9101",
+    "pixel_count": 4980,
+    "density_multiplier": 1.0,
+    "parent_id": "DST000022",
+    "local_bbox": [
+      112,
+      0,
+      205,
+      86
+    ],
+    "local_center": [
+      170,
+      45
+    ],
+    "local_seed": [
+      171,
+      44
+    ],
+    "global_bbox": [
+      1506,
+      426,
+      1599,
+      512
+    ],
+    "global_center": [
+      1564,
+      471
+    ],
+    "global_seed": [
+      1565,
+      470
+    ]
+  },
+  {
+    "region_id": "TRT000092",
+    "region_type": "land",
+    "color": "#8eddf8",
+    "pixel_count": 5352,
+    "density_multiplier": 1.0,
+    "parent_id": "DST000022",
+    "local_bbox": [
+      44,
+      47,
+      128,
+      158
+    ],
+    "local_center": [
+      94,
+      97
+    ],
+    "local_seed": [
+      90,
+      98
+    ],
+    "global_bbox": [
+      1438,
+      473,
+      1522,
+      584
+    ],
+    "global_center": [
+      1488,
+      523
+    ],
+    "global_seed": [
+      1484,
+      524
+    ]
+  },
+  {
+    "region_id": "TRT000093",
+    "region_type": "land",
+    "color": "#dfd373",
+    "pixel_count": 5270,
+    "density_multiplier": 1.0,
+    "parent_id": "DST000022",
+    "local_bbox": [
+      0,
+      83,
+      103,
+      181
+    ],
+    "local_center": [
+      48,
+      131
+    ],
+    "local_seed": [
+      48,
+      134
+    ],
+    "global_bbox": [
+      1394,
+      509,
+      1497,
+      607
+    ],
+    "global_center": [
+      1442,
+      557
+    ],
+    "global_seed": [
+      1442,
+      560
+    ]
+  },
+  {
+    "region_id": "TRT000094",
+    "region_type": "land",
+    "color": "#a563d9",
+    "pixel_count": 6740,
+    "density_multiplier": 1.0,
+    "parent_id": "DST000022",
+    "local_bbox": [
+      97,
+      135,
+      205,
+      229
+    ],
+    "local_center": [
+      161,
+      176
+    ],
+    "local_seed": [
+      163,
+      176
+    ],
+    "global_bbox": [
+      1491,
+      561,
+      1599,
+      655
+    ],
+    "global_center": [
+      1555,
+      602
+    ],
+    "global_seed": [
+      1557,
+      602
+    ]
+  },
+  {
+    "region_id": "TRT000095",
+    "region_type": "land",
+    "color": "#1f7013",
+    "pixel_count": 7339,
+    "density_multiplier": 1.0,
+    "parent_id": "DST000020",
+    "local_bbox": [
+      0,
+      15,
+      109,
+      112
+    ],
+    "local_center": [
+      60,
+      66
+    ],
+    "local_seed": [
+      61,
+      66
+    ],
+    "global_bbox": [
+      1004,
+      657,
+      1113,
+      754
+    ],
+    "global_center": [
+      1064,
+      708
+    ],
+    "global_seed": [
+      1065,
+      708
+    ]
+  },
+  {
+    "region_id": "TRT000096",
+    "region_type": "land",
+    "color": "#a91ce8",
+    "pixel_count": 6723,
+    "density_multiplier": 1.0,
+    "parent_id": "DST000020",
+    "local_bbox": [
+      102,
+      88,
+      202,
+      187
+    ],
+    "local_center": [
+      147,
+      127
+    ],
+    "local_seed": [
+      146,
+      129
+    ],
+    "global_bbox": [
+      1106,
+      730,
+      1206,
+      829
+    ],
+    "global_center": [
+      1151,
+      769
+    ],
+    "global_seed": [
+      1150,
+      771
+    ]
+  },
+  {
+    "region_id": "TRT000097",
+    "region_type": "land",
+    "color": "#08cbca",
+    "pixel_count": 6846,
+    "density_multiplier": 1.0,
+    "parent_id": "DST000020",
+    "local_bbox": [
+      98,
+      0,
+      193,
+      92
+    ],
+    "local_center": [
+      147,
+      48
+    ],
+    "local_seed": [
+      150,
+      48
+    ],
+    "global_bbox": [
+      1102,
+      642,
+      1197,
+      734
+    ],
+    "global_center": [
+      1151,
+      690
+    ],
+    "global_seed": [
+      1154,
+      690
+    ]
+  },
+  {
+    "region_id": "TRT000098",
+    "region_type": "land",
+    "color": "#daab51",
+    "pixel_count": 5607,
+    "density_multiplier": 1.0,
+    "parent_id": "DST000020",
+    "local_bbox": [
+      21,
+      103,
+      113,
+      189
+    ],
+    "local_center": [
+      70,
+      142
+    ],
+    "local_seed": [
+      70,
+      145
+    ],
+    "global_bbox": [
+      1025,
+      745,
+      1117,
+      831
+    ],
+    "global_center": [
+      1074,
+      784
+    ],
+    "global_seed": [
+      1074,
+      787
+    ]
+  },
+  {
+    "region_id": "TRT000099",
+    "region_type": "land",
+    "color": "#937af1",
+    "pixel_count": 4895,
+    "density_multiplier": 1.0,
+    "parent_id": "DST000020",
+    "local_bbox": [
+      45,
+      169,
+      141,
+      257
+    ],
+    "local_center": [
+      90,
+      209
+    ],
+    "local_seed": [
+      90,
+      212
+    ],
+    "global_bbox": [
+      1049,
+      811,
+      1145,
+      899
+    ],
+    "global_center": [
+      1094,
+      851
+    ],
+    "global_seed": [
+      1094,
+      854
+    ]
+  },
+  {
+    "region_id": "TRT000100",
+    "region_type": "land",
+    "color": "#fe5a4e",
+    "pixel_count": 7541,
+    "density_multiplier": 1.0,
+    "parent_id": "DST000021",
+    "local_bbox": [
+      91,
+      73,
+      197,
+      182
+    ],
+    "local_center": [
+      136,
+      120
+    ],
+    "local_seed": [
+      138,
+      116
+    ],
+    "global_bbox": [
+      1281,
+      710,
+      1387,
+      819
+    ],
+    "global_center": [
+      1326,
+      757
+    ],
+    "global_seed": [
+      1328,
+      753
+    ]
+  },
+  {
+    "region_id": "TRT000101",
+    "region_type": "land",
+    "color": "#7cc8f3",
+    "pixel_count": 6497,
+    "density_multiplier": 1.0,
+    "parent_id": "DST000021",
+    "local_bbox": [
+      0,
+      5,
+      106,
+      81
+    ],
+    "local_center": [
+      57,
+      44
+    ],
+    "local_seed": [
+      62,
+      43
+    ],
+    "global_bbox": [
+      1190,
+      642,
+      1296,
+      718
+    ],
+    "global_center": [
+      1247,
+      681
+    ],
+    "global_seed": [
+      1252,
+      680
+    ]
+  },
+  {
+    "region_id": "TRT000102",
+    "region_type": "land",
+    "color": "#f134b7",
+    "pixel_count": 5978,
+    "density_multiplier": 1.0,
+    "parent_id": "DST000021",
+    "local_bbox": [
+      5,
+      70,
+      98,
+      162
+    ],
+    "local_center": [
+      56,
+      110
+    ],
+    "local_seed": [
+      56,
+      110
+    ],
+    "global_bbox": [
+      1195,
+      707,
+      1288,
+      799
+    ],
+    "global_center": [
+      1246,
+      747
+    ],
+    "global_seed": [
+      1246,
+      747
+    ]
+  },
+  {
+    "region_id": "TRT000103",
+    "region_type": "land",
+    "color": "#b228ac",
+    "pixel_count": 5657,
+    "density_multiplier": 1.0,
+    "parent_id": "DST000021",
+    "local_bbox": [
+      104,
+      0,
+      196,
+      87
+    ],
+    "local_center": [
+      145,
+      42
+    ],
+    "local_seed": [
+      148,
+      38
+    ],
+    "global_bbox": [
+      1294,
+      637,
+      1386,
+      724
+    ],
+    "global_center": [
+      1335,
+      679
+    ],
+    "global_seed": [
+      1338,
+      675
+    ]
+  },
+  {
+    "region_id": "TRT000104",
+    "region_type": "land",
+    "color": "#a7bb7a",
+    "pixel_count": 6345,
+    "density_multiplier": 1.0,
+    "parent_id": "DST000023",
+    "local_bbox": [
+      37,
+      127,
+      154,
+      219
+    ],
+    "local_center": [
+      100,
+      179
+    ],
+    "local_seed": [
+      98,
+      177
+    ],
+    "global_bbox": [
+      637,
+      312,
+      754,
+      404
+    ],
+    "global_center": [
+      700,
+      364
+    ],
+    "global_seed": [
+      698,
+      362
+    ]
+  },
+  {
+    "region_id": "TRT000105",
+    "region_type": "land",
+    "color": "#01059b",
+    "pixel_count": 6848,
+    "density_multiplier": 1.0,
+    "parent_id": "DST000023",
+    "local_bbox": [
+      117,
+      93,
+      201,
+      215
+    ],
+    "local_center": [
+      164,
+      145
+    ],
+    "local_seed": [
+      165,
+      148
+    ],
+    "global_bbox": [
+      717,
+      278,
+      801,
+      400
+    ],
+    "global_center": [
+      764,
+      330
+    ],
+    "global_seed": [
+      765,
+      333
+    ]
+  },
+  {
+    "region_id": "TRT000106",
+    "region_type": "land",
+    "color": "#d50ba3",
+    "pixel_count": 6970,
+    "density_multiplier": 1.0,
+    "parent_id": "DST000023",
+    "local_bbox": [
+      43,
+      4,
+      146,
+      126
+    ],
+    "local_center": [
+      94,
+      74
+    ],
+    "local_seed": [
+      100,
+      76
+    ],
+    "global_bbox": [
+      643,
+      189,
+      746,
+      311
+    ],
+    "global_center": [
+      694,
+      259
+    ],
+    "global_seed": [
+      700,
+      261
+    ]
+  },
+  {
+    "region_id": "TRT000107",
+    "region_type": "land",
+    "color": "#88bf60",
+    "pixel_count": 5820,
+    "density_multiplier": 1.0,
+    "parent_id": "DST000023",
+    "local_bbox": [
+      87,
+      0,
+      191,
+      99
+    ],
+    "local_center": [
+      149,
+      47
+    ],
+    "local_seed": [
+      148,
+      44
+    ],
+    "global_bbox": [
+      687,
+      185,
+      791,
+      284
+    ],
+    "global_center": [
+      749,
+      232
+    ],
+    "global_seed": [
+      748,
+      229
+    ]
+  },
+  {
+    "region_id": "TRT000108",
+    "region_type": "land",
+    "color": "#5c4a92",
+    "pixel_count": 6194,
+    "density_multiplier": 1.0,
+    "parent_id": "DST000023",
+    "local_bbox": [
+      0,
+      71,
+      92,
+      200
+    ],
+    "local_center": [
+      42,
+      135
+    ],
+    "local_seed": [
+      42,
+      131
+    ],
+    "global_bbox": [
+      600,
+      256,
+      692,
+      385
+    ],
+    "global_center": [
+      642,
+      320
+    ],
+    "global_seed": [
+      642,
+      316
+    ]
+  },
+  {
+    "region_id": "TRT000109",
+    "region_type": "land",
+    "color": "#05f860",
+    "pixel_count": 5280,
+    "density_multiplier": 1.0,
+    "parent_id": "DST000025",
+    "local_bbox": [
+      0,
+      99,
+      88,
+      173
+    ],
+    "local_center": [
+      41,
+      137
+    ],
+    "local_seed": [
+      41,
+      140
+    ],
+    "global_bbox": [
+      1458,
+      99,
+      1546,
+      173
+    ],
+    "global_center": [
+      1499,
+      137
+    ],
+    "global_seed": [
+      1499,
+      140
+    ]
+  },
+  {
+    "region_id": "TRT000110",
+    "region_type": "land",
+    "color": "#1178ae",
+    "pixel_count": 6313,
+    "density_multiplier": 1.0,
+    "parent_id": "DST000025",
+    "local_bbox": [
+      66,
+      76,
+      141,
+      172
+    ],
+    "local_center": [
+      109,
+      123
+    ],
+    "local_seed": [
+      108,
+      120
+    ],
+    "global_bbox": [
+      1524,
+      76,
+      1599,
+      172
+    ],
+    "global_center": [
+      1567,
+      123
+    ],
+    "global_seed": [
+      1566,
+      120
+    ]
+  },
+  {
+    "region_id": "TRT000111",
+    "region_type": "land",
+    "color": "#037b7d",
+    "pixel_count": 5834,
+    "density_multiplier": 1.0,
+    "parent_id": "DST000025",
+    "local_bbox": [
+      6,
+      0,
+      83,
+      98
+    ],
+    "local_center": [
+      41,
+      54
+    ],
+    "local_seed": [
+      40,
+      57
+    ],
+    "global_bbox": [
+      1464,
+      0,
+      1541,
+      98
+    ],
+    "global_center": [
+      1499,
+      54
+    ],
+    "global_seed": [
+      1498,
+      57
+    ]
+  },
+  {
+    "region_id": "TRT000112",
+    "region_type": "land",
+    "color": "#a79747",
+    "pixel_count": 5623,
+    "density_multiplier": 1.0,
+    "parent_id": "DST000025",
+    "local_bbox": [
+      54,
+      0,
+      141,
+      77
+    ],
+    "local_center": [
+      104,
+      35
+    ],
+    "local_seed": [
+      102,
+      33
+    ],
+    "global_bbox": [
+      1512,
+      0,
+      1599,
+      77
+    ],
+    "global_center": [
+      1562,
+      35
+    ],
+    "global_seed": [
+      1560,
+      33
+    ]
+  },
+  {
+    "region_id": "TRT000113",
+    "region_type": "land",
+    "color": "#588e3b",
+    "pixel_count": 8962,
+    "density_multiplier": 1.0,
+    "parent_id": "DST000019",
+    "local_bbox": [
+      36,
+      95,
+      150,
+      211
+    ],
+    "local_center": [
+      98,
+      155
+    ],
+    "local_seed": [
+      99,
+      152
+    ],
+    "global_bbox": [
+      782,
+      631,
+      896,
+      747
+    ],
+    "global_center": [
+      844,
+      691
+    ],
+    "global_seed": [
+      845,
+      688
+    ]
+  },
+  {
+    "region_id": "TRT000114",
+    "region_type": "land",
+    "color": "#6eac3d",
+    "pixel_count": 6066,
+    "density_multiplier": 1.0,
+    "parent_id": "DST000019",
+    "local_bbox": [
+      83,
+      1,
+      171,
+      103
+    ],
+    "local_center": [
+      123,
+      47
+    ],
+    "local_seed": [
+      123,
+      46
+    ],
+    "global_bbox": [
+      829,
+      537,
+      917,
+      639
+    ],
+    "global_center": [
+      869,
+      583
+    ],
+    "global_seed": [
+      869,
+      582
+    ]
+  },
+  {
+    "region_id": "TRT000115",
+    "region_type": "land",
+    "color": "#a204c9",
+    "pixel_count": 5975,
+    "density_multiplier": 1.0,
+    "parent_id": "DST000019",
+    "local_bbox": [
+      135,
+      0,
+      228,
+      107
+    ],
+    "local_center": [
+      182,
+      59
+    ],
+    "local_seed": [
+      180,
+      64
+    ],
+    "global_bbox": [
+      881,
+      536,
+      974,
+      643
+    ],
+    "global_center": [
+      928,
+      595
+    ],
+    "global_seed": [
+      926,
+      600
+    ]
+  },
+  {
+    "region_id": "TRT000116",
+    "region_type": "land",
+    "color": "#def2d6",
+    "pixel_count": 5839,
+    "density_multiplier": 1.0,
+    "parent_id": "DST000019",
+    "local_bbox": [
+      139,
+      92,
+      236,
+      184
+    ],
+    "local_center": [
+      183,
+      133
+    ],
+    "local_seed": [
+      188,
+      135
+    ],
+    "global_bbox": [
+      885,
+      628,
+      982,
+      720
+    ],
+    "global_center": [
+      929,
+      669
+    ],
+    "global_seed": [
+      934,
+      671
+    ]
+  },
+  {
+    "region_id": "TRT000117",
+    "region_type": "land",
+    "color": "#44732a",
+    "pixel_count": 3852,
+    "density_multiplier": 1.0,
+    "parent_id": "DST000019",
+    "local_bbox": [
+      12,
+      3,
+      102,
+      63
+    ],
+    "local_center": [
+      58,
+      28
+    ],
+    "local_seed": [
+      60,
+      25
+    ],
+    "global_bbox": [
+      758,
+      539,
+      848,
+      599
+    ],
+    "global_center": [
+      804,
+      564
+    ],
+    "global_seed": [
+      806,
+      561
+    ]
+  },
+  {
+    "region_id": "TRT000118",
+    "region_type": "land",
+    "color": "#db851d",
+    "pixel_count": 5721,
+    "density_multiplier": 1.0,
+    "parent_id": "DST000019",
+    "local_bbox": [
+      0,
+      42,
+      97,
+      146
+    ],
+    "local_center": [
+      46,
+      88
+    ],
+    "local_seed": [
+      43,
+      83
+    ],
+    "global_bbox": [
+      746,
+      578,
+      843,
+      682
+    ],
+    "global_center": [
+      792,
+      624
+    ],
+    "global_seed": [
+      789,
+      619
+    ]
+  },
+  {
+    "region_id": "TRT000119",
+    "region_type": "land",
+    "color": "#a05851",
+    "pixel_count": 5964,
+    "density_multiplier": 1.0,
+    "parent_id": "DST000024",
+    "local_bbox": [
+      32,
+      0,
+      127,
+      94
+    ],
+    "local_center": [
+      85,
+      46
+    ],
+    "local_seed": [
+      80,
+      47
+    ],
+    "global_bbox": [
+      577,
+      386,
+      672,
+      480
+    ],
+    "global_center": [
+      630,
+      432
+    ],
+    "global_seed": [
+      625,
+      433
+    ]
+  },
+  {
+    "region_id": "TRT000120",
+    "region_type": "land",
+    "color": "#5d7f32",
+    "pixel_count": 5793,
+    "density_multiplier": 1.0,
+    "parent_id": "DST000024",
+    "local_bbox": [
+      0,
+      69,
+      87,
+      174
+    ],
+    "local_center": [
+      47,
+      118
+    ],
+    "local_seed": [
+      47,
+      120
+    ],
+    "global_bbox": [
+      545,
+      455,
+      632,
+      560
+    ],
+    "global_center": [
+      592,
+      504
+    ],
+    "global_seed": [
+      592,
+      506
+    ]
+  },
+  {
+    "region_id": "TRT000121",
+    "region_type": "land",
+    "color": "#169ec1",
+    "pixel_count": 5404,
+    "density_multiplier": 1.0,
+    "parent_id": "DST000024",
+    "local_bbox": [
+      88,
+      74,
+      178,
+      169
+    ],
+    "local_center": [
+      127,
+      119
+    ],
+    "local_seed": [
+      127,
+      120
+    ],
+    "global_bbox": [
+      633,
+      460,
+      723,
+      555
+    ],
+    "global_center": [
+      672,
+      505
+    ],
+    "global_seed": [
+      672,
+      506
+    ]
+  },
+  {
+    "region_id": "TRT000122",
+    "region_type": "land",
+    "color": "#17f8ed",
+    "pixel_count": 5733,
+    "density_multiplier": 1.0,
+    "parent_id": "DST000024",
+    "local_bbox": [
+      35,
+      139,
+      144,
+      215
+    ],
+    "local_center": [
+      91,
+      184
+    ],
+    "local_seed": [
+      89,
+      185
+    ],
+    "global_bbox": [
+      580,
+      525,
+      689,
+      601
+    ],
+    "global_center": [
+      636,
+      570
+    ],
+    "global_seed": [
+      634,
+      571
+    ]
+  },
+  {
+    "region_id": "TRT000123",
+    "region_type": "land",
+    "color": "#0b560b",
+    "pixel_count": 7249,
+    "density_multiplier": 1.0,
+    "parent_id": "DST000024",
+    "local_bbox": [
+      136,
+      99,
+      226,
+      208
+    ],
+    "local_center": [
+      185,
+      158
+    ],
+    "local_seed": [
+      185,
+      160
+    ],
+    "global_bbox": [
+      681,
+      485,
+      771,
+      594
+    ],
+    "global_center": [
+      730,
+      544
+    ],
+    "global_seed": [
+      730,
+      546
+    ]
+  },
+  {
+    "region_id": "TRT000124",
+    "region_type": "land",
+    "color": "#75c033",
+    "pixel_count": 7044,
+    "density_multiplier": 1.0,
+    "parent_id": "DST000024",
+    "local_bbox": [
+      120,
+      4,
+      220,
+      105
+    ],
+    "local_center": [
+      167,
+      57
+    ],
+    "local_seed": [
+      162,
+      55
+    ],
+    "global_bbox": [
+      665,
+      390,
+      765,
+      491
+    ],
+    "global_center": [
+      712,
+      443
+    ],
+    "global_seed": [
+      707,
+      441
+    ]
+  },
+  {
+    "region_id": "TRT000125",
+    "region_type": "land",
+    "color": "#04b72d",
+    "pixel_count": 7173,
+    "density_multiplier": 1.0,
+    "parent_id": "DST000026",
+    "local_bbox": [
+      0,
+      0,
+      128,
+      112
+    ],
+    "local_center": [
+      67,
+      61
+    ],
+    "local_seed": [
+      65,
+      65
+    ],
+    "global_bbox": [
+      1471,
+      693,
+      1599,
+      805
+    ],
+    "global_center": [
+      1538,
+      754
+    ],
+    "global_seed": [
+      1536,
+      758
+    ]
+  },
+  {
+    "region_id": "TRT000126",
+    "region_type": "land",
+    "color": "#f9420b",
+    "pixel_count": 6136,
+    "density_multiplier": 1.0,
+    "parent_id": "DST000026",
+    "local_bbox": [
+      2,
+      98,
+      85,
+      206
+    ],
+    "local_center": [
+      41,
+      153
+    ],
+    "local_seed": [
+      46,
+      156
+    ],
+    "global_bbox": [
+      1473,
+      791,
+      1556,
+      899
+    ],
+    "global_center": [
+      1512,
+      846
+    ],
+    "global_seed": [
+      1517,
+      849
+    ]
+  },
+  {
+    "region_id": "TRT000127",
+    "region_type": "land",
+    "color": "#954949",
+    "pixel_count": 4147,
+    "density_multiplier": 1.0,
+    "parent_id": "DST000026",
+    "local_bbox": [
+      62,
+      38,
+      128,
+      141
+    ],
+    "local_center": [
+      104,
+      102
+    ],
+    "local_seed": [
+      107,
+      103
+    ],
+    "global_bbox": [
+      1533,
+      731,
+      1599,
+      834
+    ],
+    "global_center": [
+      1575,
+      795
+    ],
+    "global_seed": [
+      1578,
+      796
+    ]
+  },
+  {
+    "region_id": "TRT000128",
+    "region_type": "land",
+    "color": "#1e7b3a",
+    "pixel_count": 3700,
+    "density_multiplier": 1.0,
+    "parent_id": "DST000026",
+    "local_bbox": [
+      59,
+      141,
+      128,
+      206
+    ],
+    "local_center": [
+      100,
+      176
+    ],
+    "local_seed": [
+      103,
+      179
+    ],
+    "global_bbox": [
+      1530,
+      834,
+      1599,
+      899
+    ],
+    "global_center": [
+      1571,
+      869
+    ],
+    "global_seed": [
+      1574,
+      872
+    ]
+  },
+  {
+    "region_id": "TRT000129",
+    "region_type": "land",
+    "color": "#220d84",
+    "pixel_count": 6331,
+    "density_multiplier": 1.0,
+    "parent_id": "DST000028",
+    "local_bbox": [
+      0,
+      0,
+      70,
+      124
+    ],
+    "local_center": [
+      37,
+      61
+    ],
+    "local_seed": [
+      38,
+      59
+    ],
+    "global_bbox": [
+      471,
+      128,
+      541,
+      252
+    ],
+    "global_center": [
+      508,
+      189
+    ],
+    "global_seed": [
+      509,
+      187
+    ]
+  },
+  {
+    "region_id": "TRT000130",
+    "region_type": "land",
+    "color": "#086d57",
+    "pixel_count": 7344,
+    "density_multiplier": 1.0,
+    "parent_id": "DST000028",
+    "local_bbox": [
+      19,
+      98,
+      149,
+      187
+    ],
+    "local_center": [
+      87,
+      139
+    ],
+    "local_seed": [
+      86,
+      139
+    ],
+    "global_bbox": [
+      490,
+      226,
+      620,
+      315
+    ],
+    "global_center": [
+      558,
+      267
+    ],
+    "global_seed": [
+      557,
+      267
+    ]
+  },
+  {
+    "region_id": "TRT000131",
+    "region_type": "land",
+    "color": "#f83528",
+    "pixel_count": 5316,
+    "density_multiplier": 1.0,
+    "parent_id": "DST000028",
+    "local_bbox": [
+      66,
+      5,
+      137,
+      102
+    ],
+    "local_center": [
+      97,
+      56
+    ],
+    "local_seed": [
+      98,
+      61
+    ],
+    "global_bbox": [
+      537,
+      133,
+      608,
+      230
+    ],
+    "global_center": [
+      568,
+      184
+    ],
+    "global_seed": [
+      569,
+      189
+    ]
+  },
+  {
+    "region_id": "TRT000132",
+    "region_type": "land",
+    "color": "#425bf1",
+    "pixel_count": 5144,
+    "density_multiplier": 1.0,
+    "parent_id": "DST000028",
+    "local_bbox": [
+      119,
+      53,
+      217,
+      155
+    ],
+    "local_center": [
+      162,
+      95
+    ],
+    "local_seed": [
+      164,
+      92
+    ],
+    "global_bbox": [
+      590,
+      181,
+      688,
+      283
+    ],
+    "global_center": [
+      633,
+      223
+    ],
+    "global_seed": [
+      635,
+      220
+    ]
+  },
+  {
+    "region_id": "TRT000133",
+    "region_type": "land",
+    "color": "#998feb",
+    "pixel_count": 4189,
+    "density_multiplier": 1.0,
+    "parent_id": "DST000028",
+    "local_bbox": [
+      108,
+      6,
+      213,
+      62
+    ],
+    "local_center": [
+      160,
+      33
+    ],
+    "local_seed": [
+      157,
+      30
+    ],
+    "global_bbox": [
+      579,
+      134,
+      684,
+      190
+    ],
+    "global_center": [
+      631,
+      161
+    ],
+    "global_seed": [
+      628,
+      158
+    ]
+  },
+  {
+    "region_id": "TRT000134",
+    "region_type": "land",
+    "color": "#0aeddf",
+    "pixel_count": 5106,
+    "density_multiplier": 1.0,
+    "parent_id": "DST000031",
+    "local_bbox": [
+      44,
+      90,
+      179,
+      157
+    ],
+    "local_center": [
+      104,
+      134
+    ],
+    "local_seed": [
+      101,
+      134
+    ],
+    "global_bbox": [
+      1358,
+      832,
+      1493,
+      899
+    ],
+    "global_center": [
+      1418,
+      876
+    ],
+    "global_seed": [
+      1415,
+      876
+    ]
+  },
+  {
+    "region_id": "TRT000135",
+    "region_type": "land",
+    "color": "#893280",
+    "pixel_count": 4661,
+    "density_multiplier": 1.0,
+    "parent_id": "DST000031",
+    "local_bbox": [
+      88,
+      36,
+      177,
+      153
+    ],
+    "local_center": [
+      138,
+      89
+    ],
+    "local_seed": [
+      137,
+      86
+    ],
+    "global_bbox": [
+      1402,
+      778,
+      1491,
+      895
+    ],
+    "global_center": [
+      1452,
+      831
+    ],
+    "global_seed": [
+      1451,
+      828
+    ]
+  },
+  {
+    "region_id": "TRT000136",
+    "region_type": "land",
+    "color": "#7d1fb9",
+    "pixel_count": 6806,
+    "density_multiplier": 1.0,
+    "parent_id": "DST000031",
+    "local_bbox": [
+      0,
+      33,
+      88,
+      157
+    ],
+    "local_center": [
+      39,
+      98
+    ],
+    "local_seed": [
+      40,
+      91
+    ],
+    "global_bbox": [
+      1314,
+      775,
+      1402,
+      899
+    ],
+    "global_center": [
+      1353,
+      840
+    ],
+    "global_seed": [
+      1354,
+      833
+    ]
+  },
+  {
+    "region_id": "TRT000137",
+    "region_type": "land",
+    "color": "#ab0100",
+    "pixel_count": 5057,
+    "density_multiplier": 1.0,
+    "parent_id": "DST000031",
+    "local_bbox": [
+      42,
+      0,
+      158,
+      80
+    ],
+    "local_center": [
+      95,
+      37
+    ],
+    "local_seed": [
+      99,
+      34
+    ],
+    "global_bbox": [
+      1356,
+      742,
+      1472,
+      822
+    ],
+    "global_center": [
+      1409,
+      779
+    ],
+    "global_seed": [
+      1413,
+      776
+    ]
+  },
+  {
+    "region_id": "TRT000138",
+    "region_type": "land",
+    "color": "#ca1b65",
+    "pixel_count": 5534,
+    "density_multiplier": 1.0,
+    "parent_id": "DST000027",
+    "local_bbox": [
+      51,
+      68,
+      145,
+      157
+    ],
+    "local_center": [
+      101,
+      110
+    ],
+    "local_seed": [
+      96,
+      109
+    ],
+    "global_bbox": [
+      598,
+      663,
+      692,
+      752
+    ],
+    "global_center": [
+      648,
+      705
+    ],
+    "global_seed": [
+      643,
+      704
+    ]
+  },
+  {
+    "region_id": "TRT000139",
+    "region_type": "land",
+    "color": "#bfa915",
+    "pixel_count": 7018,
+    "density_multiplier": 1.0,
+    "parent_id": "DST000027",
+    "local_bbox": [
+      47,
+      131,
+      178,
+      225
+    ],
+    "local_center": [
+      110,
+      175
+    ],
+    "local_seed": [
+      112,
+      174
+    ],
+    "global_bbox": [
+      594,
+      726,
+      725,
+      820
+    ],
+    "global_center": [
+      657,
+      770
+    ],
+    "global_seed": [
+      659,
+      769
+    ]
+  },
+  {
+    "region_id": "TRT000140",
+    "region_type": "land",
+    "color": "#73de91",
+    "pixel_count": 7532,
+    "density_multiplier": 1.0,
+    "parent_id": "DST000027",
+    "local_bbox": [
+      144,
+      62,
+      250,
+      173
+    ],
+    "local_center": [
+      193,
+      116
+    ],
+    "local_seed": [
+      193,
+      114
+    ],
+    "global_bbox": [
+      691,
+      657,
+      797,
+      768
+    ],
+    "global_center": [
+      740,
+      711
+    ],
+    "global_seed": [
+      740,
+      709
+    ]
+  },
+  {
+    "region_id": "TRT000141",
+    "region_type": "land",
+    "color": "#6330cd",
+    "pixel_count": 6722,
+    "density_multiplier": 1.0,
+    "parent_id": "DST000027",
+    "local_bbox": [
+      125,
+      0,
+      222,
+      89
+    ],
+    "local_center": [
+      167,
+      40
+    ],
+    "local_seed": [
+      166,
+      40
+    ],
+    "global_bbox": [
+      672,
+      595,
+      769,
+      684
+    ],
+    "global_center": [
+      714,
+      635
+    ],
+    "global_seed": [
+      713,
+      635
+    ]
+  },
+  {
+    "region_id": "TRT000142",
+    "region_type": "land",
+    "color": "#faea49",
+    "pixel_count": 5217,
+    "density_multiplier": 1.0,
+    "parent_id": "DST000027",
+    "local_bbox": [
+      33,
+      3,
+      125,
+      74
+    ],
+    "local_center": [
+      84,
+      38
+    ],
+    "local_seed": [
+      84,
+      36
+    ],
+    "global_bbox": [
+      580,
+      598,
+      672,
+      669
+    ],
+    "global_center": [
+      631,
+      633
+    ],
+    "global_seed": [
+      631,
+      631
+    ]
+  },
+  {
+    "region_id": "TRT000143",
+    "region_type": "land",
+    "color": "#86e02a",
+    "pixel_count": 4439,
+    "density_multiplier": 1.0,
+    "parent_id": "DST000027",
+    "local_bbox": [
+      0,
+      44,
+      73,
+      161
+    ],
+    "local_center": [
+      40,
+      98
+    ],
+    "local_seed": [
+      38,
+      95
+    ],
+    "global_bbox": [
+      547,
+      639,
+      620,
+      756
+    ],
+    "global_center": [
+      587,
+      693
+    ],
+    "global_seed": [
+      585,
+      690
+    ]
+  },
+  {
+    "region_id": "TRT000144",
+    "region_type": "land",
+    "color": "#1c8298",
+    "pixel_count": 7467,
+    "density_multiplier": 1.0,
+    "parent_id": "DST000030",
+    "local_bbox": [
+      126,
+      31,
+      226,
+      137
+    ],
+    "local_center": [
+      182,
+      95
+    ],
+    "local_seed": [
+      183,
+      93
+    ],
+    "global_bbox": [
+      1220,
+      793,
+      1320,
+      899
+    ],
+    "global_center": [
+      1276,
+      857
+    ],
+    "global_seed": [
+      1277,
+      855
+    ]
+  },
+  {
+    "region_id": "TRT000145",
+    "region_type": "land",
+    "color": "#efbb76",
+    "pixel_count": 7699,
+    "density_multiplier": 1.0,
+    "parent_id": "DST000030",
+    "local_bbox": [
+      63,
+      0,
+      169,
+      137
+    ],
+    "local_center": [
+      117,
+      60
+    ],
+    "local_seed": [
+      115,
+      65
+    ],
+    "global_bbox": [
+      1157,
+      762,
+      1263,
+      899
+    ],
+    "global_center": [
+      1211,
+      822
+    ],
+    "global_seed": [
+      1209,
+      827
+    ]
+  },
+  {
+    "region_id": "TRT000146",
+    "region_type": "land",
+    "color": "#c3583c",
+    "pixel_count": 5121,
+    "density_multiplier": 1.0,
+    "parent_id": "DST000030",
+    "local_bbox": [
+      0,
+      58,
+      119,
+      137
+    ],
+    "local_center": [
+      61,
+      110
+    ],
+    "local_seed": [
+      57,
+      110
+    ],
+    "global_bbox": [
+      1094,
+      820,
+      1213,
+      899
+    ],
+    "global_center": [
+      1155,
+      872
+    ],
+    "global_seed": [
+      1151,
+      872
+    ]
+  },
+  {
+    "region_id": "TRT000147",
+    "region_type": "land",
+    "color": "#964b45",
+    "pixel_count": 6214,
+    "density_multiplier": 1.0,
+    "parent_id": "DST000029",
+    "local_bbox": [
+      121,
+      0,
+      199,
+      143
+    ],
+    "local_center": [
+      162,
+      79
+    ],
+    "local_seed": [
+      161,
+      81
+    ],
+    "global_bbox": [
+      607,
+      0,
+      685,
+      143
+    ],
+    "global_center": [
+      648,
+      79
+    ],
+    "global_seed": [
+      647,
+      81
+    ]
+  },
+  {
+    "region_id": "TRT000148",
+    "region_type": "land",
+    "color": "#6ff3c9",
+    "pixel_count": 6120,
+    "density_multiplier": 1.0,
+    "parent_id": "DST000029",
+    "local_bbox": [
+      55,
+      0,
+      196,
+      69
+    ],
+    "local_center": [
+      117,
+      26
+    ],
+    "local_seed": [
+      112,
+      27
+    ],
+    "global_bbox": [
+      541,
+      0,
+      682,
+      69
+    ],
+    "global_center": [
+      603,
+      26
+    ],
+    "global_seed": [
+      598,
+      27
+    ]
+  },
+  {
+    "region_id": "TRT000149",
+    "region_type": "land",
+    "color": "#1d742f",
+    "pixel_count": 6485,
+    "density_multiplier": 1.0,
+    "parent_id": "DST000029",
+    "local_bbox": [
+      0,
+      0,
+      79,
+      132
+    ],
+    "local_center": [
+      36,
+      54
+    ],
+    "local_seed": [
+      33,
+      60
+    ],
+    "global_bbox": [
+      486,
+      0,
+      565,
+      132
+    ],
+    "global_center": [
+      522,
+      54
+    ],
+    "global_seed": [
+      519,
+      60
+    ]
+  },
+  {
+    "region_id": "TRT000150",
+    "region_type": "land",
+    "color": "#d713c4",
+    "pixel_count": 5436,
+    "density_multiplier": 1.0,
+    "parent_id": "DST000029",
+    "local_bbox": [
+      28,
+      61,
+      139,
+      135
+    ],
+    "local_center": [
+      88,
+      104
+    ],
+    "local_seed": [
+      90,
+      103
+    ],
+    "global_bbox": [
+      514,
+      61,
+      625,
+      135
+    ],
+    "global_center": [
+      574,
+      104
+    ],
+    "global_seed": [
+      576,
+      103
+    ]
+  },
+  {
+    "region_id": "TRT000151",
+    "region_type": "land",
+    "color": "#08aebe",
+    "pixel_count": 7031,
+    "density_multiplier": 1.0,
+    "parent_id": "DST000032",
+    "local_bbox": [
+      91,
+      7,
+      200,
+      107
+    ],
+    "local_center": [
+      146,
+      56
+    ],
+    "local_seed": [
+      143,
+      51
+    ],
+    "global_bbox": [
+      380,
+      170,
+      489,
+      270
+    ],
+    "global_center": [
+      435,
+      219
+    ],
+    "global_seed": [
+      432,
+      214
+    ]
+  },
+  {
+    "region_id": "TRT000152",
+    "region_type": "land",
+    "color": "#c77809",
+    "pixel_count": 6458,
+    "density_multiplier": 1.0,
+    "parent_id": "DST000032",
+    "local_bbox": [
+      68,
+      95,
+      200,
+      203
+    ],
+    "local_center": [
+      132,
+      145
+    ],
+    "local_seed": [
+      134,
+      142
+    ],
+    "global_bbox": [
+      357,
+      258,
+      489,
+      366
+    ],
+    "global_center": [
+      421,
+      308
+    ],
+    "global_seed": [
+      423,
+      305
+    ]
+  },
+  {
+    "region_id": "TRT000153",
+    "region_type": "land",
+    "color": "#237999",
+    "pixel_count": 6040,
+    "density_multiplier": 1.0,
+    "parent_id": "DST000032",
+    "local_bbox": [
+      0,
+      0,
+      97,
+      74
+    ],
+    "local_center": [
+      47,
+      37
+    ],
+    "local_seed": [
+      45,
+      33
+    ],
+    "global_bbox": [
+      289,
+      163,
+      386,
+      237
+    ],
+    "global_center": [
+      336,
+      200
+    ],
+    "global_seed": [
+      334,
+      196
+    ]
+  },
+  {
+    "region_id": "TRT000154",
+    "region_type": "land",
+    "color": "#47b81b",
+    "pixel_count": 5874,
+    "density_multiplier": 1.0,
+    "parent_id": "DST000032",
+    "local_bbox": [
+      0,
+      67,
+      69,
+      179
+    ],
+    "local_center": [
+      34,
+      120
+    ],
+    "local_seed": [
+      33,
+      112
+    ],
+    "global_bbox": [
+      289,
+      230,
+      358,
+      342
+    ],
+    "global_center": [
+      323,
+      283
+    ],
+    "global_seed": [
+      322,
+      275
+    ]
+  },
+  {
+    "region_id": "TRT000155",
+    "region_type": "land",
+    "color": "#99f22c",
+    "pixel_count": 4894,
+    "density_multiplier": 1.0,
+    "parent_id": "DST000032",
+    "local_bbox": [
+      57,
+      54,
+      133,
+      174
+    ],
+    "local_center": [
+      90,
+      106
+    ],
+    "local_seed": [
+      91,
+      106
+    ],
+    "global_bbox": [
+      346,
+      217,
+      422,
+      337
+    ],
+    "global_center": [
+      379,
+      269
+    ],
+    "global_seed": [
+      380,
+      269
+    ]
+  },
+  {
+    "region_id": "TRT000156",
+    "region_type": "land",
+    "color": "#a0293f",
+    "pixel_count": 6745,
+    "density_multiplier": 1.0,
+    "parent_id": "DST000033",
+    "local_bbox": [
+      0,
+      82,
+      83,
+      210
+    ],
+    "local_center": [
+      40,
+      155
+    ],
+    "local_seed": [
+      40,
+      155
+    ],
+    "global_bbox": [
+      369,
+      771,
+      452,
+      899
+    ],
+    "global_center": [
+      409,
+      844
+    ],
+    "global_seed": [
+      409,
+      844
+    ]
+  },
+  {
+    "region_id": "TRT000157",
+    "region_type": "land",
+    "color": "#a918d6",
+    "pixel_count": 5939,
+    "density_multiplier": 1.0,
+    "parent_id": "DST000033",
+    "local_bbox": [
+      67,
+      85,
+      178,
+      166
+    ],
+    "local_center": [
+      122,
+      120
+    ],
+    "local_seed": [
+      126,
+      123
+    ],
+    "global_bbox": [
+      436,
+      774,
+      547,
+      855
+    ],
+    "global_center": [
+      491,
+      809
+    ],
+    "global_seed": [
+      495,
+      812
+    ]
+  },
+  {
+    "region_id": "TRT000158",
+    "region_type": "land",
+    "color": "#6f4bb9",
+    "pixel_count": 4342,
+    "density_multiplier": 1.0,
+    "parent_id": "DST000033",
+    "local_bbox": [
+      49,
+      141,
+      138,
+      210
+    ],
+    "local_center": [
+      97,
+      183
+    ],
+    "local_seed": [
+      96,
+      185
+    ],
+    "global_bbox": [
+      418,
+      830,
+      507,
+      899
+    ],
+    "global_center": [
+      466,
+      872
+    ],
+    "global_seed": [
+      465,
+      874
+    ]
+  },
+  {
+    "region_id": "TRT000159",
+    "region_type": "land",
+    "color": "#5fdd2e",
+    "pixel_count": 7583,
+    "density_multiplier": 1.0,
+    "parent_id": "DST000033",
+    "local_bbox": [
+      54,
+      0,
+      180,
+      93
+    ],
+    "local_center": [
+      119,
+      47
+    ],
+    "local_seed": [
+      119,
+      48
+    ],
+    "global_bbox": [
+      423,
+      689,
+      549,
+      782
+    ],
+    "global_center": [
+      488,
+      736
+    ],
+    "global_seed": [
+      488,
+      737
+    ]
+  },
+  {
+    "region_id": "TRT000160",
+    "region_type": "land",
+    "color": "#a0029b",
+    "pixel_count": 5466,
+    "density_multiplier": 1.0,
+    "parent_id": "DST000033",
+    "local_bbox": [
+      194,
+      103,
+      268,
+      210
+    ],
+    "local_center": [
+      235,
+      157
+    ],
+    "local_seed": [
+      236,
+      158
+    ],
+    "global_bbox": [
+      563,
+      792,
+      637,
+      899
+    ],
+    "global_center": [
+      604,
+      846
+    ],
+    "global_seed": [
+      605,
+      847
+    ]
+  },
+  {
+    "region_id": "TRT000161",
+    "region_type": "land",
+    "color": "#b05110",
+    "pixel_count": 5049,
+    "density_multiplier": 1.0,
+    "parent_id": "DST000033",
+    "local_bbox": [
+      136,
+      126,
+      222,
+      210
+    ],
+    "local_center": [
+      176,
+      177
+    ],
+    "local_seed": [
+      178,
+      179
+    ],
+    "global_bbox": [
+      505,
+      815,
+      591,
+      899
+    ],
+    "global_center": [
+      545,
+      866
+    ],
+    "global_seed": [
+      547,
+      868
+    ]
+  },
+  {
+    "region_id": "TRT000162",
+    "region_type": "land",
+    "color": "#8e0c5b",
+    "pixel_count": 6322,
+    "density_multiplier": 1.0,
+    "parent_id": "DST000033",
+    "local_bbox": [
+      149,
+      8,
+      244,
+      131
+    ],
+    "local_center": [
+      192,
+      77
+    ],
+    "local_seed": [
+      195,
+      79
+    ],
+    "global_bbox": [
+      518,
+      697,
+      613,
+      820
+    ],
+    "global_center": [
+      561,
+      766
+    ],
+    "global_seed": [
+      564,
+      768
+    ]
+  },
+  {
+    "region_id": "TRT000163",
+    "region_type": "land",
+    "color": "#58fe30",
+    "pixel_count": 6041,
+    "density_multiplier": 1.0,
+    "parent_id": "DST000036",
+    "local_bbox": [
+      60,
+      10,
+      166,
+      104
+    ],
+    "local_center": [
+      120,
+      66
+    ],
+    "local_seed": [
+      124,
+      65
+    ],
+    "global_bbox": [
+      691,
+      735,
+      797,
+      829
+    ],
+    "global_center": [
+      751,
+      791
+    ],
+    "global_seed": [
+      755,
+      790
+    ]
+  },
+  {
+    "region_id": "TRT000164",
+    "region_type": "land",
+    "color": "#a6f9d6",
+    "pixel_count": 7835,
+    "density_multiplier": 1.0,
+    "parent_id": "DST000036",
+    "local_bbox": [
+      0,
+      69,
+      89,
+      174
+    ],
+    "local_center": [
+      45,
+      129
+    ],
+    "local_seed": [
+      46,
+      128
+    ],
+    "global_bbox": [
+      631,
+      794,
+      720,
+      899
+    ],
+    "global_center": [
+      676,
+      854
+    ],
+    "global_seed": [
+      677,
+      853
+    ]
+  },
+  {
+    "region_id": "TRT000165",
+    "region_type": "land",
+    "color": "#9feb59",
+    "pixel_count": 5734,
+    "density_multiplier": 1.0,
+    "parent_id": "DST000036",
+    "local_bbox": [
+      83,
+      101,
+      170,
+      174
+    ],
+    "local_center": [
+      127,
+      139
+    ],
+    "local_seed": [
+      129,
+      140
+    ],
+    "global_bbox": [
+      714,
+      826,
+      801,
+      899
+    ],
+    "global_center": [
+      758,
+      864
+    ],
+    "global_seed": [
+      760,
+      865
+    ]
+  },
+  {
+    "region_id": "TRT000166",
+    "region_type": "land",
+    "color": "#136784",
+    "pixel_count": 5987,
+    "density_multiplier": 1.0,
+    "parent_id": "DST000036",
+    "local_bbox": [
+      164,
+      88,
+      242,
+      174
+    ],
+    "local_center": [
+      203,
+      133
+    ],
+    "local_seed": [
+      204,
+      133
+    ],
+    "global_bbox": [
+      795,
+      813,
+      873,
+      899
+    ],
+    "global_center": [
+      834,
+      858
+    ],
+    "global_seed": [
+      835,
+      858
+    ]
+  },
+  {
+    "region_id": "TRT000167",
+    "region_type": "land",
+    "color": "#2c3dbf",
+    "pixel_count": 5684,
+    "density_multiplier": 1.0,
+    "parent_id": "DST000036",
+    "local_bbox": [
+      143,
+      0,
+      228,
+      93
+    ],
+    "local_center": [
+      187,
+      48
+    ],
+    "local_seed": [
+      190,
+      48
+    ],
+    "global_bbox": [
+      774,
+      725,
+      859,
+      818
+    ],
+    "global_center": [
+      818,
+      773
+    ],
+    "global_seed": [
+      821,
+      773
+    ]
+  },
+  {
+    "region_id": "TRT000168",
+    "region_type": "land",
+    "color": "#4e7930",
+    "pixel_count": 7501,
+    "density_multiplier": 1.0,
+    "parent_id": "DST000034",
+    "local_bbox": [
+      40,
+      0,
+      157,
+      110
+    ],
+    "local_center": [
+      103,
+      52
+    ],
+    "local_seed": [
+      100,
+      54
+    ],
+    "global_bbox": [
+      437,
+      274,
+      554,
+      384
+    ],
+    "global_center": [
+      500,
+      326
+    ],
+    "global_seed": [
+      497,
+      328
+    ]
+  },
+  {
+    "region_id": "TRT000169",
+    "region_type": "land",
+    "color": "#f945ad",
+    "pixel_count": 6872,
+    "density_multiplier": 1.0,
+    "parent_id": "DST000034",
+    "local_bbox": [
+      132,
+      26,
+      231,
+      140
+    ],
+    "local_center": [
+      182,
+      84
+    ],
+    "local_seed": [
+      182,
+      85
+    ],
+    "global_bbox": [
+      529,
+      300,
+      628,
+      414
+    ],
+    "global_center": [
+      579,
+      358
+    ],
+    "global_seed": [
+      579,
+      359
+    ]
+  },
+  {
+    "region_id": "TRT000170",
+    "region_type": "land",
+    "color": "#235dee",
+    "pixel_count": 6424,
+    "density_multiplier": 1.0,
+    "parent_id": "DST000034",
+    "local_bbox": [
+      97,
+      98,
+      202,
+      212
+    ],
+    "local_center": [
+      146,
+      149
+    ],
+    "local_seed": [
+      143,
+      149
+    ],
+    "global_bbox": [
+      494,
+      372,
+      599,
+      486
+    ],
+    "global_center": [
+      543,
+      423
+    ],
+    "global_seed": [
+      540,
+      423
+    ]
+  },
+  {
+    "region_id": "TRT000171",
+    "region_type": "land",
+    "color": "#5241d9",
+    "pixel_count": 6113,
+    "density_multiplier": 1.0,
+    "parent_id": "DST000034",
+    "local_bbox": [
+      0,
+      54,
+      102,
+      146
+    ],
+    "local_center": [
+      47,
+      106
+    ],
+    "local_seed": [
+      46,
+      112
+    ],
+    "global_bbox": [
+      397,
+      328,
+      499,
+      420
+    ],
+    "global_center": [
+      444,
+      380
+    ],
+    "global_seed": [
+      443,
+      386
+    ]
+  },
+  {
+    "region_id": "TRT000172",
+    "region_type": "land",
+    "color": "#a7a878",
+    "pixel_count": 4027,
+    "density_multiplier": 1.0,
+    "parent_id": "DST000034",
+    "local_bbox": [
+      64,
+      126,
+      144,
+      212
+    ],
+    "local_center": [
+      98,
+      177
+    ],
+    "local_seed": [
+      94,
+      180
+    ],
+    "global_bbox": [
+      461,
+      400,
+      541,
+      486
+    ],
+    "global_center": [
+      495,
+      451
+    ],
+    "global_seed": [
+      491,
+      454
+    ]
+  },
+  {
+    "region_id": "TRT000173",
+    "region_type": "land",
+    "color": "#fd6151",
+    "pixel_count": 2828,
+    "density_multiplier": 1.0,
+    "parent_id": "DST000034",
+    "local_bbox": [
+      14,
+      140,
+      68,
+      198
+    ],
+    "local_center": [
+      39,
+      170
+    ],
+    "local_seed": [
+      36,
+      174
+    ],
+    "global_bbox": [
+      411,
+      414,
+      465,
+      472
+    ],
+    "global_center": [
+      436,
+      444
+    ],
+    "global_seed": [
+      433,
+      448
+    ]
+  },
+  {
+    "region_id": "TRT000174",
+    "region_type": "land",
+    "color": "#321b25",
+    "pixel_count": 7257,
+    "density_multiplier": 1.0,
+    "parent_id": "DST000037",
+    "local_bbox": [
+      140,
+      84,
+      226,
+      216
+    ],
+    "local_center": [
+      188,
+      144
+    ],
+    "local_seed": [
+      186,
+      147
+    ],
+    "global_bbox": [
+      325,
+      391,
+      411,
+      523
+    ],
+    "global_center": [
+      373,
+      451
+    ],
+    "global_seed": [
+      371,
+      454
+    ]
+  },
+  {
+    "region_id": "TRT000175",
+    "region_type": "land",
+    "color": "#3af28c",
+    "pixel_count": 4974,
+    "density_multiplier": 1.0,
+    "parent_id": "DST000037",
+    "local_bbox": [
+      69,
+      72,
+      151,
+      160
+    ],
+    "local_center": [
+      108,
+      120
+    ],
+    "local_seed": [
+      105,
+      120
+    ],
+    "global_bbox": [
+      254,
+      379,
+      336,
+      467
+    ],
+    "global_center": [
+      293,
+      427
+    ],
+    "global_seed": [
+      290,
+      427
+    ]
+  },
+  {
+    "region_id": "TRT000176",
+    "region_type": "land",
+    "color": "#c5aa65",
+    "pixel_count": 7064,
+    "density_multiplier": 1.0,
+    "parent_id": "DST000037",
+    "local_bbox": [
+      100,
+      0,
+      215,
+      109
+    ],
+    "local_center": [
+      151,
+      60
+    ],
+    "local_seed": [
+      149,
+      60
+    ],
+    "global_bbox": [
+      285,
+      307,
+      400,
+      416
+    ],
+    "global_center": [
+      336,
+      367
+    ],
+    "global_seed": [
+      334,
+      367
+    ]
+  },
+  {
+    "region_id": "TRT000177",
+    "region_type": "land",
+    "color": "#7d69b9",
+    "pixel_count": 5720,
+    "density_multiplier": 1.0,
+    "parent_id": "DST000037",
+    "local_bbox": [
+      0,
+      5,
+      104,
+      103
+    ],
+    "local_center": [
+      62,
+      62
+    ],
+    "local_seed": [
+      59,
+      64
+    ],
+    "global_bbox": [
+      185,
+      312,
+      289,
+      410
+    ],
+    "global_center": [
+      247,
+      369
+    ],
+    "global_seed": [
+      244,
+      371
+    ]
+  },
+  {
+    "region_id": "TRT000178",
+    "region_type": "land",
+    "color": "#fd1a49",
+    "pixel_count": 5724,
+    "density_multiplier": 1.0,
+    "parent_id": "DST000037",
+    "local_bbox": [
+      58,
+      150,
+      179,
+      234
+    ],
+    "local_center": [
+      125,
+      189
+    ],
+    "local_seed": [
+      119,
+      188
+    ],
+    "global_bbox": [
+      243,
+      457,
+      364,
+      541
+    ],
+    "global_center": [
+      310,
+      496
+    ],
+    "global_seed": [
+      304,
+      495
+    ]
+  },
+  {
+    "region_id": "TRT000179",
+    "region_type": "land",
+    "color": "#462309",
+    "pixel_count": 5216,
+    "density_multiplier": 1.0,
+    "parent_id": "DST000037",
+    "local_bbox": [
+      0,
+      83,
+      78,
+      187
+    ],
+    "local_center": [
+      40,
+      135
+    ],
+    "local_seed": [
+      38,
+      134
+    ],
+    "global_bbox": [
+      185,
+      390,
+      263,
+      494
+    ],
+    "global_center": [
+      225,
+      442
+    ],
+    "global_seed": [
+      223,
+      441
+    ]
+  },
+  {
+    "region_id": "TRT000180",
+    "region_type": "land",
+    "color": "#88fe78",
+    "pixel_count": 6119,
+    "density_multiplier": 1.0,
+    "parent_id": "DST000038",
+    "local_bbox": [
+      101,
+      84,
+      183,
+      181
+    ],
+    "local_center": [
+      142,
+      136
+    ],
+    "local_seed": [
+      142,
+      132
+    ],
+    "global_bbox": [
+      237,
+      84,
+      319,
+      181
+    ],
+    "global_center": [
+      278,
+      136
+    ],
+    "global_seed": [
+      278,
+      132
+    ]
+  },
+  {
+    "region_id": "TRT000181",
+    "region_type": "land",
+    "color": "#0931e1",
+    "pixel_count": 4632,
+    "density_multiplier": 1.0,
+    "parent_id": "DST000038",
+    "local_bbox": [
+      80,
+      0,
+      185,
+      57
+    ],
+    "local_center": [
+      138,
+      23
+    ],
+    "local_seed": [
+      135,
+      21
+    ],
+    "global_bbox": [
+      216,
+      0,
+      321,
+      57
+    ],
+    "global_center": [
+      274,
+      23
+    ],
+    "global_seed": [
+      271,
+      21
+    ]
+  },
+  {
+    "region_id": "TRT000182",
+    "region_type": "land",
+    "color": "#207770",
+    "pixel_count": 6318,
+    "density_multiplier": 1.0,
+    "parent_id": "DST000038",
+    "local_bbox": [
+      15,
+      88,
+      102,
+      175
+    ],
+    "local_center": [
+      59,
+      130
+    ],
+    "local_seed": [
+      60,
+      133
+    ],
+    "global_bbox": [
+      151,
+      88,
+      238,
+      175
+    ],
+    "global_center": [
+      195,
+      130
+    ],
+    "global_seed": [
+      196,
+      133
+    ]
+  },
+  {
+    "region_id": "TRT000183",
+    "region_type": "land",
+    "color": "#ecec82",
+    "pixel_count": 6942,
+    "density_multiplier": 1.0,
+    "parent_id": "DST000038",
+    "local_bbox": [
+      0,
+      0,
+      86,
+      97
+    ],
+    "local_center": [
+      44,
+      45
+    ],
+    "local_seed": [
+      42,
+      49
+    ],
+    "global_bbox": [
+      136,
+      0,
+      222,
+      97
+    ],
+    "global_center": [
+      180,
+      45
+    ],
+    "global_seed": [
+      178,
+      49
+    ]
+  },
+  {
+    "region_id": "TRT000184",
+    "region_type": "land",
+    "color": "#9e843b",
+    "pixel_count": 5265,
+    "density_multiplier": 1.0,
+    "parent_id": "DST000038",
+    "local_bbox": [
+      79,
+      32,
+      183,
+      108
+    ],
+    "local_center": [
+      126,
+      72
+    ],
+    "local_seed": [
+      124,
+      68
+    ],
+    "global_bbox": [
+      215,
+      32,
+      319,
+      108
+    ],
+    "global_center": [
+      262,
+      72
+    ],
+    "global_seed": [
+      260,
+      68
+    ]
+  },
+  {
+    "region_id": "TRT000185",
+    "region_type": "land",
+    "color": "#9fe6d9",
+    "pixel_count": 5314,
+    "density_multiplier": 1.0,
+    "parent_id": "DST000035",
+    "local_bbox": [
+      101,
+      1,
+      207,
+      88
+    ],
+    "local_center": [
+      144,
+      38
+    ],
+    "local_seed": [
+      141,
+      38
+    ],
+    "global_bbox": [
+      448,
+      473,
+      554,
+      560
+    ],
+    "global_center": [
+      491,
+      510
+    ],
+    "global_seed": [
+      488,
+      510
+    ]
+  },
+  {
+    "region_id": "TRT000186",
+    "region_type": "land",
+    "color": "#f51cf3",
+    "pixel_count": 4730,
+    "density_multiplier": 1.0,
+    "parent_id": "DST000035",
+    "local_bbox": [
+      0,
+      46,
+      80,
+      148
+    ],
+    "local_center": [
+      33,
+      95
+    ],
+    "local_seed": [
+      32,
+      93
+    ],
+    "global_bbox": [
+      347,
+      518,
+      427,
+      620
+    ],
+    "global_center": [
+      380,
+      567
+    ],
+    "global_seed": [
+      379,
+      565
+    ]
+  },
+  {
+    "region_id": "TRT000187",
+    "region_type": "land",
+    "color": "#181726",
+    "pixel_count": 6568,
+    "density_multiplier": 1.0,
+    "parent_id": "DST000035",
+    "local_bbox": [
+      120,
+      31,
+      238,
+      135
+    ],
+    "local_center": [
+      182,
+      88
+    ],
+    "local_seed": [
+      179,
+      88
+    ],
+    "global_bbox": [
+      467,
+      503,
+      585,
+      607
+    ],
+    "global_center": [
+      529,
+      560
+    ],
+    "global_seed": [
+      526,
+      560
+    ]
+  },
+  {
+    "region_id": "TRT000188",
+    "region_type": "land",
+    "color": "#151260",
+    "pixel_count": 6758,
+    "density_multiplier": 1.0,
+    "parent_id": "DST000035",
+    "local_bbox": [
+      39,
+      88,
+      150,
+      191
+    ],
+    "local_center": [
+      93,
+      136
+    ],
+    "local_seed": [
+      92,
+      137
+    ],
+    "global_bbox": [
+      386,
+      560,
+      497,
+      663
+    ],
+    "global_center": [
+      440,
+      608
+    ],
+    "global_seed": [
+      439,
+      609
+    ]
+  },
+  {
+    "region_id": "TRT000189",
+    "region_type": "land",
+    "color": "#2654f6",
+    "pixel_count": 5938,
+    "density_multiplier": 1.0,
+    "parent_id": "DST000035",
+    "local_bbox": [
+      152,
+      103,
+      252,
+      216
+    ],
+    "local_center": [
+      205,
+      153
+    ],
+    "local_seed": [
+      204,
+      153
+    ],
+    "global_bbox": [
+      499,
+      575,
+      599,
+      688
+    ],
+    "global_center": [
+      552,
+      625
+    ],
+    "global_seed": [
+      551,
+      625
+    ]
+  },
+  {
+    "region_id": "TRT000190",
+    "region_type": "land",
+    "color": "#dd80f7",
+    "pixel_count": 5563,
+    "density_multiplier": 1.0,
+    "parent_id": "DST000035",
+    "local_bbox": [
+      84,
+      136,
+      196,
+      228
+    ],
+    "local_center": [
+      141,
+      189
+    ],
+    "local_seed": [
+      141,
+      191
+    ],
+    "global_bbox": [
+      431,
+      608,
+      543,
+      700
+    ],
+    "global_center": [
+      488,
+      661
+    ],
+    "global_seed": [
+      488,
+      663
+    ]
+  },
+  {
+    "region_id": "TRT000191",
+    "region_type": "land",
+    "color": "#44c7d5",
+    "pixel_count": 5437,
+    "density_multiplier": 1.0,
+    "parent_id": "DST000035",
+    "local_bbox": [
+      25,
+      0,
+      116,
+      92
+    ],
+    "local_center": [
+      76,
+      44
+    ],
+    "local_seed": [
+      75,
+      46
+    ],
+    "global_bbox": [
+      372,
+      472,
+      463,
+      564
+    ],
+    "global_center": [
+      423,
+      516
+    ],
+    "global_seed": [
+      422,
+      518
+    ]
+  },
+  {
+    "region_id": "TRT000192",
+    "region_type": "land",
+    "color": "#2d2809",
+    "pixel_count": 5159,
+    "density_multiplier": 1.0,
+    "parent_id": "DST000040",
+    "local_bbox": [
+      147,
+      69,
+      233,
+      177
+    ],
+    "local_center": [
+      187,
+      118
+    ],
+    "local_seed": [
+      185,
+      119
+    ],
+    "global_bbox": [
+      263,
+      546,
+      349,
+      654
+    ],
+    "global_center": [
+      303,
+      595
+    ],
+    "global_seed": [
+      301,
+      596
+    ]
+  },
+  {
+    "region_id": "TRT000193",
+    "region_type": "land",
+    "color": "#de64fb",
+    "pixel_count": 6649,
+    "density_multiplier": 1.0,
+    "parent_id": "DST000040",
+    "local_bbox": [
+      25,
+      130,
+      153,
+      228
+    ],
+    "local_center": [
+      86,
+      182
+    ],
+    "local_seed": [
+      85,
+      182
+    ],
+    "global_bbox": [
+      141,
+      607,
+      269,
+      705
+    ],
+    "global_center": [
+      202,
+      659
+    ],
+    "global_seed": [
+      201,
+      659
+    ]
+  },
+  {
+    "region_id": "TRT000194",
+    "region_type": "land",
+    "color": "#6e06ae",
+    "pixel_count": 8738,
+    "density_multiplier": 1.0,
+    "parent_id": "DST000040",
+    "local_bbox": [
+      0,
+      0,
+      119,
+      133
+    ],
+    "local_center": [
+      67,
+      73
+    ],
+    "local_seed": [
+      70,
+      71
+    ],
+    "global_bbox": [
+      116,
+      477,
+      235,
+      610
+    ],
+    "global_center": [
+      183,
+      550
+    ],
+    "global_seed": [
+      186,
+      548
+    ]
+  },
+  {
+    "region_id": "TRT000195",
+    "region_type": "land",
+    "color": "#32233e",
+    "pixel_count": 5540,
+    "density_multiplier": 1.0,
+    "parent_id": "DST000040",
+    "local_bbox": [
+      108,
+      8,
+      230,
+      99
+    ],
+    "local_center": [
+      157,
+      60
+    ],
+    "local_seed": [
+      164,
+      61
+    ],
+    "global_bbox": [
+      224,
+      485,
+      346,
+      576
+    ],
+    "global_center": [
+      273,
+      537
+    ],
+    "global_seed": [
+      280,
+      538
+    ]
+  },
+  {
+    "region_id": "TRT000196",
+    "region_type": "land",
+    "color": "#942ec3",
+    "pixel_count": 5743,
+    "density_multiplier": 1.0,
+    "parent_id": "DST000040",
+    "local_bbox": [
+      48,
+      82,
+      163,
+      187
+    ],
+    "local_center": [
+      116,
+      133
+    ],
+    "local_seed": [
+      114,
+      133
+    ],
+    "global_bbox": [
+      164,
+      559,
+      279,
+      664
+    ],
+    "global_center": [
+      232,
+      610
+    ],
+    "global_seed": [
+      230,
+      610
+    ]
+  },
+  {
+    "region_id": "TRT000197",
+    "region_type": "land",
+    "color": "#ed6717",
+    "pixel_count": 4794,
+    "density_multiplier": 1.0,
+    "parent_id": "DST000039",
+    "local_bbox": [
+      65,
+      173,
+      171,
+      273
+    ],
+    "local_center": [
+      119,
+      215
+    ],
+    "local_seed": [
+      120,
+      219
+    ],
+    "global_bbox": [
+      297,
+      759,
+      403,
+      859
+    ],
+    "global_center": [
+      351,
+      801
+    ],
+    "global_seed": [
+      352,
+      805
+    ]
+  },
+  {
+    "region_id": "TRT000198",
+    "region_type": "land",
+    "color": "#989365",
+    "pixel_count": 8587,
+    "density_multiplier": 1.0,
+    "parent_id": "DST000039",
+    "local_bbox": [
+      0,
+      62,
+      122,
+      191
+    ],
+    "local_center": [
+      62,
+      125
+    ],
+    "local_seed": [
+      66,
+      125
+    ],
+    "global_bbox": [
+      232,
+      648,
+      354,
+      777
+    ],
+    "global_center": [
+      294,
+      711
+    ],
+    "global_seed": [
+      298,
+      711
+    ]
+  },
+  {
+    "region_id": "TRT000199",
+    "region_type": "land",
+    "color": "#c1f965",
+    "pixel_count": 5718,
+    "density_multiplier": 1.0,
+    "parent_id": "DST000039",
+    "local_bbox": [
+      93,
+      116,
+      199,
+      210
+    ],
+    "local_center": [
+      147,
+      164
+    ],
+    "local_seed": [
+      148,
+      166
+    ],
+    "global_bbox": [
+      325,
+      702,
+      431,
+      796
+    ],
+    "global_center": [
+      379,
+      750
+    ],
+    "global_seed": [
+      380,
+      752
+    ]
+  },
+  {
+    "region_id": "TRT000200",
+    "region_type": "land",
+    "color": "#e436b0",
+    "pixel_count": 7164,
+    "density_multiplier": 1.0,
+    "parent_id": "DST000039",
+    "local_bbox": [
+      56,
+      0,
+      177,
+      116
+    ],
+    "local_center": [
+      118,
+      59
+    ],
+    "local_seed": [
+      121,
+      58
+    ],
+    "global_bbox": [
+      288,
+      586,
+      409,
+      702
+    ],
+    "global_center": [
+      350,
+      645
+    ],
+    "global_seed": [
+      353,
+      644
+    ]
+  },
+  {
+    "region_id": "TRT000201",
+    "region_type": "land",
+    "color": "#f28341",
+    "pixel_count": 5543,
+    "density_multiplier": 1.0,
+    "parent_id": "DST000039",
+    "local_bbox": [
+      128,
+      60,
+      234,
+      160
+    ],
+    "local_center": [
+      184,
+      111
+    ],
+    "local_seed": [
+      186,
+      112
+    ],
+    "global_bbox": [
+      360,
+      646,
+      466,
+      746
+    ],
+    "global_center": [
+      416,
+      697
+    ],
+    "global_seed": [
+      418,
+      698
+    ]
+  },
+  {
+    "region_id": "TRT000202",
+    "region_type": "land",
+    "color": "#fe9f5f",
+    "pixel_count": 7561,
+    "density_multiplier": 1.0,
+    "parent_id": "DST000043",
+    "local_bbox": [
+      0,
+      0,
+      114,
+      82
+    ],
+    "local_center": [
+      50,
+      36
+    ],
+    "local_seed": [
+      53,
+      35
+    ],
+    "global_bbox": [
+      0,
+      201,
+      114,
+      283
+    ],
+    "global_center": [
+      50,
+      237
+    ],
+    "global_seed": [
+      53,
+      236
+    ]
+  },
+  {
+    "region_id": "TRT000203",
+    "region_type": "land",
+    "color": "#90c68d",
+    "pixel_count": 6743,
+    "density_multiplier": 1.0,
+    "parent_id": "DST000043",
+    "local_bbox": [
+      0,
+      68,
+      74,
+      199
+    ],
+    "local_center": [
+      28,
+      128
+    ],
+    "local_seed": [
+      30,
+      121
+    ],
+    "global_bbox": [
+      0,
+      269,
+      74,
+      400
+    ],
+    "global_center": [
+      28,
+      329
+    ],
+    "global_seed": [
+      30,
+      322
+    ]
+  },
+  {
+    "region_id": "TRT000204",
+    "region_type": "land",
+    "color": "#00c44b",
+    "pixel_count": 5464,
+    "density_multiplier": 1.0,
+    "parent_id": "DST000043",
+    "local_bbox": [
+      31,
+      123,
+      161,
+      193
+    ],
+    "local_center": [
+      94,
+      161
+    ],
+    "local_seed": [
+      90,
+      161
+    ],
+    "global_bbox": [
+      31,
+      324,
+      161,
+      394
+    ],
+    "global_center": [
+      94,
+      362
+    ],
+    "global_seed": [
+      90,
+      362
+    ]
+  },
+  {
+    "region_id": "TRT000205",
+    "region_type": "land",
+    "color": "#de30db",
+    "pixel_count": 5005,
+    "density_multiplier": 1.0,
+    "parent_id": "DST000043",
+    "local_bbox": [
+      64,
+      39,
+      152,
+      148
+    ],
+    "local_center": [
+      105,
+      97
+    ],
+    "local_seed": [
+      109,
+      99
+    ],
+    "global_bbox": [
+      64,
+      240,
+      152,
+      349
+    ],
+    "global_center": [
+      105,
+      298
+    ],
+    "global_seed": [
+      109,
+      300
+    ]
+  },
+  {
+    "region_id": "TRT000206",
+    "region_type": "land",
+    "color": "#5a2737",
+    "pixel_count": 4979,
+    "density_multiplier": 1.0,
+    "parent_id": "DST000042",
+    "local_bbox": [
+      18,
+      81,
+      104,
+      163
+    ],
+    "local_center": [
+      64,
+      116
+    ],
+    "local_seed": [
+      61,
+      120
+    ],
+    "global_bbox": [
+      118,
+      244,
+      204,
+      326
+    ],
+    "global_center": [
+      164,
+      279
+    ],
+    "global_seed": [
+      161,
+      283
+    ]
+  },
+  {
+    "region_id": "TRT000207",
+    "region_type": "land",
+    "color": "#321489",
+    "pixel_count": 7186,
+    "density_multiplier": 1.0,
+    "parent_id": "DST000042",
+    "local_bbox": [
+      0,
+      0,
+      101,
+      88
+    ],
+    "local_center": [
+      56,
+      45
+    ],
+    "local_seed": [
+      58,
+      49
+    ],
+    "global_bbox": [
+      100,
+      163,
+      201,
+      251
+    ],
+    "global_center": [
+      156,
+      208
+    ],
+    "global_seed": [
+      158,
+      212
+    ]
+  },
+  {
+    "region_id": "TRT000208",
+    "region_type": "land",
+    "color": "#4e295d",
+    "pixel_count": 4641,
+    "density_multiplier": 1.0,
+    "parent_id": "DST000042",
+    "local_bbox": [
+      44,
+      134,
+      142,
+      217
+    ],
+    "local_center": [
+      90,
+      176
+    ],
+    "local_seed": [
+      90,
+      176
+    ],
+    "global_bbox": [
+      144,
+      297,
+      242,
+      380
+    ],
+    "global_center": [
+      190,
+      339
+    ],
+    "global_seed": [
+      190,
+      339
+    ]
+  },
+  {
+    "region_id": "TRT000209",
+    "region_type": "land",
+    "color": "#85ed2b",
+    "pixel_count": 6322,
+    "density_multiplier": 1.0,
+    "parent_id": "DST000042",
+    "local_bbox": [
+      104,
+      80,
+      188,
+      174
+    ],
+    "local_center": [
+      148,
+      122
+    ],
+    "local_seed": [
+      147,
+      122
+    ],
+    "global_bbox": [
+      204,
+      243,
+      288,
+      337
+    ],
+    "global_center": [
+      248,
+      285
+    ],
+    "global_seed": [
+      247,
+      285
+    ]
+  },
+  {
+    "region_id": "TRT000210",
+    "region_type": "land",
+    "color": "#a28167",
+    "pixel_count": 6396,
+    "density_multiplier": 1.0,
+    "parent_id": "DST000042",
+    "local_bbox": [
+      98,
+      1,
+      188,
+      86
+    ],
+    "local_center": [
+      143,
+      47
+    ],
+    "local_seed": [
+      143,
+      46
+    ],
+    "global_bbox": [
+      198,
+      164,
+      288,
+      249
+    ],
+    "global_center": [
+      243,
+      210
+    ],
+    "global_seed": [
+      243,
+      209
+    ]
+  },
+  {
+    "region_id": "TRT000211",
+    "region_type": "land",
+    "color": "#9002f2",
+    "pixel_count": 4157,
+    "density_multiplier": 1.0,
+    "parent_id": "DST000041",
+    "local_bbox": [
+      122,
+      40,
+      185,
+      159
+    ],
+    "local_center": [
+      160,
+      96
+    ],
+    "local_seed": [
+      161,
+      93
+    ],
+    "global_bbox": [
+      439,
+      40,
+      502,
+      159
+    ],
+    "global_center": [
+      477,
+      96
+    ],
+    "global_seed": [
+      478,
+      93
+    ]
+  },
+  {
+    "region_id": "TRT000212",
+    "region_type": "land",
+    "color": "#944f3d",
+    "pixel_count": 6315,
+    "density_multiplier": 1.0,
+    "parent_id": "DST000041",
+    "local_bbox": [
+      72,
+      75,
+      171,
+      183
+    ],
+    "local_center": [
+      119,
+      129
+    ],
+    "local_seed": [
+      117,
+      120
+    ],
+    "global_bbox": [
+      389,
+      75,
+      488,
+      183
+    ],
+    "global_center": [
+      436,
+      129
+    ],
+    "global_seed": [
+      434,
+      120
+    ]
+  },
+  {
+    "region_id": "TRT000213",
+    "region_type": "land",
+    "color": "#aca088",
+    "pixel_count": 7897,
+    "density_multiplier": 1.0,
+    "parent_id": "DST000041",
+    "local_bbox": [
+      0,
+      0,
+      87,
+      116
+    ],
+    "local_center": [
+      38,
+      55
+    ],
+    "local_seed": [
+      37,
+      58
+    ],
+    "global_bbox": [
+      317,
+      0,
+      404,
+      116
+    ],
+    "global_center": [
+      355,
+      55
+    ],
+    "global_seed": [
+      354,
+      58
+    ]
+  },
+  {
+    "region_id": "TRT000214",
+    "region_type": "land",
+    "color": "#04b414",
+    "pixel_count": 6357,
+    "density_multiplier": 1.0,
+    "parent_id": "DST000041",
+    "local_bbox": [
+      63,
+      0,
+      173,
+      75
+    ],
+    "local_center": [
+      119,
+      32
+    ],
+    "local_seed": [
+      119,
+      30
+    ],
+    "global_bbox": [
+      380,
+      0,
+      490,
+      75
+    ],
+    "global_center": [
+      436,
+      32
+    ],
+    "global_seed": [
+      436,
+      30
+    ]
+  },
+  {
+    "region_id": "TRT000215",
+    "region_type": "land",
+    "color": "#f7e03b",
+    "pixel_count": 5937,
+    "density_multiplier": 1.0,
+    "parent_id": "DST000041",
+    "local_bbox": [
+      0,
+      99,
+      109,
+      178
+    ],
+    "local_center": [
+      50,
+      140
+    ],
+    "local_seed": [
+      61,
+      148
+    ],
+    "global_bbox": [
+      317,
+      99,
+      426,
+      178
+    ],
+    "global_center": [
+      367,
+      140
+    ],
+    "global_seed": [
+      378,
+      148
+    ]
+  },
+  {
+    "region_id": "TRT000216",
+    "region_type": "land",
+    "color": "#ec243b",
+    "pixel_count": 6299,
+    "density_multiplier": 1.0,
+    "parent_id": "DST000044",
+    "local_bbox": [
+      0,
+      116,
+      87,
+      200
+    ],
+    "local_center": [
+      40,
+      156
+    ],
+    "local_seed": [
+      38,
+      160
+    ],
+    "global_bbox": [
+      0,
+      488,
+      87,
+      572
+    ],
+    "global_center": [
+      40,
+      528
+    ],
+    "global_seed": [
+      38,
+      532
+    ]
+  },
+  {
+    "region_id": "TRT000217",
+    "region_type": "land",
+    "color": "#1b7460",
+    "pixel_count": 6126,
+    "density_multiplier": 1.0,
+    "parent_id": "DST000044",
+    "local_bbox": [
+      77,
+      10,
+      167,
+      113
+    ],
+    "local_center": [
+      110,
+      68
+    ],
+    "local_seed": [
+      117,
+      73
+    ],
+    "global_bbox": [
+      77,
+      382,
+      167,
+      485
+    ],
+    "global_center": [
+      110,
+      440
+    ],
+    "global_seed": [
+      117,
+      445
+    ]
+  },
+  {
+    "region_id": "TRT000218",
+    "region_type": "land",
+    "color": "#0fccaf",
+    "pixel_count": 7243,
+    "density_multiplier": 1.0,
+    "parent_id": "DST000044",
+    "local_bbox": [
+      74,
+      107,
+      194,
+      202
+    ],
+    "local_center": [
+      122,
+      147
+    ],
+    "local_seed": [
+      120,
+      147
+    ],
+    "global_bbox": [
+      74,
+      479,
+      194,
+      574
+    ],
+    "global_center": [
+      122,
+      519
+    ],
+    "global_seed": [
+      120,
+      519
+    ]
+  },
+  {
+    "region_id": "TRT000219",
+    "region_type": "land",
+    "color": "#1664b1",
+    "pixel_count": 5770,
+    "density_multiplier": 1.0,
+    "parent_id": "DST000044",
+    "local_bbox": [
+      108,
+      0,
+      207,
+      117
+    ],
+    "local_center": [
+      164,
+      54
+    ],
+    "local_seed": [
+      160,
+      45
+    ],
+    "global_bbox": [
+      108,
+      372,
+      207,
+      489
+    ],
+    "global_center": [
+      164,
+      426
+    ],
+    "global_seed": [
+      160,
+      417
+    ]
+  },
+  {
+    "region_id": "TRT000220",
+    "region_type": "land",
+    "color": "#14646f",
+    "pixel_count": 7274,
+    "density_multiplier": 1.0,
+    "parent_id": "DST000044",
+    "local_bbox": [
+      0,
+      16,
+      78,
+      116
+    ],
+    "local_center": [
+      39,
+      69
+    ],
+    "local_seed": [
+      37,
+      72
+    ],
+    "global_bbox": [
+      0,
+      388,
+      78,
+      488
+    ],
+    "global_center": [
+      39,
+      441
+    ],
+    "global_seed": [
+      37,
+      444
+    ]
+  },
+  {
+    "region_id": "TRT000221",
+    "region_type": "land",
+    "color": "#16adeb",
+    "pixel_count": 5919,
+    "density_multiplier": 1.0,
+    "parent_id": "DST000047",
+    "local_bbox": [
+      71,
+      0,
+      144,
+      83
+    ],
+    "local_center": [
+      107,
+      42
+    ],
+    "local_seed": [
+      107,
+      40
+    ],
+    "global_bbox": [
+      71,
+      0,
+      144,
+      83
+    ],
+    "global_center": [
+      107,
+      42
+    ],
+    "global_seed": [
+      107,
+      40
+    ]
+  },
+  {
+    "region_id": "TRT000222",
+    "region_type": "land",
+    "color": "#191c24",
+    "pixel_count": 5300,
+    "density_multiplier": 1.0,
+    "parent_id": "DST000047",
+    "local_bbox": [
+      0,
+      0,
+      74,
+      73
+    ],
+    "local_center": [
+      36,
+      36
+    ],
+    "local_seed": [
+      36,
+      37
+    ],
+    "global_bbox": [
+      0,
+      0,
+      74,
+      73
+    ],
+    "global_center": [
+      36,
+      36
+    ],
+    "global_seed": [
+      36,
+      37
+    ]
+  },
+  {
+    "region_id": "TRT000223",
+    "region_type": "land",
+    "color": "#55a954",
+    "pixel_count": 5345,
+    "density_multiplier": 1.0,
+    "parent_id": "DST000047",
+    "local_bbox": [
+      0,
+      73,
+      79,
+      155
+    ],
+    "local_center": [
+      36,
+      108
+    ],
+    "local_seed": [
+      35,
+      109
+    ],
+    "global_bbox": [
+      0,
+      73,
+      79,
+      155
+    ],
+    "global_center": [
+      36,
+      108
+    ],
+    "global_seed": [
+      35,
+      109
+    ]
+  },
+  {
+    "region_id": "TRT000224",
+    "region_type": "land",
+    "color": "#b1a3d1",
+    "pixel_count": 6488,
+    "density_multiplier": 1.0,
+    "parent_id": "DST000047",
+    "local_bbox": [
+      72,
+      82,
+      151,
+      189
+    ],
+    "local_center": [
+      115,
+      128
+    ],
+    "local_seed": [
+      114,
+      125
+    ],
+    "global_bbox": [
+      72,
+      82,
+      151,
+      189
+    ],
+    "global_center": [
+      115,
+      128
+    ],
+    "global_seed": [
+      114,
+      125
+    ]
+  },
+  {
+    "region_id": "TRT000225",
+    "region_type": "land",
+    "color": "#928691",
+    "pixel_count": 5755,
+    "density_multiplier": 1.0,
+    "parent_id": "DST000047",
+    "local_bbox": [
+      0,
+      135,
+      112,
+      202
+    ],
+    "local_center": [
+      52,
+      174
+    ],
+    "local_seed": [
+      53,
+      174
+    ],
+    "global_bbox": [
+      0,
+      135,
+      112,
+      202
+    ],
+    "global_center": [
+      52,
+      174
+    ],
+    "global_seed": [
+      53,
+      174
+    ]
+  },
+  {
+    "region_id": "TRT000226",
+    "region_type": "land",
+    "color": "#6f0ced",
+    "pixel_count": 5666,
+    "density_multiplier": 1.0,
+    "parent_id": "DST000048",
+    "local_bbox": [
+      78,
+      69,
+      149,
+      152
+    ],
+    "local_center": [
+      115,
+      110
+    ],
+    "local_seed": [
+      118,
+      106
+    ],
+    "global_bbox": [
+      78,
+      816,
+      149,
+      899
+    ],
+    "global_center": [
+      115,
+      857
+    ],
+    "global_seed": [
+      118,
+      853
+    ]
+  },
+  {
+    "region_id": "TRT000227",
+    "region_type": "land",
+    "color": "#77ae8a",
+    "pixel_count": 4424,
+    "density_multiplier": 1.0,
+    "parent_id": "DST000048",
+    "local_bbox": [
+      80,
+      3,
+      146,
+      69
+    ],
+    "local_center": [
+      113,
+      36
+    ],
+    "local_seed": [
+      117,
+      32
+    ],
+    "global_bbox": [
+      80,
+      750,
+      146,
+      816
+    ],
+    "global_center": [
+      113,
+      783
+    ],
+    "global_seed": [
+      117,
+      779
+    ]
+  },
+  {
+    "region_id": "TRT000228",
+    "region_type": "land",
+    "color": "#e83388",
+    "pixel_count": 6342,
+    "density_multiplier": 1.0,
+    "parent_id": "DST000048",
+    "local_bbox": [
+      0,
+      75,
+      87,
+      152
+    ],
+    "local_center": [
+      41,
+      114
+    ],
+    "local_seed": [
+      44,
+      114
+    ],
+    "global_bbox": [
+      0,
+      822,
+      87,
+      899
+    ],
+    "global_center": [
+      41,
+      861
+    ],
+    "global_seed": [
+      44,
+      861
+    ]
+  },
+  {
+    "region_id": "TRT000229",
+    "region_type": "land",
+    "color": "#35680b",
+    "pixel_count": 6057,
+    "density_multiplier": 1.0,
+    "parent_id": "DST000048",
+    "local_bbox": [
+      0,
+      0,
+      81,
+      76
+    ],
+    "local_center": [
+      39,
+      38
+    ],
+    "local_seed": [
+      43,
+      36
+    ],
+    "global_bbox": [
+      0,
+      747,
+      81,
+      823
+    ],
+    "global_center": [
+      39,
+      785
+    ],
+    "global_seed": [
+      43,
+      783
+    ]
+  },
+  {
+    "region_id": "TRT000230",
+    "region_type": "land",
+    "color": "#ceebe9",
+    "pixel_count": 5196,
+    "density_multiplier": 1.0,
+    "parent_id": "DST000046",
+    "local_bbox": [
+      0,
+      71,
+      88,
+      154
+    ],
+    "local_center": [
+      37,
+      110
+    ],
+    "local_seed": [
+      40,
+      112
+    ],
+    "global_bbox": [
+      147,
+      774,
+      235,
+      857
+    ],
+    "global_center": [
+      184,
+      813
+    ],
+    "global_seed": [
+      187,
+      815
+    ]
+  },
+  {
+    "region_id": "TRT000231",
+    "region_type": "land",
+    "color": "#07908a",
+    "pixel_count": 8631,
+    "density_multiplier": 1.0,
+    "parent_id": "DST000046",
+    "local_bbox": [
+      105,
+      96,
+      221,
+      196
+    ],
+    "local_center": [
+      163,
+      157
+    ],
+    "local_seed": [
+      160,
+      156
+    ],
+    "global_bbox": [
+      252,
+      799,
+      368,
+      899
+    ],
+    "global_center": [
+      310,
+      860
+    ],
+    "global_seed": [
+      307,
+      859
+    ]
+  },
+  {
+    "region_id": "TRT000232",
+    "region_type": "land",
+    "color": "#2f6581",
+    "pixel_count": 6258,
+    "density_multiplier": 1.0,
+    "parent_id": "DST000046",
+    "local_bbox": [
+      67,
+      23,
+      169,
+      141
+    ],
+    "local_center": [
+      112,
+      85
+    ],
+    "local_seed": [
+      110,
+      82
+    ],
+    "global_bbox": [
+      214,
+      726,
+      316,
+      844
+    ],
+    "global_center": [
+      259,
+      788
+    ],
+    "global_seed": [
+      257,
+      785
+    ]
+  },
+  {
+    "region_id": "TRT000233",
+    "region_type": "land",
+    "color": "#6eec08",
+    "pixel_count": 5894,
+    "density_multiplier": 1.0,
+    "parent_id": "DST000046",
+    "local_bbox": [
+      3,
+      129,
+      109,
+      196
+    ],
+    "local_center": [
+      58,
+      168
+    ],
+    "local_seed": [
+      54,
+      170
+    ],
+    "global_bbox": [
+      150,
+      832,
+      256,
+      899
+    ],
+    "global_center": [
+      205,
+      871
+    ],
+    "global_seed": [
+      201,
+      873
+    ]
+  },
+  {
+    "region_id": "TRT000234",
+    "region_type": "land",
+    "color": "#0958f8",
+    "pixel_count": 5589,
+    "density_multiplier": 1.0,
+    "parent_id": "DST000046",
+    "local_bbox": [
+      0,
+      0,
+      101,
+      77
+    ],
+    "local_center": [
+      50,
+      41
+    ],
+    "local_seed": [
+      46,
+      41
+    ],
+    "global_bbox": [
+      147,
+      703,
+      248,
+      780
+    ],
+    "global_center": [
+      197,
+      744
+    ],
+    "global_seed": [
+      193,
+      744
+    ]
+  },
+  {
+    "region_id": "TRT000235",
+    "region_type": "land",
+    "color": "#341b92",
+    "pixel_count": 7830,
+    "density_multiplier": 1.0,
+    "parent_id": "DST000045",
+    "local_bbox": [
+      88,
+      73,
+      188,
+      182
+    ],
+    "local_center": [
+      134,
+      132
+    ],
+    "local_seed": [
+      133,
+      131
+    ],
+    "global_bbox": [
+      88,
+      640,
+      188,
+      749
+    ],
+    "global_center": [
+      134,
+      699
+    ],
+    "global_seed": [
+      133,
+      698
+    ]
+  },
+  {
+    "region_id": "TRT000236",
+    "region_type": "land",
+    "color": "#2de1a6",
+    "pixel_count": 6214,
+    "density_multiplier": 1.0,
+    "parent_id": "DST000045",
+    "local_bbox": [
+      0,
+      101,
+      97,
+      182
+    ],
+    "local_center": [
+      48,
+      146
+    ],
+    "local_seed": [
+      47,
+      144
+    ],
+    "global_bbox": [
+      0,
+      668,
+      97,
+      749
+    ],
+    "global_center": [
+      48,
+      713
+    ],
+    "global_seed": [
+      47,
+      711
+    ]
+  },
+  {
+    "region_id": "TRT000237",
+    "region_type": "land",
+    "color": "#ab7b70",
+    "pixel_count": 4116,
+    "density_multiplier": 1.0,
+    "parent_id": "DST000045",
+    "local_bbox": [
+      0,
+      55,
+      77,
+      126
+    ],
+    "local_center": [
+      32,
+      86
+    ],
+    "local_seed": [
+      28,
+      84
+    ],
+    "global_bbox": [
+      0,
+      622,
+      77,
+      693
+    ],
+    "global_center": [
+      32,
+      653
+    ],
+    "global_seed": [
+      28,
+      651
+    ]
+  },
+  {
+    "region_id": "TRT000238",
+    "region_type": "land",
+    "color": "#49332d",
+    "pixel_count": 6236,
+    "density_multiplier": 1.0,
+    "parent_id": "DST000045",
+    "local_bbox": [
+      57,
+      2,
+      151,
+      104
+    ],
+    "local_center": [
+      100,
+      53
+    ],
+    "local_seed": [
+      95,
+      51
+    ],
+    "global_bbox": [
+      57,
+      569,
+      151,
+      671
+    ],
+    "global_center": [
+      100,
+      620
+    ],
+    "global_seed": [
+      95,
+      618
+    ]
+  },
+  {
+    "region_id": "TRT000239",
+    "region_type": "land",
+    "color": "#ce0dba",
+    "pixel_count": 3670,
+    "density_multiplier": 1.0,
+    "parent_id": "DST000045",
+    "local_bbox": [
+      0,
+      0,
+      76,
+      54
+    ],
+    "local_center": [
+      33,
+      26
+    ],
+    "local_seed": [
+      29,
+      25
+    ],
+    "global_bbox": [
+      0,
+      567,
+      76,
+      621
+    ],
+    "global_center": [
+      33,
+      593
+    ],
+    "global_seed": [
+      29,
+      592
+    ]
+  }
+]
