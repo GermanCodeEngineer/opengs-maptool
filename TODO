@@ -17,11 +17,10 @@ CORE FUNCTIONALITY & BUGS
 [DONE] fix generation, there shouldn't be only one region
 [DONE] remove weird attributes of MapToolWindow
 [DONE] implement instanceless MapTool / rename ProcessMapTool and other
- test JSON & CSV exporting & importing
+[DONE] test JSON & CSV exporting & importing
 [DONE] ensure bbox visualization is perfect still
 [DONE] remove +1 offset for xmax and ymax of bboxes
 [DONE] fix false bounding boxes of dens samps
- make tool work with only one of boundary/class image?
 
 ====================
 IMAGE & DATA GENERATION
@@ -40,6 +39,7 @@ DOCUMENTATION & UI
 ====================
 [DONE] clean up confusing MapToolWindow code
  explain local vs. global fields and how to crop with global and local bbox
+ explain how to create classification and boundary/density image
  add image display zooming & scrolling
  rewrite and update README
  add terms definition to README

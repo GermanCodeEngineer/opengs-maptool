@@ -489,8 +489,7 @@ class MapToolWindow(QWidget):
 
         # Handle successful completion: update UI and call any extra handler
         def on_finished(result: tuple):
-            button.reset_progress()
-            button.setEnabled(True)
+            # Only show 100% progress after all post-processing is done
             # Set image buffer if applicable
             if display and display_setter and hasattr(display, display_setter):
                 getattr(display, display_setter)(result[0])
@@ -500,6 +499,9 @@ class MapToolWindow(QWidget):
             # Call any extra handler (e.g., for storing results on self)
             if extra_result_handler:
                 extra_result_handler(result)
+            button.set_progress(100)
+            button.reset_progress()
+            button.setEnabled(True)
 
         # Handle errors: reset UI and show error dialog
         def on_error(error: Exception):

@@ -1,4 +1,6 @@
+from __future__ import annotations
 from collections import deque
+from dataclasses import asdict
 from gceutils import grepr_dataclass
 import logging
 import numpy as np
@@ -166,6 +168,7 @@ class RegionMetadata:
     region_type: Literal["land", "ocean", "lake", "unknown"]
     color: str # "#00aa99"
     pixel_count: int
+    density_multiplier: float | None = None
     parent_id: str | None = None
     local_bbox: tuple[int, int, int, int] | None = None # (x_min, y_min, x_max, y_max)
     local_center: tuple[int, int] | None = None # (x, y)
@@ -173,9 +176,120 @@ class RegionMetadata:
     global_bbox: tuple[int, int, int, int] | None = None # (x_min, y_min, x_max, y_max)
     global_center: tuple[int, int] | None = None # (x, y)
     global_seed: tuple[int, int] | None = None # (x, y)
-    density_multiplier: float | None = None
     # See README for an exact description
 
+    def to_json_dict(self) -> dict[str, Any]:
+        return asdict(self)
+    
+    def to_csv_dict(self) -> dict[str, Any]:
+        local_bbox = self.local_bbox or (None, None, None, None)
+        local_center = self.local_center or (None, None)
+        local_seed = self.local_seed or (None, None)
+        global_bbox = self.global_bbox or (None, None, None, None)
+        global_center = self.global_center or (None, None)
+        global_seed = self.global_seed or (None, None)
+
+        return dict(
+            region_id=self.region_id,
+            region_type=self.region_type,
+            color=self.color,
+            pixel_count=self.pixel_count,
+            parent_id=self.parent_id,
+            
+            local_bbox_min_x=local_bbox[0],
+            local_bbox_min_y=local_bbox[1],
+            local_bbox_max_x=local_bbox[2],
+            local_bbox_max_y=local_bbox[3],
+
+            local_center_x=local_center[0],
+            local_center_y=local_center[1],
+            local_seed_x=local_seed[0],
+            local_seed_y=local_seed[1],
+
+            global_bbox_min_x=global_bbox[0],
+            global_bbox_min_y=global_bbox[1],
+            global_bbox_max_x=global_bbox[2],
+            global_bbox_max_y=global_bbox[3],
+
+            global_center_x=global_center[0],
+            global_center_y=global_center[1],
+            global_seed_x=global_seed[0],
+            global_seed_y=global_seed[1],
+        )
+
+    @classmethod
+    def from_json_dict(cls, d: dict[str, Any]) -> RegionMetadata:
+        def parse_opt_str(key: str) -> str | None:
+            return d.get(key, False) or None # "" -> None
+
+        def parse_num[DT](key: str, default: DT = None, as_float: bool = False) -> int | float | DT:
+            val = d.get(key, None)
+            if val in {"", None}:
+                return default
+            try:
+                return float(val) if as_float else int(val)
+            except ValueError:
+                return default
+                
+        def parse_coords(key: str) -> tuple[int, ...] | None:
+            val = d.get(key, None)
+            if not val:
+                return None
+            if isinstance(val, list):
+                return tuple(val)
+            if isinstance(val, tuple):
+                return val
+            return None
+        
+        return cls(
+            region_id=parse_opt_str("region_id"),
+            region_type=parse_opt_str("region_type"),
+            color=parse_opt_str("color"),
+            pixel_count=parse_num("pixel_count", default=0),
+            density_multiplier=parse_num("density_multiplier", as_float=True),
+            parent_id=parse_opt_str("parent_id"),
+            local_bbox=parse_coords("local_bbox"),
+            local_center=parse_coords("local_center"),
+            local_seed=parse_coords("local_seed"),
+            global_bbox=parse_coords("global_bbox"),
+            global_center=parse_coords("global_center"),
+            global_seed=parse_coords("global_seed"),
+        )
+    
+    @classmethod
+    def from_csv_dict(cls, d: dict[str, Any]) -> RegionMetadata:
+        def parse_opt_str(key: str) -> str | None:
+            return d.get(key, False) or None # "" -> None
+
+        def parse_num[DT](key: str, default: DT = None, as_float: bool = False) -> int | float | DT:
+            val = d.get(key, None)
+            if val in {"", None}:
+                return default
+            try:
+                return float(val) if as_float else int(val)
+            except ValueError:
+                return default
+                
+        def parse_coords(*keys: tuple[str]) -> tuple[int, ...] | None:
+            vals = tuple(parse_num(key, default=None) for key in keys)
+            if not all(vals):
+                return None
+            return vals
+
+        return cls(
+            region_id=parse_opt_str("region_id"),
+            region_type=parse_opt_str("region_type"),
+            color=parse_opt_str("color"),
+            pixel_count=parse_num("pixel_count", default=0),
+            density_multiplier=parse_num("density_multiplier", as_float=True),
+            parent_id=parse_opt_str("parent_id"),
+            local_bbox=parse_coords("local_bbox_min_x", "local_bbox_min_y", "local_bbox_max_x", "local_bbox_max_y"),
+            local_center=parse_coords("local_center_x", "local_center_y"),
+            local_seed=parse_coords("local_seed_x", "local_seed_y"),
+            global_bbox=parse_coords("global_bbox_min_x", "global_bbox_min_y", "global_bbox_max_x", "global_bbox_max_y"),
+            global_center=parse_coords("global_center_x", "global_center_y"), 
+            global_seed=parse_coords("global_seed_x", "global_seed_y"),
+        )
 
 def poisson_disk_samples(
     mask: NDArray[np.bool],
@@ -593,6 +707,7 @@ def build_metadata(
             region_type=region_type,
             color=color_hex,
             pixel_count=pixel_count,
+            density_multiplier=parent_density_multiplier or 1.0,
             parent_id=parent_id,
             local_bbox=local_bbox,
             local_center=(cx, cy),
@@ -600,7 +715,6 @@ def build_metadata(
             global_bbox=None, # Set later
             global_center=None, # Set later
             global_seed=None, # Set later
-            density_multiplier=parent_density_multiplier or 1.0,
         )
         metadata.append(meta)
     return metadata

@@ -35,7 +35,9 @@ class Player:
         self.y += self.velocity
 
     def draw(self, painter):
-        painter.fillRect(int(self.x), int(self.y), self.size, self.size, self.color)
+        painter.setBrush(self.color)
+        painter.setPen(Qt.PenStyle.NoPen)
+        painter.drawEllipse(int(self.x), int(self.y), self.size, self.size)
 
 
 class FlappyBirdGame(QWidget):
@@ -47,10 +49,10 @@ class FlappyBirdGame(QWidget):
         self.setGeometry(200, 200, 400, 600)
         self.setStyleSheet("background-color: #87CEEB;")
         self.player = Player(x=50, y=300, size=24)
-        self.gravity = 0.7
+        self.gravity = 0.35
         self.jump_strength = -10
         self.glide_strength = -3
-        self.terminal_velocity = 12
+        self.terminal_velocity = 6
         self.score = 0
         self.game_over = False
         self.game_started = False

@@ -250,6 +250,7 @@ def convert_cont_area_to_regions(args: AreaProcessingArgs) -> tuple[
             region_type=region_type,
             color=color_hex,
             pixel_count=pixel_count,
+            density_multiplier=round(density_multiplier, ndigits=2), # Can be kept as region has same pixels as parent area
             parent_id=args.parent_area.region_id,
             local_bbox=(0, 0, x_max - x_min, y_max - y_min), # full cropped area
             local_center=(cx_cropped, cy_cropped),
@@ -257,7 +258,6 @@ def convert_cont_area_to_regions(args: AreaProcessingArgs) -> tuple[
             global_bbox=None,  # Set later
             global_center=None, # Set later
             global_seed=None, # Set later
-            density_multiplier=round(density_multiplier, ndigits=2), # Can be kept as region has same pixels as parent area
         )]
         
         # Fill only masked pixels with single region color

@@ -238,6 +238,7 @@ def convert_boundaries_to_cont_areas(
             region_type=area_type,
             color=color_hex,
             pixel_count=land_pixels + water_pixels,
+            density_multiplier=None,
             parent_id=None, # Areas have no parent
             local_bbox=None, # "
             local_center=None, # "
@@ -245,7 +246,6 @@ def convert_boundaries_to_cont_areas(
             global_bbox=global_bbox,
             global_center=(center_x, center_y),
             global_seed=(center_x, center_y),
-            density_multiplier=None,
         ))
     
     if progress_callback:

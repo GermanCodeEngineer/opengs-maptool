@@ -10,9 +10,7 @@ from opengs_maptool.logic.utils import RegionMetadata
 class RegionSerializer(json.JSONEncoder):
     def default(self, obj: Any) -> Any:
         if isinstance(obj, RegionMetadata):
-            data = {"__type__": "RegionMetadata"}
-            data.update(dataclasses.asdict(obj))
-            return data
+            return obj.to_json_dict()
         return super().default(obj)
 
 
@@ -21,17 +19,10 @@ class RegionDeserializer(json.JSONDecoder):
         super().__init__(object_hook=self.object_hook, *args, **kwargs)
 
     def object_hook(self, obj: dict) -> RegionMetadata | dict:
-        if "__type__" in obj and obj["__type__"] == "RegionMetadata":
-            try:
-                # Replace lists with tuples & pass all items to RegionMetadata
-                obj.pop("__type__")
-                for key, value in obj.items():
-                    if isinstance(value, list):
-                        obj[key] = tuple(value)
-                return RegionMetadata(**obj)
-            except TypeError as error:
-                raise json.JSONDecodeError(f"Could not deserialize RegionMetadata: {error}", doc=str(obj), pos=0) from error
-        return obj
+        try:
+            return RegionMetadata.from_json_dict(obj)
+        except TypeError:
+            return obj
 
 
 def export_to_json(data: list[RegionMetadata] | Any, file_path: Path | str, **kwargs) -> None:
@@ -64,9 +55,8 @@ def export_to_csv(data: list[RegionMetadata], file_path: Path | str) -> None:
     if not isinstance(data, list):
         raise TypeError(f"Expected list[RegionMetadata], got {type(data).__name__}")
     
-    fieldnames = [field.name for field in dataclasses.fields(data[0])]
-    raw_data = [dataclasses.asdict(row) for row in data]
-    
+    raw_data = [region.to_csv_dict() for region in data]
+    fieldnames = list(raw_data[0].keys())
     with open(Path(file_path), 'w', newline='', encoding='utf-8') as f:
         writer = csv.DictWriter(f, fieldnames=fieldnames)
         writer.writeheader()
@@ -95,4 +85,4 @@ def import_from_csv(file_path: Path | str) -> list[RegionMetadata]:
     file_path = Path(file_path)
     with open(file_path, 'r', encoding='utf-8') as f:
         reader = csv.DictReader(f)
-        return [RegionMetadata(**row) for row in reader]
+        return [RegionMetadata.from_csv_dict(row) for row in reader]

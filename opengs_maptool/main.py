@@ -45,14 +45,18 @@ def main_stepwise_export():
     New entry point: runs the full StepMapTool pipeline, exporting after each step to separate files.
     """
     input_directory = Path(__file__).parent / "examples" / "input"
+    class_image_file = input_directory    / "class3.png" #"class2_clean.png"
+    boundary_image_file = input_directory / "bound3.png" #"bound2_edited.png"
     output_directory = Path(__file__).parent / "examples" / "output"
     output_directory.mkdir(parents=True, exist_ok=True)
 
     def export_formats(data, path: Path):
         export_to_json(data, path)
+        export_to_csv(data, str(path).removesuffix(".json") + ".csv")
 
-    class_image_buffer = np.array(StepMapTool.clean_class_image(Image.open(input_directory / "class2_clean.png")))
-    boundary_image_buffer = np.array(Image.open(input_directory / "bound2_edited.png").convert("RGBA"))
+    
+    class_image_buffer = np.array(StepMapTool.clean_class_image(Image.open(class_image_file)))
+    boundary_image_buffer = np.array(Image.open(boundary_image_file).convert("RGBA"))
 
     regenerate = getattr(sys.modules["__main__"], "args", None)
     regenerate = getattr(regenerate, "regenerate", False)
@@ -120,14 +124,6 @@ def main_stepwise_export():
     else:
         province_image_buffer = np.array(Image.open(province_img_path).convert("RGBA"))
         province_data = import_from_json(province_data_path)
-
-    # Save summary data
-    export_to_json({
-        "cont_areas": cont_area_data,
-        "dens_samps": dens_samp_data,
-        "territories": territory_data,
-        "provinces": province_data,
-    }, output_directory / "data.json")
 
 def parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser(description="OpenGS MapTool entrypoints")

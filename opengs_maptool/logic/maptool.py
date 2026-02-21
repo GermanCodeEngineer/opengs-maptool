@@ -116,14 +116,18 @@ class StepMapTool:
         updated_metadata = []
         for idx, region in enumerate(cont_area_data):
             updated_metadata.append(region)
+            # Only report progress up to 99% during bbox loop
             if progress_callback and total_regions > 0:
-                bbox_progress(idx + 1, total_regions)
+                percent = 80 + int((idx / total_regions) * 19)  # 80-99%
+                progress_callback(percent, 100)
         cont_area_data = recalculate_bboxes_from_image(cont_area_image, cont_area_data)
 
         # Assign proper region_ids (like for territories)
         number_series = NumberSeries(config.AREA_ID_PREFIX, config.SERIES_ID_START, config.SERIES_ID_END)
         for region in cont_area_data:
             region.region_id = number_series.get_id()
+        if progress_callback:
+            progress_callback(100, 100)
         return (cont_area_image, cont_area_data)
     
     @staticmethod
