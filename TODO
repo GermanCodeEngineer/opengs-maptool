@@ -21,12 +21,12 @@ CORE FUNCTIONALITY & BUGS
 [DONE] ensure bbox visualization is perfect still
 [DONE] remove +1 offset for xmax and ymax of bboxes
 [DONE] fix false bounding boxes of dens samps
+ test what happens to border-only islands
 
 ====================
 IMAGE & DATA GENERATION
 ====================
 [DONE] re-add default images
- allow importing area/region images
  optimize generation (including bbox calculation)
  create slider for & adapt & fix MIN_AREA_PIXELS (e.g. Taiwan was sunk)
  => fix land area/sample being detected as ocean (e.g. Eastern Philipines Island)
@@ -52,6 +52,7 @@ FUTURE FEATURES
 [DONE] support for different regional densities within bigger countries
 [DONE] renewed guarantee of region continuity
 [DONE] seed coords
+ allow importing area/region images
 
 ====================
 MANUAL/POSTPROCESSING (LATER PR)

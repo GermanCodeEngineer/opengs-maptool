@@ -111,16 +111,7 @@ class StepMapTool:
                 progress_callback(80 + int((current / total) * 20), 100)
 
         # Recalculate bboxes from the final image after border assignment, with progress
-        # recalculate_bboxes_from_image does not support progress_callback, so simulate it
-        total_regions = len(cont_area_data)
-        updated_metadata = []
-        for idx, region in enumerate(cont_area_data):
-            updated_metadata.append(region)
-            # Only report progress up to 99% during bbox loop
-            if progress_callback and total_regions > 0:
-                percent = 80 + int((idx / total_regions) * 19)  # 80-99%
-                progress_callback(percent, 100)
-        cont_area_data = recalculate_bboxes_from_image(cont_area_image, cont_area_data)
+        cont_area_data = recalculate_bboxes_from_image(cont_area_image, cont_area_data, progress_callback=bbox_progress)
 
         # Assign proper region_ids (like for territories)
         number_series = NumberSeries(config.AREA_ID_PREFIX, config.SERIES_ID_START, config.SERIES_ID_END)

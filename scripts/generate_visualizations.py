@@ -177,13 +177,10 @@ def draw_bboxes(image: Image.Image, data: list[RegionMetadata], width: int = 2, 
             outline_color = (128, 128, 128)
 
         x0, y0, x1, y1 = bbox
-
         border_width = 1
-        x1_adj = x1 - 0 # HERE WORKS? TODO
-        y1_adj = y1 - 0
         # Only draw if box is valid
-        if x1_adj >= x0 and y1_adj >= y0:
-            draw.rectangle([x0, y0, x1_adj, y1_adj], outline=outline_color, width=border_width)
+        if x1 >= x0 and y1 >= y0:
+            draw.rectangle([x0, y0, x1, y1], outline=outline_color, width=border_width)
 
     return img_copy
 

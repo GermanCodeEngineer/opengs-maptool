@@ -40,6 +40,7 @@ XI
 def recalculate_bboxes_from_image(
     image: NDArray[np.uint8],
     metadata: list[RegionMetadata],
+    progress_callback=None,
 ) -> list[RegionMetadata]:
     """
     Recalculate bounding boxes for all regions from the image.
@@ -50,14 +51,14 @@ def recalculate_bboxes_from_image(
     Args:
         image: RGBA image where non-black pixels represent area colors
         metadata: List of region metadata dicts with 'color' field
+        progress_callback: Optional callable that takes (current, total) for progress updates
     
     Returns:
         Updated metadata list with recalculated bboxes
     """
-    
     updated_metadata = []
-    
-    for region in tqdm(metadata, desc="Recalculating bboxes", unit="regions"):
+    total = len(metadata)
+    for idx, region in enumerate(tqdm(metadata, desc="Recalculating bboxes", unit=" areas")):
         color_hex = region.color
         try:
             color_rgb = hex_to_rgb(color_hex)
@@ -65,19 +66,22 @@ def recalculate_bboxes_from_image(
         except (ValueError, AttributeError):
             # Color not found, keep original bbox
             updated_metadata.append(region)
+            if progress_callback:
+                progress_callback(idx + 1, total)
             continue
-        
+
         # Find all pixels matching this region's color
         rgb_match = np.all(image[:, :, :3] == target_color, axis=2)
-        
         if not np.any(rgb_match):
             logging.warning(
                 f"No pixels found for region_id {region.region_id} (color={color_hex}) while recalculating bboxes.",
             )
             # No pixels found, keep original bbox
             updated_metadata.append(region)
+            if progress_callback:
+                progress_callback(idx + 1, total)
             continue
-        
+
         # Calculate new bbox
         rows, cols = np.where(rgb_match)
         bbox = (
@@ -90,7 +94,8 @@ def recalculate_bboxes_from_image(
         # Update bbox in metadata
         region.global_bbox = bbox
         updated_metadata.append(region)
-    
+        if progress_callback:
+            progress_callback(idx + 1, total)
     return updated_metadata
 
 def classify_pixels_by_color(class_image: NDArray[np.uint8]) -> NDArray[np.uint8]:
@@ -188,30 +193,26 @@ def convert_boundaries_to_cont_areas(
     color_series = ColorSeries(rng_seed, exclude_values=[(0, 0, 0)])
     area_to_color = {}
     metadata = []
+    
+    # Determine area type by checking the most common type in this area
+    ocean_color = np.array(config.OCEAN_COLOR, dtype=np.uint8)
+    lake_color = np.array(config.LAKE_COLOR, dtype=np.uint8)
+    land_color = np.array(config.LAND_COLOR, dtype=np.uint8)
 
     # Vectorized color assignment
     for idx, area_id in enumerate(tqdm(range(1, num_features + 1), desc="Processing boundaries into areas", unit="areas"), start=1):
         if progress_callback and idx % max(1, num_features // 20) == 0:  # Report every 5%
             progress_callback(20 + int((idx / num_features) * 80), 100)
 
-        color_rgb, color_hex = color_series.get_color_rgb_hex(is_water=False)
-        area_to_color[area_id] = (*color_rgb, 255)
-        area_image[labeled_array == area_id] = area_to_color[area_id]
-
         area_mask = labeled_array == area_id
         rows, cols = np.where(area_mask)
         
-        # ====
+        # Calculate global bounding box for this area
         y_min, y_max = int(rows.min()), int(rows.max())
         x_min, x_max = int(cols.min()), int(cols.max())
         global_bbox = (x_min, y_min, x_max, y_max)
         cropped_mask = area_mask[y_min:(y_max+1), x_min:(x_max+1)]
         cropped_class_image = class_image[y_min:(y_max+1), x_min:(x_max+1)]
-
-        # Determine area type by checking the most common type in this area
-        ocean_color = np.array(config.OCEAN_COLOR, dtype=np.uint8)
-        lake_color = np.array(config.LAKE_COLOR, dtype=np.uint8)
-        land_color = np.array(config.LAND_COLOR, dtype=np.uint8)
 
         # Get only RGB channels (first 3) for comparison
         cropped_rgb = cropped_class_image[:, :, :3]
@@ -226,6 +227,10 @@ def convert_boundaries_to_cont_areas(
             area_type = "land"
         else:
             area_type = "ocean" if ocean_pixels > lake_pixels else "lake"
+
+        color_rgb, color_hex = color_series.get_color_rgb_hex(is_water=(area_type != "land"))
+        area_to_color[area_id] = (*color_rgb, 255)
+        area_image[labeled_array == area_id] = area_to_color[area_id]
 
         # Calculate center of mass (centroid) for local coordinates and round to integer pixel coordinates
         center_x = round(float(np.mean(cols)))

@@ -45,8 +45,8 @@ def main_stepwise_export():
     New entry point: runs the full StepMapTool pipeline, exporting after each step to separate files.
     """
     input_directory = Path(__file__).parent / "examples" / "input"
-    class_image_file = input_directory    / "class3.png" #"class2_clean.png"
-    boundary_image_file = input_directory / "bound3.png" #"bound2_edited.png"
+    class_image_file = input_directory    / "class2_clean.png"
+    boundary_image_file = input_directory / "bound2_edited.png"
     output_directory = Path(__file__).parent / "examples" / "output"
     output_directory.mkdir(parents=True, exist_ok=True)
 
