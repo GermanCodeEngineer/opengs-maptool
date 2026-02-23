@@ -186,6 +186,32 @@ def convert_cont_area_to_regions(args: AreaProcessingArgs) -> tuple[
         NDArray[np.uint8], list[RegionMetadata], 
         tuple[int, int, int, int] | None, ColorSeries,
     ]:
+    # --- cProfile child process profiling ---
+    import os
+    import cProfile
+    import pstats
+    import tempfile
+    import time
+    # Use parent_id and process id to make unique profile file
+    region_id = getattr(args.parent_area, 'region_id', 'unknown')
+    pid = os.getpid()
+    timestamp = int(time.time() * 1000)
+    profile_path = os.path.join(tempfile.gettempdir(), f"profile_child_{region_id}_{pid}_{timestamp}.prof")
+    profiler = cProfile.Profile()
+    profiler.enable()
+    try:
+        result = _convert_cont_area_to_regions_inner(args)
+    finally:
+        profiler.disable()
+        stats = pstats.Stats(profiler)
+        stats.dump_stats(profile_path)
+        print(f"[Child profile] Saved cProfile stats to {profile_path}")
+    return result
+
+def _convert_cont_area_to_regions_inner(args: AreaProcessingArgs) -> tuple[
+        NDArray[np.uint8], list[RegionMetadata], 
+        tuple[int, int, int, int] | None, ColorSeries,
+    ]:
     """
     Convert a single continuous area (usually a country) into an image of regions.
     Args: see AreaProcessingArgs dataclass.
@@ -206,7 +232,7 @@ def convert_cont_area_to_regions(args: AreaProcessingArgs) -> tuple[
     
     region_type = args.parent_area.region_type
     pixel_count = args.parent_area.pixel_count
-    pixels_per_region = args.pixels_per_land_region if (region_type == "land") else args.pixels_per_land_region
+    pixels_per_region = args.pixels_per_land_region if (region_type == "land") else args.pixels_per_water_region
     
     # Compute average density for the whole parent area to calculate subdivision count
     if args.override_density_multiplier:

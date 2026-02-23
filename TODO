@@ -22,17 +22,17 @@ CORE FUNCTIONALITY & BUGS
 [DONE] remove +1 offset for xmax and ymax of bboxes
 [DONE] fix false bounding boxes of dens samps
  test what happens to border-only islands
+ use multiprocessing for area generation?
 
 ====================
 IMAGE & DATA GENERATION
 ====================
 [DONE] re-add default images
- optimize generation (including bbox calculation)
+[CURRENT] optimize generation (including bbox calculation) => include bbox updating into assign_borders
  create slider for & adapt & fix MIN_AREA_PIXELS (e.g. Taiwan was sunk)
  => fix land area/sample being detected as ocean (e.g. Eastern Philipines Island)
 [DONE] use same default seeds & lloyd_iterations everywhere
- use sea colors for areas + forbid land colors to be sea colors
- warn parent regions aren't bigger than child regions
+[DONE] use sea colors for areas + forbid land colors to be sea colors
 
 ====================
 DOCUMENTATION & UI
@@ -40,6 +40,7 @@ DOCUMENTATION & UI
 [DONE] clean up confusing MapToolWindow code
  explain local vs. global fields and how to crop with global and local bbox
  explain how to create classification and boundary/density image
+ keep hint that splitting complex and weird-shaped areas is good for performance(especially the world oceans when working with earth)
  add image display zooming & scrolling
  rewrite and update README
  add terms definition to README

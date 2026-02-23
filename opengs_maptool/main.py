@@ -132,12 +132,25 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("-regenerate", action="store_true", help="Regenerate all outputs even if files exist")
     return parser.parse_args()
 
+
 if __name__ == "__main__":
+    import cProfile
+    import pstats
+
     args = parse_args()
 
+    def run_and_profile(func, *func_args, **func_kwargs):
+        profiler = cProfile.Profile()
+        profiler.enable()
+        func(*func_args, **func_kwargs)
+        profiler.disable()
+        stats = pstats.Stats(profiler).sort_stats('cumtime')
+        print("\n--- cProfile: Top 30 functions by cumulative time ---")
+        stats.print_stats(30)
+
     if args.gui:
-        main_gui()
+        run_and_profile(main_gui)
     elif hasattr(args, "stepwise_export") and args.stepwise_export:
-        main_stepwise_export()
+        run_and_profile(main_stepwise_export)
     else:
-        main_automatic()
+        run_and_profile(main_automatic)
