@@ -5,7 +5,7 @@ from numpy.typing import NDArray
 from PIL import Image
 from typing import Callable
 
-from opengs_maptool.logic.boundaries_to_cont import convert_boundaries_to_cont_areas, assign_borders_to_areas, classify_pixels_by_color, recalculate_bboxes_from_image, clean_boundary_image
+from opengs_maptool.logic.boundaries_to_cont import convert_boundaries_to_cont_areas, assign_borders_to_areas, classify_pixels_by_color, clean_boundary_image
 from opengs_maptool.logic.cont_to_regions import convert_all_cont_areas_to_regions
 from opengs_maptool.logic.utils import NumberSeries, RegionMetadata
 from opengs_maptool import config
@@ -100,18 +100,10 @@ class StepMapTool:
                 # Map iteration progress (0-100) to overall progress (40-80)
                 progress_callback(40 + int((current / total) * 40), 100)
 
-        cont_area_image = assign_borders_to_areas(areas_with_borders_image, progress_callback=border_progress)
+        cont_area_image = assign_borders_to_areas(areas_with_borders_image, area_data=cont_area_data, progress_callback=border_progress)
 
         if progress_callback:
             progress_callback(80, 100)
-
-        def bbox_progress(current, total):
-            if progress_callback:
-                # Map bbox progress (0-100) to overall progress (80-100)
-                progress_callback(80 + int((current / total) * 20), 100)
-
-        # Recalculate bboxes from the final image after border assignment, with progress
-        cont_area_data = recalculate_bboxes_from_image(cont_area_image, cont_area_data, progress_callback=bbox_progress)
 
         # Assign proper region_ids (like for territories)
         number_series = NumberSeries(config.AREA_ID_PREFIX, config.SERIES_ID_START, config.SERIES_ID_END)
@@ -163,7 +155,7 @@ class StepMapTool:
             lloyd_iterations=lloyd_iterations,
             override_density_multiplier=True,
             tqdm_description="Generating density samples from areas",
-            tqdm_unit="areas",
+            tqdm_unit=" areas",
             progress_callback=dens_samp_progress,
         )
 
@@ -220,7 +212,7 @@ class StepMapTool:
             lloyd_iterations=lloyd_iterations,
             override_density_multiplier=False,
             tqdm_description="Generating territories from density samples",
-            tqdm_unit="density samples",
+            tqdm_unit=" density samples",
             progress_callback=territory_progress,
         )
 
@@ -278,7 +270,7 @@ class StepMapTool:
             lloyd_iterations=lloyd_iterations,
             override_density_multiplier=False,
             tqdm_description="Generating provinces from territories",
-            tqdm_unit="territories",
+            tqdm_unit=" territories",
             progress_callback=province_progress,
         )
         

@@ -40,7 +40,7 @@ def rgb_to_hex(rgb: tuple[int, int, int]) -> str:
 def hex_to_rgb(hex_color: str) -> tuple[int, int, int]:
     """Convert hex color string (e.g., '#aabbcc') to RGB tuple"""
     hex_color = hex_color.lstrip('#')
-    return tuple(int(hex_color[i:i+2], 16) for i in (0, 2, 4))
+    return (int(hex_color[0:2], 16), int(hex_color[2:4], 16), int(hex_color[4:6], 16))
 
 
 def ensure_point_in_mask(mask: NDArray[np.bool_], x: int, y: int) -> tuple[int, int]:
@@ -166,7 +166,7 @@ class ColorSeries:
 class RegionMetadata:
     region_id: str
     region_type: Literal["land", "ocean", "lake", "unknown"]
-    color: str # "#00aa99"
+    color: str # format: "#00aa99"
     pixel_count: int
     density_multiplier: float | None = None
     parent_id: str | None = None

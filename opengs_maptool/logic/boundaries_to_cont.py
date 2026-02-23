@@ -37,67 +37,6 @@ XI
     return result
 
 
-def recalculate_bboxes_from_image(
-    image: NDArray[np.uint8],
-    metadata: list[RegionMetadata],
-    progress_callback=None,
-) -> list[RegionMetadata]:
-    """
-    Recalculate bounding boxes for all regions from the image.
-    
-    This is needed when the image has been modified after metadata creation
-    (e.g., after border assignment).
-    
-    Args:
-        image: RGBA image where non-black pixels represent area colors
-        metadata: List of region metadata dicts with 'color' field
-        progress_callback: Optional callable that takes (current, total) for progress updates
-    
-    Returns:
-        Updated metadata list with recalculated bboxes
-    """
-    updated_metadata = []
-    total = len(metadata)
-    for idx, region in enumerate(tqdm(metadata, desc="Recalculating bboxes", unit=" areas")):
-        color_hex = region.color
-        try:
-            color_rgb = hex_to_rgb(color_hex)
-            target_color = np.array(color_rgb, dtype=np.uint8)
-        except (ValueError, AttributeError):
-            # Color not found, keep original bbox
-            updated_metadata.append(region)
-            if progress_callback:
-                progress_callback(idx + 1, total)
-            continue
-
-        # Find all pixels matching this region's color
-        rgb_match = np.all(image[:, :, :3] == target_color, axis=2)
-        if not np.any(rgb_match):
-            logging.warning(
-                f"No pixels found for region_id {region.region_id} (color={color_hex}) while recalculating bboxes.",
-            )
-            # No pixels found, keep original bbox
-            updated_metadata.append(region)
-            if progress_callback:
-                progress_callback(idx + 1, total)
-            continue
-
-        # Calculate new bbox
-        rows, cols = np.where(rgb_match)
-        bbox = (
-            int(cols.min()),
-            int(rows.min()),
-            int(cols.max()),
-            int(rows.max()),
-        )
-        
-        # Update bbox in metadata
-        region.global_bbox = bbox
-        updated_metadata.append(region)
-        if progress_callback:
-            progress_callback(idx + 1, total)
-    return updated_metadata
-
 def classify_pixels_by_color(class_image: NDArray[np.uint8]) -> NDArray[np.uint8]:
     """
     Classify each pixel as ocean (0), lake (1), or land (2) based on closest color match.
@@ -200,7 +139,7 @@ def convert_boundaries_to_cont_areas(
     land_color = np.array(config.LAND_COLOR, dtype=np.uint8)
 
     # Vectorized color assignment
-    for idx, area_id in enumerate(tqdm(range(1, num_features + 1), desc="Processing boundaries into areas", unit="areas"), start=1):
+    for idx, area_id in enumerate(tqdm(range(1, num_features + 1), desc="Processing boundaries into areas", unit=" areas"), start=1):
         if progress_callback and idx % max(1, num_features // 20) == 0:  # Report every 5%
             progress_callback(20 + int((idx / num_features) * 80), 100)
 
@@ -327,7 +266,8 @@ def classify_continuous_areas(
     return updated_metadata
 
 def assign_borders_to_areas(
-    region_image: NDArray[np.uint8],
+    area_image: NDArray[np.uint8],
+    area_data: list[RegionMetadata],
     max_iters: int = 50,
     progress_callback = None,
 ) -> NDArray[np.uint8]:
@@ -335,7 +275,8 @@ def assign_borders_to_areas(
     Assign black pixels to neighboring areas by 4-neighbor majority vote.
 
     Args:
-        region_image: RGBA image where non-black pixels represent area colors.
+        area_image: RGBA image where non-black pixels represent area colors.
+        area_data: List of RegionMetadata for each area (will be updated with new bbox after border assignment)
         max_iters: Max number of propagation iterations.
         progress_callback: Optional callable that takes (current, total) for progress updates.
 
@@ -343,7 +284,7 @@ def assign_borders_to_areas(
         Updated RGBA image with black pixels filled when possible.
     """
 
-    result = region_image.copy()
+    result = area_image.copy()
     rgb = result[:, :, :3]
     alpha = result[:, :, 3]
 
@@ -352,35 +293,68 @@ def assign_borders_to_areas(
     if not np.any(black_mask):
         return result
 
-    color_code = (
-        rgb[:, :, 0].astype(np.int32) << 16
-    ) | (
-        rgb[:, :, 1].astype(np.int32) << 8
-    ) | rgb[:, :, 2].astype(np.int32)
+    def rgb_to_color_code(rgb_arr):
+        """Convert (H, W, 3) uint8 RGB array to (H, W) int32 color code array."""
+        return (
+            rgb_arr[:, :, 0].astype(np.int32) << 16
+        ) | (
+            rgb_arr[:, :, 1].astype(np.int32) << 8
+        ) | rgb_arr[:, :, 2].astype(np.int32)
+
+    def color_code_to_rgb(color_code_arr):
+        """Convert (H, W) int32 color code array to (H, W, 3) uint8 RGB array."""
+        rgb_arr = np.empty((*color_code_arr.shape, 3), dtype=np.uint8)
+        rgb_arr[:, :, 0] = (color_code_arr >> 16) & 255
+        rgb_arr[:, :, 1] = (color_code_arr >> 8) & 255
+        rgb_arr[:, :, 2] = color_code_arr & 255
+        return rgb_arr
+
+    color_code = rgb_to_color_code(rgb)
     color_code[black_mask] = 0
 
-    for iteration in range(max_iters):
+    # Map color code (int) to area object for reverse lookup
+    color_code_to_area = {
+        rgb_to_color_code(np.array(hex_to_rgb(area.color), dtype=np.uint8).reshape(1, 1, 3))[0, 0]: area
+        for area in area_data
+    }
+
+    for iteration in tqdm(range(max_iters), desc="Border assignment", unit=" round"):
         if progress_callback:
             progress_callback(iteration, max_iters)
-        
         if not np.any(black_mask):
             break
 
         padded = np.pad(color_code, pad_width=1, mode="constant", constant_values=0)
-        n0 = padded[:-2, 1:-1]
-        n1 = padded[2:, 1:-1]
-        n2 = padded[1:-1, :-2]
-        n3 = padded[1:-1, 2:]
+        n0 = padded[:-2, 1:-1] # Up
+        n1 = padded[2:, 1:-1] # Down
+        n2 = padded[1:-1, :-2] # Left
+        n3 = padded[1:-1, 2:] # Right
 
         v0 = n0 != 0
         v1 = n1 != 0
         v2 = n2 != 0
         v3 = n3 != 0
 
-        c0 = v0 * (1 + (n0 == n1) + (n0 == n2) + (n0 == n3))
-        c1 = v1 * (1 + (n1 == n0) + (n1 == n2) + (n1 == n3))
-        c2 = v2 * (1 + (n2 == n0) + (n2 == n1) + (n2 == n3))
-        c3 = v3 * (1 + (n3 == n0) + (n3 == n1) + (n3 == n2))
+        # Efficient neighbor voting: count how many neighbors have the same color as each neighbor
+        # For each pixel, count how many of the 4 neighbors have the same color code as n0, n1, n2, n3
+        # This avoids redundant comparisons
+        c0 = v0.astype(np.int32)
+        c1 = v1.astype(np.int32)
+        c2 = v2.astype(np.int32)
+        c3 = v3.astype(np.int32)
+
+        # Only compare each pair once
+        eq_01 = (n0 == n1) & v0 & v1
+        eq_02 = (n0 == n2) & v0 & v2
+        eq_03 = (n0 == n3) & v0 & v3
+        eq_12 = (n1 == n2) & v1 & v2
+        eq_13 = (n1 == n3) & v1 & v3
+        eq_23 = (n2 == n3) & v2 & v3
+
+        c0 += eq_01 + eq_02 + eq_03
+        c1 += eq_01 + eq_12 + eq_13
+        c2 += eq_02 + eq_12 + eq_23
+        c3 += eq_03 + eq_13 + eq_23
 
         counts = np.stack([c0, c1, c2, c3], axis=0)
         max_count = counts.max(axis=0)
@@ -393,14 +367,45 @@ def assign_borders_to_areas(
         best = np.where(idx == 0, n0, np.where(idx == 1, n1, np.where(idx == 2, n2, n3)))
 
         color_code[update_mask] = best[update_mask]
+        # Update bbox for each area as new pixels are assigned
+        for idx in np.flatnonzero(update_mask):
+            y, x = np.unravel_index(idx, update_mask.shape)
+            assigned_code = color_code[y, x]
+            area = color_code_to_area.get(assigned_code)
+            if area is not None:
+                area.global_bbox = area.global_bbox
+                if area.global_bbox is not None:
+                    min_x, min_y, max_x, max_y = area.global_bbox
+                    area.global_bbox = (
+                        min(min_x, x),
+                        min(min_y, y),
+                        max(max_x, x),
+                        max(max_y, y),
+                    )
         black_mask = color_code == 0
     
     if progress_callback:
         progress_callback(max_iters, max_iters)
 
-    result[:, :, 0] = (color_code >> 16) & 255
-    result[:, :, 1] = (color_code >> 8) & 255
-    result[:, :, 2] = color_code & 255
+
+    result[:, :, :3] = color_code_to_rgb(color_code)
     result[:, :, 3] = 255
 
+    # --- BBOX UPDATING LOGIC ---
+    # Update global_bbox for each region in metadata
+    for area in area_data:
+        color_rgb = hex_to_rgb(area.color)
+        target_color = np.array(color_rgb, dtype=np.uint8)
+        
+        rgb_match = np.all(result[:, :, :3] == target_color, axis=2)
+        if not np.any(rgb_match):
+            continue
+        rows, cols = np.where(rgb_match)
+        area.global_bbox = (
+            int(cols.min()),
+            int(rows.min()),
+            int(cols.max()),
+            int(rows.max()),
+        )
+        area.global_bbox = area.global_bbox
     return result

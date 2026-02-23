@@ -1,14 +1,15 @@
 import logging
 from pathlib import Path
 from PIL import Image
-from PyQt6.QtCore import Qt, QThread, pyqtSignal
-from PyQt6.QtGui import QCloseEvent, QCursor
+from PyQt6.QtCore import QThread, pyqtSignal
+from PyQt6.QtGui import QCloseEvent
 from PyQt6.QtWidgets import (
     QWidget, QVBoxLayout, QHBoxLayout, QTabWidget, QLabel,
     QPushButton, QMessageBox, QSpinBox, QSizePolicy, QScrollArea,
 )
 import traceback
 from typing import Callable
+import webbrowser
 
 from opengs_maptool.logic import StepMapTool
 from opengs_maptool.ui.buttons import create_slider, create_button, ProgressButton
@@ -88,25 +89,28 @@ class MapToolWindow(QWidget):
         self.setWindowTitle(config.TITLE)
         self.setMinimumSize(800, 600)
         self.setSizePolicy(QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Expanding)
-        
+
         main_layout = QVBoxLayout(self)
         self.setLayout(main_layout)
 
         self.tabs = QTabWidget()
         main_layout.addWidget(self.tabs, stretch=1)
 
-        # Bottom bar with game button and version label
+        # Bottom bar with game button, README button, and version label
         bottom_layout = QHBoxLayout()
         self.button_flappy_bird = QPushButton("Play 🐦 While Waiting")
         self.button_flappy_bird.clicked.connect(self.on_button_play_flappy_bird)
         bottom_layout.addWidget(self.button_flappy_bird)
+
+        self.button_readme = QPushButton("README")
+        self.button_readme.clicked.connect(self.on_button_open_readme)
+        bottom_layout.addWidget(self.button_readme)
+
         bottom_layout.addStretch()
         self.label_version = QLabel("Version "+config.VERSION)
         bottom_layout.addWidget(self.label_version)
         main_layout.addLayout(bottom_layout)
 
-        self.create_start_tab()
-        self.tabs.addTab(self.readme_tab, "Getting Started")
         self.create_density_tab()
         self.tabs.addTab(self.boundary_tab, "Create Density Image")
         self.create_input_images_tab()
@@ -118,6 +122,10 @@ class MapToolWindow(QWidget):
         self.create_province_tab()
         self.tabs.addTab(self.province_tab, "Generate Provinces")
 
+    # Bottom Section buttons
+    def on_button_open_readme(self) -> None:
+        webbrowser.open("https://github.com/Thomas-Holtvedt/opengs-maptool/blob/main/README.md")
+    
     def on_button_play_flappy_bird(self) -> None:
         """Open Flappy Bird game in a separate process."""
         if self.flappy_bird_process is not None:
@@ -142,23 +150,6 @@ class MapToolWindow(QWidget):
         super().closeEvent(event)
 
     # TAB 1
-    def create_start_tab(self) -> None:
-        content_widget = QWidget()
-        start_layout = QVBoxLayout(content_widget)
-        self.readme_label = QLabel(
-            "<h1>Please read the README</h1>"
-            '<h2><a href="https://github.com/Thomas-Holtvedt/opengs-maptool/blob/main/README.md">'        
-            "Open the README in your browser</a></h2>"
-        )
-        self.readme_label.setOpenExternalLinks(True)
-        self.readme_label.setAlignment(Qt.AlignmentFlag.AlignCenter)
-        start_layout.addWidget(self.readme_label)
-        scroll = QScrollArea()
-        scroll.setWidgetResizable(True)
-        scroll.setWidget(content_widget)
-        self.readme_tab = scroll
-
-    # TAB 2
     def create_density_tab(self) -> None:
         content_widget = QWidget()
         density_tab_layout = QVBoxLayout(content_widget)
@@ -188,7 +179,7 @@ class MapToolWindow(QWidget):
         scroll.setWidget(content_widget)
         self.boundary_tab = scroll
     
-    # TAB 3
+    # TAB 2
     def create_input_images_tab(self) -> None:
         content_widget = QWidget()
         input_tab_layout = QVBoxLayout(content_widget)
@@ -216,7 +207,7 @@ class MapToolWindow(QWidget):
         scroll.setWidget(content_widget)
         self.input_tab = scroll
 
-    # TAB 4-7
+    # TAB 3-6
     def create_areas_tab(self) -> None:
         content_widget = QWidget()
         areas_tab_layout = QVBoxLayout(content_widget)
@@ -247,7 +238,7 @@ class MapToolWindow(QWidget):
             config.PIXELS_PER_WATER_DENS_SAMP_STEP,
         )
 
-        self.button_gen_dens_samps = ProgressButton("Generate Density Samples")
+        self.button_gen_dens_samps = ProgressButton("Process density in areas")
         self.button_gen_dens_samps.clicked.connect(self.on_button_generate_dens_samps)
         areas_tab_layout.addWidget(self.button_gen_dens_samps)
 
@@ -438,7 +429,7 @@ class MapToolWindow(QWidget):
     
     def on_button_generate_territories(self) -> None:
         if self._dens_samp_data is None:
-            QMessageBox.warning(self, "Warning", "Density Samples must be generated first")
+            QMessageBox.warning(self, "Warning", "Density in areas must be processed first")
             return
         self._start_generation(
             button=self.button_gen_territories,
@@ -472,8 +463,8 @@ class MapToolWindow(QWidget):
             data_label="Province Data",
             kwargs=dict(
                 boundary_image=self.final_boundary_image_display.get_image_buffer(),
-                cont_area_image=self.territory_image_display.get_image_buffer(),
-                cont_area_data=self.territory_image_display.get_data(),
+                territory_image=self.territory_image_display.get_image_buffer(),
+                territory_data=self.territory_image_display.get_data(),
                 pixels_per_land_province=self.pixels_per_land_province_slider.value(),
                 pixels_per_water_province=self.pixels_per_water_province_slider.value(),
                 rng_seed=config.DEFAULT_TERRITORIES_RNG_SEED,

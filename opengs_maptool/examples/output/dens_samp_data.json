@@ -181,11 +181,47 @@
   },
   {
     "region_id": "DST000006",
+    "region_type": "ocean",
+    "color": "#2103b1",
+    "pixel_count": 71855,
+    "density_multiplier": 1.0,
+    "parent_id": "AREA000009",
+    "local_bbox": [
+      0,
+      0,
+      1007,
+      174
+    ],
+    "local_center": [
+      430,
+      50
+    ],
+    "local_seed": [
+      430,
+      50
+    ],
+    "global_bbox": [
+      3171,
+      0,
+      4178,
+      174
+    ],
+    "global_center": [
+      3601,
+      50
+    ],
+    "global_seed": [
+      3601,
+      50
+    ]
+  },
+  {
+    "region_id": "DST000007",
     "region_type": "land",
-    "color": "#c6a415",
+    "color": "#97981a",
     "pixel_count": 776,
     "density_multiplier": 0.33,
-    "parent_id": "AREA000008",
+    "parent_id": "AREA000010",
     "local_bbox": [
       0,
       0,
@@ -216,12 +252,84 @@
     ]
   },
   {
-    "region_id": "DST000007",
+    "region_id": "DST000008",
+    "region_type": "land",
+    "color": "#b25108",
+    "pixel_count": 40785,
+    "density_multiplier": 1.0,
+    "parent_id": "AREA000007",
+    "local_bbox": [
+      0,
+      0,
+      271,
+      233
+    ],
+    "local_center": [
+      162,
+      98
+    ],
+    "local_seed": [
+      154,
+      101
+    ],
+    "global_bbox": [
+      1923,
+      0,
+      2194,
+      233
+    ],
+    "global_center": [
+      2085,
+      98
+    ],
+    "global_seed": [
+      2077,
+      101
+    ]
+  },
+  {
+    "region_id": "DST000009",
+    "region_type": "land",
+    "color": "#1584a2",
+    "pixel_count": 31002,
+    "density_multiplier": 1.0,
+    "parent_id": "AREA000007",
+    "local_bbox": [
+      254,
+      0,
+      572,
+      146
+    ],
+    "local_center": [
+      384,
+      57
+    ],
+    "local_seed": [
+      372,
+      58
+    ],
+    "global_bbox": [
+      2177,
+      0,
+      2495,
+      146
+    ],
+    "global_center": [
+      2307,
+      57
+    ],
+    "global_seed": [
+      2295,
+      58
+    ]
+  },
+  {
+    "region_id": "DST000010",
     "region_type": "ocean",
-    "color": "#232f6c",
+    "color": "#33237d",
     "pixel_count": 53456,
     "density_multiplier": 1.0,
-    "parent_id": "AREA000010",
+    "parent_id": "AREA000012",
     "local_bbox": [
       0,
       0,
@@ -252,12 +360,12 @@
     ]
   },
   {
-    "region_id": "DST000008",
+    "region_id": "DST000011",
     "region_type": "ocean",
-    "color": "#374586",
+    "color": "#2d4f83",
     "pixel_count": 50,
     "density_multiplier": 1.0,
-    "parent_id": "AREA000011",
+    "parent_id": "AREA000013",
     "local_bbox": [
       0,
       0,
@@ -288,12 +396,12 @@
     ]
   },
   {
-    "region_id": "DST000009",
+    "region_id": "DST000012",
     "region_type": "land",
-    "color": "#dc7150",
+    "color": "#6a136a",
     "pixel_count": 236,
     "density_multiplier": 0.96,
-    "parent_id": "AREA000012",
+    "parent_id": "AREA000014",
     "local_bbox": [
       0,
       0,
@@ -324,84 +432,12 @@
     ]
   },
   {
-    "region_id": "DST000010",
+    "region_id": "DST000013",
     "region_type": "land",
-    "color": "#b25108",
-    "pixel_count": 30993,
-    "density_multiplier": 1.0,
-    "parent_id": "AREA000007",
-    "local_bbox": [
-      255,
-      0,
-      572,
-      146
-    ],
-    "local_center": [
-      384,
-      57
-    ],
-    "local_seed": [
-      372,
-      58
-    ],
-    "global_bbox": [
-      2178,
-      0,
-      2495,
-      146
-    ],
-    "global_center": [
-      2307,
-      57
-    ],
-    "global_seed": [
-      2295,
-      58
-    ]
-  },
-  {
-    "region_id": "DST000011",
-    "region_type": "land",
-    "color": "#1584a2",
-    "pixel_count": 40793,
-    "density_multiplier": 1.0,
-    "parent_id": "AREA000007",
-    "local_bbox": [
-      0,
-      0,
-      271,
-      233
-    ],
-    "local_center": [
-      162,
-      98
-    ],
-    "local_seed": [
-      154,
-      100
-    ],
-    "global_bbox": [
-      1923,
-      0,
-      2194,
-      233
-    ],
-    "global_center": [
-      2085,
-      98
-    ],
-    "global_seed": [
-      2077,
-      100
-    ]
-  },
-  {
-    "region_id": "DST000012",
-    "region_type": "land",
-    "color": "#c1fd64",
+    "color": "#268094",
     "pixel_count": 4201,
     "density_multiplier": 0.28,
-    "parent_id": "AREA000013",
+    "parent_id": "AREA000015",
     "local_bbox": [
       0,
       0,
@@ -432,12 +468,12 @@
     ]
   },
   {
-    "region_id": "DST000013",
+    "region_id": "DST000014",
     "region_type": "ocean",
-    "color": "#180685",
+    "color": "#201372",
     "pixel_count": 57,
     "density_multiplier": 0.36,
-    "parent_id": "AREA000014",
+    "parent_id": "AREA000016",
     "local_bbox": [
       0,
       0,
@@ -468,12 +504,12 @@
     ]
   },
   {
-    "region_id": "DST000014",
+    "region_id": "DST000015",
     "region_type": "land",
-    "color": "#268094",
+    "color": "#95bc95",
     "pixel_count": 1308,
     "density_multiplier": 0.29,
-    "parent_id": "AREA000015",
+    "parent_id": "AREA000017",
     "local_bbox": [
       0,
       0,
@@ -504,12 +540,12 @@
     ]
   },
   {
-    "region_id": "DST000015",
+    "region_id": "DST000016",
     "region_type": "ocean",
-    "color": "#201372",
+    "color": "#3505a3",
     "pixel_count": 225,
     "density_multiplier": 0.98,
-    "parent_id": "AREA000016",
+    "parent_id": "AREA000018",
     "local_bbox": [
       0,
       0,
@@ -540,12 +576,12 @@
     ]
   },
   {
-    "region_id": "DST000016",
+    "region_id": "DST000017",
     "region_type": "ocean",
-    "color": "#233a92",
+    "color": "#33277c",
     "pixel_count": 247,
     "density_multiplier": 0.35,
-    "parent_id": "AREA000017",
+    "parent_id": "AREA000019",
     "local_bbox": [
       0,
       0,
@@ -576,12 +612,12 @@
     ]
   },
   {
-    "region_id": "DST000017",
+    "region_id": "DST000018",
     "region_type": "land",
-    "color": "#e610cb",
+    "color": "#628096",
     "pixel_count": 1606,
     "density_multiplier": 0.31,
-    "parent_id": "AREA000018",
+    "parent_id": "AREA000020",
     "local_bbox": [
       0,
       0,
@@ -612,12 +648,12 @@
     ]
   },
   {
-    "region_id": "DST000018",
+    "region_id": "DST000019",
     "region_type": "land",
-    "color": "#da7e4f",
+    "color": "#479dca",
     "pixel_count": 21511,
     "density_multiplier": 0.29,
-    "parent_id": "AREA000019",
+    "parent_id": "AREA000021",
     "local_bbox": [
       0,
       0,
@@ -648,12 +684,12 @@
     ]
   },
   {
-    "region_id": "DST000019",
+    "region_id": "DST000020",
     "region_type": "ocean",
-    "color": "#172892",
+    "color": "#05498b",
     "pixel_count": 193,
     "density_multiplier": 0.34,
-    "parent_id": "AREA000020",
+    "parent_id": "AREA000022",
     "local_bbox": [
       0,
       0,
@@ -684,12 +720,12 @@
     ]
   },
   {
-    "region_id": "DST000020",
+    "region_id": "DST000021",
     "region_type": "land",
-    "color": "#479dca",
+    "color": "#2760fb",
     "pixel_count": 551,
     "density_multiplier": 0.32,
-    "parent_id": "AREA000021",
+    "parent_id": "AREA000023",
     "local_bbox": [
       0,
       0,
@@ -720,12 +756,12 @@
     ]
   },
   {
-    "region_id": "DST000021",
+    "region_id": "DST000022",
     "region_type": "land",
-    "color": "#17e97c",
+    "color": "#c9d017",
     "pixel_count": 1517,
     "density_multiplier": 0.3,
-    "parent_id": "AREA000022",
+    "parent_id": "AREA000024",
     "local_bbox": [
       0,
       0,
@@ -756,12 +792,12 @@
     ]
   },
   {
-    "region_id": "DST000022",
+    "region_id": "DST000023",
     "region_type": "land",
-    "color": "#2760fb",
+    "color": "#ca3852",
     "pixel_count": 11493,
     "density_multiplier": 0.28,
-    "parent_id": "AREA000023",
+    "parent_id": "AREA000025",
     "local_bbox": [
       0,
       0,
@@ -792,12 +828,12 @@
     ]
   },
   {
-    "region_id": "DST000023",
+    "region_id": "DST000024",
     "region_type": "land",
-    "color": "#c9d017",
+    "color": "#622fa3",
     "pixel_count": 173,
     "density_multiplier": 1.0,
-    "parent_id": "AREA000024",
+    "parent_id": "AREA000026",
     "local_bbox": [
       0,
       0,
@@ -828,12 +864,12 @@
     ]
   },
   {
-    "region_id": "DST000024",
+    "region_id": "DST000025",
     "region_type": "land",
-    "color": "#ca3852",
+    "color": "#24f274",
     "pixel_count": 61,
     "density_multiplier": 1.0,
-    "parent_id": "AREA000025",
+    "parent_id": "AREA000027",
     "local_bbox": [
       0,
       0,
@@ -864,12 +900,12 @@
     ]
   },
   {
-    "region_id": "DST000025",
+    "region_id": "DST000026",
     "region_type": "land",
-    "color": "#622fa3",
+    "color": "#f85ee0",
     "pixel_count": 93,
     "density_multiplier": 1.0,
-    "parent_id": "AREA000026",
+    "parent_id": "AREA000028",
     "local_bbox": [
       0,
       0,
@@ -900,12 +936,12 @@
     ]
   },
   {
-    "region_id": "DST000026",
+    "region_id": "DST000027",
     "region_type": "land",
-    "color": "#f85ee0",
+    "color": "#7d9cce",
     "pixel_count": 195,
     "density_multiplier": 0.33,
-    "parent_id": "AREA000028",
+    "parent_id": "AREA000030",
     "local_bbox": [
       0,
       0,
@@ -936,12 +972,12 @@
     ]
   },
   {
-    "region_id": "DST000027",
+    "region_id": "DST000028",
     "region_type": "ocean",
-    "color": "#081f89",
+    "color": "#2633ac",
     "pixel_count": 58,
     "density_multiplier": 1.0,
-    "parent_id": "AREA000029",
+    "parent_id": "AREA000031",
     "local_bbox": [
       0,
       0,
@@ -972,12 +1008,12 @@
     ]
   },
   {
-    "region_id": "DST000028",
+    "region_id": "DST000029",
     "region_type": "land",
-    "color": "#7d9cce",
+    "color": "#b6d6e1",
     "pixel_count": 76,
     "density_multiplier": 1.0,
-    "parent_id": "AREA000030",
+    "parent_id": "AREA000032",
     "local_bbox": [
       0,
       0,
@@ -1008,12 +1044,12 @@
     ]
   },
   {
-    "region_id": "DST000029",
+    "region_id": "DST000030",
     "region_type": "land",
-    "color": "#a5a4e7",
+    "color": "#39d060",
     "pixel_count": 59825,
     "density_multiplier": 0.26,
-    "parent_id": "AREA000031",
+    "parent_id": "AREA000033",
     "local_bbox": [
       0,
       0,
@@ -1044,12 +1080,12 @@
     ]
   },
   {
-    "region_id": "DST000030",
+    "region_id": "DST000031",
     "region_type": "land",
-    "color": "#b6d6e1",
+    "color": "#fc07eb",
     "pixel_count": 107,
     "density_multiplier": 1.0,
-    "parent_id": "AREA000032",
+    "parent_id": "AREA000034",
     "local_bbox": [
       0,
       0,
@@ -1080,12 +1116,12 @@
     ]
   },
   {
-    "region_id": "DST000031",
+    "region_id": "DST000032",
     "region_type": "land",
-    "color": "#39d060",
+    "color": "#92895f",
     "pixel_count": 2127,
     "density_multiplier": 2.12,
-    "parent_id": "AREA000033",
+    "parent_id": "AREA000035",
     "local_bbox": [
       0,
       0,
@@ -1116,12 +1152,12 @@
     ]
   },
   {
-    "region_id": "DST000032",
+    "region_id": "DST000033",
     "region_type": "land",
-    "color": "#fc07eb",
+    "color": "#f32aa6",
     "pixel_count": 300,
     "density_multiplier": 2.02,
-    "parent_id": "AREA000034",
+    "parent_id": "AREA000036",
     "local_bbox": [
       0,
       0,
@@ -1152,12 +1188,12 @@
     ]
   },
   {
-    "region_id": "DST000033",
+    "region_id": "DST000034",
     "region_type": "ocean",
-    "color": "#222a81",
+    "color": "#07378e",
     "pixel_count": 95,
     "density_multiplier": 0.4,
-    "parent_id": "AREA000035",
+    "parent_id": "AREA000037",
     "local_bbox": [
       0,
       0,
@@ -1188,12 +1224,12 @@
     ]
   },
   {
-    "region_id": "DST000034",
+    "region_id": "DST000035",
     "region_type": "land",
-    "color": "#f32aa6",
+    "color": "#240a88",
     "pixel_count": 115,
     "density_multiplier": 0.46,
-    "parent_id": "AREA000036",
+    "parent_id": "AREA000038",
     "local_bbox": [
       0,
       0,
@@ -1224,12 +1260,12 @@
     ]
   },
   {
-    "region_id": "DST000035",
+    "region_id": "DST000036",
     "region_type": "land",
-    "color": "#1eb287",
+    "color": "#add3cf",
     "pixel_count": 273,
     "density_multiplier": 1.0,
-    "parent_id": "AREA000037",
+    "parent_id": "AREA000039",
     "local_bbox": [
       0,
       0,
@@ -1260,12 +1296,12 @@
     ]
   },
   {
-    "region_id": "DST000036",
+    "region_id": "DST000037",
     "region_type": "ocean",
-    "color": "#08038e",
+    "color": "#390a79",
     "pixel_count": 62,
     "density_multiplier": 1.0,
-    "parent_id": "AREA000038",
+    "parent_id": "AREA000040",
     "local_bbox": [
       0,
       0,
@@ -1296,12 +1332,12 @@
     ]
   },
   {
-    "region_id": "DST000037",
+    "region_id": "DST000038",
     "region_type": "land",
-    "color": "#add3cf",
+    "color": "#2caffa",
     "pixel_count": 14047,
     "density_multiplier": 2.23,
-    "parent_id": "AREA000039",
+    "parent_id": "AREA000041",
     "local_bbox": [
       0,
       0,
@@ -1332,12 +1368,12 @@
     ]
   },
   {
-    "region_id": "DST000038",
+    "region_id": "DST000039",
     "region_type": "ocean",
-    "color": "#390a79",
+    "color": "#343476",
     "pixel_count": 51,
     "density_multiplier": 1.0,
-    "parent_id": "AREA000040",
+    "parent_id": "AREA000042",
     "local_bbox": [
       0,
       0,
@@ -1368,12 +1404,12 @@
     ]
   },
   {
-    "region_id": "DST000039",
+    "region_id": "DST000040",
     "region_type": "land",
-    "color": "#2caffa",
+    "color": "#75e76a",
     "pixel_count": 485,
     "density_multiplier": 0.33,
-    "parent_id": "AREA000041",
+    "parent_id": "AREA000043",
     "local_bbox": [
       0,
       0,
@@ -1404,12 +1440,12 @@
     ]
   },
   {
-    "region_id": "DST000040",
+    "region_id": "DST000041",
     "region_type": "ocean",
-    "color": "#343476",
+    "color": "#342996",
     "pixel_count": 519,
     "density_multiplier": 0.99,
-    "parent_id": "AREA000042",
+    "parent_id": "AREA000044",
     "local_bbox": [
       0,
       0,
@@ -1440,12 +1476,12 @@
     ]
   },
   {
-    "region_id": "DST000041",
+    "region_id": "DST000042",
     "region_type": "ocean",
-    "color": "#1b4885",
+    "color": "#054d7e",
     "pixel_count": 183,
     "density_multiplier": 0.34,
-    "parent_id": "AREA000043",
+    "parent_id": "AREA000045",
     "local_bbox": [
       0,
       0,
@@ -1476,12 +1512,12 @@
     ]
   },
   {
-    "region_id": "DST000042",
+    "region_id": "DST000043",
     "region_type": "land",
-    "color": "#de84a3",
+    "color": "#c6d8b7",
     "pixel_count": 90,
     "density_multiplier": 1.0,
-    "parent_id": "AREA000044",
+    "parent_id": "AREA000046",
     "local_bbox": [
       0,
       0,
@@ -1512,12 +1548,120 @@
     ]
   },
   {
-    "region_id": "DST000043",
+    "region_id": "DST000044",
     "region_type": "land",
-    "color": "#19f755",
+    "color": "#266478",
+    "pixel_count": 88322,
+    "density_multiplier": 0.26,
+    "parent_id": "AREA000029",
+    "local_bbox": [
+      0,
+      25,
+      392,
+      365
+    ],
+    "local_center": [
+      214,
+      167
+    ],
+    "local_seed": [
+      210,
+      160
+    ],
+    "global_bbox": [
+      608,
+      71,
+      1000,
+      411
+    ],
+    "global_center": [
+      822,
+      213
+    ],
+    "global_seed": [
+      818,
+      206
+    ]
+  },
+  {
+    "region_id": "DST000045",
+    "region_type": "land",
+    "color": "#aee82b",
+    "pixel_count": 83864,
+    "density_multiplier": 0.6,
+    "parent_id": "AREA000029",
+    "local_bbox": [
+      762,
+      148,
+      1335,
+      466
+    ],
+    "local_center": [
+      1035,
+      302
+    ],
+    "local_seed": [
+      971,
+      268
+    ],
+    "global_bbox": [
+      1370,
+      194,
+      1943,
+      512
+    ],
+    "global_center": [
+      1643,
+      348
+    ],
+    "global_seed": [
+      1579,
+      314
+    ]
+  },
+  {
+    "region_id": "DST000046",
+    "region_type": "land",
+    "color": "#bef237",
+    "pixel_count": 128505,
+    "density_multiplier": 0.26,
+    "parent_id": "AREA000029",
+    "local_bbox": [
+      341,
+      0,
+      935,
+      371
+    ],
+    "local_center": [
+      591,
+      201
+    ],
+    "local_seed": [
+      535,
+      217
+    ],
+    "global_bbox": [
+      949,
+      46,
+      1543,
+      417
+    ],
+    "global_center": [
+      1199,
+      247
+    ],
+    "global_seed": [
+      1143,
+      263
+    ]
+  },
+  {
+    "region_id": "DST000047",
+    "region_type": "land",
+    "color": "#07c9ab",
     "pixel_count": 17657,
     "density_multiplier": 2.23,
-    "parent_id": "AREA000045",
+    "parent_id": "AREA000047",
     "local_bbox": [
       0,
       0,
@@ -1548,12 +1692,12 @@
     ]
   },
   {
-    "region_id": "DST000044",
+    "region_id": "DST000048",
     "region_type": "land",
-    "color": "#c6d8b7",
+    "color": "#b458f8",
     "pixel_count": 4405,
     "density_multiplier": 0.28,
-    "parent_id": "AREA000046",
+    "parent_id": "AREA000048",
     "local_bbox": [
       0,
       0,
@@ -1584,12 +1728,12 @@
     ]
   },
   {
-    "region_id": "DST000045",
+    "region_id": "DST000049",
     "region_type": "ocean",
-    "color": "#013f99",
+    "color": "#1b12a6",
     "pixel_count": 130,
     "density_multiplier": 0.46,
-    "parent_id": "AREA000047",
+    "parent_id": "AREA000049",
     "local_bbox": [
       0,
       0,
@@ -1620,12 +1764,12 @@
     ]
   },
   {
-    "region_id": "DST000046",
+    "region_id": "DST000050",
     "region_type": "land",
-    "color": "#b458f8",
+    "color": "#f86acf",
     "pixel_count": 381,
     "density_multiplier": 0.29,
-    "parent_id": "AREA000048",
+    "parent_id": "AREA000050",
     "local_bbox": [
       0,
       0,
@@ -1656,12 +1800,12 @@
     ]
   },
   {
-    "region_id": "DST000047",
+    "region_id": "DST000051",
     "region_type": "land",
-    "color": "#7539d6",
+    "color": "#26449b",
     "pixel_count": 7399,
     "density_multiplier": 2.22,
-    "parent_id": "AREA000049",
+    "parent_id": "AREA000051",
     "local_bbox": [
       0,
       0,
@@ -1692,12 +1836,12 @@
     ]
   },
   {
-    "region_id": "DST000048",
+    "region_id": "DST000052",
     "region_type": "land",
-    "color": "#f86acf",
+    "color": "#66591d",
     "pixel_count": 83,
     "density_multiplier": 1.0,
-    "parent_id": "AREA000050",
+    "parent_id": "AREA000052",
     "local_bbox": [
       0,
       0,
@@ -1728,12 +1872,12 @@
     ]
   },
   {
-    "region_id": "DST000049",
+    "region_id": "DST000053",
     "region_type": "land",
-    "color": "#26449b",
+    "color": "#5f3f95",
     "pixel_count": 160,
     "density_multiplier": 1.0,
-    "parent_id": "AREA000051",
+    "parent_id": "AREA000053",
     "local_bbox": [
       0,
       0,
@@ -1764,12 +1908,12 @@
     ]
   },
   {
-    "region_id": "DST000050",
+    "region_id": "DST000054",
     "region_type": "land",
-    "color": "#66591d",
+    "color": "#8cb1aa",
     "pixel_count": 851,
     "density_multiplier": 1.0,
-    "parent_id": "AREA000052",
+    "parent_id": "AREA000054",
     "local_bbox": [
       0,
       0,
@@ -1800,120 +1944,408 @@
     ]
   },
   {
-    "region_id": "DST000051",
+    "region_id": "DST000055",
     "region_type": "land",
-    "color": "#24f274",
-    "pixel_count": 83188,
-    "density_multiplier": 0.6,
-    "parent_id": "AREA000027",
+    "color": "#ecdd6e",
+    "pixel_count": 41834,
+    "density_multiplier": 0.8,
+    "parent_id": "AREA000011",
     "local_bbox": [
-      767,
-      148,
-      1335,
-      466
+      1513,
+      221,
+      1789,
+      504
     ],
     "local_center": [
-      1037,
-      302
+      1661,
+      347
     ],
     "local_seed": [
-      1004,
-      280
+      1660,
+      353
     ],
     "global_bbox": [
-      1375,
-      194,
-      1943,
-      512
+      4759,
+      221,
+      5035,
+      504
     ],
     "global_center": [
-      1645,
-      348
+      4907,
+      347
     ],
     "global_seed": [
-      1612,
-      326
+      4906,
+      353
     ]
   },
   {
-    "region_id": "DST000052",
+    "region_id": "DST000056",
     "region_type": "land",
-    "color": "#fdf2bc",
-    "pixel_count": 127055,
+    "color": "#29938d",
+    "pixel_count": 54137,
     "density_multiplier": 0.26,
-    "parent_id": "AREA000027",
+    "parent_id": "AREA000011",
     "local_bbox": [
-      357,
-      0,
-      935,
-      371
+      1776,
+      33,
+      2076,
+      252
     ],
     "local_center": [
-      595,
-      200
+      1916,
+      144
     ],
     "local_seed": [
-      554,
-      207
+      1932,
+      162
     ],
     "global_bbox": [
-      965,
-      46,
-      1543,
-      417
+      5022,
+      33,
+      5322,
+      252
     ],
     "global_center": [
-      1203,
-      246
+      5162,
+      144
     ],
     "global_seed": [
-      1162,
-      253
+      5178,
+      162
     ]
   },
   {
-    "region_id": "DST000053",
+    "region_id": "DST000057",
     "region_type": "land",
-    "color": "#1d8fe7",
-    "pixel_count": 90447,
+    "color": "#506064",
+    "pixel_count": 58335,
     "density_multiplier": 0.26,
-    "parent_id": "AREA000027",
+    "parent_id": "AREA000011",
     "local_bbox": [
+      1140,
       0,
-      25,
-      396,
-      365
+      1477,
+      237
     ],
     "local_center": [
-      218,
-      169
+      1302,
+      103
     ],
     "local_seed": [
-      203,
-      163
+      1311,
+      105
     ],
     "global_bbox": [
-      608,
-      71,
-      1004,
-      411
+      4386,
+      0,
+      4723,
+      237
     ],
     "global_center": [
-      826,
-      215
+      4548,
+      103
     ],
     "global_seed": [
-      811,
+      4557,
+      105
+    ]
+  },
+  {
+    "region_id": "DST000058",
+    "region_type": "land",
+    "color": "#704233",
+    "pixel_count": 61716,
+    "density_multiplier": 0.26,
+    "parent_id": "AREA000011",
+    "local_bbox": [
+      1460,
+      17,
+      1782,
+      270
+    ],
+    "local_center": [
+      1622,
+      143
+    ],
+    "local_seed": [
+      1626,
+      147
+    ],
+    "global_bbox": [
+      4706,
+      17,
+      5028,
+      270
+    ],
+    "global_center": [
+      4868,
+      143
+    ],
+    "global_seed": [
+      4872,
+      147
+    ]
+  },
+  {
+    "region_id": "DST000059",
+    "region_type": "land",
+    "color": "#bb5592",
+    "pixel_count": 49467,
+    "density_multiplier": 0.26,
+    "parent_id": "AREA000011",
+    "local_bbox": [
+      2006,
+      76,
+      2385,
+      374
+    ],
+    "local_center": [
+      2192,
+      177
+    ],
+    "local_seed": [
+      2215,
+      156
+    ],
+    "global_bbox": [
+      5252,
+      76,
+      5631,
+      374
+    ],
+    "global_center": [
+      5438,
+      177
+    ],
+    "global_seed": [
+      5461,
+      156
+    ]
+  },
+  {
+    "region_id": "DST000060",
+    "region_type": "land",
+    "color": "#d11714",
+    "pixel_count": 53088,
+    "density_multiplier": 0.26,
+    "parent_id": "AREA000011",
+    "local_bbox": [
+      804,
+      0,
+      1145,
+      241
+    ],
+    "local_center": [
+      983,
+      94
+    ],
+    "local_seed": [
+      974,
+      91
+    ],
+    "global_bbox": [
+      4050,
+      0,
+      4391,
+      241
+    ],
+    "global_center": [
+      4229,
+      94
+    ],
+    "global_seed": [
+      4220,
+      91
+    ]
+  },
+  {
+    "region_id": "DST000061",
+    "region_type": "land",
+    "color": "#aef6f9",
+    "pixel_count": 76978,
+    "density_multiplier": 0.5,
+    "parent_id": "AREA000011",
+    "local_bbox": [
+      611,
+      27,
+      921,
+      390
+    ],
+    "local_center": [
+      758,
       209
+    ],
+    "local_seed": [
+      760,
+      214
+    ],
+    "global_bbox": [
+      3857,
+      27,
+      4167,
+      390
+    ],
+    "global_center": [
+      4004,
+      209
+    ],
+    "global_seed": [
+      4006,
+      214
     ]
   },
   {
-    "region_id": "DST000054",
+    "region_id": "DST000062",
     "region_type": "land",
-    "color": "#5f3f95",
+    "color": "#c0f5d0",
+    "pixel_count": 65479,
+    "density_multiplier": 0.69,
+    "parent_id": "AREA000011",
+    "local_bbox": [
+      901,
+      115,
+      1235,
+      404
+    ],
+    "local_center": [
+      1076,
+      277
+    ],
+    "local_seed": [
+      1084,
+      266
+    ],
+    "global_bbox": [
+      4147,
+      115,
+      4481,
+      404
+    ],
+    "global_center": [
+      4322,
+      277
+    ],
+    "global_seed": [
+      4330,
+      266
+    ]
+  },
+  {
+    "region_id": "DST000063",
+    "region_type": "land",
+    "color": "#d77673",
+    "pixel_count": 52182,
+    "density_multiplier": 0.64,
+    "parent_id": "AREA000011",
+    "local_bbox": [
+      1223,
+      159,
+      1530,
+      403
+    ],
+    "local_center": [
+      1374,
+      290
+    ],
+    "local_seed": [
+      1376,
+      294
+    ],
+    "global_bbox": [
+      4469,
+      159,
+      4776,
+      403
+    ],
+    "global_center": [
+      4620,
+      290
+    ],
+    "global_seed": [
+      4622,
+      294
+    ]
+  },
+  {
+    "region_id": "DST000064",
+    "region_type": "land",
+    "color": "#59ead4",
+    "pixel_count": 74857,
+    "density_multiplier": 0.44,
+    "parent_id": "AREA000011",
+    "local_bbox": [
+      302,
+      80,
+      613,
+      382
+    ],
+    "local_center": [
+      466,
+      225
+    ],
+    "local_seed": [
+      464,
+      222
+    ],
+    "global_bbox": [
+      3548,
+      80,
+      3859,
+      382
+    ],
+    "global_center": [
+      3712,
+      225
+    ],
+    "global_seed": [
+      3710,
+      222
+    ]
+  },
+  {
+    "region_id": "DST000065",
+    "region_type": "land",
+    "color": "#602357",
+    "pixel_count": 93245,
+    "density_multiplier": 0.87,
+    "parent_id": "AREA000011",
+    "local_bbox": [
+      0,
+      79,
+      351,
+      528
+    ],
+    "local_center": [
+      193,
+      281
+    ],
+    "local_seed": [
+      192,
+      283
+    ],
+    "global_bbox": [
+      3246,
+      79,
+      3597,
+      528
+    ],
+    "global_center": [
+      3439,
+      281
+    ],
+    "global_seed": [
+      3438,
+      283
+    ]
+  },
+  {
+    "region_id": "DST000066",
+    "region_type": "land",
+    "color": "#78d09e",
     "pixel_count": 3511,
     "density_multiplier": 2.18,
-    "parent_id": "AREA000053",
+    "parent_id": "AREA000055",
     "local_bbox": [
       0,
       0,
@@ -1944,12 +2376,12 @@
     ]
   },
   {
-    "region_id": "DST000055",
+    "region_id": "DST000067",
     "region_type": "land",
-    "color": "#8cb1aa",
+    "color": "#bded79",
     "pixel_count": 91,
     "density_multiplier": 2.06,
-    "parent_id": "AREA000054",
+    "parent_id": "AREA000056",
     "local_bbox": [
       0,
       0,
@@ -1980,12 +2412,12 @@
     ]
   },
   {
-    "region_id": "DST000056",
+    "region_id": "DST000068",
     "region_type": "land",
-    "color": "#78d09e",
+    "color": "#ac1ff0",
     "pixel_count": 1539,
     "density_multiplier": 0.3,
-    "parent_id": "AREA000055",
+    "parent_id": "AREA000057",
     "local_bbox": [
       0,
       0,
@@ -2016,12 +2448,12 @@
     ]
   },
   {
-    "region_id": "DST000057",
+    "region_id": "DST000069",
     "region_type": "ocean",
-    "color": "#2c4a89",
+    "color": "#3a06a1",
     "pixel_count": 12083,
     "density_multiplier": 2.17,
-    "parent_id": "AREA000056",
+    "parent_id": "AREA000058",
     "local_bbox": [
       0,
       0,
@@ -2052,12 +2484,12 @@
     ]
   },
   {
-    "region_id": "DST000058",
+    "region_id": "DST000070",
     "region_type": "lake",
-    "color": "#2809af",
+    "color": "#1b436c",
     "pixel_count": 64,
     "density_multiplier": 0.44,
-    "parent_id": "AREA000057",
+    "parent_id": "AREA000059",
     "local_bbox": [
       0,
       0,
@@ -2088,12 +2520,12 @@
     ]
   },
   {
-    "region_id": "DST000059",
+    "region_id": "DST000071",
     "region_type": "land",
-    "color": "#f914c3",
+    "color": "#78e27d",
     "pixel_count": 426,
     "density_multiplier": 0.31,
-    "parent_id": "AREA000058",
+    "parent_id": "AREA000060",
     "local_bbox": [
       0,
       0,
@@ -2124,12 +2556,12 @@
     ]
   },
   {
-    "region_id": "DST000060",
+    "region_id": "DST000072",
     "region_type": "ocean",
-    "color": "#1b436c",
+    "color": "#0b279e",
     "pixel_count": 50,
     "density_multiplier": 0.54,
-    "parent_id": "AREA000059",
+    "parent_id": "AREA000062",
     "local_bbox": [
       0,
       0,
@@ -2160,12 +2592,12 @@
     ]
   },
   {
-    "region_id": "DST000061",
+    "region_id": "DST000073",
     "region_type": "ocean",
-    "color": "#1c468b",
+    "color": "#0f3aa3",
     "pixel_count": 148,
     "density_multiplier": 0.38,
-    "parent_id": "AREA000060",
+    "parent_id": "AREA000063",
     "local_bbox": [
       0,
       0,
@@ -2196,12 +2628,12 @@
     ]
   },
   {
-    "region_id": "DST000062",
+    "region_id": "DST000074",
     "region_type": "lake",
-    "color": "#160197",
+    "color": "#12339b",
     "pixel_count": 569,
     "density_multiplier": 1.0,
-    "parent_id": "AREA000061",
+    "parent_id": "AREA000064",
     "local_bbox": [
       0,
       0,
@@ -2232,12 +2664,12 @@
     ]
   },
   {
-    "region_id": "DST000063",
+    "region_id": "DST000075",
     "region_type": "ocean",
-    "color": "#0b279e",
+    "color": "#2a4c77",
     "pixel_count": 81,
     "density_multiplier": 0.34,
-    "parent_id": "AREA000062",
+    "parent_id": "AREA000065",
     "local_bbox": [
       0,
       0,
@@ -2268,12 +2700,12 @@
     ]
   },
   {
-    "region_id": "DST000064",
+    "region_id": "DST000076",
     "region_type": "lake",
-    "color": "#0f3aa3",
+    "color": "#200d82",
     "pixel_count": 530,
     "density_multiplier": 2.17,
-    "parent_id": "AREA000063",
+    "parent_id": "AREA000066",
     "local_bbox": [
       0,
       0,
@@ -2304,12 +2736,12 @@
     ]
   },
   {
-    "region_id": "DST000065",
+    "region_id": "DST000077",
     "region_type": "ocean",
-    "color": "#12339b",
+    "color": "#1a3883",
     "pixel_count": 82,
     "density_multiplier": 0.34,
-    "parent_id": "AREA000064",
+    "parent_id": "AREA000067",
     "local_bbox": [
       0,
       0,
@@ -2340,12 +2772,12 @@
     ]
   },
   {
-    "region_id": "DST000066",
+    "region_id": "DST000078",
     "region_type": "land",
-    "color": "#b3f53d",
+    "color": "#778a53",
     "pixel_count": 146,
     "density_multiplier": 0.37,
-    "parent_id": "AREA000065",
+    "parent_id": "AREA000068",
     "local_bbox": [
       0,
       0,
@@ -2376,12 +2808,12 @@
     ]
   },
   {
-    "region_id": "DST000067",
+    "region_id": "DST000079",
     "region_type": "land",
-    "color": "#892a61",
+    "color": "#8bf1b5",
     "pixel_count": 182,
     "density_multiplier": 0.41,
-    "parent_id": "AREA000066",
+    "parent_id": "AREA000069",
     "local_bbox": [
       0,
       0,
@@ -2412,12 +2844,12 @@
     ]
   },
   {
-    "region_id": "DST000068",
+    "region_id": "DST000080",
     "region_type": "land",
-    "color": "#72b563",
+    "color": "#c2890d",
     "pixel_count": 130,
     "density_multiplier": 0.38,
-    "parent_id": "AREA000067",
+    "parent_id": "AREA000070",
     "local_bbox": [
       0,
       0,
@@ -2448,12 +2880,12 @@
     ]
   },
   {
-    "region_id": "DST000069",
+    "region_id": "DST000081",
     "region_type": "land",
-    "color": "#778a53",
+    "color": "#475a1e",
     "pixel_count": 1283,
     "density_multiplier": 2.22,
-    "parent_id": "AREA000068",
+    "parent_id": "AREA000071",
     "local_bbox": [
       0,
       0,
@@ -2484,12 +2916,12 @@
     ]
   },
   {
-    "region_id": "DST000070",
+    "region_id": "DST000082",
     "region_type": "land",
-    "color": "#8bf1b5",
+    "color": "#0c78ef",
     "pixel_count": 63,
     "density_multiplier": 0.44,
-    "parent_id": "AREA000069",
+    "parent_id": "AREA000072",
     "local_bbox": [
       0,
       0,
@@ -2520,408 +2952,12 @@
     ]
   },
   {
-    "region_id": "DST000071",
+    "region_id": "DST000083",
     "region_type": "land",
-    "color": "#900bf8",
-    "pixel_count": 55671,
-    "density_multiplier": 0.26,
-    "parent_id": "AREA000009",
-    "local_bbox": [
-      1541,
-      22,
-      1841,
-      264
-    ],
-    "local_center": [
-      1699,
-      141
-    ],
-    "local_seed": [
-      1696,
-      140
-    ],
-    "global_bbox": [
-      4787,
-      22,
-      5087,
-      264
-    ],
-    "global_center": [
-      4945,
-      141
-    ],
-    "global_seed": [
-      4942,
-      140
-    ]
-  },
-  {
-    "region_id": "DST000072",
-    "region_type": "land",
-    "color": "#b9b276",
-    "pixel_count": 46357,
-    "density_multiplier": 0.26,
-    "parent_id": "AREA000009",
-    "local_bbox": [
-      1829,
-      40,
-      2107,
-      250
-    ],
-    "local_center": [
-      1958,
-      146
-    ],
-    "local_seed": [
-      1974,
-      171
-    ],
-    "global_bbox": [
-      5075,
-      40,
-      5353,
-      250
-    ],
-    "global_center": [
-      5204,
-      146
-    ],
-    "global_seed": [
-      5220,
-      171
-    ]
-  },
-  {
-    "region_id": "DST000073",
-    "region_type": "land",
-    "color": "#877ab8",
-    "pixel_count": 45537,
-    "density_multiplier": 0.26,
-    "parent_id": "AREA000009",
-    "local_bbox": [
-      2006,
-      76,
-      2385,
-      374
-    ],
-    "local_center": [
-      2201,
-      179
-    ],
-    "local_seed": [
-      2233,
-      150
-    ],
-    "global_bbox": [
-      5252,
-      76,
-      5631,
-      374
-    ],
-    "global_center": [
-      5447,
-      179
-    ],
-    "global_seed": [
-      5479,
-      150
-    ]
-  },
-  {
-    "region_id": "DST000074",
-    "region_type": "land",
-    "color": "#d68258",
-    "pixel_count": 45300,
-    "density_multiplier": 0.78,
-    "parent_id": "AREA000009",
-    "local_bbox": [
-      1468,
-      215,
-      1784,
-      504
-    ],
-    "local_center": [
-      1645,
-      341
-    ],
-    "local_seed": [
-      1647,
-      343
-    ],
-    "global_bbox": [
-      4714,
-      215,
-      5030,
-      504
-    ],
-    "global_center": [
-      4891,
-      341
-    ],
-    "global_seed": [
-      4893,
-      343
-    ]
-  },
-  {
-    "region_id": "DST000075",
-    "region_type": "land",
-    "color": "#e5acab",
-    "pixel_count": 79528,
-    "density_multiplier": 0.35,
-    "parent_id": "AREA000009",
-    "local_bbox": [
-      1256,
-      15,
-      1562,
-      397
-    ],
-    "local_center": [
-      1416,
-      174
-    ],
-    "local_seed": [
-      1414,
-      175
-    ],
-    "global_bbox": [
-      4502,
-      15,
-      4808,
-      397
-    ],
-    "global_center": [
-      4662,
-      174
-    ],
-    "global_seed": [
-      4660,
-      175
-    ]
-  },
-  {
-    "region_id": "DST000076",
-    "region_type": "land",
-    "color": "#9b1709",
-    "pixel_count": 52782,
-    "density_multiplier": 0.76,
-    "parent_id": "AREA000009",
-    "local_bbox": [
-      1042,
-      163,
-      1389,
-      403
-    ],
-    "local_center": [
-      1206,
-      299
-    ],
-    "local_seed": [
-      1204,
-      305
-    ],
-    "global_bbox": [
-      4288,
-      163,
-      4635,
-      403
-    ],
-    "global_center": [
-      4452,
-      299
-    ],
-    "global_seed": [
-      4450,
-      305
-    ]
-  },
-  {
-    "region_id": "DST000077",
-    "region_type": "land",
-    "color": "#a3e8aa",
-    "pixel_count": 61788,
-    "density_multiplier": 0.26,
-    "parent_id": "AREA000009",
-    "local_bbox": [
-      923,
-      0,
-      1325,
-      237
-    ],
-    "local_center": [
-      1116,
-      93
-    ],
-    "local_seed": [
-      1119,
-      97
-    ],
-    "global_bbox": [
-      4169,
-      0,
-      4571,
-      237
-    ],
-    "global_center": [
-      4362,
-      93
-    ],
-    "global_seed": [
-      4365,
-      97
-    ]
-  },
-  {
-    "region_id": "DST000078",
-    "region_type": "land",
-    "color": "#10be7f",
-    "pixel_count": 69039,
-    "density_multiplier": 0.62,
-    "parent_id": "AREA000009",
-    "local_bbox": [
-      756,
-      17,
-      1070,
-      404
-    ],
-    "local_center": [
-      920,
-      246
-    ],
-    "local_seed": [
-      910,
-      241
-    ],
-    "global_bbox": [
-      4002,
-      17,
-      4316,
-      404
-    ],
-    "global_center": [
-      4166,
-      246
-    ],
-    "global_seed": [
-      4156,
-      241
-    ]
-  },
-  {
-    "region_id": "DST000079",
-    "region_type": "land",
-    "color": "#69ca81",
-    "pixel_count": 70752,
-    "density_multiplier": 0.46,
-    "parent_id": "AREA000009",
-    "local_bbox": [
-      320,
-      80,
-      645,
-      382
-    ],
-    "local_center": [
-      473,
-      228
-    ],
-    "local_seed": [
-      485,
-      229
-    ],
-    "global_bbox": [
-      3566,
-      80,
-      3891,
-      382
-    ],
-    "global_center": [
-      3719,
-      228
-    ],
-    "global_seed": [
-      3731,
-      229
-    ]
-  },
-  {
-    "region_id": "DST000080",
-    "region_type": "land",
-    "color": "#2b148e",
-    "pixel_count": 96973,
-    "density_multiplier": 0.85,
-    "parent_id": "AREA000009",
-    "local_bbox": [
-      0,
-      79,
-      356,
-      528
-    ],
-    "local_center": [
-      198,
-      279
-    ],
-    "local_seed": [
-      201,
-      279
-    ],
-    "global_bbox": [
-      3246,
-      79,
-      3602,
-      528
-    ],
-    "global_center": [
-      3444,
-      279
-    ],
-    "global_seed": [
-      3447,
-      279
-    ]
-  },
-  {
-    "region_id": "DST000081",
-    "region_type": "land",
-    "color": "#d9dd24",
-    "pixel_count": 57591,
-    "density_multiplier": 0.37,
-    "parent_id": "AREA000009",
-    "local_bbox": [
-      573,
-      19,
-      899,
-      335
-    ],
-    "local_center": [
-      725,
-      162
-    ],
-    "local_seed": [
-      727,
-      148
-    ],
-    "global_bbox": [
-      3819,
-      19,
-      4145,
-      335
-    ],
-    "global_center": [
-      3971,
-      162
-    ],
-    "global_seed": [
-      3973,
-      148
-    ]
-  },
-  {
-    "region_id": "DST000082",
-    "region_type": "land",
-    "color": "#c2890d",
+    "color": "#945ead",
     "pixel_count": 5851,
     "density_multiplier": 2.19,
-    "parent_id": "AREA000070",
+    "parent_id": "AREA000073",
     "local_bbox": [
       0,
       0,
@@ -2952,12 +2988,12 @@
     ]
   },
   {
-    "region_id": "DST000083",
+    "region_id": "DST000084",
     "region_type": "land",
-    "color": "#475a1e",
+    "color": "#c9e990",
     "pixel_count": 1939,
     "density_multiplier": 2.23,
-    "parent_id": "AREA000071",
+    "parent_id": "AREA000074",
     "local_bbox": [
       0,
       0,
@@ -2988,12 +3024,12 @@
     ]
   },
   {
-    "region_id": "DST000084",
+    "region_id": "DST000085",
     "region_type": "land",
-    "color": "#0c78ef",
+    "color": "#4175b0",
     "pixel_count": 316,
     "density_multiplier": 0.45,
-    "parent_id": "AREA000072",
+    "parent_id": "AREA000075",
     "local_bbox": [
       0,
       0,
@@ -3024,12 +3060,12 @@
     ]
   },
   {
-    "region_id": "DST000085",
+    "region_id": "DST000086",
     "region_type": "land",
-    "color": "#945ead",
+    "color": "#85fb11",
     "pixel_count": 56,
     "density_multiplier": 1.94,
-    "parent_id": "AREA000073",
+    "parent_id": "AREA000076",
     "local_bbox": [
       0,
       0,
@@ -3060,12 +3096,12 @@
     ]
   },
   {
-    "region_id": "DST000086",
+    "region_id": "DST000087",
     "region_type": "ocean",
-    "color": "#2f4991",
+    "color": "#1027af",
     "pixel_count": 51,
     "density_multiplier": 0.61,
-    "parent_id": "AREA000074",
+    "parent_id": "AREA000077",
     "local_bbox": [
       0,
       0,
@@ -3096,12 +3132,12 @@
     ]
   },
   {
-    "region_id": "DST000087",
+    "region_id": "DST000088",
     "region_type": "land",
-    "color": "#4175b0",
+    "color": "#0023c7",
     "pixel_count": 566,
     "density_multiplier": 2.07,
-    "parent_id": "AREA000075",
+    "parent_id": "AREA000078",
     "local_bbox": [
       0,
       0,
@@ -3132,12 +3168,12 @@
     ]
   },
   {
-    "region_id": "DST000088",
+    "region_id": "DST000089",
     "region_type": "land",
-    "color": "#85fb11",
+    "color": "#67cb97",
     "pixel_count": 1921,
     "density_multiplier": 2.23,
-    "parent_id": "AREA000076",
+    "parent_id": "AREA000079",
     "local_bbox": [
       0,
       0,
@@ -3168,12 +3204,12 @@
     ]
   },
   {
-    "region_id": "DST000089",
+    "region_id": "DST000090",
     "region_type": "land",
-    "color": "#477df2",
+    "color": "#dd86c7",
     "pixel_count": 6242,
     "density_multiplier": 2.23,
-    "parent_id": "AREA000077",
+    "parent_id": "AREA000080",
     "local_bbox": [
       0,
       0,
@@ -3204,12 +3240,12 @@
     ]
   },
   {
-    "region_id": "DST000090",
+    "region_id": "DST000091",
     "region_type": "ocean",
-    "color": "#000aa2",
+    "color": "#181468",
     "pixel_count": 65,
     "density_multiplier": 0.6,
-    "parent_id": "AREA000078",
+    "parent_id": "AREA000081",
     "local_bbox": [
       0,
       0,
@@ -3240,12 +3276,12 @@
     ]
   },
   {
-    "region_id": "DST000091",
+    "region_id": "DST000092",
     "region_type": "ocean",
-    "color": "#183f93",
+    "color": "#22128a",
     "pixel_count": 99,
     "density_multiplier": 0.45,
-    "parent_id": "AREA000079",
+    "parent_id": "AREA000082",
     "local_bbox": [
       0,
       0,
@@ -3276,12 +3312,12 @@
     ]
   },
   {
-    "region_id": "DST000092",
+    "region_id": "DST000093",
     "region_type": "land",
-    "color": "#dd86c7",
+    "color": "#352378",
     "pixel_count": 85,
     "density_multiplier": 2.02,
-    "parent_id": "AREA000080",
+    "parent_id": "AREA000083",
     "local_bbox": [
       0,
       0,
@@ -3312,12 +3348,12 @@
     ]
   },
   {
-    "region_id": "DST000093",
+    "region_id": "DST000094",
     "region_type": "lake",
-    "color": "#181468",
+    "color": "#274daa",
     "pixel_count": 669,
     "density_multiplier": 1.0,
-    "parent_id": "AREA000081",
+    "parent_id": "AREA000084",
     "local_bbox": [
       0,
       0,
@@ -3348,12 +3384,12 @@
     ]
   },
   {
-    "region_id": "DST000094",
+    "region_id": "DST000095",
     "region_type": "land",
-    "color": "#352378",
+    "color": "#3eb133",
     "pixel_count": 304,
     "density_multiplier": 2.2,
-    "parent_id": "AREA000083",
+    "parent_id": "AREA000086",
     "local_bbox": [
       0,
       0,
@@ -3384,12 +3420,12 @@
     ]
   },
   {
-    "region_id": "DST000095",
+    "region_id": "DST000096",
     "region_type": "land",
-    "color": "#aaf9e2",
+    "color": "#ad2000",
     "pixel_count": 322,
     "density_multiplier": 2.11,
-    "parent_id": "AREA000084",
+    "parent_id": "AREA000087",
     "local_bbox": [
       0,
       0,
@@ -3420,12 +3456,12 @@
     ]
   },
   {
-    "region_id": "DST000096",
+    "region_id": "DST000097",
     "region_type": "ocean",
-    "color": "#2a2893",
+    "color": "#252b94",
     "pixel_count": 68,
     "density_multiplier": 0.46,
-    "parent_id": "AREA000085",
+    "parent_id": "AREA000088",
     "local_bbox": [
       0,
       0,
@@ -3456,12 +3492,12 @@
     ]
   },
   {
-    "region_id": "DST000097",
+    "region_id": "DST000098",
     "region_type": "ocean",
-    "color": "#0e3774",
+    "color": "#3629ac",
     "pixel_count": 73,
     "density_multiplier": 1.21,
-    "parent_id": "AREA000086",
+    "parent_id": "AREA000089",
     "local_bbox": [
       0,
       0,
@@ -3492,12 +3528,12 @@
     ]
   },
   {
-    "region_id": "DST000098",
+    "region_id": "DST000099",
     "region_type": "land",
-    "color": "#ad2000",
+    "color": "#b6cf7f",
     "pixel_count": 10219,
     "density_multiplier": 2.22,
-    "parent_id": "AREA000087",
+    "parent_id": "AREA000090",
     "local_bbox": [
       0,
       0,
@@ -3528,12 +3564,120 @@
     ]
   },
   {
-    "region_id": "DST000099",
+    "region_id": "DST000100",
     "region_type": "land",
-    "color": "#9e8b9b",
+    "color": "#b38297",
+    "pixel_count": 23124,
+    "density_multiplier": 1.0,
+    "parent_id": "AREA000085",
+    "local_bbox": [
+      0,
+      48,
+      248,
+      221
+    ],
+    "local_center": [
+      136,
+      123
+    ],
+    "local_seed": [
+      147,
+      121
+    ],
+    "global_bbox": [
+      3545,
+      354,
+      3793,
+      527
+    ],
+    "global_center": [
+      3681,
+      429
+    ],
+    "global_seed": [
+      3692,
+      427
+    ]
+  },
+  {
+    "region_id": "DST000101",
+    "region_type": "land",
+    "color": "#91b8bc",
+    "pixel_count": 33272,
+    "density_multiplier": 1.0,
+    "parent_id": "AREA000085",
+    "local_bbox": [
+      222,
+      0,
+      430,
+      230
+    ],
+    "local_center": [
+      332,
+      104
+    ],
+    "local_seed": [
+      340,
+      99
+    ],
+    "global_bbox": [
+      3767,
+      306,
+      3975,
+      536
+    ],
+    "global_center": [
+      3877,
+      410
+    ],
+    "global_seed": [
+      3885,
+      405
+    ]
+  },
+  {
+    "region_id": "DST000102",
+    "region_type": "land",
+    "color": "#b97ebc",
+    "pixel_count": 23908,
+    "density_multiplier": 1.0,
+    "parent_id": "AREA000085",
+    "local_bbox": [
+      402,
+      17,
+      633,
+      204
+    ],
+    "local_center": [
+      495,
+      115
+    ],
+    "local_seed": [
+      494,
+      122
+    ],
+    "global_bbox": [
+      3947,
+      323,
+      4178,
+      510
+    ],
+    "global_center": [
+      4040,
+      421
+    ],
+    "global_seed": [
+      4039,
+      428
+    ]
+  },
+  {
+    "region_id": "DST000103",
+    "region_type": "land",
+    "color": "#349670",
     "pixel_count": 9420,
     "density_multiplier": 2.23,
-    "parent_id": "AREA000088",
+    "parent_id": "AREA000091",
     "local_bbox": [
       0,
       0,
@@ -3564,12 +3708,12 @@
     ]
   },
   {
-    "region_id": "DST000100",
+    "region_id": "DST000104",
     "region_type": "land",
-    "color": "#e785e7",
+    "color": "#4ddc7c",
     "pixel_count": 1643,
     "density_multiplier": 2.15,
-    "parent_id": "AREA000089",
+    "parent_id": "AREA000092",
     "local_bbox": [
       0,
       0,
@@ -3600,12 +3744,12 @@
     ]
   },
   {
-    "region_id": "DST000101",
+    "region_id": "DST000105",
     "region_type": "lake",
-    "color": "#2a408b",
+    "color": "#300576",
     "pixel_count": 433,
     "density_multiplier": 1.0,
-    "parent_id": "AREA000090",
+    "parent_id": "AREA000093",
     "local_bbox": [
       0,
       0,
@@ -3636,12 +3780,12 @@
     ]
   },
   {
-    "region_id": "DST000102",
+    "region_id": "DST000106",
     "region_type": "ocean",
-    "color": "#0c2f87",
+    "color": "#243a80",
     "pixel_count": 1790,
     "density_multiplier": 1.0,
-    "parent_id": "AREA000091",
+    "parent_id": "AREA000094",
     "local_bbox": [
       0,
       0,
@@ -3672,120 +3816,12 @@
     ]
   },
   {
-    "region_id": "DST000103",
+    "region_id": "DST000107",
     "region_type": "land",
-    "color": "#913a7b",
-    "pixel_count": 30636,
-    "density_multiplier": 1.0,
-    "parent_id": "AREA000082",
-    "local_bbox": [
-      288,
-      0,
-      464,
-      230
-    ],
-    "local_center": [
-      367,
-      111
-    ],
-    "local_seed": [
-      386,
-      120
-    ],
-    "global_bbox": [
-      3833,
-      306,
-      4009,
-      536
-    ],
-    "global_center": [
-      3912,
-      417
-    ],
-    "global_seed": [
-      3931,
-      426
-    ]
-  },
-  {
-    "region_id": "DST000104",
-    "region_type": "land",
-    "color": "#2fa16b",
-    "pixel_count": 18570,
-    "density_multiplier": 1.0,
-    "parent_id": "AREA000082",
-    "local_bbox": [
-      437,
-      17,
-      633,
-      204
-    ],
-    "local_center": [
-      513,
-      112
-    ],
-    "local_seed": [
-      516,
-      107
-    ],
-    "global_bbox": [
-      3982,
-      323,
-      4178,
-      510
-    ],
-    "global_center": [
-      4058,
-      418
-    ],
-    "global_seed": [
-      4061,
-      413
-    ]
-  },
-  {
-    "region_id": "DST000105",
-    "region_type": "land",
-    "color": "#ddf4c5",
-    "pixel_count": 31098,
-    "density_multiplier": 1.0,
-    "parent_id": "AREA000082",
-    "local_bbox": [
-      0,
-      12,
-      296,
-      221
-    ],
-    "local_center": [
-      169,
-      115
-    ],
-    "local_seed": [
-      193,
-      111
-    ],
-    "global_bbox": [
-      3545,
-      318,
-      3841,
-      527
-    ],
-    "global_center": [
-      3714,
-      421
-    ],
-    "global_seed": [
-      3738,
-      417
-    ]
-  },
-  {
-    "region_id": "DST000106",
-    "region_type": "land",
-    "color": "#cd1139",
+    "color": "#7fd0a2",
     "pixel_count": 900,
     "density_multiplier": 2.17,
-    "parent_id": "AREA000093",
+    "parent_id": "AREA000096",
     "local_bbox": [
       0,
       0,
@@ -3816,12 +3852,12 @@
     ]
   },
   {
-    "region_id": "DST000107",
+    "region_id": "DST000108",
     "region_type": "land",
-    "color": "#9cbb5c",
+    "color": "#20fed1",
     "pixel_count": 15948,
     "density_multiplier": 2.23,
-    "parent_id": "AREA000094",
+    "parent_id": "AREA000097",
     "local_bbox": [
       0,
       0,
@@ -3852,12 +3888,12 @@
     ]
   },
   {
-    "region_id": "DST000108",
+    "region_id": "DST000109",
     "region_type": "land",
-    "color": "#ffd266",
+    "color": "#d797cb",
     "pixel_count": 43567,
     "density_multiplier": 0.77,
-    "parent_id": "AREA000095",
+    "parent_id": "AREA000098",
     "local_bbox": [
       0,
       0,
@@ -3888,12 +3924,12 @@
     ]
   },
   {
-    "region_id": "DST000109",
+    "region_id": "DST000110",
     "region_type": "land",
-    "color": "#7fd0a2",
+    "color": "#9ba8fb",
     "pixel_count": 2135,
     "density_multiplier": 1.0,
-    "parent_id": "AREA000096",
+    "parent_id": "AREA000099",
     "local_bbox": [
       0,
       0,
@@ -3924,12 +3960,12 @@
     ]
   },
   {
-    "region_id": "DST000110",
+    "region_id": "DST000111",
     "region_type": "land",
-    "color": "#20fed1",
+    "color": "#af3960",
     "pixel_count": 715,
     "density_multiplier": 2.18,
-    "parent_id": "AREA000097",
+    "parent_id": "AREA000100",
     "local_bbox": [
       0,
       0,
@@ -3960,12 +3996,12 @@
     ]
   },
   {
-    "region_id": "DST000111",
+    "region_id": "DST000112",
     "region_type": "land",
-    "color": "#d797cb",
+    "color": "#993aea",
     "pixel_count": 14457,
     "density_multiplier": 2.23,
-    "parent_id": "AREA000098",
+    "parent_id": "AREA000101",
     "local_bbox": [
       0,
       0,
@@ -3996,12 +4032,12 @@
     ]
   },
   {
-    "region_id": "DST000112",
+    "region_id": "DST000113",
     "region_type": "land",
-    "color": "#9ba8fb",
+    "color": "#2c7fba",
     "pixel_count": 2017,
     "density_multiplier": 2.22,
-    "parent_id": "AREA000099",
+    "parent_id": "AREA000102",
     "local_bbox": [
       0,
       0,
@@ -4032,12 +4068,12 @@
     ]
   },
   {
-    "region_id": "DST000113",
+    "region_id": "DST000114",
     "region_type": "land",
-    "color": "#af3960",
+    "color": "#580266",
     "pixel_count": 570,
     "density_multiplier": 0.32,
-    "parent_id": "AREA000100",
+    "parent_id": "AREA000103",
     "local_bbox": [
       0,
       0,
@@ -4068,12 +4104,12 @@
     ]
   },
   {
-    "region_id": "DST000114",
+    "region_id": "DST000115",
     "region_type": "land",
-    "color": "#993aea",
+    "color": "#aec7a7",
     "pixel_count": 125,
     "density_multiplier": 1.0,
-    "parent_id": "AREA000101",
+    "parent_id": "AREA000104",
     "local_bbox": [
       0,
       0,
@@ -4104,12 +4140,12 @@
     ]
   },
   {
-    "region_id": "DST000115",
+    "region_id": "DST000116",
     "region_type": "land",
-    "color": "#2c7fba",
+    "color": "#741d47",
     "pixel_count": 1154,
     "density_multiplier": 2.22,
-    "parent_id": "AREA000102",
+    "parent_id": "AREA000105",
     "local_bbox": [
       0,
       0,
@@ -4140,12 +4176,12 @@
     ]
   },
   {
-    "region_id": "DST000116",
+    "region_id": "DST000117",
     "region_type": "land",
-    "color": "#aec7a7",
+    "color": "#1e6ab7",
     "pixel_count": 4661,
     "density_multiplier": 1.0,
-    "parent_id": "AREA000104",
+    "parent_id": "AREA000107",
     "local_bbox": [
       0,
       0,
@@ -4176,12 +4212,12 @@
     ]
   },
   {
-    "region_id": "DST000117",
+    "region_id": "DST000118",
     "region_type": "land",
-    "color": "#741d47",
+    "color": "#d23a64",
     "pixel_count": 2013,
     "density_multiplier": 2.22,
-    "parent_id": "AREA000105",
+    "parent_id": "AREA000108",
     "local_bbox": [
       0,
       0,
@@ -4212,12 +4248,12 @@
     ]
   },
   {
-    "region_id": "DST000118",
+    "region_id": "DST000119",
     "region_type": "lake",
-    "color": "#284faf",
+    "color": "#224474",
     "pixel_count": 1862,
     "density_multiplier": 1.0,
-    "parent_id": "AREA000106",
+    "parent_id": "AREA000109",
     "local_bbox": [
       0,
       0,
@@ -4248,12 +4284,12 @@
     ]
   },
   {
-    "region_id": "DST000119",
+    "region_id": "DST000120",
     "region_type": "land",
-    "color": "#1e6ab7",
+    "color": "#b29394",
     "pixel_count": 2345,
     "density_multiplier": 2.22,
-    "parent_id": "AREA000107",
+    "parent_id": "AREA000110",
     "local_bbox": [
       0,
       0,
@@ -4284,12 +4320,12 @@
     ]
   },
   {
-    "region_id": "DST000120",
+    "region_id": "DST000121",
     "region_type": "land",
-    "color": "#d23a64",
+    "color": "#f2cf7e",
     "pixel_count": 724,
     "density_multiplier": 2.22,
-    "parent_id": "AREA000108",
+    "parent_id": "AREA000111",
     "local_bbox": [
       0,
       0,
@@ -4320,12 +4356,12 @@
     ]
   },
   {
-    "region_id": "DST000121",
+    "region_id": "DST000122",
     "region_type": "land",
-    "color": "#92dc36",
+    "color": "#9cf5e1",
     "pixel_count": 6118,
     "density_multiplier": 2.23,
-    "parent_id": "AREA000109",
+    "parent_id": "AREA000112",
     "local_bbox": [
       0,
       0,
@@ -4356,12 +4392,228 @@
     ]
   },
   {
-    "region_id": "DST000122",
+    "region_id": "DST000123",
     "region_type": "land",
-    "color": "#b29394",
+    "color": "#ffd266",
+    "pixel_count": 34144,
+    "density_multiplier": 0.87,
+    "parent_id": "AREA000095",
+    "local_bbox": [
+      430,
+      133,
+      664,
+      349
+    ],
+    "local_center": [
+      547,
+      249
+    ],
+    "local_seed": [
+      545,
+      263
+    ],
+    "global_bbox": [
+      4399,
+      468,
+      4633,
+      684
+    ],
+    "global_center": [
+      4516,
+      584
+    ],
+    "global_seed": [
+      4514,
+      598
+    ]
+  },
+  {
+    "region_id": "DST000124",
+    "region_type": "land",
+    "color": "#68dd8a",
+    "pixel_count": 40833,
+    "density_multiplier": 1.0,
+    "parent_id": "AREA000095",
+    "local_bbox": [
+      625,
+      0,
+      956,
+      227
+    ],
+    "local_center": [
+      780,
+      118
+    ],
+    "local_seed": [
+      775,
+      120
+    ],
+    "global_bbox": [
+      4594,
+      335,
+      4925,
+      562
+    ],
+    "global_center": [
+      4749,
+      453
+    ],
+    "global_seed": [
+      4744,
+      455
+    ]
+  },
+  {
+    "region_id": "DST000125",
+    "region_type": "land",
+    "color": "#e72be2",
+    "pixel_count": 25988,
+    "density_multiplier": 1.0,
+    "parent_id": "AREA000095",
+    "local_bbox": [
+      587,
+      203,
+      766,
+      477
+    ],
+    "local_center": [
+      678,
+      340
+    ],
+    "local_seed": [
+      685,
+      338
+    ],
+    "global_bbox": [
+      4556,
+      538,
+      4735,
+      812
+    ],
+    "global_center": [
+      4647,
+      675
+    ],
+    "global_seed": [
+      4654,
+      673
+    ]
+  },
+  {
+    "region_id": "DST000126",
+    "region_type": "land",
+    "color": "#befef1",
+    "pixel_count": 44845,
+    "density_multiplier": 0.51,
+    "parent_id": "AREA000095",
+    "local_bbox": [
+      212,
+      135,
+      456,
+      431
+    ],
+    "local_center": [
+      349,
+      289
+    ],
+    "local_seed": [
+      354,
+      295
+    ],
+    "global_bbox": [
+      4181,
+      470,
+      4425,
+      766
+    ],
+    "global_center": [
+      4318,
+      624
+    ],
+    "global_seed": [
+      4323,
+      630
+    ]
+  },
+  {
+    "region_id": "DST000127",
+    "region_type": "land",
+    "color": "#92ba67",
+    "pixel_count": 31912,
+    "density_multiplier": 0.86,
+    "parent_id": "AREA000095",
+    "local_bbox": [
+      375,
+      349,
+      671,
+      520
+    ],
+    "local_center": [
+      524,
+      430
+    ],
+    "local_seed": [
+      543,
+      436
+    ],
+    "global_bbox": [
+      4344,
+      684,
+      4640,
+      855
+    ],
+    "global_center": [
+      4493,
+      765
+    ],
+    "global_seed": [
+      4512,
+      771
+    ]
+  },
+  {
+    "region_id": "DST000128",
+    "region_type": "land",
+    "color": "#424a45",
+    "pixel_count": 54757,
+    "density_multiplier": 0.51,
+    "parent_id": "AREA000095",
+    "local_bbox": [
+      0,
+      69,
+      308,
+      401
+    ],
+    "local_center": [
+      170,
+      233
+    ],
+    "local_seed": [
+      170,
+      233
+    ],
+    "global_bbox": [
+      3969,
+      404,
+      4277,
+      736
+    ],
+    "global_center": [
+      4139,
+      568
+    ],
+    "global_seed": [
+      4139,
+      568
+    ]
+  },
+  {
+    "region_id": "DST000129",
+    "region_type": "land",
+    "color": "#9bf235",
     "pixel_count": 126,
     "density_multiplier": 1.0,
-    "parent_id": "AREA000110",
+    "parent_id": "AREA000113",
     "local_bbox": [
       0,
       0,
@@ -4392,12 +4644,12 @@
     ]
   },
   {
-    "region_id": "DST000123",
+    "region_id": "DST000130",
     "region_type": "land",
-    "color": "#f2cf7e",
+    "color": "#467962",
     "pixel_count": 899,
     "density_multiplier": 2.18,
-    "parent_id": "AREA000111",
+    "parent_id": "AREA000114",
     "local_bbox": [
       0,
       0,
@@ -4428,12 +4680,12 @@
     ]
   },
   {
-    "region_id": "DST000124",
+    "region_id": "DST000131",
     "region_type": "ocean",
-    "color": "#244caa",
+    "color": "#331593",
     "pixel_count": 797,
     "density_multiplier": 2.17,
-    "parent_id": "AREA000112",
+    "parent_id": "AREA000115",
     "local_bbox": [
       0,
       0,
@@ -4464,12 +4716,12 @@
     ]
   },
   {
-    "region_id": "DST000125",
+    "region_id": "DST000132",
     "region_type": "ocean",
-    "color": "#244b74",
+    "color": "#091c88",
     "pixel_count": 9070,
     "density_multiplier": 2.14,
-    "parent_id": "AREA000113",
+    "parent_id": "AREA000116",
     "local_bbox": [
       0,
       0,
@@ -4500,12 +4752,12 @@
     ]
   },
   {
-    "region_id": "DST000126",
+    "region_id": "DST000133",
     "region_type": "land",
-    "color": "#467962",
+    "color": "#a5bc34",
     "pixel_count": 5999,
     "density_multiplier": 2.23,
-    "parent_id": "AREA000114",
+    "parent_id": "AREA000117",
     "local_bbox": [
       0,
       0,
@@ -4536,12 +4788,12 @@
     ]
   },
   {
-    "region_id": "DST000127",
+    "region_id": "DST000134",
     "region_type": "ocean",
-    "color": "#331593",
+    "color": "#0e2167",
     "pixel_count": 101,
     "density_multiplier": 1.0,
-    "parent_id": "AREA000115",
+    "parent_id": "AREA000118",
     "local_bbox": [
       0,
       0,
@@ -4572,228 +4824,12 @@
     ]
   },
   {
-    "region_id": "DST000128",
+    "region_id": "DST000135",
     "region_type": "land",
-    "color": "#4ddc7c",
-    "pixel_count": 55077,
-    "density_multiplier": 1.0,
-    "parent_id": "AREA000092",
-    "local_bbox": [
-      520,
-      161,
-      766,
-      520
-    ],
-    "local_center": [
-      631,
-      330
-    ],
-    "local_seed": [
-      639,
-      317
-    ],
-    "global_bbox": [
-      4489,
-      496,
-      4735,
-      855
-    ],
-    "global_center": [
-      4600,
-      665
-    ],
-    "global_seed": [
-      4608,
-      652
-    ]
-  },
-  {
-    "region_id": "DST000129",
-    "region_type": "land",
-    "color": "#b84ebb",
-    "pixel_count": 16372,
-    "density_multiplier": 1.0,
-    "parent_id": "AREA000092",
-    "local_bbox": [
-      765,
-      19,
-      956,
-      220
-    ],
-    "local_center": [
-      848,
-      125
-    ],
-    "local_seed": [
-      851,
-      129
-    ],
-    "global_bbox": [
-      4734,
-      354,
-      4925,
-      555
-    ],
-    "global_center": [
-      4817,
-      460
-    ],
-    "global_seed": [
-      4820,
-      464
-    ]
-  },
-  {
-    "region_id": "DST000130",
-    "region_type": "land",
-    "color": "#e97455",
-    "pixel_count": 59988,
-    "density_multiplier": 0.64,
-    "parent_id": "AREA000092",
-    "local_bbox": [
-      297,
-      171,
-      565,
-      505
-    ],
-    "local_center": [
-      444,
-      338
-    ],
-    "local_seed": [
-      446,
-      336
-    ],
-    "global_bbox": [
-      4266,
-      506,
-      4534,
-      840
-    ],
-    "global_center": [
-      4413,
-      673
-    ],
-    "global_seed": [
-      4415,
-      671
-    ]
-  },
-  {
-    "region_id": "DST000131",
-    "region_type": "land",
-    "color": "#5bef78",
-    "pixel_count": 35181,
-    "density_multiplier": 0.51,
-    "parent_id": "AREA000092",
-    "local_bbox": [
-      102,
-      69,
-      415,
-      296
-    ],
-    "local_center": [
-      249,
-      181
-    ],
-    "local_seed": [
-      240,
-      177
-    ],
-    "global_bbox": [
-      4071,
-      404,
-      4384,
-      631
-    ],
-    "global_center": [
-      4218,
-      516
-    ],
-    "global_seed": [
-      4209,
-      512
-    ]
-  },
-  {
-    "region_id": "DST000132",
-    "region_type": "land",
-    "color": "#fe4e32",
-    "pixel_count": 39284,
-    "density_multiplier": 0.51,
-    "parent_id": "AREA000092",
-    "local_bbox": [
-      0,
-      181,
-      312,
-      410
-    ],
-    "local_center": [
-      165,
-      295
-    ],
-    "local_seed": [
-      164,
-      295
-    ],
-    "global_bbox": [
-      3969,
-      516,
-      4281,
-      745
-    ],
-    "global_center": [
-      4134,
-      630
-    ],
-    "global_seed": [
-      4133,
-      630
-    ]
-  },
-  {
-    "region_id": "DST000133",
-    "region_type": "land",
-    "color": "#98c8e6",
-    "pixel_count": 26577,
-    "density_multiplier": 1.0,
-    "parent_id": "AREA000092",
-    "local_bbox": [
-      584,
-      0,
-      825,
-      227
-    ],
-    "local_center": [
-      725,
-      117
-    ],
-    "local_seed": [
-      739,
-      104
-    ],
-    "global_bbox": [
-      4553,
-      335,
-      4794,
-      562
-    ],
-    "global_center": [
-      4694,
-      452
-    ],
-    "global_seed": [
-      4708,
-      439
-    ]
-  },
-  {
-    "region_id": "DST000134",
-    "region_type": "land",
-    "color": "#295975",
+    "color": "#685019",
     "pixel_count": 397,
     "density_multiplier": 2.22,
-    "parent_id": "AREA000116",
+    "parent_id": "AREA000119",
     "local_bbox": [
       0,
       0,
@@ -4824,12 +4860,12 @@
     ]
   },
   {
-    "region_id": "DST000135",
+    "region_id": "DST000136",
     "region_type": "lake",
-    "color": "#263a74",
+    "color": "#0a11b3",
     "pixel_count": 163,
     "density_multiplier": 1.0,
-    "parent_id": "AREA000117",
+    "parent_id": "AREA000120",
     "local_bbox": [
       0,
       0,
@@ -4860,12 +4896,228 @@
     ]
   },
   {
-    "region_id": "DST000136",
+    "region_id": "DST000137",
+    "region_type": "land",
+    "color": "#adfef1",
+    "pixel_count": 40366,
+    "density_multiplier": 0.77,
+    "parent_id": "AREA000106",
+    "local_bbox": [
+      206,
+      134,
+      503,
+      366
+    ],
+    "local_center": [
+      368,
+      238
+    ],
+    "local_seed": [
+      370,
+      233
+    ],
+    "global_bbox": [
+      1070,
+      535,
+      1367,
+      767
+    ],
+    "global_center": [
+      1232,
+      639
+    ],
+    "global_seed": [
+      1234,
+      634
+    ]
+  },
+  {
+    "region_id": "DST000138",
+    "region_type": "land",
+    "color": "#3fdcf1",
+    "pixel_count": 32206,
+    "density_multiplier": 0.77,
+    "parent_id": "AREA000106",
+    "local_bbox": [
+      255,
+      0,
+      504,
+      163
+    ],
+    "local_center": [
+      376,
+      75
+    ],
+    "local_seed": [
+      390,
+      73
+    ],
+    "global_bbox": [
+      1119,
+      401,
+      1368,
+      564
+    ],
+    "global_center": [
+      1240,
+      476
+    ],
+    "global_seed": [
+      1254,
+      474
+    ]
+  },
+  {
+    "region_id": "DST000139",
+    "region_type": "land",
+    "color": "#83812e",
+    "pixel_count": 58137,
+    "density_multiplier": 0.9,
+    "parent_id": "AREA000106",
+    "local_bbox": [
+      0,
+      5,
+      276,
+      279
+    ],
+    "local_center": [
+      140,
+      123
+    ],
+    "local_seed": [
+      142,
+      122
+    ],
+    "global_bbox": [
+      864,
+      406,
+      1140,
+      680
+    ],
+    "global_center": [
+      1004,
+      524
+    ],
+    "global_seed": [
+      1006,
+      523
+    ]
+  },
+  {
+    "region_id": "DST000140",
+    "region_type": "land",
+    "color": "#2bbb2c",
+    "pixel_count": 27705,
+    "density_multiplier": 0.89,
+    "parent_id": "AREA000106",
+    "local_bbox": [
+      463,
+      16,
+      682,
+      235
+    ],
+    "local_center": [
+      556,
+      126
+    ],
+    "local_seed": [
+      568,
+      128
+    ],
+    "global_bbox": [
+      1327,
+      417,
+      1546,
+      636
+    ],
+    "global_center": [
+      1420,
+      527
+    ],
+    "global_seed": [
+      1432,
+      529
+    ]
+  },
+  {
+    "region_id": "DST000141",
+    "region_type": "land",
+    "color": "#84f560",
+    "pixel_count": 15002,
+    "density_multiplier": 1.72,
+    "parent_id": "AREA000106",
+    "local_bbox": [
+      679,
+      30,
+      902,
+      220
+    ],
+    "local_center": [
+      779,
+      117
+    ],
+    "local_seed": [
+      789,
+      108
+    ],
+    "global_bbox": [
+      1543,
+      431,
+      1766,
+      621
+    ],
+    "global_center": [
+      1643,
+      518
+    ],
+    "global_seed": [
+      1653,
+      509
+    ]
+  },
+  {
+    "region_id": "DST000142",
+    "region_type": "land",
+    "color": "#c8732d",
+    "pixel_count": 27345,
+    "density_multiplier": 1.59,
+    "parent_id": "AREA000106",
+    "local_bbox": [
+      501,
+      142,
+      758,
+      378
+    ],
+    "local_center": [
+      627,
+      245
+    ],
+    "local_seed": [
+      635,
+      242
+    ],
+    "global_bbox": [
+      1365,
+      543,
+      1622,
+      779
+    ],
+    "global_center": [
+      1491,
+      646
+    ],
+    "global_seed": [
+      1499,
+      643
+    ]
+  },
+  {
+    "region_id": "DST000143",
     "region_type": "ocean",
-    "color": "#0e2167",
+    "color": "#2c4c8c",
     "pixel_count": 10593,
     "density_multiplier": 2.15,
-    "parent_id": "AREA000118",
+    "parent_id": "AREA000121",
     "local_bbox": [
       0,
       0,
@@ -4896,12 +5148,12 @@
     ]
   },
   {
-    "region_id": "DST000137",
+    "region_id": "DST000144",
     "region_type": "land",
-    "color": "#685019",
+    "color": "#48e388",
     "pixel_count": 925,
     "density_multiplier": 2.13,
-    "parent_id": "AREA000119",
+    "parent_id": "AREA000122",
     "local_bbox": [
       0,
       0,
@@ -4932,12 +5184,12 @@
     ]
   },
   {
-    "region_id": "DST000138",
+    "region_id": "DST000145",
     "region_type": "land",
-    "color": "#2c38fd",
+    "color": "#09c071",
     "pixel_count": 126,
     "density_multiplier": 1.0,
-    "parent_id": "AREA000120",
+    "parent_id": "AREA000123",
     "local_bbox": [
       0,
       0,
@@ -4968,12 +5220,12 @@
     ]
   },
   {
-    "region_id": "DST000139",
+    "region_id": "DST000146",
     "region_type": "land",
-    "color": "#bdf380",
+    "color": "#9b19b5",
     "pixel_count": 544,
     "density_multiplier": 2.17,
-    "parent_id": "AREA000121",
+    "parent_id": "AREA000124",
     "local_bbox": [
       0,
       0,
@@ -5004,12 +5256,12 @@
     ]
   },
   {
-    "region_id": "DST000140",
+    "region_id": "DST000147",
     "region_type": "land",
-    "color": "#48e388",
+    "color": "#f1cc80",
     "pixel_count": 1798,
     "density_multiplier": 2.23,
-    "parent_id": "AREA000122",
+    "parent_id": "AREA000125",
     "local_bbox": [
       0,
       0,
@@ -5040,12 +5292,12 @@
     ]
   },
   {
-    "region_id": "DST000141",
+    "region_id": "DST000148",
     "region_type": "lake",
-    "color": "#023c87",
+    "color": "#1c446e",
     "pixel_count": 1199,
     "density_multiplier": 1.0,
-    "parent_id": "AREA000123",
+    "parent_id": "AREA000126",
     "local_bbox": [
       0,
       0,
@@ -5076,228 +5328,12 @@
     ]
   },
   {
-    "region_id": "DST000142",
-    "region_type": "land",
-    "color": "#580266",
-    "pixel_count": 14458,
-    "density_multiplier": 1.71,
-    "parent_id": "AREA000103",
-    "local_bbox": [
-      675,
-      30,
-      902,
-      218
-    ],
-    "local_center": [
-      781,
-      115
-    ],
-    "local_seed": [
-      786,
-      111
-    ],
-    "global_bbox": [
-      1539,
-      431,
-      1766,
-      619
-    ],
-    "global_center": [
-      1645,
-      516
-    ],
-    "global_seed": [
-      1650,
-      512
-    ]
-  },
-  {
-    "region_id": "DST000143",
-    "region_type": "land",
-    "color": "#64d944",
-    "pixel_count": 30815,
-    "density_multiplier": 0.79,
-    "parent_id": "AREA000103",
-    "local_bbox": [
-      412,
-      0,
-      640,
-      234
-    ],
-    "local_center": [
-      505,
-      105
-    ],
-    "local_seed": [
-      509,
-      107
-    ],
-    "global_bbox": [
-      1276,
-      401,
-      1504,
-      635
-    ],
-    "global_center": [
-      1369,
-      506
-    ],
-    "global_seed": [
-      1373,
-      508
-    ]
-  },
-  {
-    "region_id": "DST000144",
-    "region_type": "land",
-    "color": "#f6bb48",
-    "pixel_count": 34128,
-    "density_multiplier": 1.58,
-    "parent_id": "AREA000103",
-    "local_bbox": [
-      514,
-      62,
-      762,
-      378
-    ],
-    "local_center": [
-      630,
-      221
-    ],
-    "local_seed": [
-      636,
-      220
-    ],
-    "global_bbox": [
-      1378,
-      463,
-      1626,
-      779
-    ],
-    "global_center": [
-      1494,
-      622
-    ],
-    "global_seed": [
-      1500,
-      621
-    ]
-  },
-  {
-    "region_id": "DST000145",
-    "region_type": "land",
-    "color": "#5f6890",
-    "pixel_count": 35193,
-    "density_multiplier": 0.78,
-    "parent_id": "AREA000103",
-    "local_bbox": [
-      219,
-      147,
-      519,
-      366
-    ],
-    "local_center": [
-      387,
-      250
-    ],
-    "local_seed": [
-      391,
-      251
-    ],
-    "global_bbox": [
-      1083,
-      548,
-      1383,
-      767
-    ],
-    "global_center": [
-      1251,
-      651
-    ],
-    "global_seed": [
-      1255,
-      652
-    ]
-  },
-  {
-    "region_id": "DST000146",
-    "region_type": "land",
-    "color": "#36d191",
-    "pixel_count": 33805,
-    "density_multiplier": 0.77,
-    "parent_id": "AREA000103",
-    "local_bbox": [
-      203,
-      6,
-      423,
-      213
-    ],
-    "local_center": [
-      315,
-      91
-    ],
-    "local_seed": [
-      322,
-      89
-    ],
-    "global_bbox": [
-      1067,
-      407,
-      1287,
-      614
-    ],
-    "global_center": [
-      1179,
-      492
-    ],
-    "global_seed": [
-      1186,
-      490
-    ]
-  },
-  {
-    "region_id": "DST000147",
-    "region_type": "land",
-    "color": "#0544a1",
-    "pixel_count": 52362,
-    "density_multiplier": 0.91,
-    "parent_id": "AREA000103",
-    "local_bbox": [
-      0,
-      5,
-      252,
-      281
-    ],
-    "local_center": [
-      128,
-      131
-    ],
-    "local_seed": [
-      133,
-      131
-    ],
-    "global_bbox": [
-      864,
-      406,
-      1116,
-      682
-    ],
-    "global_center": [
-      992,
-      532
-    ],
-    "global_seed": [
-      997,
-      532
-    ]
-  },
-  {
-    "region_id": "DST000148",
+    "region_id": "DST000149",
     "region_type": "lake",
-    "color": "#24079c",
+    "color": "#151990",
     "pixel_count": 889,
     "density_multiplier": 1.0,
-    "parent_id": "AREA000124",
+    "parent_id": "AREA000127",
     "local_bbox": [
       0,
       0,
@@ -5328,12 +5364,12 @@
     ]
   },
   {
-    "region_id": "DST000149",
+    "region_id": "DST000150",
     "region_type": "lake",
-    "color": "#383f8c",
+    "color": "#374d7a",
     "pixel_count": 266,
     "density_multiplier": 1.0,
-    "parent_id": "AREA000125",
+    "parent_id": "AREA000128",
     "local_bbox": [
       0,
       0,
@@ -5364,12 +5400,12 @@
     ]
   },
   {
-    "region_id": "DST000150",
+    "region_id": "DST000151",
     "region_type": "ocean",
-    "color": "#1c446e",
+    "color": "#080aae",
     "pixel_count": 56701,
     "density_multiplier": 2.14,
-    "parent_id": "AREA000126",
+    "parent_id": "AREA000129",
     "local_bbox": [
       0,
       0,
@@ -5400,12 +5436,12 @@
     ]
   },
   {
-    "region_id": "DST000151",
+    "region_id": "DST000152",
     "region_type": "land",
-    "color": "#5a518d",
+    "color": "#c026fb",
     "pixel_count": 10485,
     "density_multiplier": 1.0,
-    "parent_id": "AREA000127",
+    "parent_id": "AREA000130",
     "local_bbox": [
       0,
       0,
@@ -5436,12 +5472,12 @@
     ]
   },
   {
-    "region_id": "DST000152",
+    "region_id": "DST000153",
     "region_type": "land",
-    "color": "#ebf846",
+    "color": "#feafc0",
     "pixel_count": 1705,
     "density_multiplier": 1.0,
-    "parent_id": "AREA000128",
+    "parent_id": "AREA000131",
     "local_bbox": [
       0,
       0,
@@ -5472,12 +5508,12 @@
     ]
   },
   {
-    "region_id": "DST000153",
+    "region_id": "DST000154",
     "region_type": "land",
-    "color": "#2320ec",
+    "color": "#c83158",
     "pixel_count": 1170,
     "density_multiplier": 2.18,
-    "parent_id": "AREA000129",
+    "parent_id": "AREA000132",
     "local_bbox": [
       0,
       0,
@@ -5508,12 +5544,12 @@
     ]
   },
   {
-    "region_id": "DST000154",
+    "region_id": "DST000155",
     "region_type": "land",
-    "color": "#c026fb",
+    "color": "#09b56f",
     "pixel_count": 2690,
     "density_multiplier": 2.23,
-    "parent_id": "AREA000130",
+    "parent_id": "AREA000133",
     "local_bbox": [
       0,
       0,
@@ -5544,12 +5580,12 @@
     ]
   },
   {
-    "region_id": "DST000155",
+    "region_id": "DST000156",
     "region_type": "lake",
-    "color": "#3b36a0",
+    "color": "#1f0884",
     "pixel_count": 349,
     "density_multiplier": 1.0,
-    "parent_id": "AREA000131",
+    "parent_id": "AREA000134",
     "local_bbox": [
       0,
       0,
@@ -5580,12 +5616,12 @@
     ]
   },
   {
-    "region_id": "DST000156",
+    "region_id": "DST000157",
     "region_type": "land",
-    "color": "#c83158",
+    "color": "#acc34b",
     "pixel_count": 12044,
     "density_multiplier": 2.23,
-    "parent_id": "AREA000132",
+    "parent_id": "AREA000135",
     "local_bbox": [
       0,
       0,
@@ -5616,12 +5652,12 @@
     ]
   },
   {
-    "region_id": "DST000157",
+    "region_id": "DST000158",
     "region_type": "land",
-    "color": "#09b56f",
+    "color": "#58127e",
     "pixel_count": 1488,
     "density_multiplier": 1.0,
-    "parent_id": "AREA000133",
+    "parent_id": "AREA000136",
     "local_bbox": [
       0,
       0,
@@ -5652,12 +5688,12 @@
     ]
   },
   {
-    "region_id": "DST000158",
+    "region_id": "DST000159",
     "region_type": "land",
-    "color": "#861967",
+    "color": "#b0b653",
     "pixel_count": 235,
     "density_multiplier": 2.08,
-    "parent_id": "AREA000134",
+    "parent_id": "AREA000137",
     "local_bbox": [
       0,
       0,
@@ -5688,12 +5724,12 @@
     ]
   },
   {
-    "region_id": "DST000159",
+    "region_id": "DST000160",
     "region_type": "land",
-    "color": "#acc34b",
+    "color": "#94dafc",
     "pixel_count": 199,
     "density_multiplier": 2.2,
-    "parent_id": "AREA000135",
+    "parent_id": "AREA000138",
     "local_bbox": [
       0,
       0,
@@ -5724,12 +5760,12 @@
     ]
   },
   {
-    "region_id": "DST000160",
+    "region_id": "DST000161",
     "region_type": "land",
-    "color": "#58127e",
+    "color": "#caafd5",
     "pixel_count": 4381,
     "density_multiplier": 1.0,
-    "parent_id": "AREA000136",
+    "parent_id": "AREA000139",
     "local_bbox": [
       0,
       0,
@@ -5760,12 +5796,12 @@
     ]
   },
   {
-    "region_id": "DST000161",
+    "region_id": "DST000162",
     "region_type": "land",
-    "color": "#b0b653",
+    "color": "#6c8e12",
     "pixel_count": 2619,
     "density_multiplier": 1.0,
-    "parent_id": "AREA000137",
+    "parent_id": "AREA000140",
     "local_bbox": [
       0,
       0,
@@ -5796,12 +5832,12 @@
     ]
   },
   {
-    "region_id": "DST000162",
+    "region_id": "DST000163",
     "region_type": "lake",
-    "color": "#2244b2",
+    "color": "#372e76",
     "pixel_count": 430,
     "density_multiplier": 1.0,
-    "parent_id": "AREA000138",
+    "parent_id": "AREA000141",
     "local_bbox": [
       0,
       0,
@@ -5832,12 +5868,12 @@
     ]
   },
   {
-    "region_id": "DST000163",
+    "region_id": "DST000164",
     "region_type": "land",
-    "color": "#caafd5",
+    "color": "#52d47e",
     "pixel_count": 143,
     "density_multiplier": 2.21,
-    "parent_id": "AREA000139",
+    "parent_id": "AREA000142",
     "local_bbox": [
       0,
       0,
@@ -5868,12 +5904,12 @@
     ]
   },
   {
-    "region_id": "DST000164",
+    "region_id": "DST000165",
     "region_type": "land",
-    "color": "#6c8e12",
+    "color": "#4f3863",
     "pixel_count": 10989,
     "density_multiplier": 1.0,
-    "parent_id": "AREA000140",
+    "parent_id": "AREA000143",
     "local_bbox": [
       0,
       0,
@@ -5904,12 +5940,12 @@
     ]
   },
   {
-    "region_id": "DST000165",
+    "region_id": "DST000166",
     "region_type": "land",
-    "color": "#ee953b",
+    "color": "#bad6ec",
     "pixel_count": 581,
     "density_multiplier": 2.21,
-    "parent_id": "AREA000141",
+    "parent_id": "AREA000144",
     "local_bbox": [
       0,
       0,
@@ -5940,12 +5976,12 @@
     ]
   },
   {
-    "region_id": "DST000166",
+    "region_id": "DST000167",
     "region_type": "land",
-    "color": "#52d47e",
+    "color": "#607307",
     "pixel_count": 539,
     "density_multiplier": 2.22,
-    "parent_id": "AREA000142",
+    "parent_id": "AREA000145",
     "local_bbox": [
       0,
       0,
@@ -5976,12 +6012,12 @@
     ]
   },
   {
-    "region_id": "DST000167",
+    "region_id": "DST000168",
     "region_type": "ocean",
-    "color": "#121183",
+    "color": "#002266",
     "pixel_count": 330,
     "density_multiplier": 2.07,
-    "parent_id": "AREA000143",
+    "parent_id": "AREA000146",
     "local_bbox": [
       0,
       0,
@@ -6012,12 +6048,12 @@
     ]
   },
   {
-    "region_id": "DST000168",
+    "region_id": "DST000169",
     "region_type": "land",
-    "color": "#bad6ec",
+    "color": "#e9b256",
     "pixel_count": 1905,
     "density_multiplier": 2.23,
-    "parent_id": "AREA000144",
+    "parent_id": "AREA000147",
     "local_bbox": [
       0,
       0,
@@ -6048,12 +6084,12 @@
     ]
   },
   {
-    "region_id": "DST000169",
+    "region_id": "DST000170",
     "region_type": "land",
-    "color": "#607307",
+    "color": "#8f986c",
     "pixel_count": 429,
     "density_multiplier": 2.22,
-    "parent_id": "AREA000145",
+    "parent_id": "AREA000148",
     "local_bbox": [
       0,
       0,
@@ -6084,12 +6120,12 @@
     ]
   },
   {
-    "region_id": "DST000170",
+    "region_id": "DST000171",
     "region_type": "land",
-    "color": "#006d09",
+    "color": "#7b8b62",
     "pixel_count": 18016,
     "density_multiplier": 1.0,
-    "parent_id": "AREA000146",
+    "parent_id": "AREA000149",
     "local_bbox": [
       0,
       0,
@@ -6120,12 +6156,12 @@
     ]
   },
   {
-    "region_id": "DST000171",
+    "region_id": "DST000172",
     "region_type": "land",
-    "color": "#e9b256",
+    "color": "#154385",
     "pixel_count": 1679,
     "density_multiplier": 1.0,
-    "parent_id": "AREA000147",
+    "parent_id": "AREA000150",
     "local_bbox": [
       0,
       0,
@@ -6156,12 +6192,336 @@
     ]
   },
   {
-    "region_id": "DST000172",
+    "region_id": "DST000173",
+    "region_type": "ocean",
+    "color": "#2e336a",
+    "pixel_count": 196292,
+    "density_multiplier": 0.51,
+    "parent_id": "AREA000008",
+    "local_bbox": [
+      994,
+      1591,
+      1532,
+      2111
+    ],
+    "local_center": [
+      1271,
+      1900
+    ],
+    "local_seed": [
+      1278,
+      1894
+    ],
+    "global_bbox": [
+      2278,
+      1591,
+      2816,
+      2111
+    ],
+    "global_center": [
+      2555,
+      1900
+    ],
+    "global_seed": [
+      2562,
+      1894
+    ]
+  },
+  {
+    "region_id": "DST000174",
+    "region_type": "ocean",
+    "color": "#0e397a",
+    "pixel_count": 180410,
+    "density_multiplier": 0.62,
+    "parent_id": "AREA000008",
+    "local_bbox": [
+      732,
+      1295,
+      1301,
+      1893
+    ],
+    "local_center": [
+      1019,
+      1591
+    ],
+    "local_seed": [
+      997,
+      1611
+    ],
+    "global_bbox": [
+      2016,
+      1295,
+      2585,
+      1893
+    ],
+    "global_center": [
+      2303,
+      1591
+    ],
+    "global_seed": [
+      2281,
+      1611
+    ]
+  },
+  {
+    "region_id": "DST000175",
+    "region_type": "ocean",
+    "color": "#0f277b",
+    "pixel_count": 230096,
+    "density_multiplier": 0.89,
+    "parent_id": "AREA000008",
+    "local_bbox": [
+      0,
+      468,
+      734,
+      1081
+    ],
+    "local_center": [
+      408,
+      803
+    ],
+    "local_seed": [
+      398,
+      810
+    ],
+    "global_bbox": [
+      1284,
+      468,
+      2018,
+      1081
+    ],
+    "global_center": [
+      1692,
+      803
+    ],
+    "global_seed": [
+      1682,
+      810
+    ]
+  },
+  {
+    "region_id": "DST000176",
+    "region_type": "ocean",
+    "color": "#0f4b98",
+    "pixel_count": 259477,
+    "density_multiplier": 0.62,
+    "parent_id": "AREA000008",
+    "local_bbox": [
+      1094,
+      1040,
+      1748,
+      1644
+    ],
+    "local_center": [
+      1441,
+      1336
+    ],
+    "local_seed": [
+      1431,
+      1331
+    ],
+    "global_bbox": [
+      2378,
+      1040,
+      3032,
+      1644
+    ],
+    "global_center": [
+      2725,
+      1336
+    ],
+    "global_seed": [
+      2715,
+      1331
+    ]
+  },
+  {
+    "region_id": "DST000177",
+    "region_type": "ocean",
+    "color": "#081a8e",
+    "pixel_count": 320459,
+    "density_multiplier": 1.26,
+    "parent_id": "AREA000008",
+    "local_bbox": [
+      972,
+      0,
+      1886,
+      725
+    ],
+    "local_center": [
+      1373,
+      263
+    ],
+    "local_seed": [
+      1358,
+      276
+    ],
+    "global_bbox": [
+      2256,
+      0,
+      3170,
+      725
+    ],
+    "global_center": [
+      2657,
+      263
+    ],
+    "global_seed": [
+      2642,
+      276
+    ]
+  },
+  {
+    "region_id": "DST000178",
+    "region_type": "ocean",
+    "color": "#2f2576",
+    "pixel_count": 276276,
+    "density_multiplier": 0.62,
+    "parent_id": "AREA000008",
+    "local_bbox": [
+      436,
+      138,
+      1212,
+      825
+    ],
+    "local_center": [
+      856,
+      506
+    ],
+    "local_seed": [
+      835,
+      524
+    ],
+    "global_bbox": [
+      1720,
+      138,
+      2496,
+      825
+    ],
+    "global_center": [
+      2140,
+      506
+    ],
+    "global_seed": [
+      2119,
+      524
+    ]
+  },
+  {
+    "region_id": "DST000179",
+    "region_type": "ocean",
+    "color": "#2d18ad",
+    "pixel_count": 290347,
+    "density_multiplier": 0.62,
+    "parent_id": "AREA000008",
+    "local_bbox": [
+      669,
+      642,
+      1355,
+      1301
+    ],
+    "local_center": [
+      1016,
+      972
+    ],
+    "local_seed": [
+      1012,
+      985
+    ],
+    "global_bbox": [
+      1953,
+      642,
+      2639,
+      1301
+    ],
+    "global_center": [
+      2300,
+      972
+    ],
+    "global_seed": [
+      2296,
+      985
+    ]
+  },
+  {
+    "region_id": "DST000180",
+    "region_type": "ocean",
+    "color": "#102bac",
+    "pixel_count": 213239,
+    "density_multiplier": 0.57,
+    "parent_id": "AREA000008",
+    "local_bbox": [
+      1437,
+      1484,
+      1883,
+      2111
+    ],
+    "local_center": [
+      1674,
+      1836
+    ],
+    "local_seed": [
+      1676,
+      1826
+    ],
+    "global_bbox": [
+      2721,
+      1484,
+      3167,
+      2111
+    ],
+    "global_center": [
+      2958,
+      1836
+    ],
+    "global_seed": [
+      2960,
+      1826
+    ]
+  },
+  {
+    "region_id": "DST000181",
+    "region_type": "ocean",
+    "color": "#233476",
+    "pixel_count": 179949,
+    "density_multiplier": 0.68,
+    "parent_id": "AREA000008",
+    "local_bbox": [
+      444,
+      1665,
+      1017,
+      2111
+    ],
+    "local_center": [
+      737,
+      1941
+    ],
+    "local_seed": [
+      733,
+      1952
+    ],
+    "global_bbox": [
+      1728,
+      1665,
+      2301,
+      2111
+    ],
+    "global_center": [
+      2021,
+      1941
+    ],
+    "global_seed": [
+      2017,
+      1952
+    ]
+  },
+  {
+    "region_id": "DST000182",
     "region_type": "land",
-    "color": "#8f986c",
+    "color": "#d79e70",
     "pixel_count": 1668,
     "density_multiplier": 2.21,
-    "parent_id": "AREA000148",
+    "parent_id": "AREA000151",
     "local_bbox": [
       0,
       0,
@@ -6192,12 +6552,12 @@
     ]
   },
   {
-    "region_id": "DST000173",
+    "region_id": "DST000183",
     "region_type": "land",
-    "color": "#7b8b62",
+    "color": "#ae4f9f",
     "pixel_count": 476,
     "density_multiplier": 2.22,
-    "parent_id": "AREA000149",
+    "parent_id": "AREA000152",
     "local_bbox": [
       0,
       0,
@@ -6228,12 +6588,12 @@
     ]
   },
   {
-    "region_id": "DST000174",
+    "region_id": "DST000184",
     "region_type": "land",
-    "color": "#154385",
+    "color": "#243027",
     "pixel_count": 537,
     "density_multiplier": 1.0,
-    "parent_id": "AREA000150",
+    "parent_id": "AREA000153",
     "local_bbox": [
       0,
       0,
@@ -6264,12 +6624,12 @@
     ]
   },
   {
-    "region_id": "DST000175",
+    "region_id": "DST000185",
     "region_type": "land",
-    "color": "#d79e70",
+    "color": "#5825a0",
     "pixel_count": 4683,
     "density_multiplier": 1.0,
-    "parent_id": "AREA000151",
+    "parent_id": "AREA000154",
     "local_bbox": [
       0,
       0,
@@ -6300,12 +6660,12 @@
     ]
   },
   {
-    "region_id": "DST000176",
+    "region_id": "DST000186",
     "region_type": "ocean",
-    "color": "#281895",
+    "color": "#0247a6",
     "pixel_count": 156,
     "density_multiplier": 1.0,
-    "parent_id": "AREA000152",
+    "parent_id": "AREA000155",
     "local_bbox": [
       0,
       0,
@@ -6336,12 +6696,12 @@
     ]
   },
   {
-    "region_id": "DST000177",
+    "region_id": "DST000187",
     "region_type": "land",
-    "color": "#243027",
+    "color": "#b7aa11",
     "pixel_count": 120,
     "density_multiplier": 1.0,
-    "parent_id": "AREA000153",
+    "parent_id": "AREA000156",
     "local_bbox": [
       0,
       0,
@@ -6372,12 +6732,12 @@
     ]
   },
   {
-    "region_id": "DST000178",
+    "region_id": "DST000188",
     "region_type": "land",
-    "color": "#5825a0",
+    "color": "#86aa2b",
     "pixel_count": 2787,
     "density_multiplier": 1.0,
-    "parent_id": "AREA000154",
+    "parent_id": "AREA000157",
     "local_bbox": [
       0,
       0,
@@ -6408,12 +6768,12 @@
     ]
   },
   {
-    "region_id": "DST000179",
+    "region_id": "DST000189",
     "region_type": "land",
-    "color": "#0be5d4",
+    "color": "#d486ad",
     "pixel_count": 93,
     "density_multiplier": 1.0,
-    "parent_id": "AREA000155",
+    "parent_id": "AREA000158",
     "local_bbox": [
       0,
       0,
@@ -6444,12 +6804,12 @@
     ]
   },
   {
-    "region_id": "DST000180",
+    "region_id": "DST000190",
     "region_type": "land",
-    "color": "#b7aa11",
+    "color": "#ea65f7",
     "pixel_count": 36723,
     "density_multiplier": 1.0,
-    "parent_id": "AREA000156",
+    "parent_id": "AREA000159",
     "local_bbox": [
       0,
       0,
@@ -6480,12 +6840,12 @@
     ]
   },
   {
-    "region_id": "DST000181",
+    "region_id": "DST000191",
     "region_type": "land",
-    "color": "#86aa2b",
+    "color": "#6f1732",
     "pixel_count": 14193,
     "density_multiplier": 1.0,
-    "parent_id": "AREA000157",
+    "parent_id": "AREA000160",
     "local_bbox": [
       0,
       0,
@@ -6516,12 +6876,12 @@
     ]
   },
   {
-    "region_id": "DST000182",
+    "region_id": "DST000192",
     "region_type": "land",
-    "color": "#d486ad",
+    "color": "#cf811c",
     "pixel_count": 1913,
     "density_multiplier": 1.0,
-    "parent_id": "AREA000158",
+    "parent_id": "AREA000161",
     "local_bbox": [
       0,
       0,
@@ -6552,12 +6912,12 @@
     ]
   },
   {
-    "region_id": "DST000183",
+    "region_id": "DST000193",
     "region_type": "land",
-    "color": "#ea65f7",
+    "color": "#614562",
     "pixel_count": 57,
     "density_multiplier": 1.0,
-    "parent_id": "AREA000159",
+    "parent_id": "AREA000162",
     "local_bbox": [
       0,
       0,
@@ -6588,12 +6948,12 @@
     ]
   },
   {
-    "region_id": "DST000184",
+    "region_id": "DST000194",
     "region_type": "land",
-    "color": "#6f1732",
+    "color": "#8442e9",
     "pixel_count": 374,
     "density_multiplier": 2.2,
-    "parent_id": "AREA000160",
+    "parent_id": "AREA000163",
     "local_bbox": [
       0,
       0,
@@ -6624,12 +6984,12 @@
     ]
   },
   {
-    "region_id": "DST000185",
+    "region_id": "DST000195",
     "region_type": "land",
-    "color": "#cf811c",
+    "color": "#1cc46c",
     "pixel_count": 485,
     "density_multiplier": 2.23,
-    "parent_id": "AREA000161",
+    "parent_id": "AREA000164",
     "local_bbox": [
       0,
       0,
@@ -6660,12 +7020,12 @@
     ]
   },
   {
-    "region_id": "DST000186",
+    "region_id": "DST000196",
     "region_type": "land",
-    "color": "#614562",
+    "color": "#c54ca0",
     "pixel_count": 107,
     "density_multiplier": 1.0,
-    "parent_id": "AREA000162",
+    "parent_id": "AREA000165",
     "local_bbox": [
       0,
       0,
@@ -6696,12 +7056,12 @@
     ]
   },
   {
-    "region_id": "DST000187",
+    "region_id": "DST000197",
     "region_type": "land",
-    "color": "#8442e9",
+    "color": "#aab86a",
     "pixel_count": 3254,
     "density_multiplier": 0.98,
-    "parent_id": "AREA000163",
+    "parent_id": "AREA000166",
     "local_bbox": [
       0,
       0,
@@ -6732,12 +7092,12 @@
     ]
   },
   {
-    "region_id": "DST000188",
+    "region_id": "DST000198",
     "region_type": "land",
-    "color": "#1cc46c",
+    "color": "#7b33d5",
     "pixel_count": 9646,
     "density_multiplier": 1.0,
-    "parent_id": "AREA000164",
+    "parent_id": "AREA000167",
     "local_bbox": [
       0,
       0,
@@ -6768,12 +7128,12 @@
     ]
   },
   {
-    "region_id": "DST000189",
+    "region_id": "DST000199",
     "region_type": "land",
-    "color": "#c54ca0",
+    "color": "#10c562",
     "pixel_count": 4041,
     "density_multiplier": 1.0,
-    "parent_id": "AREA000165",
+    "parent_id": "AREA000168",
     "local_bbox": [
       0,
       0,
@@ -6804,12 +7164,12 @@
     ]
   },
   {
-    "region_id": "DST000190",
+    "region_id": "DST000200",
     "region_type": "land",
-    "color": "#aab86a",
+    "color": "#1ff265",
     "pixel_count": 50711,
     "density_multiplier": 0.71,
-    "parent_id": "AREA000166",
+    "parent_id": "AREA000169",
     "local_bbox": [
       0,
       0,
@@ -6840,12 +7200,12 @@
     ]
   },
   {
-    "region_id": "DST000191",
+    "region_id": "DST000201",
     "region_type": "land",
-    "color": "#7b33d5",
+    "color": "#979414",
     "pixel_count": 18619,
     "density_multiplier": 1.0,
-    "parent_id": "AREA000167",
+    "parent_id": "AREA000170",
     "local_bbox": [
       0,
       0,
@@ -6876,12 +7236,12 @@
     ]
   },
   {
-    "region_id": "DST000192",
+    "region_id": "DST000202",
     "region_type": "land",
-    "color": "#10c562",
+    "color": "#f45858",
     "pixel_count": 12478,
     "density_multiplier": 0.84,
-    "parent_id": "AREA000168",
+    "parent_id": "AREA000171",
     "local_bbox": [
       0,
       0,
@@ -6912,12 +7272,12 @@
     ]
   },
   {
-    "region_id": "DST000193",
+    "region_id": "DST000203",
     "region_type": "land",
-    "color": "#1ff265",
+    "color": "#c7509d",
     "pixel_count": 54,
     "density_multiplier": 2.05,
-    "parent_id": "AREA000169",
+    "parent_id": "AREA000172",
     "local_bbox": [
       0,
       0,
@@ -6948,12 +7308,12 @@
     ]
   },
   {
-    "region_id": "DST000194",
+    "region_id": "DST000204",
     "region_type": "land",
-    "color": "#979414",
+    "color": "#d342a9",
     "pixel_count": 119,
     "density_multiplier": 2.15,
-    "parent_id": "AREA000170",
+    "parent_id": "AREA000173",
     "local_bbox": [
       0,
       0,
@@ -6984,12 +7344,12 @@
     ]
   },
   {
-    "region_id": "DST000195",
+    "region_id": "DST000205",
     "region_type": "land",
-    "color": "#c7509d",
+    "color": "#473add",
     "pixel_count": 135,
     "density_multiplier": 1.0,
-    "parent_id": "AREA000172",
+    "parent_id": "AREA000175",
     "local_bbox": [
       0,
       0,
@@ -7020,12 +7380,12 @@
     ]
   },
   {
-    "region_id": "DST000196",
+    "region_id": "DST000206",
     "region_type": "land",
-    "color": "#d342a9",
+    "color": "#f54e44",
     "pixel_count": 290,
     "density_multiplier": 1.0,
-    "parent_id": "AREA000173",
+    "parent_id": "AREA000176",
     "local_bbox": [
       0,
       0,
@@ -7056,12 +7416,12 @@
     ]
   },
   {
-    "region_id": "DST000197",
+    "region_id": "DST000207",
     "region_type": "ocean",
-    "color": "#040771",
+    "color": "#281c72",
     "pixel_count": 85,
     "density_multiplier": 1.0,
-    "parent_id": "AREA000174",
+    "parent_id": "AREA000177",
     "local_bbox": [
       0,
       0,
@@ -7092,12 +7452,84 @@
     ]
   },
   {
-    "region_id": "DST000198",
+    "region_id": "DST000208",
+    "region_type": "land",
+    "color": "#151829",
+    "pixel_count": 35371,
+    "density_multiplier": 1.0,
+    "parent_id": "AREA000174",
+    "local_bbox": [
+      67,
+      134,
+      323,
+      428
+    ],
+    "local_center": [
+      183,
+      256
+    ],
+    "local_seed": [
+      184,
+      253
+    ],
+    "global_bbox": [
+      3954,
+      752,
+      4210,
+      1046
+    ],
+    "global_center": [
+      4070,
+      874
+    ],
+    "global_seed": [
+      4071,
+      871
+    ]
+  },
+  {
+    "region_id": "DST000209",
+    "region_type": "land",
+    "color": "#e5d60d",
+    "pixel_count": 26638,
+    "density_multiplier": 1.0,
+    "parent_id": "AREA000174",
+    "local_bbox": [
+      0,
+      0,
+      258,
+      232
+    ],
+    "local_center": [
+      116,
+      129
+    ],
+    "local_seed": [
+      111,
+      127
+    ],
+    "global_bbox": [
+      3887,
+      618,
+      4145,
+      850
+    ],
+    "global_center": [
+      4003,
+      747
+    ],
+    "global_seed": [
+      3998,
+      745
+    ]
+  },
+  {
+    "region_id": "DST000210",
     "region_type": "ocean",
-    "color": "#1012a9",
+    "color": "#0a2e8c",
     "pixel_count": 576,
     "density_multiplier": 1.0,
-    "parent_id": "AREA000175",
+    "parent_id": "AREA000178",
     "local_bbox": [
       0,
       0,
@@ -7128,12 +7560,12 @@
     ]
   },
   {
-    "region_id": "DST000199",
+    "region_id": "DST000211",
     "region_type": "land",
-    "color": "#f54e44",
+    "color": "#edfa56",
     "pixel_count": 1746,
     "density_multiplier": 1.0,
-    "parent_id": "AREA000176",
+    "parent_id": "AREA000179",
     "local_bbox": [
       0,
       0,
@@ -7164,12 +7596,12 @@
     ]
   },
   {
-    "region_id": "DST000200",
+    "region_id": "DST000212",
     "region_type": "land",
-    "color": "#ac5c2d",
+    "color": "#d908b0",
     "pixel_count": 60,
     "density_multiplier": 1.0,
-    "parent_id": "AREA000177",
+    "parent_id": "AREA000180",
     "local_bbox": [
       0,
       0,
@@ -7200,84 +7632,12 @@
     ]
   },
   {
-    "region_id": "DST000201",
+    "region_id": "DST000213",
     "region_type": "land",
-    "color": "#f45858",
-    "pixel_count": 35976,
-    "density_multiplier": 1.0,
-    "parent_id": "AREA000171",
-    "local_bbox": [
-      1,
-      173,
-      323,
-      428
-    ],
-    "local_center": [
-      162,
-      260
-    ],
-    "local_seed": [
-      156,
-      250
-    ],
-    "global_bbox": [
-      3888,
-      791,
-      4210,
-      1046
-    ],
-    "global_center": [
-      4049,
-      878
-    ],
-    "global_seed": [
-      4043,
-      868
-    ]
-  },
-  {
-    "region_id": "DST000202",
-    "region_type": "land",
-    "color": "#a3ca60",
-    "pixel_count": 26033,
-    "density_multiplier": 1.0,
-    "parent_id": "AREA000171",
-    "local_bbox": [
-      0,
-      0,
-      320,
-      187
-    ],
-    "local_center": [
-      143,
-      121
-    ],
-    "local_seed": [
-      150,
-      110
-    ],
-    "global_bbox": [
-      3887,
-      618,
-      4207,
-      805
-    ],
-    "global_center": [
-      4030,
-      739
-    ],
-    "global_seed": [
-      4037,
-      728
-    ]
-  },
-  {
-    "region_id": "DST000203",
-    "region_type": "land",
-    "color": "#2a9581",
+    "color": "#70d408",
     "pixel_count": 35070,
     "density_multiplier": 0.72,
-    "parent_id": "AREA000178",
+    "parent_id": "AREA000181",
     "local_bbox": [
       0,
       0,
@@ -7308,12 +7668,12 @@
     ]
   },
   {
-    "region_id": "DST000204",
+    "region_id": "DST000214",
     "region_type": "land",
-    "color": "#edfa56",
+    "color": "#d1f2c1",
     "pixel_count": 39899,
     "density_multiplier": 1.0,
-    "parent_id": "AREA000179",
+    "parent_id": "AREA000182",
     "local_bbox": [
       0,
       0,
@@ -7344,12 +7704,12 @@
     ]
   },
   {
-    "region_id": "DST000205",
+    "region_id": "DST000215",
     "region_type": "land",
-    "color": "#d908b0",
+    "color": "#186d6d",
     "pixel_count": 61,
     "density_multiplier": 1.0,
-    "parent_id": "AREA000180",
+    "parent_id": "AREA000183",
     "local_bbox": [
       0,
       0,
@@ -7380,12 +7740,12 @@
     ]
   },
   {
-    "region_id": "DST000206",
+    "region_id": "DST000216",
     "region_type": "land",
-    "color": "#70d408",
+    "color": "#fbc664",
     "pixel_count": 227,
     "density_multiplier": 1.0,
-    "parent_id": "AREA000181",
+    "parent_id": "AREA000184",
     "local_bbox": [
       0,
       0,
@@ -7416,12 +7776,12 @@
     ]
   },
   {
-    "region_id": "DST000207",
+    "region_id": "DST000217",
     "region_type": "land",
-    "color": "#d1f2c1",
+    "color": "#765d73",
     "pixel_count": 40572,
     "density_multiplier": 0.71,
-    "parent_id": "AREA000182",
+    "parent_id": "AREA000185",
     "local_bbox": [
       0,
       0,
@@ -7452,12 +7812,12 @@
     ]
   },
   {
-    "region_id": "DST000208",
+    "region_id": "DST000218",
     "region_type": "land",
-    "color": "#186d6d",
+    "color": "#aeefdf",
     "pixel_count": 21136,
     "density_multiplier": 0.84,
-    "parent_id": "AREA000183",
+    "parent_id": "AREA000186",
     "local_bbox": [
       0,
       0,
@@ -7488,12 +7848,12 @@
     ]
   },
   {
-    "region_id": "DST000209",
+    "region_id": "DST000219",
     "region_type": "land",
-    "color": "#fbc664",
+    "color": "#da2273",
     "pixel_count": 2839,
     "density_multiplier": 1.0,
-    "parent_id": "AREA000184",
+    "parent_id": "AREA000187",
     "local_bbox": [
       0,
       0,
@@ -7524,12 +7884,12 @@
     ]
   },
   {
-    "region_id": "DST000210",
+    "region_id": "DST000220",
     "region_type": "land",
-    "color": "#765d73",
+    "color": "#5cdc9b",
     "pixel_count": 253,
     "density_multiplier": 1.0,
-    "parent_id": "AREA000185",
+    "parent_id": "AREA000188",
     "local_bbox": [
       0,
       0,
@@ -7560,12 +7920,12 @@
     ]
   },
   {
-    "region_id": "DST000211",
+    "region_id": "DST000221",
     "region_type": "ocean",
-    "color": "#284aa9",
+    "color": "#064fa2",
     "pixel_count": 8577,
     "density_multiplier": 2.13,
-    "parent_id": "AREA000186",
+    "parent_id": "AREA000189",
     "local_bbox": [
       0,
       0,
@@ -7596,12 +7956,12 @@
     ]
   },
   {
-    "region_id": "DST000212",
+    "region_id": "DST000222",
     "region_type": "land",
-    "color": "#da2273",
+    "color": "#cbcc17",
     "pixel_count": 5154,
     "density_multiplier": 1.0,
-    "parent_id": "AREA000187",
+    "parent_id": "AREA000190",
     "local_bbox": [
       0,
       0,
@@ -7632,12 +7992,372 @@
     ]
   },
   {
-    "region_id": "DST000213",
+    "region_id": "DST000223",
+    "region_type": "ocean",
+    "color": "#281b86",
+    "pixel_count": 345452,
+    "density_multiplier": 0.51,
+    "parent_id": "AREA000001",
+    "local_bbox": [
+      0,
+      699,
+      739,
+      1278
+    ],
+    "local_center": [
+      327,
+      972
+    ],
+    "local_seed": [
+      295,
+      992
+    ],
+    "global_bbox": [
+      0,
+      699,
+      739,
+      1278
+    ],
+    "global_center": [
+      327,
+      972
+    ],
+    "global_seed": [
+      295,
+      992
+    ]
+  },
+  {
+    "region_id": "DST000224",
+    "region_type": "ocean",
+    "color": "#1b036e",
+    "pixel_count": 428943,
+    "density_multiplier": 0.67,
+    "parent_id": "AREA000001",
+    "local_bbox": [
+      0,
+      0,
+      874,
+      739
+    ],
+    "local_center": [
+      360,
+      433
+    ],
+    "local_seed": [
+      312,
+      446
+    ],
+    "global_bbox": [
+      0,
+      0,
+      874,
+      739
+    ],
+    "global_center": [
+      360,
+      433
+    ],
+    "global_seed": [
+      312,
+      446
+    ]
+  },
+  {
+    "region_id": "DST000225",
+    "region_type": "ocean",
+    "color": "#2112ad",
+    "pixel_count": 204375,
+    "density_multiplier": 1.0,
+    "parent_id": "AREA000001",
+    "local_bbox": [
+      288,
+      0,
+      2087,
+      371
+    ],
+    "local_center": [
+      794,
+      80
+    ],
+    "local_seed": [
+      794,
+      80
+    ],
+    "global_bbox": [
+      288,
+      0,
+      2087,
+      371
+    ],
+    "global_center": [
+      794,
+      80
+    ],
+    "global_seed": [
+      794,
+      80
+    ]
+  },
+  {
+    "region_id": "DST000226",
+    "region_type": "ocean",
+    "color": "#0007ac",
+    "pixel_count": 204336,
+    "density_multiplier": 0.69,
+    "parent_id": "AREA000001",
+    "local_bbox": [
+      704,
+      446,
+      1412,
+      1118
+    ],
+    "local_center": [
+      974,
+      853
+    ],
+    "local_seed": [
+      1084,
+      738
+    ],
+    "global_bbox": [
+      704,
+      446,
+      1412,
+      1118
+    ],
+    "global_center": [
+      974,
+      853
+    ],
+    "global_seed": [
+      1084,
+      738
+    ]
+  },
+  {
+    "region_id": "DST000227",
+    "region_type": "ocean",
+    "color": "#13306a",
+    "pixel_count": 227104,
+    "density_multiplier": 0.51,
+    "parent_id": "AREA000001",
+    "local_bbox": [
+      0,
+      1226,
+      518,
+      1806
+    ],
+    "local_center": [
+      224,
+      1503
+    ],
+    "local_seed": [
+      209,
+      1530
+    ],
+    "global_bbox": [
+      0,
+      1226,
+      518,
+      1806
+    ],
+    "global_center": [
+      224,
+      1503
+    ],
+    "global_seed": [
+      209,
+      1530
+    ]
+  },
+  {
+    "region_id": "DST000228",
+    "region_type": "ocean",
+    "color": "#272d8b",
+    "pixel_count": 333162,
+    "density_multiplier": 0.51,
+    "parent_id": "AREA000001",
+    "local_bbox": [
+      435,
+      904,
+      1041,
+      1697
+    ],
+    "local_center": [
+      756,
+      1339
+    ],
+    "local_seed": [
+      736,
+      1383
+    ],
+    "global_bbox": [
+      435,
+      904,
+      1041,
+      1697
+    ],
+    "global_center": [
+      756,
+      1339
+    ],
+    "global_seed": [
+      736,
+      1383
+    ]
+  },
+  {
+    "region_id": "DST000229",
+    "region_type": "ocean",
+    "color": "#1027ac",
+    "pixel_count": 348273,
+    "density_multiplier": 0.65,
+    "parent_id": "AREA000001",
+    "local_bbox": [
+      1042,
+      962,
+      1718,
+      1671
+    ],
+    "local_center": [
+      1342,
+      1350
+    ],
+    "local_seed": [
+      1346,
+      1383
+    ],
+    "global_bbox": [
+      1042,
+      962,
+      1718,
+      1671
+    ],
+    "global_center": [
+      1342,
+      1350
+    ],
+    "global_seed": [
+      1346,
+      1383
+    ]
+  },
+  {
+    "region_id": "DST000230",
+    "region_type": "ocean",
+    "color": "#0813ab",
+    "pixel_count": 233422,
+    "density_multiplier": 0.51,
+    "parent_id": "AREA000001",
+    "local_bbox": [
+      0,
+      1654,
+      607,
+      2111
+    ],
+    "local_center": [
+      317,
+      1916
+    ],
+    "local_seed": [
+      312,
+      1929
+    ],
+    "global_bbox": [
+      0,
+      1654,
+      607,
+      2111
+    ],
+    "global_center": [
+      317,
+      1916
+    ],
+    "global_seed": [
+      312,
+      1929
+    ]
+  },
+  {
+    "region_id": "DST000231",
+    "region_type": "ocean",
+    "color": "#1c3096",
+    "pixel_count": 249099,
+    "density_multiplier": 0.61,
+    "parent_id": "AREA000001",
+    "local_bbox": [
+      1157,
+      1575,
+      1747,
+      2111
+    ],
+    "local_center": [
+      1430,
+      1876
+    ],
+    "local_seed": [
+      1432,
+      1902
+    ],
+    "global_bbox": [
+      1157,
+      1575,
+      1747,
+      2111
+    ],
+    "global_center": [
+      1430,
+      1876
+    ],
+    "global_seed": [
+      1432,
+      1902
+    ]
+  },
+  {
+    "region_id": "DST000232",
+    "region_type": "ocean",
+    "color": "#1c0964",
+    "pixel_count": 269369,
+    "density_multiplier": 0.51,
+    "parent_id": "AREA000001",
+    "local_bbox": [
+      592,
+      1570,
+      1162,
+      2111
+    ],
+    "local_center": [
+      887,
+      1868
+    ],
+    "local_seed": [
+      887,
+      1888
+    ],
+    "global_bbox": [
+      592,
+      1570,
+      1162,
+      2111
+    ],
+    "global_center": [
+      887,
+      1868
+    ],
+    "global_seed": [
+      887,
+      1888
+    ]
+  },
+  {
+    "region_id": "DST000233",
     "region_type": "land",
-    "color": "#5cdc9b",
+    "color": "#fb4b92",
     "pixel_count": 12505,
     "density_multiplier": 1.0,
-    "parent_id": "AREA000188",
+    "parent_id": "AREA000191",
     "local_bbox": [
       0,
       0,
@@ -7668,12 +8388,12 @@
     ]
   },
   {
-    "region_id": "DST000214",
+    "region_id": "DST000234",
     "region_type": "land",
-    "color": "#1bfdc6",
+    "color": "#341b4b",
     "pixel_count": 719,
     "density_multiplier": 1.0,
-    "parent_id": "AREA000189",
+    "parent_id": "AREA000192",
     "local_bbox": [
       0,
       0,
@@ -7704,12 +8424,12 @@
     ]
   },
   {
-    "region_id": "DST000215",
+    "region_id": "DST000235",
     "region_type": "land",
-    "color": "#cbcc17",
+    "color": "#c0a086",
     "pixel_count": 20939,
     "density_multiplier": 0.65,
-    "parent_id": "AREA000190",
+    "parent_id": "AREA000193",
     "local_bbox": [
       0,
       0,
@@ -7740,12 +8460,12 @@
     ]
   },
   {
-    "region_id": "DST000216",
+    "region_id": "DST000236",
     "region_type": "land",
-    "color": "#fb4b92",
+    "color": "#932aae",
     "pixel_count": 528,
     "density_multiplier": 0.65,
-    "parent_id": "AREA000191",
+    "parent_id": "AREA000194",
     "local_bbox": [
       0,
       0,
@@ -7776,12 +8496,12 @@
     ]
   },
   {
-    "region_id": "DST000217",
+    "region_id": "DST000237",
     "region_type": "land",
-    "color": "#341b4b",
+    "color": "#1d60c2",
     "pixel_count": 1943,
     "density_multiplier": 1.0,
-    "parent_id": "AREA000192",
+    "parent_id": "AREA000195",
     "local_bbox": [
       0,
       0,
@@ -7812,12 +8532,12 @@
     ]
   },
   {
-    "region_id": "DST000218",
+    "region_id": "DST000238",
     "region_type": "ocean",
-    "color": "#2d328e",
+    "color": "#01316a",
     "pixel_count": 52,
     "density_multiplier": 1.0,
-    "parent_id": "AREA000193",
+    "parent_id": "AREA000196",
     "local_bbox": [
       0,
       0,
@@ -7848,12 +8568,12 @@
     ]
   },
   {
-    "region_id": "DST000219",
+    "region_id": "DST000239",
     "region_type": "land",
-    "color": "#932aae",
+    "color": "#2f52cc",
     "pixel_count": 154,
     "density_multiplier": 1.0,
-    "parent_id": "AREA000194",
+    "parent_id": "AREA000197",
     "local_bbox": [
       0,
       0,
@@ -7884,12 +8604,12 @@
     ]
   },
   {
-    "region_id": "DST000220",
+    "region_id": "DST000240",
     "region_type": "land",
-    "color": "#1d60c2",
+    "color": "#90b978",
     "pixel_count": 1204,
     "density_multiplier": 1.0,
-    "parent_id": "AREA000195",
+    "parent_id": "AREA000198",
     "local_bbox": [
       0,
       0,
@@ -7920,12 +8640,12 @@
     ]
   },
   {
-    "region_id": "DST000221",
+    "region_id": "DST000241",
     "region_type": "land",
-    "color": "#089c15",
+    "color": "#e973d6",
     "pixel_count": 919,
     "density_multiplier": 0.66,
-    "parent_id": "AREA000196",
+    "parent_id": "AREA000199",
     "local_bbox": [
       0,
       0,
@@ -7956,12 +8676,12 @@
     ]
   },
   {
-    "region_id": "DST000222",
+    "region_id": "DST000242",
     "region_type": "ocean",
-    "color": "#0b19a3",
+    "color": "#1d4a90",
     "pixel_count": 609,
     "density_multiplier": 1.0,
-    "parent_id": "AREA000197",
+    "parent_id": "AREA000200",
     "local_bbox": [
       0,
       0,
@@ -7992,12 +8712,12 @@
     ]
   },
   {
-    "region_id": "DST000223",
+    "region_id": "DST000243",
     "region_type": "land",
-    "color": "#90b978",
+    "color": "#bca68e",
     "pixel_count": 24807,
     "density_multiplier": 0.69,
-    "parent_id": "AREA000198",
+    "parent_id": "AREA000201",
     "local_bbox": [
       0,
       0,
@@ -8028,12 +8748,12 @@
     ]
   },
   {
-    "region_id": "DST000224",
+    "region_id": "DST000244",
     "region_type": "land",
-    "color": "#e973d6",
+    "color": "#7ac6d9",
     "pixel_count": 5962,
     "density_multiplier": 1.0,
-    "parent_id": "AREA000199",
+    "parent_id": "AREA000202",
     "local_bbox": [
       0,
       0,
@@ -8064,12 +8784,12 @@
     ]
   },
   {
-    "region_id": "DST000225",
+    "region_id": "DST000245",
     "region_type": "land",
-    "color": "#7cef8d",
+    "color": "#2f6fae",
     "pixel_count": 244,
     "density_multiplier": 1.0,
-    "parent_id": "AREA000200",
+    "parent_id": "AREA000203",
     "local_bbox": [
       0,
       0,
@@ -8100,12 +8820,12 @@
     ]
   },
   {
-    "region_id": "DST000226",
+    "region_id": "DST000246",
     "region_type": "land",
-    "color": "#bca68e",
+    "color": "#169203",
     "pixel_count": 23619,
     "density_multiplier": 0.66,
-    "parent_id": "AREA000201",
+    "parent_id": "AREA000204",
     "local_bbox": [
       0,
       0,
@@ -8136,12 +8856,12 @@
     ]
   },
   {
-    "region_id": "DST000227",
+    "region_id": "DST000247",
     "region_type": "land",
-    "color": "#7ac6d9",
+    "color": "#f60b19",
     "pixel_count": 25087,
     "density_multiplier": 0.74,
-    "parent_id": "AREA000202",
+    "parent_id": "AREA000205",
     "local_bbox": [
       0,
       0,
@@ -8172,12 +8892,12 @@
     ]
   },
   {
-    "region_id": "DST000228",
+    "region_id": "DST000248",
     "region_type": "land",
-    "color": "#2f6fae",
+    "color": "#dec30c",
     "pixel_count": 5519,
     "density_multiplier": 1.0,
-    "parent_id": "AREA000203",
+    "parent_id": "AREA000206",
     "local_bbox": [
       0,
       0,
@@ -8208,12 +8928,12 @@
     ]
   },
   {
-    "region_id": "DST000229",
+    "region_id": "DST000249",
     "region_type": "land",
-    "color": "#169203",
+    "color": "#4e9dca",
     "pixel_count": 1632,
     "density_multiplier": 1.0,
-    "parent_id": "AREA000204",
+    "parent_id": "AREA000207",
     "local_bbox": [
       0,
       0,
@@ -8244,12 +8964,12 @@
     ]
   },
   {
-    "region_id": "DST000230",
+    "region_id": "DST000250",
     "region_type": "land",
-    "color": "#f60b19",
+    "color": "#95f012",
     "pixel_count": 4007,
     "density_multiplier": 1.0,
-    "parent_id": "AREA000205",
+    "parent_id": "AREA000208",
     "local_bbox": [
       0,
       0,
@@ -8280,12 +9000,12 @@
     ]
   },
   {
-    "region_id": "DST000231",
+    "region_id": "DST000251",
     "region_type": "land",
-    "color": "#dec30c",
+    "color": "#eb179f",
     "pixel_count": 37174,
     "density_multiplier": 0.87,
-    "parent_id": "AREA000206",
+    "parent_id": "AREA000209",
     "local_bbox": [
       0,
       0,
@@ -8316,12 +9036,12 @@
     ]
   },
   {
-    "region_id": "DST000232",
+    "region_id": "DST000252",
     "region_type": "land",
-    "color": "#4e9dca",
+    "color": "#5d6211",
     "pixel_count": 8303,
     "density_multiplier": 1.0,
-    "parent_id": "AREA000207",
+    "parent_id": "AREA000210",
     "local_bbox": [
       0,
       0,
@@ -8352,12 +9072,12 @@
     ]
   },
   {
-    "region_id": "DST000233",
+    "region_id": "DST000253",
     "region_type": "ocean",
-    "color": "#234b69",
+    "color": "#094eaa",
     "pixel_count": 140,
     "density_multiplier": 1.0,
-    "parent_id": "AREA000208",
+    "parent_id": "AREA000211",
     "local_bbox": [
       0,
       0,
@@ -8388,12 +9108,12 @@
     ]
   },
   {
-    "region_id": "DST000234",
+    "region_id": "DST000254",
     "region_type": "land",
-    "color": "#eb179f",
+    "color": "#371ee4",
     "pixel_count": 545,
     "density_multiplier": 1.0,
-    "parent_id": "AREA000209",
+    "parent_id": "AREA000212",
     "local_bbox": [
       0,
       0,
@@ -8424,12 +9144,12 @@
     ]
   },
   {
-    "region_id": "DST000235",
+    "region_id": "DST000255",
     "region_type": "land",
-    "color": "#5d6211",
+    "color": "#493973",
     "pixel_count": 297,
     "density_multiplier": 1.0,
-    "parent_id": "AREA000210",
+    "parent_id": "AREA000213",
     "local_bbox": [
       0,
       0,
@@ -8460,12 +9180,12 @@
     ]
   },
   {
-    "region_id": "DST000236",
+    "region_id": "DST000256",
     "region_type": "land",
-    "color": "#28fae2",
+    "color": "#c92a35",
     "pixel_count": 777,
     "density_multiplier": 1.0,
-    "parent_id": "AREA000211",
+    "parent_id": "AREA000214",
     "local_bbox": [
       0,
       0,
@@ -8496,12 +9216,12 @@
     ]
   },
   {
-    "region_id": "DST000237",
+    "region_id": "DST000257",
     "region_type": "land",
-    "color": "#371ee4",
+    "color": "#f79d71",
     "pixel_count": 8698,
     "density_multiplier": 1.0,
-    "parent_id": "AREA000212",
+    "parent_id": "AREA000215",
     "local_bbox": [
       0,
       0,
@@ -8532,12 +9252,12 @@
     ]
   },
   {
-    "region_id": "DST000238",
+    "region_id": "DST000258",
     "region_type": "land",
-    "color": "#493973",
+    "color": "#911337",
     "pixel_count": 1517,
     "density_multiplier": 1.0,
-    "parent_id": "AREA000213",
+    "parent_id": "AREA000216",
     "local_bbox": [
       0,
       0,
@@ -8568,12 +9288,12 @@
     ]
   },
   {
-    "region_id": "DST000239",
+    "region_id": "DST000259",
     "region_type": "land",
-    "color": "#c92a35",
+    "color": "#ec60c3",
     "pixel_count": 126,
     "density_multiplier": 1.0,
-    "parent_id": "AREA000214",
+    "parent_id": "AREA000217",
     "local_bbox": [
       0,
       0,
@@ -8604,12 +9324,12 @@
     ]
   },
   {
-    "region_id": "DST000240",
+    "region_id": "DST000260",
     "region_type": "land",
-    "color": "#f79d71",
+    "color": "#5e2d92",
     "pixel_count": 110,
     "density_multiplier": 2.18,
-    "parent_id": "AREA000215",
+    "parent_id": "AREA000218",
     "local_bbox": [
       0,
       0,
@@ -8640,12 +9360,12 @@
     ]
   },
   {
-    "region_id": "DST000241",
+    "region_id": "DST000261",
     "region_type": "land",
-    "color": "#911337",
+    "color": "#c21501",
     "pixel_count": 321,
     "density_multiplier": 1.0,
-    "parent_id": "AREA000216",
+    "parent_id": "AREA000219",
     "local_bbox": [
       0,
       0,
@@ -8676,12 +9396,12 @@
     ]
   },
   {
-    "region_id": "DST000242",
+    "region_id": "DST000262",
     "region_type": "land",
-    "color": "#ec60c3",
+    "color": "#c95ce0",
     "pixel_count": 2050,
     "density_multiplier": 1.0,
-    "parent_id": "AREA000217",
+    "parent_id": "AREA000220",
     "local_bbox": [
       0,
       0,
@@ -8712,12 +9432,12 @@
     ]
   },
   {
-    "region_id": "DST000243",
+    "region_id": "DST000263",
     "region_type": "land",
-    "color": "#5e2d92",
+    "color": "#34bea4",
     "pixel_count": 1905,
     "density_multiplier": 1.0,
-    "parent_id": "AREA000218",
+    "parent_id": "AREA000221",
     "local_bbox": [
       0,
       0,
@@ -8748,12 +9468,12 @@
     ]
   },
   {
-    "region_id": "DST000244",
+    "region_id": "DST000264",
     "region_type": "land",
-    "color": "#c21501",
+    "color": "#b2a238",
     "pixel_count": 3403,
     "density_multiplier": 0.88,
-    "parent_id": "AREA000219",
+    "parent_id": "AREA000222",
     "local_bbox": [
       0,
       0,
@@ -8784,12 +9504,12 @@
     ]
   },
   {
-    "region_id": "DST000245",
+    "region_id": "DST000265",
     "region_type": "land",
-    "color": "#c95ce0",
+    "color": "#f16ffd",
     "pixel_count": 1928,
     "density_multiplier": 1.0,
-    "parent_id": "AREA000220",
+    "parent_id": "AREA000223",
     "local_bbox": [
       0,
       0,
@@ -8820,12 +9540,12 @@
     ]
   },
   {
-    "region_id": "DST000246",
+    "region_id": "DST000266",
     "region_type": "land",
-    "color": "#34bea4",
+    "color": "#8a3559",
     "pixel_count": 5009,
     "density_multiplier": 0.96,
-    "parent_id": "AREA000221",
+    "parent_id": "AREA000224",
     "local_bbox": [
       0,
       0,
@@ -8856,12 +9576,12 @@
     ]
   },
   {
-    "region_id": "DST000247",
+    "region_id": "DST000267",
     "region_type": "land",
-    "color": "#b2a238",
+    "color": "#e228bf",
     "pixel_count": 2268,
     "density_multiplier": 1.0,
-    "parent_id": "AREA000222",
+    "parent_id": "AREA000225",
     "local_bbox": [
       0,
       0,
@@ -8892,12 +9612,12 @@
     ]
   },
   {
-    "region_id": "DST000248",
+    "region_id": "DST000268",
     "region_type": "land",
-    "color": "#f16ffd",
+    "color": "#040d60",
     "pixel_count": 21728,
     "density_multiplier": 1.0,
-    "parent_id": "AREA000223",
+    "parent_id": "AREA000226",
     "local_bbox": [
       0,
       0,
@@ -8928,12 +9648,12 @@
     ]
   },
   {
-    "region_id": "DST000249",
+    "region_id": "DST000269",
     "region_type": "land",
-    "color": "#8a3559",
+    "color": "#bd7f41",
     "pixel_count": 3242,
     "density_multiplier": 1.0,
-    "parent_id": "AREA000224",
+    "parent_id": "AREA000227",
     "local_bbox": [
       0,
       0,
@@ -8964,12 +9684,12 @@
     ]
   },
   {
-    "region_id": "DST000250",
+    "region_id": "DST000270",
     "region_type": "land",
-    "color": "#e228bf",
+    "color": "#f37d02",
     "pixel_count": 287,
     "density_multiplier": 1.0,
-    "parent_id": "AREA000225",
+    "parent_id": "AREA000228",
     "local_bbox": [
       0,
       0,
@@ -9000,12 +9720,12 @@
     ]
   },
   {
-    "region_id": "DST000251",
+    "region_id": "DST000271",
     "region_type": "ocean",
-    "color": "#010482",
+    "color": "#191e78",
     "pixel_count": 51,
     "density_multiplier": 1.0,
-    "parent_id": "AREA000226",
+    "parent_id": "AREA000229",
     "local_bbox": [
       0,
       0,
@@ -9036,12 +9756,12 @@
     ]
   },
   {
-    "region_id": "DST000252",
+    "region_id": "DST000272",
     "region_type": "land",
-    "color": "#bd7f41",
+    "color": "#54a2a7",
     "pixel_count": 17313,
     "density_multiplier": 0.98,
-    "parent_id": "AREA000227",
+    "parent_id": "AREA000230",
     "local_bbox": [
       0,
       0,
@@ -9072,12 +9792,12 @@
     ]
   },
   {
-    "region_id": "DST000253",
+    "region_id": "DST000273",
     "region_type": "ocean",
-    "color": "#392764",
+    "color": "#0423ad",
     "pixel_count": 119,
     "density_multiplier": 1.0,
-    "parent_id": "AREA000228",
+    "parent_id": "AREA000231",
     "local_bbox": [
       0,
       0,
@@ -9108,12 +9828,12 @@
     ]
   },
   {
-    "region_id": "DST000254",
+    "region_id": "DST000274",
     "region_type": "land",
-    "color": "#6b6242",
+    "color": "#2ac7d7",
     "pixel_count": 8437,
     "density_multiplier": 1.0,
-    "parent_id": "AREA000229",
+    "parent_id": "AREA000232",
     "local_bbox": [
       0,
       0,
@@ -9144,12 +9864,12 @@
     ]
   },
   {
-    "region_id": "DST000255",
+    "region_id": "DST000275",
     "region_type": "land",
-    "color": "#54a2a7",
+    "color": "#4480dc",
     "pixel_count": 379,
     "density_multiplier": 1.0,
-    "parent_id": "AREA000230",
+    "parent_id": "AREA000233",
     "local_bbox": [
       0,
       0,
@@ -9180,12 +9900,12 @@
     ]
   },
   {
-    "region_id": "DST000256",
+    "region_id": "DST000276",
     "region_type": "land",
-    "color": "#1472e9",
+    "color": "#9e14de",
     "pixel_count": 4291,
     "density_multiplier": 1.0,
-    "parent_id": "AREA000231",
+    "parent_id": "AREA000234",
     "local_bbox": [
       0,
       0,
@@ -9216,12 +9936,12 @@
     ]
   },
   {
-    "region_id": "DST000257",
+    "region_id": "DST000277",
     "region_type": "land",
-    "color": "#2ac7d7",
+    "color": "#cbc3fe",
     "pixel_count": 304,
     "density_multiplier": 1.0,
-    "parent_id": "AREA000232",
+    "parent_id": "AREA000235",
     "local_bbox": [
       0,
       0,
@@ -9252,12 +9972,12 @@
     ]
   },
   {
-    "region_id": "DST000258",
+    "region_id": "DST000278",
     "region_type": "ocean",
-    "color": "#0f28a8",
+    "color": "#0d2372",
     "pixel_count": 146,
     "density_multiplier": 1.0,
-    "parent_id": "AREA000233",
+    "parent_id": "AREA000236",
     "local_bbox": [
       0,
       0,
@@ -9288,12 +10008,12 @@
     ]
   },
   {
-    "region_id": "DST000259",
+    "region_id": "DST000279",
     "region_type": "land",
-    "color": "#9e14de",
+    "color": "#0329dd",
     "pixel_count": 21268,
     "density_multiplier": 1.0,
-    "parent_id": "AREA000234",
+    "parent_id": "AREA000237",
     "local_bbox": [
       0,
       0,
@@ -9324,12 +10044,12 @@
     ]
   },
   {
-    "region_id": "DST000260",
+    "region_id": "DST000280",
     "region_type": "land",
-    "color": "#cbc3fe",
+    "color": "#3d3968",
     "pixel_count": 1983,
     "density_multiplier": 1.0,
-    "parent_id": "AREA000235",
+    "parent_id": "AREA000238",
     "local_bbox": [
       0,
       0,
@@ -9360,12 +10080,12 @@
     ]
   },
   {
-    "region_id": "DST000261",
+    "region_id": "DST000281",
     "region_type": "land",
-    "color": "#3a722d",
+    "color": "#a7ad40",
     "pixel_count": 11689,
     "density_multiplier": 1.0,
-    "parent_id": "AREA000236",
+    "parent_id": "AREA000239",
     "local_bbox": [
       0,
       0,
@@ -9396,12 +10116,12 @@
     ]
   },
   {
-    "region_id": "DST000262",
+    "region_id": "DST000282",
     "region_type": "land",
-    "color": "#0329dd",
+    "color": "#87a45d",
     "pixel_count": 8655,
     "density_multiplier": 1.0,
-    "parent_id": "AREA000237",
+    "parent_id": "AREA000240",
     "local_bbox": [
       0,
       0,
@@ -9432,12 +10152,12 @@
     ]
   },
   {
-    "region_id": "DST000263",
+    "region_id": "DST000283",
     "region_type": "ocean",
-    "color": "#0e1284",
+    "color": "#0a4c95",
     "pixel_count": 136,
     "density_multiplier": 1.0,
-    "parent_id": "AREA000238",
+    "parent_id": "AREA000241",
     "local_bbox": [
       0,
       0,
@@ -9468,12 +10188,12 @@
     ]
   },
   {
-    "region_id": "DST000264",
+    "region_id": "DST000284",
     "region_type": "land",
-    "color": "#a7ad40",
+    "color": "#3c7494",
     "pixel_count": 16852,
     "density_multiplier": 1.0,
-    "parent_id": "AREA000239",
+    "parent_id": "AREA000242",
     "local_bbox": [
       0,
       0,
@@ -9504,12 +10224,12 @@
     ]
   },
   {
-    "region_id": "DST000265",
+    "region_id": "DST000285",
     "region_type": "land",
-    "color": "#87a45d",
+    "color": "#a4669e",
     "pixel_count": 1020,
     "density_multiplier": 1.0,
-    "parent_id": "AREA000240",
+    "parent_id": "AREA000243",
     "local_bbox": [
       0,
       0,
@@ -9540,12 +10260,12 @@
     ]
   },
   {
-    "region_id": "DST000266",
+    "region_id": "DST000286",
     "region_type": "land",
-    "color": "#2bf49d",
+    "color": "#e22a38",
     "pixel_count": 3025,
     "density_multiplier": 1.0,
-    "parent_id": "AREA000241",
+    "parent_id": "AREA000244",
     "local_bbox": [
       0,
       0,
@@ -9576,12 +10296,12 @@
     ]
   },
   {
-    "region_id": "DST000267",
+    "region_id": "DST000287",
     "region_type": "land",
-    "color": "#3c7494",
+    "color": "#fef3b5",
     "pixel_count": 750,
     "density_multiplier": 1.0,
-    "parent_id": "AREA000242",
+    "parent_id": "AREA000245",
     "local_bbox": [
       0,
       0,
@@ -9612,12 +10332,12 @@
     ]
   },
   {
-    "region_id": "DST000268",
+    "region_id": "DST000288",
     "region_type": "land",
-    "color": "#a4669e",
+    "color": "#bc5d1d",
     "pixel_count": 4358,
     "density_multiplier": 1.0,
-    "parent_id": "AREA000243",
+    "parent_id": "AREA000246",
     "local_bbox": [
       0,
       0,
@@ -9648,12 +10368,12 @@
     ]
   },
   {
-    "region_id": "DST000269",
+    "region_id": "DST000289",
     "region_type": "land",
-    "color": "#e22a38",
+    "color": "#373617",
     "pixel_count": 871,
     "density_multiplier": 1.0,
-    "parent_id": "AREA000244",
+    "parent_id": "AREA000247",
     "local_bbox": [
       0,
       0,
@@ -9684,12 +10404,12 @@
     ]
   },
   {
-    "region_id": "DST000270",
+    "region_id": "DST000290",
     "region_type": "land",
-    "color": "#fef3b5",
+    "color": "#1c1e8f",
     "pixel_count": 11505,
     "density_multiplier": 1.0,
-    "parent_id": "AREA000245",
+    "parent_id": "AREA000248",
     "local_bbox": [
       0,
       0,
@@ -9720,12 +10440,12 @@
     ]
   },
   {
-    "region_id": "DST000271",
+    "region_id": "DST000291",
     "region_type": "ocean",
-    "color": "#2c1d6d",
+    "color": "#1f467b",
     "pixel_count": 152,
     "density_multiplier": 1.0,
-    "parent_id": "AREA000246",
+    "parent_id": "AREA000249",
     "local_bbox": [
       0,
       0,
@@ -9756,12 +10476,12 @@
     ]
   },
   {
-    "region_id": "DST000272",
+    "region_id": "DST000292",
     "region_type": "land",
-    "color": "#373617",
+    "color": "#15b45a",
     "pixel_count": 5836,
     "density_multiplier": 1.0,
-    "parent_id": "AREA000247",
+    "parent_id": "AREA000250",
     "local_bbox": [
       0,
       0,
@@ -9792,12 +10512,12 @@
     ]
   },
   {
-    "region_id": "DST000273",
+    "region_id": "DST000293",
     "region_type": "ocean",
-    "color": "#060990",
+    "color": "#0b0a8e",
     "pixel_count": 170,
     "density_multiplier": 1.0,
-    "parent_id": "AREA000248",
+    "parent_id": "AREA000251",
     "local_bbox": [
       0,
       0,
@@ -9828,12 +10548,12 @@
     ]
   },
   {
-    "region_id": "DST000274",
+    "region_id": "DST000294",
     "region_type": "land",
-    "color": "#88e14c",
+    "color": "#7bd3c5",
     "pixel_count": 1160,
     "density_multiplier": 1.0,
-    "parent_id": "AREA000249",
+    "parent_id": "AREA000252",
     "local_bbox": [
       0,
       0,
@@ -9864,12 +10584,12 @@
     ]
   },
   {
-    "region_id": "DST000275",
+    "region_id": "DST000295",
     "region_type": "land",
-    "color": "#15b45a",
+    "color": "#183bd7",
     "pixel_count": 1235,
     "density_multiplier": 1.0,
-    "parent_id": "AREA000250",
+    "parent_id": "AREA000253",
     "local_bbox": [
       0,
       0,
@@ -9900,12 +10620,12 @@
     ]
   },
   {
-    "region_id": "DST000276",
+    "region_id": "DST000296",
     "region_type": "land",
-    "color": "#2f2288",
+    "color": "#fea459",
     "pixel_count": 1001,
     "density_multiplier": 1.0,
-    "parent_id": "AREA000251",
+    "parent_id": "AREA000254",
     "local_bbox": [
       0,
       0,
@@ -9936,12 +10656,12 @@
     ]
   },
   {
-    "region_id": "DST000277",
+    "region_id": "DST000297",
     "region_type": "land",
-    "color": "#7bd3c5",
+    "color": "#d866e9",
     "pixel_count": 1098,
     "density_multiplier": 1.0,
-    "parent_id": "AREA000252",
+    "parent_id": "AREA000255",
     "local_bbox": [
       0,
       0,
@@ -9972,12 +10692,12 @@
     ]
   },
   {
-    "region_id": "DST000278",
+    "region_id": "DST000298",
     "region_type": "land",
-    "color": "#183bd7",
+    "color": "#b32085",
     "pixel_count": 178,
     "density_multiplier": 1.0,
-    "parent_id": "AREA000253",
+    "parent_id": "AREA000256",
     "local_bbox": [
       0,
       0,
@@ -10008,12 +10728,12 @@
     ]
   },
   {
-    "region_id": "DST000279",
+    "region_id": "DST000299",
     "region_type": "land",
-    "color": "#fea459",
+    "color": "#df4c72",
     "pixel_count": 1601,
     "density_multiplier": 1.0,
-    "parent_id": "AREA000254",
+    "parent_id": "AREA000257",
     "local_bbox": [
       0,
       0,
@@ -10044,12 +10764,12 @@
     ]
   },
   {
-    "region_id": "DST000280",
+    "region_id": "DST000300",
     "region_type": "land",
-    "color": "#d866e9",
+    "color": "#d66080",
     "pixel_count": 3689,
     "density_multiplier": 1.0,
-    "parent_id": "AREA000255",
+    "parent_id": "AREA000258",
     "local_bbox": [
       0,
       0,
@@ -10080,12 +10800,12 @@
     ]
   },
   {
-    "region_id": "DST000281",
+    "region_id": "DST000301",
     "region_type": "land",
-    "color": "#b32085",
+    "color": "#20efda",
     "pixel_count": 3127,
     "density_multiplier": 1.0,
-    "parent_id": "AREA000256",
+    "parent_id": "AREA000259",
     "local_bbox": [
       0,
       0,
@@ -10116,12 +10836,12 @@
     ]
   },
   {
-    "region_id": "DST000282",
+    "region_id": "DST000302",
     "region_type": "land",
-    "color": "#df4c72",
+    "color": "#608dc3",
     "pixel_count": 2233,
     "density_multiplier": 1.0,
-    "parent_id": "AREA000257",
+    "parent_id": "AREA000260",
     "local_bbox": [
       0,
       0,
@@ -10152,12 +10872,12 @@
     ]
   },
   {
-    "region_id": "DST000283",
+    "region_id": "DST000303",
     "region_type": "land",
-    "color": "#d66080",
+    "color": "#16ac80",
     "pixel_count": 2540,
     "density_multiplier": 1.0,
-    "parent_id": "AREA000258",
+    "parent_id": "AREA000261",
     "local_bbox": [
       0,
       0,
@@ -10188,12 +10908,12 @@
     ]
   },
   {
-    "region_id": "DST000284",
+    "region_id": "DST000304",
     "region_type": "land",
-    "color": "#20efda",
+    "color": "#a47eb8",
     "pixel_count": 1399,
     "density_multiplier": 1.0,
-    "parent_id": "AREA000259",
+    "parent_id": "AREA000262",
     "local_bbox": [
       0,
       0,
@@ -10224,12 +10944,12 @@
     ]
   },
   {
-    "region_id": "DST000285",
+    "region_id": "DST000305",
     "region_type": "land",
-    "color": "#608dc3",
+    "color": "#b80c47",
     "pixel_count": 7633,
     "density_multiplier": 1.0,
-    "parent_id": "AREA000260",
+    "parent_id": "AREA000263",
     "local_bbox": [
       0,
       0,
@@ -10260,12 +10980,12 @@
     ]
   },
   {
-    "region_id": "DST000286",
+    "region_id": "DST000306",
     "region_type": "land",
-    "color": "#16ac80",
+    "color": "#fa2cd8",
     "pixel_count": 44397,
     "density_multiplier": 1.0,
-    "parent_id": "AREA000261",
+    "parent_id": "AREA000264",
     "local_bbox": [
       0,
       0,
@@ -10296,12 +11016,12 @@
     ]
   },
   {
-    "region_id": "DST000287",
+    "region_id": "DST000307",
     "region_type": "land",
-    "color": "#b80c47",
+    "color": "#c2414f",
     "pixel_count": 10830,
     "density_multiplier": 1.0,
-    "parent_id": "AREA000263",
+    "parent_id": "AREA000266",
     "local_bbox": [
       0,
       0,
@@ -10332,12 +11052,12 @@
     ]
   },
   {
-    "region_id": "DST000288",
+    "region_id": "DST000308",
     "region_type": "land",
-    "color": "#fa2cd8",
+    "color": "#31d855",
     "pixel_count": 9598,
     "density_multiplier": 1.0,
-    "parent_id": "AREA000264",
+    "parent_id": "AREA000267",
     "local_bbox": [
       0,
       0,
@@ -10368,12 +11088,12 @@
     ]
   },
   {
-    "region_id": "DST000289",
+    "region_id": "DST000309",
     "region_type": "land",
-    "color": "#815936",
+    "color": "#e18856",
     "pixel_count": 3693,
     "density_multiplier": 1.0,
-    "parent_id": "AREA000265",
+    "parent_id": "AREA000268",
     "local_bbox": [
       0,
       0,
@@ -10404,12 +11124,12 @@
     ]
   },
   {
-    "region_id": "DST000290",
+    "region_id": "DST000310",
     "region_type": "land",
-    "color": "#c2414f",
+    "color": "#0e5a22",
     "pixel_count": 6073,
     "density_multiplier": 1.0,
-    "parent_id": "AREA000266",
+    "parent_id": "AREA000269",
     "local_bbox": [
       0,
       0,
@@ -10440,12 +11160,12 @@
     ]
   },
   {
-    "region_id": "DST000291",
+    "region_id": "DST000311",
     "region_type": "land",
-    "color": "#31d855",
+    "color": "#1f9ce5",
     "pixel_count": 4557,
     "density_multiplier": 1.0,
-    "parent_id": "AREA000267",
+    "parent_id": "AREA000270",
     "local_bbox": [
       0,
       0,
@@ -10476,12 +11196,12 @@
     ]
   },
   {
-    "region_id": "DST000292",
+    "region_id": "DST000312",
     "region_type": "land",
-    "color": "#e18856",
+    "color": "#18bf4a",
     "pixel_count": 352,
     "density_multiplier": 1.0,
-    "parent_id": "AREA000268",
+    "parent_id": "AREA000271",
     "local_bbox": [
       0,
       0,
@@ -10512,12 +11232,12 @@
     ]
   },
   {
-    "region_id": "DST000293",
+    "region_id": "DST000313",
     "region_type": "land",
-    "color": "#0e5a22",
+    "color": "#7adfb6",
     "pixel_count": 458,
     "density_multiplier": 1.0,
-    "parent_id": "AREA000269",
+    "parent_id": "AREA000272",
     "local_bbox": [
       0,
       0,
@@ -10548,12 +11268,12 @@
     ]
   },
   {
-    "region_id": "DST000294",
+    "region_id": "DST000314",
     "region_type": "ocean",
-    "color": "#0730ab",
+    "color": "#1e317f",
     "pixel_count": 90,
     "density_multiplier": 0.99,
-    "parent_id": "AREA000270",
+    "parent_id": "AREA000273",
     "local_bbox": [
       0,
       0,
@@ -10584,12 +11304,408 @@
     ]
   },
   {
-    "region_id": "DST000295",
+    "region_id": "DST000315",
+    "region_type": "ocean",
+    "color": "#160197",
+    "pixel_count": 299915,
+    "density_multiplier": 0.6,
+    "parent_id": "AREA000061",
+    "local_bbox": [
+      0,
+      1279,
+      609,
+      1955
+    ],
+    "local_center": [
+      288,
+      1660
+    ],
+    "local_seed": [
+      285,
+      1647
+    ],
+    "global_bbox": [
+      3168,
+      1435,
+      3777,
+      2111
+    ],
+    "global_center": [
+      3456,
+      1816
+    ],
+    "global_seed": [
+      3453,
+      1803
+    ]
+  },
+  {
+    "region_id": "DST000316",
+    "region_type": "ocean",
+    "color": "#262ca5",
+    "pixel_count": 261313,
+    "density_multiplier": 0.68,
+    "parent_id": "AREA000061",
+    "local_bbox": [
+      256,
+      542,
+      783,
+      1408
+    ],
+    "local_center": [
+      544,
+      1033
+    ],
+    "local_seed": [
+      533,
+      1018
+    ],
+    "global_bbox": [
+      3424,
+      698,
+      3951,
+      1564
+    ],
+    "global_center": [
+      3712,
+      1189
+    ],
+    "global_seed": [
+      3701,
+      1174
+    ]
+  },
+  {
+    "region_id": "DST000317",
+    "region_type": "ocean",
+    "color": "#050682",
+    "pixel_count": 290735,
+    "density_multiplier": 0.53,
+    "parent_id": "AREA000061",
+    "local_bbox": [
+      609,
+      1101,
+      1448,
+      1701
+    ],
+    "local_center": [
+      1054,
+      1367
+    ],
+    "local_seed": [
+      1017,
+      1378
+    ],
+    "global_bbox": [
+      3777,
+      1257,
+      4616,
+      1857
+    ],
+    "global_center": [
+      4222,
+      1523
+    ],
+    "global_seed": [
+      4185,
+      1534
+    ]
+  },
+  {
+    "region_id": "DST000318",
+    "region_type": "ocean",
+    "color": "#194c94",
+    "pixel_count": 194520,
+    "density_multiplier": 0.8,
+    "parent_id": "AREA000061",
+    "local_bbox": [
+      689,
+      619,
+      1276,
+      1177
+    ],
+    "local_center": [
+      972,
+      940
+    ],
+    "local_seed": [
+      961,
+      935
+    ],
+    "global_bbox": [
+      3857,
+      775,
+      4444,
+      1333
+    ],
+    "global_center": [
+      4140,
+      1096
+    ],
+    "global_seed": [
+      4129,
+      1091
+    ]
+  },
+  {
+    "region_id": "DST000319",
+    "region_type": "ocean",
+    "color": "#1f3e8f",
+    "pixel_count": 250149,
+    "density_multiplier": 0.51,
+    "parent_id": "AREA000061",
+    "local_bbox": [
+      473,
+      1414,
+      1145,
+      1955
+    ],
+    "local_center": [
+      797,
+      1749
+    ],
+    "local_seed": [
+      780,
+      1765
+    ],
+    "global_bbox": [
+      3641,
+      1570,
+      4313,
+      2111
+    ],
+    "global_center": [
+      3965,
+      1905
+    ],
+    "global_seed": [
+      3948,
+      1921
+    ]
+  },
+  {
+    "region_id": "DST000320",
+    "region_type": "ocean",
+    "color": "#0c1e7c",
+    "pixel_count": 222051,
+    "density_multiplier": 0.92,
+    "parent_id": "AREA000061",
+    "local_bbox": [
+      1201,
+      377,
+      1837,
+      1230
+    ],
+    "local_center": [
+      1536,
+      789
+    ],
+    "local_seed": [
+      1536,
+      789
+    ],
+    "global_bbox": [
+      4369,
+      533,
+      5005,
+      1386
+    ],
+    "global_center": [
+      4704,
+      945
+    ],
+    "global_seed": [
+      4704,
+      945
+    ]
+  },
+  {
+    "region_id": "DST000321",
+    "region_type": "ocean",
+    "color": "#0c0670",
+    "pixel_count": 305870,
+    "density_multiplier": 0.62,
+    "parent_id": "AREA000061",
+    "local_bbox": [
+      1119,
+      1257,
+      1833,
+      1955
+    ],
+    "local_center": [
+      1483,
+      1719
+    ],
+    "local_seed": [
+      1484,
+      1702
+    ],
+    "global_bbox": [
+      4287,
+      1413,
+      5001,
+      2111
+    ],
+    "global_center": [
+      4651,
+      1875
+    ],
+    "global_seed": [
+      4652,
+      1858
+    ]
+  },
+  {
+    "region_id": "DST000322",
+    "region_type": "ocean",
+    "color": "#0e0c77",
+    "pixel_count": 428413,
+    "density_multiplier": 0.65,
+    "parent_id": "AREA000061",
+    "local_bbox": [
+      1679,
+      0,
+      2463,
+      801
+    ],
+    "local_center": [
+      2146,
+      412
+    ],
+    "local_seed": [
+      2140,
+      422
+    ],
+    "global_bbox": [
+      4847,
+      156,
+      5631,
+      957
+    ],
+    "global_center": [
+      5314,
+      568
+    ],
+    "global_seed": [
+      5308,
+      578
+    ]
+  },
+  {
+    "region_id": "DST000323",
+    "region_type": "ocean",
+    "color": "#110868",
+    "pixel_count": 281655,
+    "density_multiplier": 0.55,
+    "parent_id": "AREA000061",
+    "local_bbox": [
+      1935,
+      751,
+      2463,
+      1456
+    ],
+    "local_center": [
+      2254,
+      1117
+    ],
+    "local_seed": [
+      2264,
+      1130
+    ],
+    "global_bbox": [
+      5103,
+      907,
+      5631,
+      1612
+    ],
+    "global_center": [
+      5422,
+      1273
+    ],
+    "global_seed": [
+      5432,
+      1286
+    ]
+  },
+  {
+    "region_id": "DST000324",
+    "region_type": "ocean",
+    "color": "#332464",
+    "pixel_count": 290377,
+    "density_multiplier": 0.56,
+    "parent_id": "AREA000061",
+    "local_bbox": [
+      1820,
+      1406,
+      2463,
+      1955
+    ],
+    "local_center": [
+      2164,
+      1717
+    ],
+    "local_seed": [
+      2164,
+      1723
+    ],
+    "global_bbox": [
+      4988,
+      1562,
+      5631,
+      2111
+    ],
+    "global_center": [
+      5332,
+      1873
+    ],
+    "global_seed": [
+      5332,
+      1879
+    ]
+  },
+  {
+    "region_id": "DST000325",
+    "region_type": "ocean",
+    "color": "#2c016f",
+    "pixel_count": 226921,
+    "density_multiplier": 0.75,
+    "parent_id": "AREA000061",
+    "local_bbox": [
+      1439,
+      629,
+      2127,
+      1324
+    ],
+    "local_center": [
+      1821,
+      999
+    ],
+    "local_seed": [
+      1830,
+      1013
+    ],
+    "global_bbox": [
+      4607,
+      785,
+      5295,
+      1480
+    ],
+    "global_center": [
+      4989,
+      1155
+    ],
+    "global_seed": [
+      4998,
+      1169
+    ]
+  },
+  {
+    "region_id": "DST000326",
     "region_type": "land",
-    "color": "#18bf4a",
+    "color": "#54f94c",
     "pixel_count": 4392,
     "density_multiplier": 1.0,
-    "parent_id": "AREA000271",
+    "parent_id": "AREA000274",
     "local_bbox": [
       0,
       0,
@@ -10620,12 +11736,12 @@
     ]
   },
   {
-    "region_id": "DST000296",
+    "region_id": "DST000327",
     "region_type": "lake",
-    "color": "#1c459d",
+    "color": "#2f0dae",
     "pixel_count": 896,
     "density_multiplier": 2.05,
-    "parent_id": "AREA000272",
+    "parent_id": "AREA000275",
     "local_bbox": [
       0,
       0,
@@ -10656,12 +11772,12 @@
     ]
   },
   {
-    "region_id": "DST000297",
+    "region_id": "DST000328",
     "region_type": "land",
-    "color": "#819d58",
+    "color": "#5a4b63",
     "pixel_count": 24642,
     "density_multiplier": 1.0,
-    "parent_id": "AREA000273",
+    "parent_id": "AREA000276",
     "local_bbox": [
       0,
       0,
@@ -10692,12 +11808,12 @@
     ]
   },
   {
-    "region_id": "DST000298",
+    "region_id": "DST000329",
     "region_type": "land",
-    "color": "#54f94c",
+    "color": "#59eac7",
     "pixel_count": 2016,
     "density_multiplier": 1.0,
-    "parent_id": "AREA000274",
+    "parent_id": "AREA000277",
     "local_bbox": [
       0,
       0,
@@ -10728,12 +11844,192 @@
     ]
   },
   {
-    "region_id": "DST000299",
+    "region_id": "DST000330",
     "region_type": "land",
-    "color": "#c92ced",
+    "color": "#815936",
+    "pixel_count": 45288,
+    "density_multiplier": 0.91,
+    "parent_id": "AREA000265",
+    "local_bbox": [
+      248,
+      280,
+      528,
+      609
+    ],
+    "local_center": [
+      369,
+      418
+    ],
+    "local_seed": [
+      375,
+      411
+    ],
+    "global_bbox": [
+      1906,
+      1372,
+      2186,
+      1701
+    ],
+    "global_center": [
+      2027,
+      1510
+    ],
+    "global_seed": [
+      2033,
+      1503
+    ]
+  },
+  {
+    "region_id": "DST000331",
+    "region_type": "land",
+    "color": "#d6b315",
+    "pixel_count": 32853,
+    "density_multiplier": 0.77,
+    "parent_id": "AREA000265",
+    "local_bbox": [
+      146,
+      55,
+      370,
+      358
+    ],
+    "local_center": [
+      260,
+      230
+    ],
+    "local_seed": [
+      262,
+      219
+    ],
+    "global_bbox": [
+      1804,
+      1147,
+      2028,
+      1450
+    ],
+    "global_center": [
+      1918,
+      1322
+    ],
+    "global_seed": [
+      1920,
+      1311
+    ]
+  },
+  {
+    "region_id": "DST000332",
+    "region_type": "land",
+    "color": "#563531",
+    "pixel_count": 31260,
+    "density_multiplier": 0.98,
+    "parent_id": "AREA000265",
+    "local_bbox": [
+      399,
+      124,
+      612,
+      393
+    ],
+    "local_center": [
+      509,
+      246
+    ],
+    "local_seed": [
+      517,
+      238
+    ],
+    "global_bbox": [
+      2057,
+      1216,
+      2270,
+      1485
+    ],
+    "global_center": [
+      2167,
+      1338
+    ],
+    "global_seed": [
+      2175,
+      1330
+    ]
+  },
+  {
+    "region_id": "DST000333",
+    "region_type": "land",
+    "color": "#244d81",
+    "pixel_count": 28004,
+    "density_multiplier": 0.86,
+    "parent_id": "AREA000265",
+    "local_bbox": [
+      259,
+      13,
+      495,
+      283
+    ],
+    "local_center": [
+      374,
+      147
+    ],
+    "local_seed": [
+      385,
+      152
+    ],
+    "global_bbox": [
+      1917,
+      1105,
+      2153,
+      1375
+    ],
+    "global_center": [
+      2032,
+      1239
+    ],
+    "global_seed": [
+      2043,
+      1244
+    ]
+  },
+  {
+    "region_id": "DST000334",
+    "region_type": "land",
+    "color": "#e786fc",
+    "pixel_count": 35279,
+    "density_multiplier": 0.77,
+    "parent_id": "AREA000265",
+    "local_bbox": [
+      0,
+      0,
+      259,
+      271
+    ],
+    "local_center": [
+      131,
+      140
+    ],
+    "local_seed": [
+      129,
+      141
+    ],
+    "global_bbox": [
+      1658,
+      1092,
+      1917,
+      1363
+    ],
+    "global_center": [
+      1789,
+      1232
+    ],
+    "global_seed": [
+      1787,
+      1233
+    ]
+  },
+  {
+    "region_id": "DST000335",
+    "region_type": "land",
+    "color": "#5ad68d",
     "pixel_count": 566,
     "density_multiplier": 1.0,
-    "parent_id": "AREA000275",
+    "parent_id": "AREA000278",
     "local_bbox": [
       0,
       0,
@@ -10764,12 +12060,12 @@
     ]
   },
   {
-    "region_id": "DST000300",
+    "region_id": "DST000336",
     "region_type": "land",
-    "color": "#5a4b63",
+    "color": "#f51c70",
     "pixel_count": 834,
     "density_multiplier": 1.0,
-    "parent_id": "AREA000276",
+    "parent_id": "AREA000279",
     "local_bbox": [
       0,
       0,
@@ -10800,12 +12096,12 @@
     ]
   },
   {
-    "region_id": "DST000301",
+    "region_id": "DST000337",
     "region_type": "land",
-    "color": "#59eac7",
+    "color": "#eb5770",
     "pixel_count": 16798,
     "density_multiplier": 1.0,
-    "parent_id": "AREA000277",
+    "parent_id": "AREA000280",
     "local_bbox": [
       0,
       0,
@@ -10836,12 +12132,12 @@
     ]
   },
   {
-    "region_id": "DST000302",
+    "region_id": "DST000338",
     "region_type": "land",
-    "color": "#5ad68d",
+    "color": "#2cd540",
     "pixel_count": 357,
     "density_multiplier": 1.0,
-    "parent_id": "AREA000278",
+    "parent_id": "AREA000281",
     "local_bbox": [
       0,
       0,
@@ -10872,12 +12168,12 @@
     ]
   },
   {
-    "region_id": "DST000303",
+    "region_id": "DST000339",
     "region_type": "land",
-    "color": "#f51c70",
+    "color": "#cc3ab7",
     "pixel_count": 5709,
     "density_multiplier": 1.0,
-    "parent_id": "AREA000279",
+    "parent_id": "AREA000282",
     "local_bbox": [
       0,
       0,
@@ -10908,192 +12204,12 @@
     ]
   },
   {
-    "region_id": "DST000304",
-    "region_type": "land",
-    "color": "#a47eb8",
-    "pixel_count": 32434,
-    "density_multiplier": 0.93,
-    "parent_id": "AREA000262",
-    "local_bbox": [
-      248,
-      327,
-      512,
-      609
-    ],
-    "local_center": [
-      359,
-      446
-    ],
-    "local_seed": [
-      356,
-      452
-    ],
-    "global_bbox": [
-      1906,
-      1419,
-      2170,
-      1701
-    ],
-    "global_center": [
-      2017,
-      1538
-    ],
-    "global_seed": [
-      2014,
-      1544
-    ]
-  },
-  {
-    "region_id": "DST000305",
-    "region_type": "land",
-    "color": "#40e083",
-    "pixel_count": 29427,
-    "density_multiplier": 0.77,
-    "parent_id": "AREA000262",
-    "local_bbox": [
-      139,
-      162,
-      375,
-      394
-    ],
-    "local_center": [
-      272,
-      272
-    ],
-    "local_seed": [
-      265,
-      270
-    ],
-    "global_bbox": [
-      1797,
-      1254,
-      2033,
-      1486
-    ],
-    "global_center": [
-      1930,
-      1364
-    ],
-    "global_seed": [
-      1923,
-      1362
-    ]
-  },
-  {
-    "region_id": "DST000306",
-    "region_type": "land",
-    "color": "#a01c0b",
-    "pixel_count": 42705,
-    "density_multiplier": 0.96,
-    "parent_id": "AREA000262",
-    "local_bbox": [
-      376,
-      124,
-      612,
-      427
-    ],
-    "local_center": [
-      489,
-      263
-    ],
-    "local_seed": [
-      486,
-      271
-    ],
-    "global_bbox": [
-      2034,
-      1216,
-      2270,
-      1519
-    ],
-    "global_center": [
-      2147,
-      1355
-    ],
-    "global_seed": [
-      2144,
-      1363
-    ]
-  },
-  {
-    "region_id": "DST000307",
-    "region_type": "land",
-    "color": "#07a3a8",
-    "pixel_count": 30636,
-    "density_multiplier": 0.84,
-    "parent_id": "AREA000262",
-    "local_bbox": [
-      242,
-      13,
-      496,
-      246
-    ],
-    "local_center": [
-      348,
-      135
-    ],
-    "local_seed": [
-      351,
-      137
-    ],
-    "global_bbox": [
-      1900,
-      1105,
-      2154,
-      1338
-    ],
-    "global_center": [
-      2006,
-      1227
-    ],
-    "global_seed": [
-      2009,
-      1229
-    ]
-  },
-  {
-    "region_id": "DST000308",
-    "region_type": "land",
-    "color": "#31113e",
-    "pixel_count": 37482,
-    "density_multiplier": 0.77,
-    "parent_id": "AREA000262",
-    "local_bbox": [
-      0,
-      0,
-      242,
-      265
-    ],
-    "local_center": [
-      136,
-      143
-    ],
-    "local_seed": [
-      133,
-      140
-    ],
-    "global_bbox": [
-      1658,
-      1092,
-      1900,
-      1357
-    ],
-    "global_center": [
-      1794,
-      1235
-    ],
-    "global_seed": [
-      1791,
-      1232
-    ]
-  },
-  {
-    "region_id": "DST000309",
+    "region_id": "DST000340",
     "region_type": "ocean",
-    "color": "#371b87",
+    "color": "#2f456f",
     "pixel_count": 113,
     "density_multiplier": 1.0,
-    "parent_id": "AREA000280",
+    "parent_id": "AREA000283",
     "local_bbox": [
       0,
       0,
@@ -11124,12 +12240,12 @@
     ]
   },
   {
-    "region_id": "DST000310",
+    "region_id": "DST000341",
     "region_type": "land",
-    "color": "#2cd540",
+    "color": "#b9ca07",
     "pixel_count": 340,
     "density_multiplier": 1.0,
-    "parent_id": "AREA000281",
+    "parent_id": "AREA000284",
     "local_bbox": [
       0,
       0,
@@ -11160,12 +12276,12 @@
     ]
   },
   {
-    "region_id": "DST000311",
+    "region_id": "DST000342",
     "region_type": "land",
-    "color": "#cc3ab7",
+    "color": "#f18d95",
     "pixel_count": 7150,
     "density_multiplier": 1.0,
-    "parent_id": "AREA000282",
+    "parent_id": "AREA000285",
     "local_bbox": [
       0,
       0,
@@ -11196,12 +12312,12 @@
     ]
   },
   {
-    "region_id": "DST000312",
+    "region_id": "DST000343",
     "region_type": "land",
-    "color": "#c9de25",
+    "color": "#039cf8",
     "pixel_count": 184,
     "density_multiplier": 1.0,
-    "parent_id": "AREA000283",
+    "parent_id": "AREA000286",
     "local_bbox": [
       0,
       0,
@@ -11232,12 +12348,12 @@
     ]
   },
   {
-    "region_id": "DST000313",
+    "region_id": "DST000344",
     "region_type": "ocean",
-    "color": "#2b3f66",
+    "color": "#1b0a6e",
     "pixel_count": 103,
     "density_multiplier": 1.0,
-    "parent_id": "AREA000284",
+    "parent_id": "AREA000287",
     "local_bbox": [
       0,
       0,
@@ -11268,12 +12384,12 @@
     ]
   },
   {
-    "region_id": "DST000314",
+    "region_id": "DST000345",
     "region_type": "lake",
-    "color": "#382c92",
+    "color": "#26446b",
     "pixel_count": 384,
     "density_multiplier": 1.0,
-    "parent_id": "AREA000285",
+    "parent_id": "AREA000288",
     "local_bbox": [
       0,
       0,
@@ -11304,12 +12420,12 @@
     ]
   },
   {
-    "region_id": "DST000315",
+    "region_id": "DST000346",
     "region_type": "ocean",
-    "color": "#0030b1",
+    "color": "#3337a2",
     "pixel_count": 451,
     "density_multiplier": 1.0,
-    "parent_id": "AREA000286",
+    "parent_id": "AREA000289",
     "local_bbox": [
       0,
       0,
@@ -11340,12 +12456,12 @@
     ]
   },
   {
-    "region_id": "DST000316",
+    "region_id": "DST000347",
     "region_type": "land",
-    "color": "#762220",
+    "color": "#fb83bf",
     "pixel_count": 56,
     "density_multiplier": 1.0,
-    "parent_id": "AREA000287",
+    "parent_id": "AREA000290",
     "local_bbox": [
       0,
       0,
@@ -11376,12 +12492,12 @@
     ]
   },
   {
-    "region_id": "DST000317",
+    "region_id": "DST000348",
     "region_type": "ocean",
-    "color": "#26446b",
+    "color": "#222d66",
     "pixel_count": 93,
     "density_multiplier": 1.0,
-    "parent_id": "AREA000288",
+    "parent_id": "AREA000291",
     "local_bbox": [
       0,
       0,
@@ -11412,12 +12528,12 @@
     ]
   },
   {
-    "region_id": "DST000318",
+    "region_id": "DST000349",
     "region_type": "land",
-    "color": "#dbb0c8",
+    "color": "#2fe009",
     "pixel_count": 24182,
     "density_multiplier": 1.0,
-    "parent_id": "AREA000289",
+    "parent_id": "AREA000292",
     "local_bbox": [
       0,
       0,
@@ -11448,12 +12564,12 @@
     ]
   },
   {
-    "region_id": "DST000319",
+    "region_id": "DST000350",
     "region_type": "land",
-    "color": "#fb83bf",
+    "color": "#e561db",
     "pixel_count": 2057,
     "density_multiplier": 1.0,
-    "parent_id": "AREA000290",
+    "parent_id": "AREA000293",
     "local_bbox": [
       0,
       0,
@@ -11484,12 +12600,12 @@
     ]
   },
   {
-    "region_id": "DST000320",
+    "region_id": "DST000351",
     "region_type": "land",
-    "color": "#949108",
+    "color": "#378654",
     "pixel_count": 158,
     "density_multiplier": 1.0,
-    "parent_id": "AREA000291",
+    "parent_id": "AREA000294",
     "local_bbox": [
       0,
       0,
@@ -11520,12 +12636,12 @@
     ]
   },
   {
-    "region_id": "DST000321",
+    "region_id": "DST000352",
     "region_type": "ocean",
-    "color": "#0b4666",
+    "color": "#2f4b80",
     "pixel_count": 52,
     "density_multiplier": 1.0,
-    "parent_id": "AREA000292",
+    "parent_id": "AREA000295",
     "local_bbox": [
       0,
       0,
@@ -11556,12 +12672,12 @@
     ]
   },
   {
-    "region_id": "DST000322",
+    "region_id": "DST000353",
     "region_type": "land",
-    "color": "#e561db",
+    "color": "#99e36f",
     "pixel_count": 14320,
     "density_multiplier": 1.0,
-    "parent_id": "AREA000293",
+    "parent_id": "AREA000296",
     "local_bbox": [
       0,
       0,
@@ -11592,12 +12708,12 @@
     ]
   },
   {
-    "region_id": "DST000323",
+    "region_id": "DST000354",
     "region_type": "land",
-    "color": "#378654",
+    "color": "#509f26",
     "pixel_count": 132,
     "density_multiplier": 1.0,
-    "parent_id": "AREA000294",
+    "parent_id": "AREA000297",
     "local_bbox": [
       0,
       0,
@@ -11628,12 +12744,12 @@
     ]
   },
   {
-    "region_id": "DST000324",
+    "region_id": "DST000355",
     "region_type": "ocean",
-    "color": "#2f4b80",
+    "color": "#283891",
     "pixel_count": 161,
     "density_multiplier": 0.99,
-    "parent_id": "AREA000295",
+    "parent_id": "AREA000298",
     "local_bbox": [
       0,
       0,
@@ -11664,12 +12780,12 @@
     ]
   },
   {
-    "region_id": "DST000325",
+    "region_id": "DST000356",
     "region_type": "land",
-    "color": "#99e36f",
+    "color": "#ba3746",
     "pixel_count": 85,
     "density_multiplier": 1.01,
-    "parent_id": "AREA000296",
+    "parent_id": "AREA000299",
     "local_bbox": [
       0,
       0,
@@ -11700,12 +12816,12 @@
     ]
   },
   {
-    "region_id": "DST000326",
+    "region_id": "DST000357",
     "region_type": "ocean",
-    "color": "#123170",
+    "color": "#2c1880",
     "pixel_count": 163,
     "density_multiplier": 1.0,
-    "parent_id": "AREA000297",
+    "parent_id": "AREA000300",
     "local_bbox": [
       0,
       0,
@@ -11736,12 +12852,12 @@
     ]
   },
   {
-    "region_id": "DST000327",
+    "region_id": "DST000358",
     "region_type": "ocean",
-    "color": "#283891",
+    "color": "#312fad",
     "pixel_count": 51,
     "density_multiplier": 1.0,
-    "parent_id": "AREA000298",
+    "parent_id": "AREA000301",
     "local_bbox": [
       0,
       0,
@@ -11772,12 +12888,12 @@
     ]
   },
   {
-    "region_id": "DST000328",
+    "region_id": "DST000359",
     "region_type": "ocean",
-    "color": "#2b117a",
+    "color": "#30287c",
     "pixel_count": 129,
     "density_multiplier": 1.0,
-    "parent_id": "AREA000299",
+    "parent_id": "AREA000302",
     "local_bbox": [
       0,
       0,
@@ -11808,12 +12924,12 @@
     ]
   },
   {
-    "region_id": "DST000329",
+    "region_id": "DST000360",
     "region_type": "lake",
-    "color": "#2c1880",
+    "color": "#154c78",
     "pixel_count": 357,
     "density_multiplier": 1.0,
-    "parent_id": "AREA000300",
+    "parent_id": "AREA000303",
     "local_bbox": [
       0,
       0,
@@ -11844,12 +12960,12 @@
     ]
   },
   {
-    "region_id": "DST000330",
+    "region_id": "DST000361",
     "region_type": "land",
-    "color": "#d396ea",
+    "color": "#bd40cb",
     "pixel_count": 1484,
     "density_multiplier": 1.0,
-    "parent_id": "AREA000301",
+    "parent_id": "AREA000304",
     "local_bbox": [
       0,
       0,
@@ -11880,12 +12996,12 @@
     ]
   },
   {
-    "region_id": "DST000331",
+    "region_id": "DST000362",
     "region_type": "land",
-    "color": "#ce824f",
+    "color": "#533569",
     "pixel_count": 21510,
     "density_multiplier": 1.0,
-    "parent_id": "AREA000302",
+    "parent_id": "AREA000305",
     "local_bbox": [
       0,
       0,
@@ -11916,12 +13032,12 @@
     ]
   },
   {
-    "region_id": "DST000332",
+    "region_id": "DST000363",
     "region_type": "land",
-    "color": "#5df442",
+    "color": "#83e00e",
     "pixel_count": 15017,
     "density_multiplier": 1.0,
-    "parent_id": "AREA000303",
+    "parent_id": "AREA000306",
     "local_bbox": [
       0,
       0,
@@ -11952,12 +13068,12 @@
     ]
   },
   {
-    "region_id": "DST000333",
+    "region_id": "DST000364",
     "region_type": "land",
-    "color": "#533569",
+    "color": "#c13e76",
     "pixel_count": 11656,
     "density_multiplier": 1.0,
-    "parent_id": "AREA000305",
+    "parent_id": "AREA000308",
     "local_bbox": [
       0,
       0,
@@ -11988,12 +13104,12 @@
     ]
   },
   {
-    "region_id": "DST000334",
+    "region_id": "DST000365",
     "region_type": "land",
-    "color": "#83e00e",
+    "color": "#cd2512",
     "pixel_count": 7662,
     "density_multiplier": 1.0,
-    "parent_id": "AREA000306",
+    "parent_id": "AREA000309",
     "local_bbox": [
       0,
       0,
@@ -12024,12 +13140,12 @@
     ]
   },
   {
-    "region_id": "DST000335",
+    "region_id": "DST000366",
     "region_type": "land",
-    "color": "#934f13",
+    "color": "#fa0566",
     "pixel_count": 16621,
     "density_multiplier": 1.0,
-    "parent_id": "AREA000307",
+    "parent_id": "AREA000310",
     "local_bbox": [
       0,
       0,
@@ -12060,12 +13176,12 @@
     ]
   },
   {
-    "region_id": "DST000336",
+    "region_id": "DST000367",
     "region_type": "ocean",
-    "color": "#2d1389",
+    "color": "#1439a1",
     "pixel_count": 148,
     "density_multiplier": 1.0,
-    "parent_id": "AREA000308",
+    "parent_id": "AREA000311",
     "local_bbox": [
       0,
       0,
@@ -12096,12 +13212,12 @@
     ]
   },
   {
-    "region_id": "DST000337",
+    "region_id": "DST000368",
     "region_type": "land",
-    "color": "#cd2512",
+    "color": "#134b5c",
     "pixel_count": 11943,
     "density_multiplier": 1.0,
-    "parent_id": "AREA000309",
+    "parent_id": "AREA000312",
     "local_bbox": [
       0,
       0,
@@ -12132,12 +13248,12 @@
     ]
   },
   {
-    "region_id": "DST000338",
+    "region_id": "DST000369",
     "region_type": "land",
-    "color": "#fa0566",
+    "color": "#adb8b1",
     "pixel_count": 11745,
     "density_multiplier": 1.0,
-    "parent_id": "AREA000310",
+    "parent_id": "AREA000313",
     "local_bbox": [
       0,
       0,
@@ -12168,12 +13284,12 @@
     ]
   },
   {
-    "region_id": "DST000339",
+    "region_id": "DST000370",
     "region_type": "land",
-    "color": "#58b8c3",
+    "color": "#729f33",
     "pixel_count": 8026,
     "density_multiplier": 1.0,
-    "parent_id": "AREA000311",
+    "parent_id": "AREA000314",
     "local_bbox": [
       0,
       0,
@@ -12204,12 +13320,12 @@
     ]
   },
   {
-    "region_id": "DST000340",
+    "region_id": "DST000371",
     "region_type": "ocean",
-    "color": "#041780",
+    "color": "#194067",
     "pixel_count": 177,
     "density_multiplier": 1.0,
-    "parent_id": "AREA000312",
+    "parent_id": "AREA000315",
     "local_bbox": [
       0,
       0,
@@ -12240,12 +13356,12 @@
     ]
   },
   {
-    "region_id": "DST000341",
+    "region_id": "DST000372",
     "region_type": "land",
-    "color": "#729f33",
+    "color": "#bd79af",
     "pixel_count": 26300,
     "density_multiplier": 1.0,
-    "parent_id": "AREA000314",
+    "parent_id": "AREA000317",
     "local_bbox": [
       0,
       0,
@@ -12276,12 +13392,12 @@
     ]
   },
   {
-    "region_id": "DST000342",
+    "region_id": "DST000373",
     "region_type": "land",
-    "color": "#6ece0c",
+    "color": "#d16f59",
     "pixel_count": 288,
     "density_multiplier": 1.0,
-    "parent_id": "AREA000315",
+    "parent_id": "AREA000318",
     "local_bbox": [
       0,
       0,
@@ -12312,12 +13428,12 @@
     ]
   },
   {
-    "region_id": "DST000343",
+    "region_id": "DST000374",
     "region_type": "land",
-    "color": "#33c3f8",
+    "color": "#4973f4",
     "pixel_count": 546,
     "density_multiplier": 1.0,
-    "parent_id": "AREA000316",
+    "parent_id": "AREA000319",
     "local_bbox": [
       0,
       0,
@@ -12348,12 +13464,12 @@
     ]
   },
   {
-    "region_id": "DST000344",
+    "region_id": "DST000375",
     "region_type": "land",
-    "color": "#bd79af",
+    "color": "#22d916",
     "pixel_count": 3824,
     "density_multiplier": 1.0,
-    "parent_id": "AREA000317",
+    "parent_id": "AREA000320",
     "local_bbox": [
       0,
       0,
@@ -12384,12 +13500,156 @@
     ]
   },
   {
-    "region_id": "DST000345",
+    "region_id": "DST000376",
+    "region_type": "land",
+    "color": "#934f13",
+    "pixel_count": 49430,
+    "density_multiplier": 0.74,
+    "parent_id": "AREA000307",
+    "local_bbox": [
+      181,
+      0,
+      501,
+      282
+    ],
+    "local_center": [
+      337,
+      137
+    ],
+    "local_seed": [
+      343,
+      140
+    ],
+    "global_bbox": [
+      4773,
+      1342,
+      5093,
+      1624
+    ],
+    "global_center": [
+      4929,
+      1479
+    ],
+    "global_seed": [
+      4935,
+      1482
+    ]
+  },
+  {
+    "region_id": "DST000377",
+    "region_type": "land",
+    "color": "#46d003",
+    "pixel_count": 31490,
+    "density_multiplier": 0.86,
+    "parent_id": "AREA000307",
+    "local_bbox": [
+      434,
+      90,
+      629,
+      408
+    ],
+    "local_center": [
+      536,
+      249
+    ],
+    "local_seed": [
+      541,
+      251
+    ],
+    "global_bbox": [
+      5026,
+      1432,
+      5221,
+      1750
+    ],
+    "global_center": [
+      5128,
+      1591
+    ],
+    "global_seed": [
+      5133,
+      1593
+    ]
+  },
+  {
+    "region_id": "DST000378",
+    "region_type": "land",
+    "color": "#f99f80",
+    "pixel_count": 53952,
+    "density_multiplier": 0.74,
+    "parent_id": "AREA000307",
+    "local_bbox": [
+      0,
+      70,
+      286,
+      380
+    ],
+    "local_center": [
+      137,
+      245
+    ],
+    "local_seed": [
+      137,
+      244
+    ],
+    "global_bbox": [
+      4592,
+      1412,
+      4878,
+      1722
+    ],
+    "global_center": [
+      4729,
+      1587
+    ],
+    "global_seed": [
+      4729,
+      1586
+    ]
+  },
+  {
+    "region_id": "DST000379",
+    "region_type": "land",
+    "color": "#50d390",
+    "pixel_count": 33371,
+    "density_multiplier": 0.85,
+    "parent_id": "AREA000307",
+    "local_bbox": [
+      270,
+      216,
+      572,
+      439
+    ],
+    "local_center": [
+      425,
+      335
+    ],
+    "local_seed": [
+      431,
+      336
+    ],
+    "global_bbox": [
+      4862,
+      1558,
+      5164,
+      1781
+    ],
+    "global_center": [
+      5017,
+      1677
+    ],
+    "global_seed": [
+      5023,
+      1678
+    ]
+  },
+  {
+    "region_id": "DST000380",
     "region_type": "ocean",
-    "color": "#31227f",
+    "color": "#300989",
     "pixel_count": 110,
     "density_multiplier": 1.0,
-    "parent_id": "AREA000318",
+    "parent_id": "AREA000321",
     "local_bbox": [
       0,
       0,
@@ -12420,12 +13680,84 @@
     ]
   },
   {
-    "region_id": "DST000346",
+    "region_id": "DST000381",
+    "region_type": "land",
+    "color": "#33c3f8",
+    "pixel_count": 33061,
+    "density_multiplier": 1.0,
+    "parent_id": "AREA000316",
+    "local_bbox": [
+      0,
+      181,
+      261,
+      476
+    ],
+    "local_center": [
+      98,
+      307
+    ],
+    "local_seed": [
+      107,
+      294
+    ],
+    "global_bbox": [
+      1665,
+      1696,
+      1926,
+      1991
+    ],
+    "global_center": [
+      1763,
+      1822
+    ],
+    "global_seed": [
+      1772,
+      1809
+    ]
+  },
+  {
+    "region_id": "DST000382",
+    "region_type": "land",
+    "color": "#24c240",
+    "pixel_count": 34444,
+    "density_multiplier": 1.0,
+    "parent_id": "AREA000316",
+    "local_bbox": [
+      46,
+      0,
+      310,
+      237
+    ],
+    "local_center": [
+      161,
+      115
+    ],
+    "local_seed": [
+      159,
+      103
+    ],
+    "global_bbox": [
+      1711,
+      1515,
+      1975,
+      1752
+    ],
+    "global_center": [
+      1826,
+      1630
+    ],
+    "global_seed": [
+      1824,
+      1618
+    ]
+  },
+  {
+    "region_id": "DST000383",
     "region_type": "ocean",
-    "color": "#1124b0",
+    "color": "#2f2ab1",
     "pixel_count": 128,
     "density_multiplier": 1.0,
-    "parent_id": "AREA000319",
+    "parent_id": "AREA000322",
     "local_bbox": [
       0,
       0,
@@ -12456,84 +13788,12 @@
     ]
   },
   {
-    "region_id": "DST000347",
+    "region_id": "DST000384",
     "region_type": "land",
-    "color": "#adb8b1",
-    "pixel_count": 41705,
-    "density_multiplier": 1.0,
-    "parent_id": "AREA000313",
-    "local_bbox": [
-      46,
-      0,
-      310,
-      266
-    ],
-    "local_center": [
-      161,
-      134
-    ],
-    "local_seed": [
-      162,
-      133
-    ],
-    "global_bbox": [
-      1711,
-      1515,
-      1975,
-      1781
-    ],
-    "global_center": [
-      1826,
-      1649
-    ],
-    "global_seed": [
-      1827,
-      1648
-    ]
-  },
-  {
-    "region_id": "DST000348",
-    "region_type": "land",
-    "color": "#3a1c56",
-    "pixel_count": 25800,
-    "density_multiplier": 1.0,
-    "parent_id": "AREA000313",
-    "local_bbox": [
-      0,
-      202,
-      207,
-      476
-    ],
-    "local_center": [
-      80,
-      330
-    ],
-    "local_seed": [
-      81,
-      328
-    ],
-    "global_bbox": [
-      1665,
-      1717,
-      1872,
-      1991
-    ],
-    "global_center": [
-      1745,
-      1845
-    ],
-    "global_seed": [
-      1746,
-      1843
-    ]
-  },
-  {
-    "region_id": "DST000349",
-    "region_type": "land",
-    "color": "#22d916",
+    "color": "#4c4d6d",
     "pixel_count": 2090,
     "density_multiplier": 1.0,
-    "parent_id": "AREA000320",
+    "parent_id": "AREA000323",
     "local_bbox": [
       0,
       0,
@@ -12564,156 +13824,12 @@
     ]
   },
   {
-    "region_id": "DST000350",
+    "region_id": "DST000385",
     "region_type": "land",
-    "color": "#bd40cb",
-    "pixel_count": 26319,
-    "density_multiplier": 0.74,
-    "parent_id": "AREA000304",
-    "local_bbox": [
-      0,
-      94,
-      183,
-      379
-    ],
-    "local_center": [
-      85,
-      229
-    ],
-    "local_seed": [
-      83,
-      218
-    ],
-    "global_bbox": [
-      4592,
-      1436,
-      4775,
-      1721
-    ],
-    "global_center": [
-      4677,
-      1571
-    ],
-    "global_seed": [
-      4675,
-      1560
-    ]
-  },
-  {
-    "region_id": "DST000351",
-    "region_type": "land",
-    "color": "#05dd75",
-    "pixel_count": 72220,
-    "density_multiplier": 0.84,
-    "parent_id": "AREA000304",
-    "local_bbox": [
-      325,
-      19,
-      629,
-      439
-    ],
-    "local_center": [
-      479,
-      273
-    ],
-    "local_seed": [
-      471,
-      266
-    ],
-    "global_bbox": [
-      4917,
-      1361,
-      5221,
-      1781
-    ],
-    "global_center": [
-      5071,
-      1615
-    ],
-    "global_seed": [
-      5063,
-      1608
-    ]
-  },
-  {
-    "region_id": "DST000352",
-    "region_type": "land",
-    "color": "#e9bcee",
-    "pixel_count": 28016,
-    "density_multiplier": 0.74,
-    "parent_id": "AREA000304",
-    "local_bbox": [
-      51,
-      169,
-      333,
-      380
-    ],
-    "local_center": [
-      206,
-      284
-    ],
-    "local_seed": [
-      187,
-      288
-    ],
-    "global_bbox": [
-      4643,
-      1511,
-      4925,
-      1722
-    ],
-    "global_center": [
-      4798,
-      1626
-    ],
-    "global_seed": [
-      4779,
-      1630
-    ]
-  },
-  {
-    "region_id": "DST000353",
-    "region_type": "land",
-    "color": "#e4dfa7",
-    "pixel_count": 41688,
-    "density_multiplier": 0.74,
-    "parent_id": "AREA000304",
-    "local_bbox": [
-      146,
-      0,
-      463,
-      255
-    ],
-    "local_center": [
-      300,
-      126
-    ],
-    "local_seed": [
-      285,
-      121
-    ],
-    "global_bbox": [
-      4738,
-      1342,
-      5055,
-      1597
-    ],
-    "global_center": [
-      4892,
-      1468
-    ],
-    "global_seed": [
-      4877,
-      1463
-    ]
-  },
-  {
-    "region_id": "DST000354",
-    "region_type": "land",
-    "color": "#ce1f77",
+    "color": "#ffcb65",
     "pixel_count": 3533,
     "density_multiplier": 1.0,
-    "parent_id": "AREA000321",
+    "parent_id": "AREA000324",
     "local_bbox": [
       0,
       0,
@@ -12744,12 +13860,12 @@
     ]
   },
   {
-    "region_id": "DST000355",
+    "region_id": "DST000386",
     "region_type": "land",
-    "color": "#c989f8",
+    "color": "#bdd927",
     "pixel_count": 1385,
     "density_multiplier": 1.0,
-    "parent_id": "AREA000322",
+    "parent_id": "AREA000325",
     "local_bbox": [
       0,
       0,
@@ -12780,12 +13896,12 @@
     ]
   },
   {
-    "region_id": "DST000356",
+    "region_id": "DST000387",
     "region_type": "ocean",
-    "color": "#111886",
+    "color": "#0b3b84",
     "pixel_count": 106,
     "density_multiplier": 1.0,
-    "parent_id": "AREA000323",
+    "parent_id": "AREA000326",
     "local_bbox": [
       0,
       0,
@@ -12816,12 +13932,12 @@
     ]
   },
   {
-    "region_id": "DST000357",
+    "region_id": "DST000388",
     "region_type": "ocean",
-    "color": "#3b3f83",
+    "color": "#1b2699",
     "pixel_count": 50,
     "density_multiplier": 1.0,
-    "parent_id": "AREA000324",
+    "parent_id": "AREA000327",
     "local_bbox": [
       0,
       0,
@@ -12852,12 +13968,12 @@
     ]
   },
   {
-    "region_id": "DST000358",
+    "region_id": "DST000389",
     "region_type": "land",
-    "color": "#bdd927",
+    "color": "#72a767",
     "pixel_count": 268,
     "density_multiplier": 1.0,
-    "parent_id": "AREA000325",
+    "parent_id": "AREA000328",
     "local_bbox": [
       0,
       0,
@@ -12888,12 +14004,12 @@
     ]
   },
   {
-    "region_id": "DST000359",
+    "region_id": "DST000390",
     "region_type": "land",
-    "color": "#30bd68",
+    "color": "#ab9cb6",
     "pixel_count": 446,
     "density_multiplier": 1.0,
-    "parent_id": "AREA000326",
+    "parent_id": "AREA000329",
     "local_bbox": [
       0,
       0,
@@ -12924,12 +14040,12 @@
     ]
   },
   {
-    "region_id": "DST000360",
+    "region_id": "DST000391",
     "region_type": "land",
-    "color": "#757bab",
+    "color": "#b95065",
     "pixel_count": 455,
     "density_multiplier": 1.0,
-    "parent_id": "AREA000327",
+    "parent_id": "AREA000330",
     "local_bbox": [
       0,
       0,
@@ -12960,12 +14076,12 @@
     ]
   },
   {
-    "region_id": "DST000361",
+    "region_id": "DST000392",
     "region_type": "land",
-    "color": "#72a767",
+    "color": "#5963a9",
     "pixel_count": 61,
     "density_multiplier": 1.0,
-    "parent_id": "AREA000328",
+    "parent_id": "AREA000331",
     "local_bbox": [
       0,
       0,
@@ -12996,12 +14112,12 @@
     ]
   },
   {
-    "region_id": "DST000362",
+    "region_id": "DST000393",
     "region_type": "land",
-    "color": "#ab9cb6",
+    "color": "#1c7e0c",
     "pixel_count": 480,
     "density_multiplier": 1.0,
-    "parent_id": "AREA000329",
+    "parent_id": "AREA000332",
     "local_bbox": [
       0,
       0,
@@ -13029,1086 +14145,6 @@
     "global_seed": [
       1759,
       2026
-    ]
-  },
-  {
-    "region_id": "DST000363",
-    "region_type": "ocean",
-    "color": "#281b86",
-    "pixel_count": 243964,
-    "density_multiplier": 0.58,
-    "parent_id": "AREA000001",
-    "local_bbox": [
-      4889,
-      1682,
-      5631,
-      2111
-    ],
-    "local_center": [
-      5237,
-      1941
-    ],
-    "local_seed": [
-      5243,
-      1945
-    ],
-    "global_bbox": [
-      4889,
-      1682,
-      5631,
-      2111
-    ],
-    "global_center": [
-      5237,
-      1941
-    ],
-    "global_seed": [
-      5243,
-      1945
-    ]
-  },
-  {
-    "region_id": "DST000364",
-    "region_type": "ocean",
-    "color": "#1b036e",
-    "pixel_count": 203664,
-    "density_multiplier": 0.58,
-    "parent_id": "AREA000001",
-    "local_bbox": [
-      5079,
-      1293,
-      5631,
-      1884
-    ],
-    "local_center": [
-      5418,
-      1555
-    ],
-    "local_seed": [
-      5415,
-      1561
-    ],
-    "global_bbox": [
-      5079,
-      1293,
-      5631,
-      1884
-    ],
-    "global_center": [
-      5418,
-      1555
-    ],
-    "global_seed": [
-      5415,
-      1561
-    ]
-  },
-  {
-    "region_id": "DST000365",
-    "region_type": "ocean",
-    "color": "#2112ad",
-    "pixel_count": 302191,
-    "density_multiplier": 0.58,
-    "parent_id": "AREA000001",
-    "local_bbox": [
-      4145,
-      1596,
-      4913,
-      2111
-    ],
-    "local_center": [
-      4561,
-      1889
-    ],
-    "local_seed": [
-      4555,
-      1892
-    ],
-    "global_bbox": [
-      4145,
-      1596,
-      4913,
-      2111
-    ],
-    "global_center": [
-      4561,
-      1889
-    ],
-    "global_seed": [
-      4555,
-      1892
-    ]
-  },
-  {
-    "region_id": "DST000366",
-    "region_type": "ocean",
-    "color": "#0007ac",
-    "pixel_count": 221051,
-    "density_multiplier": 0.88,
-    "parent_id": "AREA000001",
-    "local_bbox": [
-      4324,
-      936,
-      5052,
-      1610
-    ],
-    "local_center": [
-      4643,
-      1335
-    ],
-    "local_seed": [
-      4643,
-      1335
-    ],
-    "global_bbox": [
-      4324,
-      936,
-      5052,
-      1610
-    ],
-    "global_center": [
-      4643,
-      1335
-    ],
-    "global_seed": [
-      4643,
-      1335
-    ]
-  },
-  {
-    "region_id": "DST000367",
-    "region_type": "ocean",
-    "color": "#13306a",
-    "pixel_count": 319872,
-    "density_multiplier": 0.51,
-    "parent_id": "AREA000001",
-    "local_bbox": [
-      3716,
-      1316,
-      4384,
-      2111
-    ],
-    "local_center": [
-      4062,
-      1683
-    ],
-    "local_seed": [
-      4041,
-      1653
-    ],
-    "global_bbox": [
-      3716,
-      1316,
-      4384,
-      2111
-    ],
-    "global_center": [
-      4062,
-      1683
-    ],
-    "global_seed": [
-      4041,
-      1653
-    ]
-  },
-  {
-    "region_id": "DST000368",
-    "region_type": "ocean",
-    "color": "#272d8b",
-    "pixel_count": 275438,
-    "density_multiplier": 0.75,
-    "parent_id": "AREA000001",
-    "local_bbox": [
-      4470,
-      497,
-      5237,
-      1205
-    ],
-    "local_center": [
-      4900,
-      840
-    ],
-    "local_seed": [
-      4933,
-      822
-    ],
-    "global_bbox": [
-      4470,
-      497,
-      5237,
-      1205
-    ],
-    "global_center": [
-      4900,
-      840
-    ],
-    "global_seed": [
-      4933,
-      822
-    ]
-  },
-  {
-    "region_id": "DST000369",
-    "region_type": "ocean",
-    "color": "#1027ac",
-    "pixel_count": 253679,
-    "density_multiplier": 0.57,
-    "parent_id": "AREA000001",
-    "local_bbox": [
-      4980,
-      850,
-      5631,
-      1399
-    ],
-    "local_center": [
-      5339,
-      1123
-    ],
-    "local_seed": [
-      5343,
-      1122
-    ],
-    "global_bbox": [
-      4980,
-      850,
-      5631,
-      1399
-    ],
-    "global_center": [
-      5339,
-      1123
-    ],
-    "global_seed": [
-      5343,
-      1122
-    ]
-  },
-  {
-    "region_id": "DST000370",
-    "region_type": "ocean",
-    "color": "#0813ab",
-    "pixel_count": 193171,
-    "density_multiplier": 0.8,
-    "parent_id": "AREA000001",
-    "local_bbox": [
-      3994,
-      818,
-      4518,
-      1448
-    ],
-    "local_center": [
-      4232,
-      1137
-    ],
-    "local_seed": [
-      4277,
-      1101
-    ],
-    "global_bbox": [
-      3994,
-      818,
-      4518,
-      1448
-    ],
-    "global_center": [
-      4232,
-      1137
-    ],
-    "global_seed": [
-      4277,
-      1101
-    ]
-  },
-  {
-    "region_id": "DST000371",
-    "region_type": "ocean",
-    "color": "#1c3096",
-    "pixel_count": 243501,
-    "density_multiplier": 0.59,
-    "parent_id": "AREA000001",
-    "local_bbox": [
-      2831,
-      1534,
-      3370,
-      2111
-    ],
-    "local_center": [
-      3091,
-      1868
-    ],
-    "local_seed": [
-      3092,
-      1848
-    ],
-    "global_bbox": [
-      2831,
-      1534,
-      3370,
-      2111
-    ],
-    "global_center": [
-      3091,
-      1868
-    ],
-    "global_seed": [
-      3092,
-      1848
-    ]
-  },
-  {
-    "region_id": "DST000372",
-    "region_type": "ocean",
-    "color": "#1c0964",
-    "pixel_count": 235098,
-    "density_multiplier": 0.51,
-    "parent_id": "AREA000001",
-    "local_bbox": [
-      2311,
-      1595,
-      2857,
-      2111
-    ],
-    "local_center": [
-      2590,
-      1886
-    ],
-    "local_seed": [
-      2588,
-      1893
-    ],
-    "global_bbox": [
-      2311,
-      1595,
-      2857,
-      2111
-    ],
-    "global_center": [
-      2590,
-      1886
-    ],
-    "global_seed": [
-      2588,
-      1893
-    ]
-  },
-  {
-    "region_id": "DST000373",
-    "region_type": "ocean",
-    "color": "#194e7d",
-    "pixel_count": 173251,
-    "density_multiplier": 0.82,
-    "parent_id": "AREA000001",
-    "local_bbox": [
-      4917,
-      156,
-      5631,
-      651
-    ],
-    "local_center": [
-      5259,
-      393
-    ],
-    "local_seed": [
-      5256,
-      384
-    ],
-    "global_bbox": [
-      4917,
-      156,
-      5631,
-      651
-    ],
-    "global_center": [
-      5259,
-      393
-    ],
-    "global_seed": [
-      5256,
-      384
-    ]
-  },
-  {
-    "region_id": "DST000374",
-    "region_type": "ocean",
-    "color": "#323699",
-    "pixel_count": 232258,
-    "density_multiplier": 0.65,
-    "parent_id": "AREA000001",
-    "local_bbox": [
-      2510,
-      1055,
-      3043,
-      1664
-    ],
-    "local_center": [
-      2782,
-      1352
-    ],
-    "local_seed": [
-      2783,
-      1347
-    ],
-    "global_bbox": [
-      2510,
-      1055,
-      3043,
-      1664
-    ],
-    "global_center": [
-      2782,
-      1352
-    ],
-    "global_seed": [
-      2783,
-      1347
-    ]
-  },
-  {
-    "region_id": "DST000375",
-    "region_type": "ocean",
-    "color": "#1122aa",
-    "pixel_count": 222032,
-    "density_multiplier": 0.67,
-    "parent_id": "AREA000001",
-    "local_bbox": [
-      1719,
-      1573,
-      2320,
-      2111
-    ],
-    "local_center": [
-      2052,
-      1910
-    ],
-    "local_seed": [
-      2043,
-      1918
-    ],
-    "global_bbox": [
-      1719,
-      1573,
-      2320,
-      2111
-    ],
-    "global_center": [
-      2052,
-      1910
-    ],
-    "global_seed": [
-      2043,
-      1918
-    ]
-  },
-  {
-    "region_id": "DST000376",
-    "region_type": "ocean",
-    "color": "#0b0c96",
-    "pixel_count": 199339,
-    "density_multiplier": 0.62,
-    "parent_id": "AREA000001",
-    "local_bbox": [
-      2058,
-      1183,
-      2624,
-      1769
-    ],
-    "local_center": [
-      2371,
-      1474
-    ],
-    "local_seed": [
-      2365,
-      1464
-    ],
-    "global_bbox": [
-      2058,
-      1183,
-      2624,
-      1769
-    ],
-    "global_center": [
-      2371,
-      1474
-    ],
-    "global_seed": [
-      2365,
-      1464
-    ]
-  },
-  {
-    "region_id": "DST000377",
-    "region_type": "ocean",
-    "color": "#062caf",
-    "pixel_count": 281436,
-    "density_multiplier": 0.61,
-    "parent_id": "AREA000001",
-    "local_bbox": [
-      1931,
-      597,
-      2618,
-      1219
-    ],
-    "local_center": [
-      2292,
-      947
-    ],
-    "local_seed": [
-      2313,
-      923
-    ],
-    "global_bbox": [
-      1931,
-      597,
-      2618,
-      1219
-    ],
-    "global_center": [
-      2292,
-      947
-    ],
-    "global_seed": [
-      2313,
-      923
-    ]
-  },
-  {
-    "region_id": "DST000378",
-    "region_type": "ocean",
-    "color": "#024d73",
-    "pixel_count": 298707,
-    "density_multiplier": 0.56,
-    "parent_id": "AREA000001",
-    "local_bbox": [
-      3349,
-      1476,
-      3992,
-      2111
-    ],
-    "local_center": [
-      3611,
-      1842
-    ],
-    "local_seed": [
-      3616,
-      1867
-    ],
-    "global_bbox": [
-      3349,
-      1476,
-      3992,
-      2111
-    ],
-    "global_center": [
-      3611,
-      1842
-    ],
-    "global_seed": [
-      3616,
-      1867
-    ]
-  },
-  {
-    "region_id": "DST000379",
-    "region_type": "ocean",
-    "color": "#1c4469",
-    "pixel_count": 267012,
-    "density_multiplier": 0.67,
-    "parent_id": "AREA000001",
-    "local_bbox": [
-      1642,
-      120,
-      2357,
-      933
-    ],
-    "local_center": [
-      2002,
-      559
-    ],
-    "local_seed": [
-      2018,
-      583
-    ],
-    "global_bbox": [
-      1642,
-      120,
-      2357,
-      933
-    ],
-    "global_center": [
-      2002,
-      559
-    ],
-    "global_seed": [
-      2018,
-      583
-    ]
-  },
-  {
-    "region_id": "DST000380",
-    "region_type": "ocean",
-    "color": "#0404b0",
-    "pixel_count": 305002,
-    "density_multiplier": 0.69,
-    "parent_id": "AREA000001",
-    "local_bbox": [
-      3373,
-      698,
-      4019,
-      1531
-    ],
-    "local_center": [
-      3742,
-      1166
-    ],
-    "local_seed": [
-      3736,
-      1164
-    ],
-    "global_bbox": [
-      3373,
-      698,
-      4019,
-      1531
-    ],
-    "global_center": [
-      3742,
-      1166
-    ],
-    "global_seed": [
-      3736,
-      1164
-    ]
-  },
-  {
-    "region_id": "DST000381",
-    "region_type": "ocean",
-    "color": "#0d1379",
-    "pixel_count": 142510,
-    "density_multiplier": 0.92,
-    "parent_id": "AREA000001",
-    "local_bbox": [
-      2344,
-      138,
-      2888,
-      759
-    ],
-    "local_center": [
-      2594,
-      470
-    ],
-    "local_seed": [
-      2633,
-      430
-    ],
-    "global_bbox": [
-      2344,
-      138,
-      2888,
-      759
-    ],
-    "global_center": [
-      2594,
-      470
-    ],
-    "global_seed": [
-      2633,
-      430
-    ]
-  },
-  {
-    "region_id": "DST000382",
-    "region_type": "ocean",
-    "color": "#371f7f",
-    "pixel_count": 164983,
-    "density_multiplier": 0.97,
-    "parent_id": "AREA000001",
-    "local_bbox": [
-      1284,
-      562,
-      1930,
-      1080
-    ],
-    "local_center": [
-      1631,
-      839
-    ],
-    "local_seed": [
-      1586,
-      841
-    ],
-    "global_bbox": [
-      1284,
-      562,
-      1930,
-      1080
-    ],
-    "global_center": [
-      1631,
-      839
-    ],
-    "global_seed": [
-      1586,
-      841
-    ]
-  },
-  {
-    "region_id": "DST000383",
-    "region_type": "ocean",
-    "color": "#364b70",
-    "pixel_count": 135078,
-    "density_multiplier": 1.0,
-    "parent_id": "AREA000001",
-    "local_bbox": [
-      922,
-      0,
-      2022,
-      371
-    ],
-    "local_center": [
-      1594,
-      133
-    ],
-    "local_seed": [
-      1628,
-      143
-    ],
-    "global_bbox": [
-      922,
-      0,
-      2022,
-      371
-    ],
-    "global_center": [
-      1594,
-      133
-    ],
-    "global_seed": [
-      1628,
-      143
-    ]
-  },
-  {
-    "region_id": "DST000384",
-    "region_type": "ocean",
-    "color": "#340195",
-    "pixel_count": 177904,
-    "density_multiplier": 0.51,
-    "parent_id": "AREA000001",
-    "local_bbox": [
-      5168,
-      292,
-      5631,
-      933
-    ],
-    "local_center": [
-      5454,
-      662
-    ],
-    "local_seed": [
-      5465,
-      636
-    ],
-    "global_bbox": [
-      5168,
-      292,
-      5631,
-      933
-    ],
-    "global_center": [
-      5454,
-      662
-    ],
-    "global_seed": [
-      5465,
-      636
-    ]
-  },
-  {
-    "region_id": "DST000385",
-    "region_type": "ocean",
-    "color": "#2b46b0",
-    "pixel_count": 115682,
-    "density_multiplier": 2.04,
-    "parent_id": "AREA000001",
-    "local_bbox": [
-      2648,
-      0,
-      3355,
-      346
-    ],
-    "local_center": [
-      2925,
-      113
-    ],
-    "local_seed": [
-      2975,
-      93
-    ],
-    "global_bbox": [
-      2648,
-      0,
-      3355,
-      346
-    ],
-    "global_center": [
-      2925,
-      113
-    ],
-    "global_seed": [
-      2975,
-      93
-    ]
-  },
-  {
-    "region_id": "DST000386",
-    "region_type": "ocean",
-    "color": "#2a48a0",
-    "pixel_count": 492436,
-    "density_multiplier": 0.63,
-    "parent_id": "AREA000001",
-    "local_bbox": [
-      688,
-      677,
-      1612,
-      1575
-    ],
-    "local_center": [
-      1138,
-      1163
-    ],
-    "local_seed": [
-      1208,
-      1201
-    ],
-    "global_bbox": [
-      688,
-      677,
-      1612,
-      1575
-    ],
-    "global_center": [
-      1138,
-      1163
-    ],
-    "global_seed": [
-      1208,
-      1201
-    ]
-  },
-  {
-    "region_id": "DST000387",
-    "region_type": "ocean",
-    "color": "#1304aa",
-    "pixel_count": 163555,
-    "density_multiplier": 0.82,
-    "parent_id": "AREA000001",
-    "local_bbox": [
-      2036,
-      0,
-      2680,
-      549
-    ],
-    "local_center": [
-      2385,
-      249
-    ],
-    "local_seed": [
-      2410,
-      238
-    ],
-    "global_bbox": [
-      2036,
-      0,
-      2680,
-      549
-    ],
-    "global_center": [
-      2385,
-      249
-    ],
-    "global_seed": [
-      2410,
-      238
-    ]
-  },
-  {
-    "region_id": "DST000388",
-    "region_type": "ocean",
-    "color": "#18009d",
-    "pixel_count": 432563,
-    "density_multiplier": 0.51,
-    "parent_id": "AREA000001",
-    "local_bbox": [
-      408,
-      1353,
-      1217,
-      2111
-    ],
-    "local_center": [
-      870,
-      1806
-    ],
-    "local_seed": [
-      926,
-      1785
-    ],
-    "global_bbox": [
-      408,
-      1353,
-      1217,
-      2111
-    ],
-    "global_center": [
-      870,
-      1806
-    ],
-    "global_seed": [
-      926,
-      1785
-    ]
-  },
-  {
-    "region_id": "DST000389",
-    "region_type": "ocean",
-    "color": "#132da2",
-    "pixel_count": 309459,
-    "density_multiplier": 0.63,
-    "parent_id": "AREA000001",
-    "local_bbox": [
-      1202,
-      1368,
-      1736,
-      2111
-    ],
-    "local_center": [
-      1463,
-      1781
-    ],
-    "local_seed": [
-      1504,
-      1796
-    ],
-    "global_bbox": [
-      1202,
-      1368,
-      1736,
-      2111
-    ],
-    "global_center": [
-      1463,
-      1781
-    ],
-    "global_seed": [
-      1504,
-      1796
-    ]
-  },
-  {
-    "region_id": "DST000390",
-    "region_type": "ocean",
-    "color": "#133e8c",
-    "pixel_count": 64758,
-    "density_multiplier": 1.0,
-    "parent_id": "AREA000001",
-    "local_bbox": [
-      3338,
-      0,
-      4178,
-      174
-    ],
-    "local_center": [
-      3684,
-      47
-    ],
-    "local_seed": [
-      3684,
-      47
-    ],
-    "global_bbox": [
-      3338,
-      0,
-      4178,
-      174
-    ],
-    "global_center": [
-      3684,
-      47
-    ],
-    "global_seed": [
-      3684,
-      47
-    ]
-  },
-  {
-    "region_id": "DST000391",
-    "region_type": "ocean",
-    "color": "#012384",
-    "pixel_count": 766410,
-    "density_multiplier": 0.65,
-    "parent_id": "AREA000001",
-    "local_bbox": [
-      0,
-      0,
-      998,
-      1049
-    ],
-    "local_center": [
-      424,
-      561
-    ],
-    "local_seed": [
-      460,
-      561
-    ],
-    "global_bbox": [
-      0,
-      0,
-      998,
-      1049
-    ],
-    "global_center": [
-      424,
-      561
-    ],
-    "global_seed": [
-      460,
-      561
-    ]
-  },
-  {
-    "region_id": "DST000392",
-    "region_type": "ocean",
-    "color": "#1546a8",
-    "pixel_count": 684054,
-    "density_multiplier": 0.51,
-    "parent_id": "AREA000001",
-    "local_bbox": [
-      0,
-      989,
-      774,
-      2111
-    ],
-    "local_center": [
-      319,
-      1514
-    ],
-    "local_seed": [
-      335,
-      1487
-    ],
-    "global_bbox": [
-      0,
-      989,
-      774,
-      2111
-    ],
-    "global_center": [
-      319,
-      1514
-    ],
-    "global_seed": [
-      335,
-      1487
     ]
   }
 ]
