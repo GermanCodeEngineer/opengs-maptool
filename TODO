@@ -24,6 +24,7 @@ CORE FUNCTIONALITY & BUGS
 [DONE] test what happens to border-only islands
 [DONE] remove cProfile stats and stuff
 [DONE] scaled classification image to match the boundary image more closely
+[DONE] fix region id bug
 
 ====================
 IMAGE & DATA GENERATION
@@ -42,7 +43,7 @@ DOCUMENTATION & UI
 [DONE] explain local vs. global fields and how to crop with global and local bbox
 [DONE] explain how to create classification and boundary/density image
 [DONE] keep hint that splitting complex and weird-shaped areas is good for performance(especially the world oceans when working with earth)
- rewrite and update README
+[DONE] rewrite and update README
 [DONE] add terms definition to README
 [DONE] improve flappy bird and run in separate process to avoid lags
  move GUI docs into GUI itself
@@ -62,8 +63,4 @@ MANUAL/POSTPROCESSING (LATER PR)
  explain why density image should not be a seperate image from boundary image
  explain that classification mismatches can happen because the example class image doesnt use the exact same map projection and original resolution
  optimize border image manually (e.g. Greece, Israel, especially Chile too, Denmark, Norway)
-
-====================
-Sources
-====================
- https://www.earthdata.nasa.gov/data/catalog/sedac-ciesin-sedac-gpwv4-popdens-4.0
+ note that showcase images in README need to be updated

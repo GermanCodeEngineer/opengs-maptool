@@ -93,7 +93,7 @@ class StepMapTool:
             boundary_image,
             rng_seed,
             min_area_pixels=min_area_pixels,  # Filter out tiny areas & islands
-            progress_callback=boundaries_progress
+            progress_callback=boundaries_progress,
         )
 
         if progress_callback:
@@ -109,10 +109,11 @@ class StepMapTool:
         if progress_callback:
             progress_callback(80, 100)
 
-        # Assign proper region_ids (like for territories)
+        # Assign proper region_ids
         number_series = NumberSeries(config.AREA_ID_PREFIX, config.SERIES_ID_START, config.SERIES_ID_END)
         for region in cont_area_data:
             region.region_id = number_series.get_id()
+        
         if progress_callback:
             progress_callback(100, 100)
         return (cont_area_image, cont_area_data)
@@ -166,6 +167,7 @@ class StepMapTool:
         if progress_callback:
             progress_callback(90, 100)
 
+        # Assign proper region_ids
         number_series = NumberSeries(config.DENS_SAMP_ID_PREFIX, config.SERIES_ID_START, config.SERIES_ID_END)
         for dens_samp in dens_samp_data:
             dens_samp.region_id = number_series.get_id()
@@ -209,8 +211,8 @@ class StepMapTool:
             density_image=boundary_image,
             pixels_per_land_region=pixels_per_land_territory,
             pixels_per_water_region=pixels_per_water_territory,
-            fn_new_number_series=lambda area_meta: NumberSeries(
-                f"{area_meta.region_id}-TEMP", config.SERIES_ID_START, config.SERIES_ID_END
+            fn_new_number_series=lambda dens_samp_meta: NumberSeries(
+                f"{dens_samp_meta.region_id}-TEMP", config.SERIES_ID_START, config.SERIES_ID_END
             ),
             rng_seed=rng_seed,
             lloyd_iterations=lloyd_iterations,
@@ -220,10 +222,10 @@ class StepMapTool:
             progress_callback=territory_progress,
         )
 
-        # Replace ids with correct format
         if progress_callback:
             progress_callback(90, 100)
-        
+
+        # Assign proper region_ids        
         number_series = NumberSeries(config.TERRITORY_ID_PREFIX, config.SERIES_ID_START, config.SERIES_ID_END)
         for territory in territory_data:
             territory.region_id = number_series.get_id()
@@ -278,13 +280,13 @@ class StepMapTool:
             progress_callback=province_progress,
         )
         
-        # Replace ids with correct format
         if progress_callback:
             progress_callback(90, 100)
         
+        # Assign proper region_ids
         number_series = NumberSeries(config.PROVINCE_ID_PREFIX, config.SERIES_ID_START, config.SERIES_ID_END)
-        for territory in territory_data:
-            territory.region_id = number_series.get_id()
+        for province in province_data:
+            province.region_id = number_series.get_id()
 
         if progress_callback:
             progress_callback(100, 100)

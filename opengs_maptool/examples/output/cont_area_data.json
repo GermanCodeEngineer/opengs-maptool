@@ -2,7 +2,7 @@
   {
     "region_id": "AREA000001",
     "region_type": "ocean",
-    "color": "#2820a0",
+    "color": "#1c28a0",
     "pixel_count": 2805785,
     "density_multiplier": null,
     "parent_id": null,
@@ -27,7 +27,7 @@
   {
     "region_id": "AREA000002",
     "region_type": "ocean",
-    "color": "#0c0e8f",
+    "color": "#39026f",
     "pixel_count": 254,
     "density_multiplier": null,
     "parent_id": null,
@@ -52,7 +52,7 @@
   {
     "region_id": "AREA000003",
     "region_type": "land",
-    "color": "#a2b062",
+    "color": "#d2f23f",
     "pixel_count": 82,
     "density_multiplier": null,
     "parent_id": null,
@@ -77,7 +77,7 @@
   {
     "region_id": "AREA000004",
     "region_type": "land",
-    "color": "#b7900d",
+    "color": "#4fde6c",
     "pixel_count": 98,
     "density_multiplier": null,
     "parent_id": null,
@@ -102,7 +102,7 @@
   {
     "region_id": "AREA000005",
     "region_type": "land",
-    "color": "#98fea5",
+    "color": "#45d341",
     "pixel_count": 374,
     "density_multiplier": null,
     "parent_id": null,
@@ -127,7 +127,7 @@
   {
     "region_id": "AREA000006",
     "region_type": "land",
-    "color": "#60f66c",
+    "color": "#68a48c",
     "pixel_count": 199,
     "density_multiplier": null,
     "parent_id": null,
@@ -152,7 +152,7 @@
   {
     "region_id": "AREA000007",
     "region_type": "land",
-    "color": "#97b9c9",
+    "color": "#1507dd",
     "pixel_count": 64763,
     "density_multiplier": null,
     "parent_id": null,
@@ -177,7 +177,7 @@
   {
     "region_id": "AREA000008",
     "region_type": "ocean",
-    "color": "#2e0f85",
+    "color": "#2d438f",
     "pixel_count": 2115870,
     "density_multiplier": null,
     "parent_id": null,
@@ -202,7 +202,7 @@
   {
     "region_id": "AREA000009",
     "region_type": "ocean",
-    "color": "#3b4985",
+    "color": "#311a88",
     "pixel_count": 71855,
     "density_multiplier": null,
     "parent_id": null,
@@ -227,7 +227,7 @@
   {
     "region_id": "AREA000010",
     "region_type": "land",
-    "color": "#6d3442",
+    "color": "#c91f4d",
     "pixel_count": 776,
     "density_multiplier": null,
     "parent_id": null,
@@ -252,7 +252,7 @@
   {
     "region_id": "AREA000011",
     "region_type": "land",
-    "color": "#b6a716",
+    "color": "#1f74fa",
     "pixel_count": 664228,
     "density_multiplier": null,
     "parent_id": null,
@@ -277,7 +277,7 @@
   {
     "region_id": "AREA000012",
     "region_type": "ocean",
-    "color": "#1d09a7",
+    "color": "#081e84",
     "pixel_count": 53456,
     "density_multiplier": null,
     "parent_id": null,
@@ -302,7 +302,7 @@
   {
     "region_id": "AREA000013",
     "region_type": "ocean",
-    "color": "#323c7e",
+    "color": "#36108c",
     "pixel_count": 50,
     "density_multiplier": null,
     "parent_id": null,
@@ -327,7 +327,7 @@
   {
     "region_id": "AREA000014",
     "region_type": "land",
-    "color": "#074d7f",
+    "color": "#4305c0",
     "pixel_count": 236,
     "density_multiplier": null,
     "parent_id": null,
@@ -352,7 +352,7 @@
   {
     "region_id": "AREA000015",
     "region_type": "land",
-    "color": "#8b779d",
+    "color": "#0f477f",
     "pixel_count": 4201,
     "density_multiplier": null,
     "parent_id": null,
@@ -377,7 +377,7 @@
   {
     "region_id": "AREA000016",
     "region_type": "ocean",
-    "color": "#10479a",
+    "color": "#1d09b2",
     "pixel_count": 57,
     "density_multiplier": null,
     "parent_id": null,
@@ -402,7 +402,7 @@
   {
     "region_id": "AREA000017",
     "region_type": "land",
-    "color": "#e26a9d",
+    "color": "#bff617",
     "pixel_count": 1308,
     "density_multiplier": null,
     "parent_id": null,
@@ -426,8 +426,8 @@
   },
   {
     "region_id": "AREA000018",
-    "region_type": "ocean",
-    "color": "#2a2665",
+    "region_type": "land",
+    "color": "#b94b8a",
     "pixel_count": 225,
     "density_multiplier": null,
     "parent_id": null,
@@ -452,7 +452,7 @@
   {
     "region_id": "AREA000019",
     "region_type": "ocean",
-    "color": "#091b6a",
+    "color": "#37169e",
     "pixel_count": 247,
     "density_multiplier": null,
     "parent_id": null,
@@ -477,7 +477,7 @@
   {
     "region_id": "AREA000020",
     "region_type": "land",
-    "color": "#1c8619",
+    "color": "#2952f8",
     "pixel_count": 1606,
     "density_multiplier": null,
     "parent_id": null,
@@ -502,7 +502,7 @@
   {
     "region_id": "AREA000021",
     "region_type": "land",
-    "color": "#493169",
+    "color": "#6b844a",
     "pixel_count": 21511,
     "density_multiplier": null,
     "parent_id": null,
@@ -527,7 +527,7 @@
   {
     "region_id": "AREA000022",
     "region_type": "ocean",
-    "color": "#1316ac",
+    "color": "#062195",
     "pixel_count": 193,
     "density_multiplier": null,
     "parent_id": null,
@@ -552,7 +552,7 @@
   {
     "region_id": "AREA000023",
     "region_type": "land",
-    "color": "#6dda31",
+    "color": "#74c65c",
     "pixel_count": 551,
     "density_multiplier": null,
     "parent_id": null,
@@ -577,7 +577,7 @@
   {
     "region_id": "AREA000024",
     "region_type": "land",
-    "color": "#10fc58",
+    "color": "#9cc5ea",
     "pixel_count": 1517,
     "density_multiplier": null,
     "parent_id": null,
@@ -602,7 +602,7 @@
   {
     "region_id": "AREA000025",
     "region_type": "land",
-    "color": "#f72d2f",
+    "color": "#6d0ab7",
     "pixel_count": 11493,
     "density_multiplier": null,
     "parent_id": null,
@@ -627,7 +627,7 @@
   {
     "region_id": "AREA000026",
     "region_type": "land",
-    "color": "#da3ced",
+    "color": "#87df75",
     "pixel_count": 173,
     "density_multiplier": null,
     "parent_id": null,
@@ -652,7 +652,7 @@
   {
     "region_id": "AREA000027",
     "region_type": "land",
-    "color": "#dbb018",
+    "color": "#5e0f75",
     "pixel_count": 61,
     "density_multiplier": null,
     "parent_id": null,
@@ -677,7 +677,7 @@
   {
     "region_id": "AREA000028",
     "region_type": "land",
-    "color": "#61083e",
+    "color": "#a4c5da",
     "pixel_count": 93,
     "density_multiplier": null,
     "parent_id": null,
@@ -702,7 +702,7 @@
   {
     "region_id": "AREA000029",
     "region_type": "land",
-    "color": "#c73e5d",
+    "color": "#3797cd",
     "pixel_count": 285711,
     "density_multiplier": null,
     "parent_id": null,
@@ -726,8 +726,8 @@
   },
   {
     "region_id": "AREA000030",
-    "region_type": "land",
-    "color": "#7fd111",
+    "region_type": "ocean",
+    "color": "#0f1ba7",
     "pixel_count": 195,
     "density_multiplier": null,
     "parent_id": null,
@@ -751,8 +751,8 @@
   },
   {
     "region_id": "AREA000031",
-    "region_type": "ocean",
-    "color": "#0d1eaf",
+    "region_type": "land",
+    "color": "#9482ac",
     "pixel_count": 58,
     "density_multiplier": null,
     "parent_id": null,
@@ -776,8 +776,8 @@
   },
   {
     "region_id": "AREA000032",
-    "region_type": "land",
-    "color": "#b9ce2e",
+    "region_type": "ocean",
+    "color": "#1e4ea0",
     "pixel_count": 76,
     "density_multiplier": null,
     "parent_id": null,
@@ -802,7 +802,7 @@
   {
     "region_id": "AREA000033",
     "region_type": "land",
-    "color": "#4ed510",
+    "color": "#0d258b",
     "pixel_count": 59825,
     "density_multiplier": null,
     "parent_id": null,
@@ -827,7 +827,7 @@
   {
     "region_id": "AREA000034",
     "region_type": "land",
-    "color": "#75af3d",
+    "color": "#d111ae",
     "pixel_count": 107,
     "density_multiplier": null,
     "parent_id": null,
@@ -852,7 +852,7 @@
   {
     "region_id": "AREA000035",
     "region_type": "land",
-    "color": "#828069",
+    "color": "#c2c9df",
     "pixel_count": 2127,
     "density_multiplier": null,
     "parent_id": null,
@@ -877,7 +877,7 @@
   {
     "region_id": "AREA000036",
     "region_type": "land",
-    "color": "#129cb2",
+    "color": "#318ecd",
     "pixel_count": 300,
     "density_multiplier": null,
     "parent_id": null,
@@ -902,7 +902,7 @@
   {
     "region_id": "AREA000037",
     "region_type": "ocean",
-    "color": "#3810b0",
+    "color": "#150f8a",
     "pixel_count": 95,
     "density_multiplier": null,
     "parent_id": null,
@@ -926,8 +926,8 @@
   },
   {
     "region_id": "AREA000038",
-    "region_type": "land",
-    "color": "#8a668c",
+    "region_type": "ocean",
+    "color": "#0411a8",
     "pixel_count": 115,
     "density_multiplier": null,
     "parent_id": null,
@@ -952,7 +952,7 @@
   {
     "region_id": "AREA000039",
     "region_type": "land",
-    "color": "#f96b8f",
+    "color": "#aadcd7",
     "pixel_count": 273,
     "density_multiplier": null,
     "parent_id": null,
@@ -977,7 +977,7 @@
   {
     "region_id": "AREA000040",
     "region_type": "ocean",
-    "color": "#121b6e",
+    "color": "#341889",
     "pixel_count": 62,
     "density_multiplier": null,
     "parent_id": null,
@@ -1002,7 +1002,7 @@
   {
     "region_id": "AREA000041",
     "region_type": "land",
-    "color": "#b5ca5a",
+    "color": "#9e46eb",
     "pixel_count": 14047,
     "density_multiplier": null,
     "parent_id": null,
@@ -1027,7 +1027,7 @@
   {
     "region_id": "AREA000042",
     "region_type": "ocean",
-    "color": "#0f1e72",
+    "color": "#004397",
     "pixel_count": 51,
     "density_multiplier": null,
     "parent_id": null,
@@ -1052,7 +1052,7 @@
   {
     "region_id": "AREA000043",
     "region_type": "land",
-    "color": "#2ade7e",
+    "color": "#40b869",
     "pixel_count": 485,
     "density_multiplier": null,
     "parent_id": null,
@@ -1077,7 +1077,7 @@
   {
     "region_id": "AREA000044",
     "region_type": "ocean",
-    "color": "#0a36af",
+    "color": "#324f7a",
     "pixel_count": 519,
     "density_multiplier": null,
     "parent_id": null,
@@ -1102,7 +1102,7 @@
   {
     "region_id": "AREA000045",
     "region_type": "ocean",
-    "color": "#11257d",
+    "color": "#1c119b",
     "pixel_count": 183,
     "density_multiplier": null,
     "parent_id": null,
@@ -1127,7 +1127,7 @@
   {
     "region_id": "AREA000046",
     "region_type": "land",
-    "color": "#4005c1",
+    "color": "#a3d8ce",
     "pixel_count": 90,
     "density_multiplier": null,
     "parent_id": null,
@@ -1152,7 +1152,7 @@
   {
     "region_id": "AREA000047",
     "region_type": "land",
-    "color": "#7c1df5",
+    "color": "#faf6e5",
     "pixel_count": 17657,
     "density_multiplier": null,
     "parent_id": null,
@@ -1177,7 +1177,7 @@
   {
     "region_id": "AREA000048",
     "region_type": "land",
-    "color": "#f67adc",
+    "color": "#260a7b",
     "pixel_count": 4405,
     "density_multiplier": null,
     "parent_id": null,
@@ -1202,7 +1202,7 @@
   {
     "region_id": "AREA000049",
     "region_type": "ocean",
-    "color": "#1a11a4",
+    "color": "#1447a3",
     "pixel_count": 130,
     "density_multiplier": null,
     "parent_id": null,
@@ -1227,7 +1227,7 @@
   {
     "region_id": "AREA000050",
     "region_type": "land",
-    "color": "#c92fdb",
+    "color": "#6c9396",
     "pixel_count": 381,
     "density_multiplier": null,
     "parent_id": null,
@@ -1252,7 +1252,7 @@
   {
     "region_id": "AREA000051",
     "region_type": "land",
-    "color": "#030cab",
+    "color": "#e4067d",
     "pixel_count": 7399,
     "density_multiplier": null,
     "parent_id": null,
@@ -1277,7 +1277,7 @@
   {
     "region_id": "AREA000052",
     "region_type": "land",
-    "color": "#74c1a9",
+    "color": "#ac73eb",
     "pixel_count": 83,
     "density_multiplier": null,
     "parent_id": null,
@@ -1302,7 +1302,7 @@
   {
     "region_id": "AREA000053",
     "region_type": "land",
-    "color": "#276e43",
+    "color": "#f3d376",
     "pixel_count": 160,
     "density_multiplier": null,
     "parent_id": null,
@@ -1326,8 +1326,8 @@
   },
   {
     "region_id": "AREA000054",
-    "region_type": "land",
-    "color": "#1fa5a9",
+    "region_type": "lake",
+    "color": "#350598",
     "pixel_count": 851,
     "density_multiplier": null,
     "parent_id": null,
@@ -1352,7 +1352,7 @@
   {
     "region_id": "AREA000055",
     "region_type": "land",
-    "color": "#5ab19f",
+    "color": "#443ead",
     "pixel_count": 3511,
     "density_multiplier": null,
     "parent_id": null,
@@ -1377,7 +1377,7 @@
   {
     "region_id": "AREA000056",
     "region_type": "land",
-    "color": "#2f5d88",
+    "color": "#c4e336",
     "pixel_count": 91,
     "density_multiplier": null,
     "parent_id": null,
@@ -1402,7 +1402,7 @@
   {
     "region_id": "AREA000057",
     "region_type": "land",
-    "color": "#4db543",
+    "color": "#dfd450",
     "pixel_count": 1539,
     "density_multiplier": null,
     "parent_id": null,
@@ -1427,7 +1427,7 @@
   {
     "region_id": "AREA000058",
     "region_type": "ocean",
-    "color": "#1a09b3",
+    "color": "#033da6",
     "pixel_count": 12083,
     "density_multiplier": null,
     "parent_id": null,
@@ -1452,7 +1452,7 @@
   {
     "region_id": "AREA000059",
     "region_type": "lake",
-    "color": "#101c9b",
+    "color": "#1b0d6f",
     "pixel_count": 64,
     "density_multiplier": null,
     "parent_id": null,
@@ -1477,7 +1477,7 @@
   {
     "region_id": "AREA000060",
     "region_type": "land",
-    "color": "#d71452",
+    "color": "#60c151",
     "pixel_count": 426,
     "density_multiplier": null,
     "parent_id": null,
@@ -1502,7 +1502,7 @@
   {
     "region_id": "AREA000061",
     "region_type": "ocean",
-    "color": "#07168d",
+    "color": "#01379f",
     "pixel_count": 1713304,
     "density_multiplier": null,
     "parent_id": null,
@@ -1527,7 +1527,7 @@
   {
     "region_id": "AREA000062",
     "region_type": "ocean",
-    "color": "#2f2695",
+    "color": "#0a2c83",
     "pixel_count": 50,
     "density_multiplier": null,
     "parent_id": null,
@@ -1552,7 +1552,7 @@
   {
     "region_id": "AREA000063",
     "region_type": "ocean",
-    "color": "#101a96",
+    "color": "#1e0096",
     "pixel_count": 148,
     "density_multiplier": null,
     "parent_id": null,
@@ -1577,7 +1577,7 @@
   {
     "region_id": "AREA000064",
     "region_type": "lake",
-    "color": "#0e0379",
+    "color": "#0f2c85",
     "pixel_count": 569,
     "density_multiplier": null,
     "parent_id": null,
@@ -1601,8 +1601,8 @@
   },
   {
     "region_id": "AREA000065",
-    "region_type": "ocean",
-    "color": "#244fac",
+    "region_type": "land",
+    "color": "#9c1b5d",
     "pixel_count": 81,
     "density_multiplier": null,
     "parent_id": null,
@@ -1627,7 +1627,7 @@
   {
     "region_id": "AREA000066",
     "region_type": "lake",
-    "color": "#2a0e66",
+    "color": "#253d82",
     "pixel_count": 530,
     "density_multiplier": null,
     "parent_id": null,
@@ -1652,7 +1652,7 @@
   {
     "region_id": "AREA000067",
     "region_type": "ocean",
-    "color": "#0a1eac",
+    "color": "#013a8c",
     "pixel_count": 82,
     "density_multiplier": null,
     "parent_id": null,
@@ -1677,7 +1677,7 @@
   {
     "region_id": "AREA000068",
     "region_type": "land",
-    "color": "#d30ce4",
+    "color": "#a7286e",
     "pixel_count": 146,
     "density_multiplier": null,
     "parent_id": null,
@@ -1702,7 +1702,7 @@
   {
     "region_id": "AREA000069",
     "region_type": "land",
-    "color": "#60e544",
+    "color": "#e2de50",
     "pixel_count": 182,
     "density_multiplier": null,
     "parent_id": null,
@@ -1727,7 +1727,7 @@
   {
     "region_id": "AREA000070",
     "region_type": "land",
-    "color": "#596121",
+    "color": "#a115cf",
     "pixel_count": 130,
     "density_multiplier": null,
     "parent_id": null,
@@ -1752,7 +1752,7 @@
   {
     "region_id": "AREA000071",
     "region_type": "land",
-    "color": "#ce2429",
+    "color": "#4457f7",
     "pixel_count": 1283,
     "density_multiplier": null,
     "parent_id": null,
@@ -1777,7 +1777,7 @@
   {
     "region_id": "AREA000072",
     "region_type": "land",
-    "color": "#306697",
+    "color": "#8bdf32",
     "pixel_count": 63,
     "density_multiplier": null,
     "parent_id": null,
@@ -1802,7 +1802,7 @@
   {
     "region_id": "AREA000073",
     "region_type": "land",
-    "color": "#4aa401",
+    "color": "#c2ff13",
     "pixel_count": 5851,
     "density_multiplier": null,
     "parent_id": null,
@@ -1827,7 +1827,7 @@
   {
     "region_id": "AREA000074",
     "region_type": "land",
-    "color": "#80430b",
+    "color": "#3e2541",
     "pixel_count": 1939,
     "density_multiplier": null,
     "parent_id": null,
@@ -1852,7 +1852,7 @@
   {
     "region_id": "AREA000075",
     "region_type": "land",
-    "color": "#65b794",
+    "color": "#4f12e5",
     "pixel_count": 316,
     "density_multiplier": null,
     "parent_id": null,
@@ -1876,8 +1876,8 @@
   },
   {
     "region_id": "AREA000076",
-    "region_type": "land",
-    "color": "#c89ad5",
+    "region_type": "ocean",
+    "color": "#0f49a1",
     "pixel_count": 56,
     "density_multiplier": null,
     "parent_id": null,
@@ -1901,8 +1901,8 @@
   },
   {
     "region_id": "AREA000077",
-    "region_type": "ocean",
-    "color": "#2340ac",
+    "region_type": "land",
+    "color": "#2cb2c6",
     "pixel_count": 51,
     "density_multiplier": null,
     "parent_id": null,
@@ -1927,7 +1927,7 @@
   {
     "region_id": "AREA000078",
     "region_type": "land",
-    "color": "#346512",
+    "color": "#202160",
     "pixel_count": 566,
     "density_multiplier": null,
     "parent_id": null,
@@ -1952,7 +1952,7 @@
   {
     "region_id": "AREA000079",
     "region_type": "land",
-    "color": "#c0ec14",
+    "color": "#116b7a",
     "pixel_count": 1921,
     "density_multiplier": null,
     "parent_id": null,
@@ -1977,7 +1977,7 @@
   {
     "region_id": "AREA000080",
     "region_type": "land",
-    "color": "#2d877e",
+    "color": "#aa9274",
     "pixel_count": 6242,
     "density_multiplier": null,
     "parent_id": null,
@@ -2001,8 +2001,8 @@
   },
   {
     "region_id": "AREA000081",
-    "region_type": "ocean",
-    "color": "#0a119b",
+    "region_type": "land",
+    "color": "#389674",
     "pixel_count": 65,
     "density_multiplier": null,
     "parent_id": null,
@@ -2027,7 +2027,7 @@
   {
     "region_id": "AREA000082",
     "region_type": "ocean",
-    "color": "#1644b1",
+    "color": "#32379e",
     "pixel_count": 99,
     "density_multiplier": null,
     "parent_id": null,
@@ -2052,7 +2052,7 @@
   {
     "region_id": "AREA000083",
     "region_type": "land",
-    "color": "#000d02",
+    "color": "#925d48",
     "pixel_count": 85,
     "density_multiplier": null,
     "parent_id": null,
@@ -2077,7 +2077,7 @@
   {
     "region_id": "AREA000084",
     "region_type": "lake",
-    "color": "#034067",
+    "color": "#1a2d81",
     "pixel_count": 669,
     "density_multiplier": null,
     "parent_id": null,
@@ -2102,7 +2102,7 @@
   {
     "region_id": "AREA000085",
     "region_type": "land",
-    "color": "#82a203",
+    "color": "#251c0b",
     "pixel_count": 76291,
     "density_multiplier": null,
     "parent_id": null,
@@ -2127,7 +2127,7 @@
   {
     "region_id": "AREA000086",
     "region_type": "land",
-    "color": "#cfc294",
+    "color": "#346848",
     "pixel_count": 304,
     "density_multiplier": null,
     "parent_id": null,
@@ -2152,7 +2152,7 @@
   {
     "region_id": "AREA000087",
     "region_type": "land",
-    "color": "#4b4dd9",
+    "color": "#2d50b6",
     "pixel_count": 322,
     "density_multiplier": null,
     "parent_id": null,
@@ -2177,7 +2177,7 @@
   {
     "region_id": "AREA000088",
     "region_type": "ocean",
-    "color": "#0d1284",
+    "color": "#124992",
     "pixel_count": 68,
     "density_multiplier": null,
     "parent_id": null,
@@ -2202,7 +2202,7 @@
   {
     "region_id": "AREA000089",
     "region_type": "ocean",
-    "color": "#323489",
+    "color": "#084daa",
     "pixel_count": 73,
     "density_multiplier": null,
     "parent_id": null,
@@ -2227,7 +2227,7 @@
   {
     "region_id": "AREA000090",
     "region_type": "land",
-    "color": "#0482a2",
+    "color": "#c628ca",
     "pixel_count": 10219,
     "density_multiplier": null,
     "parent_id": null,
@@ -2252,7 +2252,7 @@
   {
     "region_id": "AREA000091",
     "region_type": "land",
-    "color": "#7cec06",
+    "color": "#b3c2b6",
     "pixel_count": 9420,
     "density_multiplier": null,
     "parent_id": null,
@@ -2277,7 +2277,7 @@
   {
     "region_id": "AREA000092",
     "region_type": "land",
-    "color": "#caae60",
+    "color": "#9857ea",
     "pixel_count": 1643,
     "density_multiplier": null,
     "parent_id": null,
@@ -2302,7 +2302,7 @@
   {
     "region_id": "AREA000093",
     "region_type": "lake",
-    "color": "#2213a3",
+    "color": "#3a3780",
     "pixel_count": 433,
     "density_multiplier": null,
     "parent_id": null,
@@ -2326,8 +2326,8 @@
   },
   {
     "region_id": "AREA000094",
-    "region_type": "ocean",
-    "color": "#260379",
+    "region_type": "land",
+    "color": "#808f13",
     "pixel_count": 1790,
     "density_multiplier": null,
     "parent_id": null,
@@ -2352,7 +2352,7 @@
   {
     "region_id": "AREA000095",
     "region_type": "land",
-    "color": "#6deb30",
+    "color": "#167d8f",
     "pixel_count": 226412,
     "density_multiplier": null,
     "parent_id": null,
@@ -2377,7 +2377,7 @@
   {
     "region_id": "AREA000096",
     "region_type": "land",
-    "color": "#8588eb",
+    "color": "#364321",
     "pixel_count": 900,
     "density_multiplier": null,
     "parent_id": null,
@@ -2402,7 +2402,7 @@
   {
     "region_id": "AREA000097",
     "region_type": "land",
-    "color": "#e5124a",
+    "color": "#ea8146",
     "pixel_count": 15948,
     "density_multiplier": null,
     "parent_id": null,
@@ -2427,7 +2427,7 @@
   {
     "region_id": "AREA000098",
     "region_type": "land",
-    "color": "#2ab1c4",
+    "color": "#c8f54b",
     "pixel_count": 43567,
     "density_multiplier": null,
     "parent_id": null,
@@ -2452,7 +2452,7 @@
   {
     "region_id": "AREA000099",
     "region_type": "land",
-    "color": "#f7565e",
+    "color": "#e5c4cb",
     "pixel_count": 2135,
     "density_multiplier": null,
     "parent_id": null,
@@ -2477,7 +2477,7 @@
   {
     "region_id": "AREA000100",
     "region_type": "land",
-    "color": "#605b84",
+    "color": "#86e926",
     "pixel_count": 715,
     "density_multiplier": null,
     "parent_id": null,
@@ -2502,7 +2502,7 @@
   {
     "region_id": "AREA000101",
     "region_type": "land",
-    "color": "#ff7149",
+    "color": "#16f77d",
     "pixel_count": 14457,
     "density_multiplier": null,
     "parent_id": null,
@@ -2527,7 +2527,7 @@
   {
     "region_id": "AREA000102",
     "region_type": "land",
-    "color": "#d5e07e",
+    "color": "#66ba4b",
     "pixel_count": 2017,
     "density_multiplier": null,
     "parent_id": null,
@@ -2552,7 +2552,7 @@
   {
     "region_id": "AREA000103",
     "region_type": "land",
-    "color": "#f231b4",
+    "color": "#a3d8cd",
     "pixel_count": 570,
     "density_multiplier": null,
     "parent_id": null,
@@ -2577,7 +2577,7 @@
   {
     "region_id": "AREA000104",
     "region_type": "land",
-    "color": "#8f3395",
+    "color": "#1ff8bb",
     "pixel_count": 125,
     "density_multiplier": null,
     "parent_id": null,
@@ -2602,7 +2602,7 @@
   {
     "region_id": "AREA000105",
     "region_type": "land",
-    "color": "#e5c845",
+    "color": "#b230ec",
     "pixel_count": 1154,
     "density_multiplier": null,
     "parent_id": null,
@@ -2627,7 +2627,7 @@
   {
     "region_id": "AREA000106",
     "region_type": "land",
-    "color": "#486968",
+    "color": "#64f03b",
     "pixel_count": 194225,
     "density_multiplier": null,
     "parent_id": null,
@@ -2652,7 +2652,7 @@
   {
     "region_id": "AREA000107",
     "region_type": "land",
-    "color": "#ec8d9e",
+    "color": "#17d795",
     "pixel_count": 4661,
     "density_multiplier": null,
     "parent_id": null,
@@ -2677,7 +2677,7 @@
   {
     "region_id": "AREA000108",
     "region_type": "land",
-    "color": "#9e461c",
+    "color": "#63f9f9",
     "pixel_count": 2013,
     "density_multiplier": null,
     "parent_id": null,
@@ -2702,7 +2702,7 @@
   {
     "region_id": "AREA000109",
     "region_type": "lake",
-    "color": "#060976",
+    "color": "#0032a4",
     "pixel_count": 1862,
     "density_multiplier": null,
     "parent_id": null,
@@ -2727,7 +2727,7 @@
   {
     "region_id": "AREA000110",
     "region_type": "land",
-    "color": "#4c319c",
+    "color": "#b19985",
     "pixel_count": 2345,
     "density_multiplier": null,
     "parent_id": null,
@@ -2752,7 +2752,7 @@
   {
     "region_id": "AREA000111",
     "region_type": "land",
-    "color": "#94ba45",
+    "color": "#884f24",
     "pixel_count": 724,
     "density_multiplier": null,
     "parent_id": null,
@@ -2777,7 +2777,7 @@
   {
     "region_id": "AREA000112",
     "region_type": "land",
-    "color": "#de995c",
+    "color": "#65b2f0",
     "pixel_count": 6118,
     "density_multiplier": null,
     "parent_id": null,
@@ -2802,7 +2802,7 @@
   {
     "region_id": "AREA000113",
     "region_type": "land",
-    "color": "#b43015",
+    "color": "#f63307",
     "pixel_count": 126,
     "density_multiplier": null,
     "parent_id": null,
@@ -2827,7 +2827,7 @@
   {
     "region_id": "AREA000114",
     "region_type": "land",
-    "color": "#01371e",
+    "color": "#fcabc2",
     "pixel_count": 899,
     "density_multiplier": null,
     "parent_id": null,
@@ -2852,7 +2852,7 @@
   {
     "region_id": "AREA000115",
     "region_type": "ocean",
-    "color": "#2a4565",
+    "color": "#301ca9",
     "pixel_count": 797,
     "density_multiplier": null,
     "parent_id": null,
@@ -2877,7 +2877,7 @@
   {
     "region_id": "AREA000116",
     "region_type": "ocean",
-    "color": "#0a029e",
+    "color": "#263382",
     "pixel_count": 9070,
     "density_multiplier": null,
     "parent_id": null,
@@ -2902,7 +2902,7 @@
   {
     "region_id": "AREA000117",
     "region_type": "land",
-    "color": "#5e485d",
+    "color": "#5761b6",
     "pixel_count": 5999,
     "density_multiplier": null,
     "parent_id": null,
@@ -2926,8 +2926,8 @@
   },
   {
     "region_id": "AREA000118",
-    "region_type": "ocean",
-    "color": "#1e189d",
+    "region_type": "land",
+    "color": "#800504",
     "pixel_count": 101,
     "density_multiplier": null,
     "parent_id": null,
@@ -2952,7 +2952,7 @@
   {
     "region_id": "AREA000119",
     "region_type": "land",
-    "color": "#65a0c7",
+    "color": "#317e99",
     "pixel_count": 397,
     "density_multiplier": null,
     "parent_id": null,
@@ -2977,7 +2977,7 @@
   {
     "region_id": "AREA000120",
     "region_type": "lake",
-    "color": "#030a66",
+    "color": "#3a3e7a",
     "pixel_count": 163,
     "density_multiplier": null,
     "parent_id": null,
@@ -3002,7 +3002,7 @@
   {
     "region_id": "AREA000121",
     "region_type": "ocean",
-    "color": "#263b7f",
+    "color": "#1e3baa",
     "pixel_count": 10593,
     "density_multiplier": null,
     "parent_id": null,
@@ -3027,7 +3027,7 @@
   {
     "region_id": "AREA000122",
     "region_type": "land",
-    "color": "#1bcee0",
+    "color": "#71b735",
     "pixel_count": 925,
     "density_multiplier": null,
     "parent_id": null,
@@ -3052,7 +3052,7 @@
   {
     "region_id": "AREA000123",
     "region_type": "land",
-    "color": "#e44b7a",
+    "color": "#75e761",
     "pixel_count": 126,
     "density_multiplier": null,
     "parent_id": null,
@@ -3077,7 +3077,7 @@
   {
     "region_id": "AREA000124",
     "region_type": "land",
-    "color": "#0c01f8",
+    "color": "#04c94d",
     "pixel_count": 544,
     "density_multiplier": null,
     "parent_id": null,
@@ -3102,7 +3102,7 @@
   {
     "region_id": "AREA000125",
     "region_type": "land",
-    "color": "#48067e",
+    "color": "#70ff63",
     "pixel_count": 1798,
     "density_multiplier": null,
     "parent_id": null,
@@ -3127,7 +3127,7 @@
   {
     "region_id": "AREA000126",
     "region_type": "lake",
-    "color": "#073f66",
+    "color": "#0f12a7",
     "pixel_count": 1199,
     "density_multiplier": null,
     "parent_id": null,
@@ -3152,7 +3152,7 @@
   {
     "region_id": "AREA000127",
     "region_type": "lake",
-    "color": "#092a8f",
+    "color": "#0c3076",
     "pixel_count": 889,
     "density_multiplier": null,
     "parent_id": null,
@@ -3177,7 +3177,7 @@
   {
     "region_id": "AREA000128",
     "region_type": "lake",
-    "color": "#31209c",
+    "color": "#303996",
     "pixel_count": 266,
     "density_multiplier": null,
     "parent_id": null,
@@ -3202,7 +3202,7 @@
   {
     "region_id": "AREA000129",
     "region_type": "ocean",
-    "color": "#0b0f7d",
+    "color": "#191daf",
     "pixel_count": 56701,
     "density_multiplier": null,
     "parent_id": null,
@@ -3227,7 +3227,7 @@
   {
     "region_id": "AREA000130",
     "region_type": "land",
-    "color": "#1a1f01",
+    "color": "#c26406",
     "pixel_count": 10485,
     "density_multiplier": null,
     "parent_id": null,
@@ -3252,7 +3252,7 @@
   {
     "region_id": "AREA000131",
     "region_type": "land",
-    "color": "#78b152",
+    "color": "#207275",
     "pixel_count": 1705,
     "density_multiplier": null,
     "parent_id": null,
@@ -3277,7 +3277,7 @@
   {
     "region_id": "AREA000132",
     "region_type": "land",
-    "color": "#17aec5",
+    "color": "#5ffb7a",
     "pixel_count": 1170,
     "density_multiplier": null,
     "parent_id": null,
@@ -3302,7 +3302,7 @@
   {
     "region_id": "AREA000133",
     "region_type": "land",
-    "color": "#a58f37",
+    "color": "#cb205f",
     "pixel_count": 2690,
     "density_multiplier": null,
     "parent_id": null,
@@ -3327,7 +3327,7 @@
   {
     "region_id": "AREA000134",
     "region_type": "lake",
-    "color": "#0a2278",
+    "color": "#0d0b90",
     "pixel_count": 349,
     "density_multiplier": null,
     "parent_id": null,
@@ -3352,7 +3352,7 @@
   {
     "region_id": "AREA000135",
     "region_type": "land",
-    "color": "#962685",
+    "color": "#2463af",
     "pixel_count": 12044,
     "density_multiplier": null,
     "parent_id": null,
@@ -3377,7 +3377,7 @@
   {
     "region_id": "AREA000136",
     "region_type": "land",
-    "color": "#d30b24",
+    "color": "#ca8f9a",
     "pixel_count": 1488,
     "density_multiplier": null,
     "parent_id": null,
@@ -3402,7 +3402,7 @@
   {
     "region_id": "AREA000137",
     "region_type": "land",
-    "color": "#2d6892",
+    "color": "#4bdc2f",
     "pixel_count": 235,
     "density_multiplier": null,
     "parent_id": null,
@@ -3427,7 +3427,7 @@
   {
     "region_id": "AREA000138",
     "region_type": "land",
-    "color": "#68ccff",
+    "color": "#bb169a",
     "pixel_count": 199,
     "density_multiplier": null,
     "parent_id": null,
@@ -3452,7 +3452,7 @@
   {
     "region_id": "AREA000139",
     "region_type": "land",
-    "color": "#6e8567",
+    "color": "#404958",
     "pixel_count": 4381,
     "density_multiplier": null,
     "parent_id": null,
@@ -3477,7 +3477,7 @@
   {
     "region_id": "AREA000140",
     "region_type": "land",
-    "color": "#5b735c",
+    "color": "#c8ca40",
     "pixel_count": 2619,
     "density_multiplier": null,
     "parent_id": null,
@@ -3502,7 +3502,7 @@
   {
     "region_id": "AREA000141",
     "region_type": "lake",
-    "color": "#17319d",
+    "color": "#2006ab",
     "pixel_count": 430,
     "density_multiplier": null,
     "parent_id": null,
@@ -3527,7 +3527,7 @@
   {
     "region_id": "AREA000142",
     "region_type": "land",
-    "color": "#721451",
+    "color": "#f65c8a",
     "pixel_count": 143,
     "density_multiplier": null,
     "parent_id": null,
@@ -3552,7 +3552,7 @@
   {
     "region_id": "AREA000143",
     "region_type": "land",
-    "color": "#e26453",
+    "color": "#89c611",
     "pixel_count": 10989,
     "density_multiplier": null,
     "parent_id": null,
@@ -3577,7 +3577,7 @@
   {
     "region_id": "AREA000144",
     "region_type": "land",
-    "color": "#ee00fb",
+    "color": "#87d79c",
     "pixel_count": 581,
     "density_multiplier": null,
     "parent_id": null,
@@ -3602,7 +3602,7 @@
   {
     "region_id": "AREA000145",
     "region_type": "land",
-    "color": "#ad02f9",
+    "color": "#8e08ec",
     "pixel_count": 539,
     "density_multiplier": null,
     "parent_id": null,
@@ -3627,7 +3627,7 @@
   {
     "region_id": "AREA000146",
     "region_type": "ocean",
-    "color": "#170f7e",
+    "color": "#0b1c99",
     "pixel_count": 330,
     "density_multiplier": null,
     "parent_id": null,
@@ -3652,7 +3652,7 @@
   {
     "region_id": "AREA000147",
     "region_type": "land",
-    "color": "#ddcc6a",
+    "color": "#769296",
     "pixel_count": 1905,
     "density_multiplier": null,
     "parent_id": null,
@@ -3677,7 +3677,7 @@
   {
     "region_id": "AREA000148",
     "region_type": "land",
-    "color": "#f9d5f7",
+    "color": "#2803f3",
     "pixel_count": 429,
     "density_multiplier": null,
     "parent_id": null,
@@ -3702,7 +3702,7 @@
   {
     "region_id": "AREA000149",
     "region_type": "land",
-    "color": "#5ba10b",
+    "color": "#cf27ab",
     "pixel_count": 18016,
     "density_multiplier": null,
     "parent_id": null,
@@ -3727,7 +3727,7 @@
   {
     "region_id": "AREA000150",
     "region_type": "land",
-    "color": "#5899b2",
+    "color": "#82bc24",
     "pixel_count": 1679,
     "density_multiplier": null,
     "parent_id": null,
@@ -3752,7 +3752,7 @@
   {
     "region_id": "AREA000151",
     "region_type": "land",
-    "color": "#34c3d9",
+    "color": "#b3b7ff",
     "pixel_count": 1668,
     "density_multiplier": null,
     "parent_id": null,
@@ -3777,7 +3777,7 @@
   {
     "region_id": "AREA000152",
     "region_type": "land",
-    "color": "#07ac55",
+    "color": "#466e22",
     "pixel_count": 476,
     "density_multiplier": null,
     "parent_id": null,
@@ -3802,7 +3802,7 @@
   {
     "region_id": "AREA000153",
     "region_type": "land",
-    "color": "#271567",
+    "color": "#030b72",
     "pixel_count": 537,
     "density_multiplier": null,
     "parent_id": null,
@@ -3827,7 +3827,7 @@
   {
     "region_id": "AREA000154",
     "region_type": "land",
-    "color": "#c1d765",
+    "color": "#2cbe31",
     "pixel_count": 4683,
     "density_multiplier": null,
     "parent_id": null,
@@ -3852,7 +3852,7 @@
   {
     "region_id": "AREA000155",
     "region_type": "ocean",
-    "color": "#1f3989",
+    "color": "#252a7e",
     "pixel_count": 156,
     "density_multiplier": null,
     "parent_id": null,
@@ -3877,7 +3877,7 @@
   {
     "region_id": "AREA000156",
     "region_type": "land",
-    "color": "#44616a",
+    "color": "#73fff5",
     "pixel_count": 120,
     "density_multiplier": null,
     "parent_id": null,
@@ -3902,7 +3902,7 @@
   {
     "region_id": "AREA000157",
     "region_type": "land",
-    "color": "#afa6d8",
+    "color": "#46f437",
     "pixel_count": 2787,
     "density_multiplier": null,
     "parent_id": null,
@@ -3927,7 +3927,7 @@
   {
     "region_id": "AREA000158",
     "region_type": "land",
-    "color": "#be2cda",
+    "color": "#cb58ab",
     "pixel_count": 93,
     "density_multiplier": null,
     "parent_id": null,
@@ -3952,7 +3952,7 @@
   {
     "region_id": "AREA000159",
     "region_type": "land",
-    "color": "#a058bb",
+    "color": "#a6d861",
     "pixel_count": 36723,
     "density_multiplier": null,
     "parent_id": null,
@@ -3977,7 +3977,7 @@
   {
     "region_id": "AREA000160",
     "region_type": "land",
-    "color": "#91341f",
+    "color": "#f0e105",
     "pixel_count": 14193,
     "density_multiplier": null,
     "parent_id": null,
@@ -4002,7 +4002,7 @@
   {
     "region_id": "AREA000161",
     "region_type": "land",
-    "color": "#d55f1a",
+    "color": "#191ea5",
     "pixel_count": 1913,
     "density_multiplier": null,
     "parent_id": null,
@@ -4026,8 +4026,8 @@
   },
   {
     "region_id": "AREA000162",
-    "region_type": "land",
-    "color": "#92fe6b",
+    "region_type": "ocean",
+    "color": "#150c6b",
     "pixel_count": 57,
     "density_multiplier": null,
     "parent_id": null,
@@ -4052,7 +4052,7 @@
   {
     "region_id": "AREA000163",
     "region_type": "land",
-    "color": "#163b09",
+    "color": "#ea9908",
     "pixel_count": 374,
     "density_multiplier": null,
     "parent_id": null,
@@ -4077,7 +4077,7 @@
   {
     "region_id": "AREA000164",
     "region_type": "land",
-    "color": "#3fcca4",
+    "color": "#42a843",
     "pixel_count": 485,
     "density_multiplier": null,
     "parent_id": null,
@@ -4102,7 +4102,7 @@
   {
     "region_id": "AREA000165",
     "region_type": "land",
-    "color": "#daf501",
+    "color": "#c349a1",
     "pixel_count": 107,
     "density_multiplier": null,
     "parent_id": null,
@@ -4127,7 +4127,7 @@
   {
     "region_id": "AREA000166",
     "region_type": "land",
-    "color": "#7fd397",
+    "color": "#19cfbd",
     "pixel_count": 3254,
     "density_multiplier": null,
     "parent_id": null,
@@ -4152,7 +4152,7 @@
   {
     "region_id": "AREA000167",
     "region_type": "land",
-    "color": "#87d8c0",
+    "color": "#8aa610",
     "pixel_count": 9646,
     "density_multiplier": null,
     "parent_id": null,
@@ -4177,7 +4177,7 @@
   {
     "region_id": "AREA000168",
     "region_type": "land",
-    "color": "#845097",
+    "color": "#9b7408",
     "pixel_count": 4041,
     "density_multiplier": null,
     "parent_id": null,
@@ -4202,7 +4202,7 @@
   {
     "region_id": "AREA000169",
     "region_type": "land",
-    "color": "#36120a",
+    "color": "#076db8",
     "pixel_count": 50711,
     "density_multiplier": null,
     "parent_id": null,
@@ -4227,7 +4227,7 @@
   {
     "region_id": "AREA000170",
     "region_type": "land",
-    "color": "#753fac",
+    "color": "#af2c28",
     "pixel_count": 18619,
     "density_multiplier": null,
     "parent_id": null,
@@ -4252,7 +4252,7 @@
   {
     "region_id": "AREA000171",
     "region_type": "land",
-    "color": "#705059",
+    "color": "#406223",
     "pixel_count": 12478,
     "density_multiplier": null,
     "parent_id": null,
@@ -4277,7 +4277,7 @@
   {
     "region_id": "AREA000172",
     "region_type": "land",
-    "color": "#24d198",
+    "color": "#055c14",
     "pixel_count": 54,
     "density_multiplier": null,
     "parent_id": null,
@@ -4302,7 +4302,7 @@
   {
     "region_id": "AREA000173",
     "region_type": "land",
-    "color": "#58e01b",
+    "color": "#323761",
     "pixel_count": 119,
     "density_multiplier": null,
     "parent_id": null,
@@ -4327,7 +4327,7 @@
   {
     "region_id": "AREA000174",
     "region_type": "land",
-    "color": "#8658c0",
+    "color": "#6a0d76",
     "pixel_count": 59560,
     "density_multiplier": null,
     "parent_id": null,
@@ -4352,7 +4352,7 @@
   {
     "region_id": "AREA000175",
     "region_type": "land",
-    "color": "#52fc8e",
+    "color": "#e8e223",
     "pixel_count": 135,
     "density_multiplier": null,
     "parent_id": null,
@@ -4377,7 +4377,7 @@
   {
     "region_id": "AREA000176",
     "region_type": "land",
-    "color": "#0cbd12",
+    "color": "#51a705",
     "pixel_count": 290,
     "density_multiplier": null,
     "parent_id": null,
@@ -4402,7 +4402,7 @@
   {
     "region_id": "AREA000177",
     "region_type": "ocean",
-    "color": "#25049f",
+    "color": "#2242a2",
     "pixel_count": 85,
     "density_multiplier": null,
     "parent_id": null,
@@ -4426,8 +4426,8 @@
   },
   {
     "region_id": "AREA000178",
-    "region_type": "ocean",
-    "color": "#201775",
+    "region_type": "land",
+    "color": "#0f4617",
     "pixel_count": 576,
     "density_multiplier": null,
     "parent_id": null,
@@ -4452,7 +4452,7 @@
   {
     "region_id": "AREA000179",
     "region_type": "land",
-    "color": "#869433",
+    "color": "#80f6cc",
     "pixel_count": 1746,
     "density_multiplier": null,
     "parent_id": null,
@@ -4477,7 +4477,7 @@
   {
     "region_id": "AREA000180",
     "region_type": "land",
-    "color": "#16bbce",
+    "color": "#c0c056",
     "pixel_count": 60,
     "density_multiplier": null,
     "parent_id": null,
@@ -4502,7 +4502,7 @@
   {
     "region_id": "AREA000181",
     "region_type": "land",
-    "color": "#a282df",
+    "color": "#fa2122",
     "pixel_count": 35070,
     "density_multiplier": null,
     "parent_id": null,
@@ -4527,7 +4527,7 @@
   {
     "region_id": "AREA000182",
     "region_type": "land",
-    "color": "#d73122",
+    "color": "#637656",
     "pixel_count": 39899,
     "density_multiplier": null,
     "parent_id": null,
@@ -4552,7 +4552,7 @@
   {
     "region_id": "AREA000183",
     "region_type": "land",
-    "color": "#6ff026",
+    "color": "#78df77",
     "pixel_count": 61,
     "density_multiplier": null,
     "parent_id": null,
@@ -4577,7 +4577,7 @@
   {
     "region_id": "AREA000184",
     "region_type": "land",
-    "color": "#63f9a3",
+    "color": "#6ba315",
     "pixel_count": 227,
     "density_multiplier": null,
     "parent_id": null,
@@ -4602,7 +4602,7 @@
   {
     "region_id": "AREA000185",
     "region_type": "land",
-    "color": "#be0bf6",
+    "color": "#e4ed05",
     "pixel_count": 40572,
     "density_multiplier": null,
     "parent_id": null,
@@ -4627,7 +4627,7 @@
   {
     "region_id": "AREA000186",
     "region_type": "land",
-    "color": "#02031c",
+    "color": "#9ffe1d",
     "pixel_count": 21136,
     "density_multiplier": null,
     "parent_id": null,
@@ -4652,7 +4652,7 @@
   {
     "region_id": "AREA000187",
     "region_type": "land",
-    "color": "#44fc29",
+    "color": "#261ceb",
     "pixel_count": 2839,
     "density_multiplier": null,
     "parent_id": null,
@@ -4677,7 +4677,7 @@
   {
     "region_id": "AREA000188",
     "region_type": "ocean",
-    "color": "#1b3bb1",
+    "color": "#1b4c6b",
     "pixel_count": 1285502,
     "density_multiplier": null,
     "parent_id": null,
@@ -4702,7 +4702,7 @@
   {
     "region_id": "AREA000189",
     "region_type": "land",
-    "color": "#5997c0",
+    "color": "#afa189",
     "pixel_count": 253,
     "density_multiplier": null,
     "parent_id": null,
@@ -4727,7 +4727,7 @@
   {
     "region_id": "AREA000190",
     "region_type": "ocean",
-    "color": "#192f6a",
+    "color": "#240a66",
     "pixel_count": 8577,
     "density_multiplier": null,
     "parent_id": null,
@@ -4752,7 +4752,7 @@
   {
     "region_id": "AREA000191",
     "region_type": "land",
-    "color": "#3673d6",
+    "color": "#9ecee6",
     "pixel_count": 5154,
     "density_multiplier": null,
     "parent_id": null,
@@ -4777,7 +4777,7 @@
   {
     "region_id": "AREA000192",
     "region_type": "land",
-    "color": "#e5a016",
+    "color": "#c976ea",
     "pixel_count": 12505,
     "density_multiplier": null,
     "parent_id": null,
@@ -4802,7 +4802,7 @@
   {
     "region_id": "AREA000193",
     "region_type": "land",
-    "color": "#79e7e7",
+    "color": "#08ab83",
     "pixel_count": 719,
     "density_multiplier": null,
     "parent_id": null,
@@ -4827,7 +4827,7 @@
   {
     "region_id": "AREA000194",
     "region_type": "land",
-    "color": "#40a126",
+    "color": "#b1de29",
     "pixel_count": 20939,
     "density_multiplier": null,
     "parent_id": null,
@@ -4852,7 +4852,7 @@
   {
     "region_id": "AREA000195",
     "region_type": "land",
-    "color": "#f87554",
+    "color": "#c70675",
     "pixel_count": 528,
     "density_multiplier": null,
     "parent_id": null,
@@ -4877,7 +4877,7 @@
   {
     "region_id": "AREA000196",
     "region_type": "land",
-    "color": "#60fc4b",
+    "color": "#103ef6",
     "pixel_count": 1943,
     "density_multiplier": null,
     "parent_id": null,
@@ -4902,7 +4902,7 @@
   {
     "region_id": "AREA000197",
     "region_type": "ocean",
-    "color": "#170f73",
+    "color": "#1833b0",
     "pixel_count": 52,
     "density_multiplier": null,
     "parent_id": null,
@@ -4927,7 +4927,7 @@
   {
     "region_id": "AREA000198",
     "region_type": "land",
-    "color": "#9b24c4",
+    "color": "#f21659",
     "pixel_count": 154,
     "density_multiplier": null,
     "parent_id": null,
@@ -4952,7 +4952,7 @@
   {
     "region_id": "AREA000199",
     "region_type": "land",
-    "color": "#479e97",
+    "color": "#fec16b",
     "pixel_count": 1204,
     "density_multiplier": null,
     "parent_id": null,
@@ -4977,7 +4977,7 @@
   {
     "region_id": "AREA000200",
     "region_type": "land",
-    "color": "#35004a",
+    "color": "#10a52a",
     "pixel_count": 919,
     "density_multiplier": null,
     "parent_id": null,
@@ -5001,8 +5001,8 @@
   },
   {
     "region_id": "AREA000201",
-    "region_type": "ocean",
-    "color": "#0a49a1",
+    "region_type": "land",
+    "color": "#e84672",
     "pixel_count": 609,
     "density_multiplier": null,
     "parent_id": null,
@@ -5027,7 +5027,7 @@
   {
     "region_id": "AREA000202",
     "region_type": "land",
-    "color": "#0beb3d",
+    "color": "#8c7d8e",
     "pixel_count": 24807,
     "density_multiplier": null,
     "parent_id": null,
@@ -5052,7 +5052,7 @@
   {
     "region_id": "AREA000203",
     "region_type": "land",
-    "color": "#6fc4b4",
+    "color": "#ce7f56",
     "pixel_count": 5962,
     "density_multiplier": null,
     "parent_id": null,
@@ -5077,7 +5077,7 @@
   {
     "region_id": "AREA000204",
     "region_type": "land",
-    "color": "#788b5c",
+    "color": "#6ccb93",
     "pixel_count": 244,
     "density_multiplier": null,
     "parent_id": null,
@@ -5102,7 +5102,7 @@
   {
     "region_id": "AREA000205",
     "region_type": "land",
-    "color": "#502fbb",
+    "color": "#76f741",
     "pixel_count": 23619,
     "density_multiplier": null,
     "parent_id": null,
@@ -5127,7 +5127,7 @@
   {
     "region_id": "AREA000206",
     "region_type": "land",
-    "color": "#e9cae1",
+    "color": "#75f5d6",
     "pixel_count": 25087,
     "density_multiplier": null,
     "parent_id": null,
@@ -5152,7 +5152,7 @@
   {
     "region_id": "AREA000207",
     "region_type": "land",
-    "color": "#d533db",
+    "color": "#930e8e",
     "pixel_count": 5519,
     "density_multiplier": null,
     "parent_id": null,
@@ -5177,7 +5177,7 @@
   {
     "region_id": "AREA000208",
     "region_type": "land",
-    "color": "#c0d9e4",
+    "color": "#62f78f",
     "pixel_count": 1632,
     "density_multiplier": null,
     "parent_id": null,
@@ -5202,7 +5202,7 @@
   {
     "region_id": "AREA000209",
     "region_type": "land",
-    "color": "#681802",
+    "color": "#939e68",
     "pixel_count": 4007,
     "density_multiplier": null,
     "parent_id": null,
@@ -5227,7 +5227,7 @@
   {
     "region_id": "AREA000210",
     "region_type": "land",
-    "color": "#7a9d07",
+    "color": "#408266",
     "pixel_count": 37174,
     "density_multiplier": null,
     "parent_id": null,
@@ -5252,7 +5252,7 @@
   {
     "region_id": "AREA000211",
     "region_type": "land",
-    "color": "#234642",
+    "color": "#d4f277",
     "pixel_count": 8303,
     "density_multiplier": null,
     "parent_id": null,
@@ -5276,8 +5276,8 @@
   },
   {
     "region_id": "AREA000212",
-    "region_type": "ocean",
-    "color": "#18278b",
+    "region_type": "land",
+    "color": "#a63195",
     "pixel_count": 140,
     "density_multiplier": null,
     "parent_id": null,
@@ -5302,7 +5302,7 @@
   {
     "region_id": "AREA000213",
     "region_type": "land",
-    "color": "#bffe7f",
+    "color": "#271034",
     "pixel_count": 545,
     "density_multiplier": null,
     "parent_id": null,
@@ -5327,7 +5327,7 @@
   {
     "region_id": "AREA000214",
     "region_type": "land",
-    "color": "#1637cf",
+    "color": "#0ddd36",
     "pixel_count": 297,
     "density_multiplier": null,
     "parent_id": null,
@@ -5352,7 +5352,7 @@
   {
     "region_id": "AREA000215",
     "region_type": "land",
-    "color": "#062d2c",
+    "color": "#e923ab",
     "pixel_count": 777,
     "density_multiplier": null,
     "parent_id": null,
@@ -5377,7 +5377,7 @@
   {
     "region_id": "AREA000216",
     "region_type": "land",
-    "color": "#c6044e",
+    "color": "#fb1c00",
     "pixel_count": 8698,
     "density_multiplier": null,
     "parent_id": null,
@@ -5402,7 +5402,7 @@
   {
     "region_id": "AREA000217",
     "region_type": "land",
-    "color": "#8227a7",
+    "color": "#485d7c",
     "pixel_count": 1517,
     "density_multiplier": null,
     "parent_id": null,
@@ -5427,7 +5427,7 @@
   {
     "region_id": "AREA000218",
     "region_type": "land",
-    "color": "#57e782",
+    "color": "#0e11a3",
     "pixel_count": 126,
     "density_multiplier": null,
     "parent_id": null,
@@ -5452,7 +5452,7 @@
   {
     "region_id": "AREA000219",
     "region_type": "land",
-    "color": "#2b9342",
+    "color": "#160b62",
     "pixel_count": 110,
     "density_multiplier": null,
     "parent_id": null,
@@ -5477,7 +5477,7 @@
   {
     "region_id": "AREA000220",
     "region_type": "land",
-    "color": "#6c0272",
+    "color": "#112514",
     "pixel_count": 321,
     "density_multiplier": null,
     "parent_id": null,
@@ -5502,7 +5502,7 @@
   {
     "region_id": "AREA000221",
     "region_type": "land",
-    "color": "#cb6c79",
+    "color": "#7c45d4",
     "pixel_count": 2050,
     "density_multiplier": null,
     "parent_id": null,
@@ -5527,7 +5527,7 @@
   {
     "region_id": "AREA000222",
     "region_type": "land",
-    "color": "#ab1f27",
+    "color": "#9355ce",
     "pixel_count": 1905,
     "density_multiplier": null,
     "parent_id": null,
@@ -5552,7 +5552,7 @@
   {
     "region_id": "AREA000223",
     "region_type": "land",
-    "color": "#623da7",
+    "color": "#334423",
     "pixel_count": 3403,
     "density_multiplier": null,
     "parent_id": null,
@@ -5577,7 +5577,7 @@
   {
     "region_id": "AREA000224",
     "region_type": "land",
-    "color": "#de79b8",
+    "color": "#4868d3",
     "pixel_count": 1928,
     "density_multiplier": null,
     "parent_id": null,
@@ -5602,7 +5602,7 @@
   {
     "region_id": "AREA000225",
     "region_type": "land",
-    "color": "#c9a652",
+    "color": "#5cbed8",
     "pixel_count": 5009,
     "density_multiplier": null,
     "parent_id": null,
@@ -5627,7 +5627,7 @@
   {
     "region_id": "AREA000226",
     "region_type": "land",
-    "color": "#358c98",
+    "color": "#20bace",
     "pixel_count": 2268,
     "density_multiplier": null,
     "parent_id": null,
@@ -5652,7 +5652,7 @@
   {
     "region_id": "AREA000227",
     "region_type": "land",
-    "color": "#edec4a",
+    "color": "#5ad4ce",
     "pixel_count": 21728,
     "density_multiplier": null,
     "parent_id": null,
@@ -5677,7 +5677,7 @@
   {
     "region_id": "AREA000228",
     "region_type": "land",
-    "color": "#bfbefc",
+    "color": "#2d29a0",
     "pixel_count": 3242,
     "density_multiplier": null,
     "parent_id": null,
@@ -5702,7 +5702,7 @@
   {
     "region_id": "AREA000229",
     "region_type": "land",
-    "color": "#152e27",
+    "color": "#6b32f9",
     "pixel_count": 287,
     "density_multiplier": null,
     "parent_id": null,
@@ -5726,8 +5726,8 @@
   },
   {
     "region_id": "AREA000230",
-    "region_type": "ocean",
-    "color": "#301ca2",
+    "region_type": "land",
+    "color": "#3e2c7e",
     "pixel_count": 51,
     "density_multiplier": null,
     "parent_id": null,
@@ -5752,7 +5752,7 @@
   {
     "region_id": "AREA000231",
     "region_type": "land",
-    "color": "#29291c",
+    "color": "#5d8552",
     "pixel_count": 17313,
     "density_multiplier": null,
     "parent_id": null,
@@ -5776,8 +5776,8 @@
   },
   {
     "region_id": "AREA000232",
-    "region_type": "ocean",
-    "color": "#30307d",
+    "region_type": "land",
+    "color": "#7a768a",
     "pixel_count": 119,
     "density_multiplier": null,
     "parent_id": null,
@@ -5802,7 +5802,7 @@
   {
     "region_id": "AREA000233",
     "region_type": "land",
-    "color": "#4a093d",
+    "color": "#e8366a",
     "pixel_count": 8437,
     "density_multiplier": null,
     "parent_id": null,
@@ -5827,7 +5827,7 @@
   {
     "region_id": "AREA000234",
     "region_type": "land",
-    "color": "#dc7095",
+    "color": "#c7e847",
     "pixel_count": 379,
     "density_multiplier": null,
     "parent_id": null,
@@ -5852,7 +5852,7 @@
   {
     "region_id": "AREA000235",
     "region_type": "land",
-    "color": "#7975b6",
+    "color": "#f3e947",
     "pixel_count": 4291,
     "density_multiplier": null,
     "parent_id": null,
@@ -5877,7 +5877,7 @@
   {
     "region_id": "AREA000236",
     "region_type": "land",
-    "color": "#6aeb27",
+    "color": "#83b64d",
     "pixel_count": 304,
     "density_multiplier": null,
     "parent_id": null,
@@ -5901,8 +5901,8 @@
   },
   {
     "region_id": "AREA000237",
-    "region_type": "ocean",
-    "color": "#0b1b6a",
+    "region_type": "land",
+    "color": "#382c77",
     "pixel_count": 146,
     "density_multiplier": null,
     "parent_id": null,
@@ -5927,7 +5927,7 @@
   {
     "region_id": "AREA000238",
     "region_type": "land",
-    "color": "#3159f9",
+    "color": "#7cb960",
     "pixel_count": 21268,
     "density_multiplier": null,
     "parent_id": null,
@@ -5952,7 +5952,7 @@
   {
     "region_id": "AREA000239",
     "region_type": "land",
-    "color": "#6dcc5d",
+    "color": "#7d9fbe",
     "pixel_count": 1983,
     "density_multiplier": null,
     "parent_id": null,
@@ -5977,7 +5977,7 @@
   {
     "region_id": "AREA000240",
     "region_type": "land",
-    "color": "#8e4d21",
+    "color": "#7f2e09",
     "pixel_count": 11689,
     "density_multiplier": null,
     "parent_id": null,
@@ -6002,7 +6002,7 @@
   {
     "region_id": "AREA000241",
     "region_type": "land",
-    "color": "#5f2969",
+    "color": "#80d592",
     "pixel_count": 8655,
     "density_multiplier": null,
     "parent_id": null,
@@ -6026,8 +6026,8 @@
   },
   {
     "region_id": "AREA000242",
-    "region_type": "ocean",
-    "color": "#201cb3",
+    "region_type": "land",
+    "color": "#0d1ad3",
     "pixel_count": 136,
     "density_multiplier": null,
     "parent_id": null,
@@ -6052,7 +6052,7 @@
   {
     "region_id": "AREA000243",
     "region_type": "land",
-    "color": "#b51c1d",
+    "color": "#4fd02a",
     "pixel_count": 16852,
     "density_multiplier": null,
     "parent_id": null,
@@ -6077,7 +6077,7 @@
   {
     "region_id": "AREA000244",
     "region_type": "land",
-    "color": "#3cfcab",
+    "color": "#ec2caa",
     "pixel_count": 1020,
     "density_multiplier": null,
     "parent_id": null,
@@ -6102,7 +6102,7 @@
   {
     "region_id": "AREA000245",
     "region_type": "land",
-    "color": "#a5bb16",
+    "color": "#722955",
     "pixel_count": 3025,
     "density_multiplier": null,
     "parent_id": null,
@@ -6127,7 +6127,7 @@
   {
     "region_id": "AREA000246",
     "region_type": "land",
-    "color": "#49f569",
+    "color": "#713970",
     "pixel_count": 750,
     "density_multiplier": null,
     "parent_id": null,
@@ -6152,7 +6152,7 @@
   {
     "region_id": "AREA000247",
     "region_type": "land",
-    "color": "#8744aa",
+    "color": "#1fa1f4",
     "pixel_count": 4358,
     "density_multiplier": null,
     "parent_id": null,
@@ -6177,7 +6177,7 @@
   {
     "region_id": "AREA000248",
     "region_type": "land",
-    "color": "#ea1060",
+    "color": "#6173ac",
     "pixel_count": 871,
     "density_multiplier": null,
     "parent_id": null,
@@ -6202,7 +6202,7 @@
   {
     "region_id": "AREA000249",
     "region_type": "land",
-    "color": "#d657f7",
+    "color": "#ee3427",
     "pixel_count": 11505,
     "density_multiplier": null,
     "parent_id": null,
@@ -6226,8 +6226,8 @@
   },
   {
     "region_id": "AREA000250",
-    "region_type": "ocean",
-    "color": "#044299",
+    "region_type": "land",
+    "color": "#5af58b",
     "pixel_count": 152,
     "density_multiplier": null,
     "parent_id": null,
@@ -6252,7 +6252,7 @@
   {
     "region_id": "AREA000251",
     "region_type": "land",
-    "color": "#02e414",
+    "color": "#106df9",
     "pixel_count": 5836,
     "density_multiplier": null,
     "parent_id": null,
@@ -6277,7 +6277,7 @@
   {
     "region_id": "AREA000252",
     "region_type": "ocean",
-    "color": "#243370",
+    "color": "#0712b1",
     "pixel_count": 170,
     "density_multiplier": null,
     "parent_id": null,
@@ -6302,7 +6302,7 @@
   {
     "region_id": "AREA000253",
     "region_type": "land",
-    "color": "#2f1dbc",
+    "color": "#0db088",
     "pixel_count": 1160,
     "density_multiplier": null,
     "parent_id": null,
@@ -6327,7 +6327,7 @@
   {
     "region_id": "AREA000254",
     "region_type": "land",
-    "color": "#15ea39",
+    "color": "#d5ea5b",
     "pixel_count": 1235,
     "density_multiplier": null,
     "parent_id": null,
@@ -6352,7 +6352,7 @@
   {
     "region_id": "AREA000255",
     "region_type": "land",
-    "color": "#972e82",
+    "color": "#4cf19a",
     "pixel_count": 1001,
     "density_multiplier": null,
     "parent_id": null,
@@ -6377,7 +6377,7 @@
   {
     "region_id": "AREA000256",
     "region_type": "land",
-    "color": "#dcbb0b",
+    "color": "#cf07fa",
     "pixel_count": 1098,
     "density_multiplier": null,
     "parent_id": null,
@@ -6402,7 +6402,7 @@
   {
     "region_id": "AREA000257",
     "region_type": "land",
-    "color": "#a4b2ba",
+    "color": "#6e32a6",
     "pixel_count": 178,
     "density_multiplier": null,
     "parent_id": null,
@@ -6427,7 +6427,7 @@
   {
     "region_id": "AREA000258",
     "region_type": "land",
-    "color": "#9a3875",
+    "color": "#7abc62",
     "pixel_count": 1601,
     "density_multiplier": null,
     "parent_id": null,
@@ -6452,7 +6452,7 @@
   {
     "region_id": "AREA000259",
     "region_type": "land",
-    "color": "#700afc",
+    "color": "#4b9dea",
     "pixel_count": 3689,
     "density_multiplier": null,
     "parent_id": null,
@@ -6477,7 +6477,7 @@
   {
     "region_id": "AREA000260",
     "region_type": "land",
-    "color": "#ab9caf",
+    "color": "#40a219",
     "pixel_count": 3127,
     "density_multiplier": null,
     "parent_id": null,
@@ -6502,7 +6502,7 @@
   {
     "region_id": "AREA000261",
     "region_type": "land",
-    "color": "#22035f",
+    "color": "#297a0f",
     "pixel_count": 2233,
     "density_multiplier": null,
     "parent_id": null,
@@ -6527,7 +6527,7 @@
   {
     "region_id": "AREA000262",
     "region_type": "land",
-    "color": "#0d1edc",
+    "color": "#a39462",
     "pixel_count": 2540,
     "density_multiplier": null,
     "parent_id": null,
@@ -6552,7 +6552,7 @@
   {
     "region_id": "AREA000263",
     "region_type": "land",
-    "color": "#065661",
+    "color": "#c0fcec",
     "pixel_count": 1399,
     "density_multiplier": null,
     "parent_id": null,
@@ -6577,7 +6577,7 @@
   {
     "region_id": "AREA000264",
     "region_type": "land",
-    "color": "#51a99d",
+    "color": "#679a4c",
     "pixel_count": 7633,
     "density_multiplier": null,
     "parent_id": null,
@@ -6602,7 +6602,7 @@
   {
     "region_id": "AREA000265",
     "region_type": "land",
-    "color": "#38c9cf",
+    "color": "#16d067",
     "pixel_count": 44397,
     "density_multiplier": null,
     "parent_id": null,
@@ -6627,7 +6627,7 @@
   {
     "region_id": "AREA000266",
     "region_type": "land",
-    "color": "#c9b3d9",
+    "color": "#776945",
     "pixel_count": 168069,
     "density_multiplier": null,
     "parent_id": null,
@@ -6652,7 +6652,7 @@
   {
     "region_id": "AREA000267",
     "region_type": "land",
-    "color": "#b1d008",
+    "color": "#b34905",
     "pixel_count": 10830,
     "density_multiplier": null,
     "parent_id": null,
@@ -6677,7 +6677,7 @@
   {
     "region_id": "AREA000268",
     "region_type": "land",
-    "color": "#64f1dd",
+    "color": "#f2b5f6",
     "pixel_count": 9598,
     "density_multiplier": null,
     "parent_id": null,
@@ -6702,7 +6702,7 @@
   {
     "region_id": "AREA000269",
     "region_type": "land",
-    "color": "#2b5e12",
+    "color": "#d5a5fd",
     "pixel_count": 3693,
     "density_multiplier": null,
     "parent_id": null,
@@ -6727,7 +6727,7 @@
   {
     "region_id": "AREA000270",
     "region_type": "land",
-    "color": "#50c039",
+    "color": "#4728b6",
     "pixel_count": 6073,
     "density_multiplier": null,
     "parent_id": null,
@@ -6752,7 +6752,7 @@
   {
     "region_id": "AREA000271",
     "region_type": "land",
-    "color": "#30f216",
+    "color": "#af37fc",
     "pixel_count": 4557,
     "density_multiplier": null,
     "parent_id": null,
@@ -6777,7 +6777,7 @@
   {
     "region_id": "AREA000272",
     "region_type": "land",
-    "color": "#07709a",
+    "color": "#52fa8a",
     "pixel_count": 352,
     "density_multiplier": null,
     "parent_id": null,
@@ -6802,7 +6802,7 @@
   {
     "region_id": "AREA000273",
     "region_type": "land",
-    "color": "#003c39",
+    "color": "#2e6621",
     "pixel_count": 458,
     "density_multiplier": null,
     "parent_id": null,
@@ -6826,8 +6826,8 @@
   },
   {
     "region_id": "AREA000274",
-    "region_type": "ocean",
-    "color": "#0c017e",
+    "region_type": "land",
+    "color": "#598df9",
     "pixel_count": 90,
     "density_multiplier": null,
     "parent_id": null,
@@ -6852,7 +6852,7 @@
   {
     "region_id": "AREA000275",
     "region_type": "land",
-    "color": "#4b737d",
+    "color": "#f72bac",
     "pixel_count": 4392,
     "density_multiplier": null,
     "parent_id": null,
@@ -6877,7 +6877,7 @@
   {
     "region_id": "AREA000276",
     "region_type": "lake",
-    "color": "#324467",
+    "color": "#241e67",
     "pixel_count": 896,
     "density_multiplier": null,
     "parent_id": null,
@@ -6902,7 +6902,7 @@
   {
     "region_id": "AREA000277",
     "region_type": "land",
-    "color": "#e000c9",
+    "color": "#8d17d0",
     "pixel_count": 24642,
     "density_multiplier": null,
     "parent_id": null,
@@ -6927,7 +6927,7 @@
   {
     "region_id": "AREA000278",
     "region_type": "land",
-    "color": "#91607b",
+    "color": "#35c6fd",
     "pixel_count": 2016,
     "density_multiplier": null,
     "parent_id": null,
@@ -6952,7 +6952,7 @@
   {
     "region_id": "AREA000279",
     "region_type": "land",
-    "color": "#0e9e37",
+    "color": "#7db968",
     "pixel_count": 566,
     "density_multiplier": null,
     "parent_id": null,
@@ -6977,7 +6977,7 @@
   {
     "region_id": "AREA000280",
     "region_type": "land",
-    "color": "#28b054",
+    "color": "#deb20c",
     "pixel_count": 834,
     "density_multiplier": null,
     "parent_id": null,
@@ -7002,7 +7002,7 @@
   {
     "region_id": "AREA000281",
     "region_type": "land",
-    "color": "#2095ea",
+    "color": "#61ae7e",
     "pixel_count": 16798,
     "density_multiplier": null,
     "parent_id": null,
@@ -7027,7 +7027,7 @@
   {
     "region_id": "AREA000282",
     "region_type": "land",
-    "color": "#fa78d9",
+    "color": "#70726a",
     "pixel_count": 357,
     "density_multiplier": null,
     "parent_id": null,
@@ -7052,7 +7052,7 @@
   {
     "region_id": "AREA000283",
     "region_type": "land",
-    "color": "#346863",
+    "color": "#87b549",
     "pixel_count": 5709,
     "density_multiplier": null,
     "parent_id": null,
@@ -7076,8 +7076,8 @@
   },
   {
     "region_id": "AREA000284",
-    "region_type": "ocean",
-    "color": "#1a339c",
+    "region_type": "land",
+    "color": "#4e7f83",
     "pixel_count": 113,
     "density_multiplier": null,
     "parent_id": null,
@@ -7102,7 +7102,7 @@
   {
     "region_id": "AREA000285",
     "region_type": "land",
-    "color": "#c126e1",
+    "color": "#7d42b7",
     "pixel_count": 340,
     "density_multiplier": null,
     "parent_id": null,
@@ -7127,7 +7127,7 @@
   {
     "region_id": "AREA000286",
     "region_type": "land",
-    "color": "#163b52",
+    "color": "#649a88",
     "pixel_count": 7150,
     "density_multiplier": null,
     "parent_id": null,
@@ -7152,7 +7152,7 @@
   {
     "region_id": "AREA000287",
     "region_type": "land",
-    "color": "#faacb7",
+    "color": "#cc2828",
     "pixel_count": 184,
     "density_multiplier": null,
     "parent_id": null,
@@ -7176,8 +7176,8 @@
   },
   {
     "region_id": "AREA000288",
-    "region_type": "ocean",
-    "color": "#310eaf",
+    "region_type": "land",
+    "color": "#46f86b",
     "pixel_count": 103,
     "density_multiplier": null,
     "parent_id": null,
@@ -7202,7 +7202,7 @@
   {
     "region_id": "AREA000289",
     "region_type": "lake",
-    "color": "#32476b",
+    "color": "#01257a",
     "pixel_count": 384,
     "density_multiplier": null,
     "parent_id": null,
@@ -7226,8 +7226,8 @@
   },
   {
     "region_id": "AREA000290",
-    "region_type": "ocean",
-    "color": "#172468",
+    "region_type": "land",
+    "color": "#cc05a4",
     "pixel_count": 451,
     "density_multiplier": null,
     "parent_id": null,
@@ -7252,7 +7252,7 @@
   {
     "region_id": "AREA000291",
     "region_type": "land",
-    "color": "#194787",
+    "color": "#098fcc",
     "pixel_count": 56,
     "density_multiplier": null,
     "parent_id": null,
@@ -7276,8 +7276,8 @@
   },
   {
     "region_id": "AREA000292",
-    "region_type": "ocean",
-    "color": "#274789",
+    "region_type": "land",
+    "color": "#de1e32",
     "pixel_count": 93,
     "density_multiplier": null,
     "parent_id": null,
@@ -7302,7 +7302,7 @@
   {
     "region_id": "AREA000293",
     "region_type": "land",
-    "color": "#dd2442",
+    "color": "#281a06",
     "pixel_count": 24182,
     "density_multiplier": null,
     "parent_id": null,
@@ -7327,7 +7327,7 @@
   {
     "region_id": "AREA000294",
     "region_type": "land",
-    "color": "#6d7a17",
+    "color": "#647523",
     "pixel_count": 2057,
     "density_multiplier": null,
     "parent_id": null,
@@ -7352,7 +7352,7 @@
   {
     "region_id": "AREA000295",
     "region_type": "land",
-    "color": "#262309",
+    "color": "#d68eca",
     "pixel_count": 158,
     "density_multiplier": null,
     "parent_id": null,
@@ -7376,8 +7376,8 @@
   },
   {
     "region_id": "AREA000296",
-    "region_type": "ocean",
-    "color": "#314d9f",
+    "region_type": "land",
+    "color": "#928a21",
     "pixel_count": 52,
     "density_multiplier": null,
     "parent_id": null,
@@ -7402,7 +7402,7 @@
   {
     "region_id": "AREA000297",
     "region_type": "land",
-    "color": "#ae02e4",
+    "color": "#64b73e",
     "pixel_count": 14320,
     "density_multiplier": null,
     "parent_id": null,
@@ -7427,7 +7427,7 @@
   {
     "region_id": "AREA000298",
     "region_type": "land",
-    "color": "#bf670d",
+    "color": "#8ea46c",
     "pixel_count": 132,
     "density_multiplier": null,
     "parent_id": null,
@@ -7451,8 +7451,8 @@
   },
   {
     "region_id": "AREA000299",
-    "region_type": "ocean",
-    "color": "#0942b1",
+    "region_type": "land",
+    "color": "#ffea9e",
     "pixel_count": 161,
     "density_multiplier": null,
     "parent_id": null,
@@ -7477,7 +7477,7 @@
   {
     "region_id": "AREA000300",
     "region_type": "land",
-    "color": "#3464e4",
+    "color": "#dbcb38",
     "pixel_count": 85,
     "density_multiplier": null,
     "parent_id": null,
@@ -7501,8 +7501,8 @@
   },
   {
     "region_id": "AREA000301",
-    "region_type": "ocean",
-    "color": "#0c4f71",
+    "region_type": "land",
+    "color": "#3e2a1c",
     "pixel_count": 163,
     "density_multiplier": null,
     "parent_id": null,
@@ -7526,8 +7526,8 @@
   },
   {
     "region_id": "AREA000302",
-    "region_type": "ocean",
-    "color": "#0a2e98",
+    "region_type": "land",
+    "color": "#ea6628",
     "pixel_count": 51,
     "density_multiplier": null,
     "parent_id": null,
@@ -7551,8 +7551,8 @@
   },
   {
     "region_id": "AREA000303",
-    "region_type": "ocean",
-    "color": "#22298a",
+    "region_type": "land",
+    "color": "#4ac15b",
     "pixel_count": 129,
     "density_multiplier": null,
     "parent_id": null,
@@ -7577,7 +7577,7 @@
   {
     "region_id": "AREA000304",
     "region_type": "lake",
-    "color": "#1f0f9f",
+    "color": "#122e80",
     "pixel_count": 357,
     "density_multiplier": null,
     "parent_id": null,
@@ -7602,7 +7602,7 @@
   {
     "region_id": "AREA000305",
     "region_type": "land",
-    "color": "#c45f89",
+    "color": "#6b8d59",
     "pixel_count": 1484,
     "density_multiplier": null,
     "parent_id": null,
@@ -7627,7 +7627,7 @@
   {
     "region_id": "AREA000306",
     "region_type": "land",
-    "color": "#0fb074",
+    "color": "#edb200",
     "pixel_count": 21510,
     "density_multiplier": null,
     "parent_id": null,
@@ -7652,7 +7652,7 @@
   {
     "region_id": "AREA000307",
     "region_type": "land",
-    "color": "#bb0e0d",
+    "color": "#d02989",
     "pixel_count": 15017,
     "density_multiplier": null,
     "parent_id": null,
@@ -7677,7 +7677,7 @@
   {
     "region_id": "AREA000308",
     "region_type": "land",
-    "color": "#f81dbe",
+    "color": "#b83e64",
     "pixel_count": 164350,
     "density_multiplier": null,
     "parent_id": null,
@@ -7702,7 +7702,7 @@
   {
     "region_id": "AREA000309",
     "region_type": "land",
-    "color": "#95cba1",
+    "color": "#e7491e",
     "pixel_count": 11656,
     "density_multiplier": null,
     "parent_id": null,
@@ -7727,7 +7727,7 @@
   {
     "region_id": "AREA000310",
     "region_type": "land",
-    "color": "#4c70d3",
+    "color": "#f66443",
     "pixel_count": 7662,
     "density_multiplier": null,
     "parent_id": null,
@@ -7752,7 +7752,7 @@
   {
     "region_id": "AREA000311",
     "region_type": "land",
-    "color": "#f7d4ed",
+    "color": "#edb6b7",
     "pixel_count": 16621,
     "density_multiplier": null,
     "parent_id": null,
@@ -7776,8 +7776,8 @@
   },
   {
     "region_id": "AREA000312",
-    "region_type": "ocean",
-    "color": "#0c44af",
+    "region_type": "land",
+    "color": "#f613c3",
     "pixel_count": 148,
     "density_multiplier": null,
     "parent_id": null,
@@ -7802,7 +7802,7 @@
   {
     "region_id": "AREA000313",
     "region_type": "land",
-    "color": "#51ec80",
+    "color": "#9ab595",
     "pixel_count": 11943,
     "density_multiplier": null,
     "parent_id": null,
@@ -7827,7 +7827,7 @@
   {
     "region_id": "AREA000314",
     "region_type": "land",
-    "color": "#f2f96c",
+    "color": "#b9b9ce",
     "pixel_count": 11745,
     "density_multiplier": null,
     "parent_id": null,
@@ -7852,7 +7852,7 @@
   {
     "region_id": "AREA000315",
     "region_type": "land",
-    "color": "#5ee298",
+    "color": "#57457a",
     "pixel_count": 8026,
     "density_multiplier": null,
     "parent_id": null,
@@ -7876,8 +7876,8 @@
   },
   {
     "region_id": "AREA000316",
-    "region_type": "ocean",
-    "color": "#1b4e85",
+    "region_type": "land",
+    "color": "#a056cd",
     "pixel_count": 177,
     "density_multiplier": null,
     "parent_id": null,
@@ -7902,7 +7902,7 @@
   {
     "region_id": "AREA000317",
     "region_type": "land",
-    "color": "#468a1e",
+    "color": "#b5e3a0",
     "pixel_count": 64923,
     "density_multiplier": null,
     "parent_id": null,
@@ -7927,7 +7927,7 @@
   {
     "region_id": "AREA000318",
     "region_type": "land",
-    "color": "#70cb49",
+    "color": "#e76ee7",
     "pixel_count": 26300,
     "density_multiplier": null,
     "parent_id": null,
@@ -7952,7 +7952,7 @@
   {
     "region_id": "AREA000319",
     "region_type": "land",
-    "color": "#46b553",
+    "color": "#af184d",
     "pixel_count": 288,
     "density_multiplier": null,
     "parent_id": null,
@@ -7977,7 +7977,7 @@
   {
     "region_id": "AREA000320",
     "region_type": "land",
-    "color": "#d320e3",
+    "color": "#60be74",
     "pixel_count": 546,
     "density_multiplier": null,
     "parent_id": null,
@@ -8002,7 +8002,7 @@
   {
     "region_id": "AREA000321",
     "region_type": "land",
-    "color": "#9e2386",
+    "color": "#5be4f7",
     "pixel_count": 3824,
     "density_multiplier": null,
     "parent_id": null,
@@ -8027,7 +8027,7 @@
   {
     "region_id": "AREA000322",
     "region_type": "ocean",
-    "color": "#294372",
+    "color": "#191379",
     "pixel_count": 110,
     "density_multiplier": null,
     "parent_id": null,
@@ -8051,8 +8051,8 @@
   },
   {
     "region_id": "AREA000323",
-    "region_type": "ocean",
-    "color": "#0f458e",
+    "region_type": "land",
+    "color": "#410591",
     "pixel_count": 128,
     "density_multiplier": null,
     "parent_id": null,
@@ -8077,7 +8077,7 @@
   {
     "region_id": "AREA000324",
     "region_type": "land",
-    "color": "#8198b9",
+    "color": "#49a0c7",
     "pixel_count": 2090,
     "density_multiplier": null,
     "parent_id": null,
@@ -8102,7 +8102,7 @@
   {
     "region_id": "AREA000325",
     "region_type": "land",
-    "color": "#aa5174",
+    "color": "#4b0593",
     "pixel_count": 3533,
     "density_multiplier": null,
     "parent_id": null,
@@ -8127,7 +8127,7 @@
   {
     "region_id": "AREA000326",
     "region_type": "land",
-    "color": "#242cfe",
+    "color": "#2a9f4f",
     "pixel_count": 1385,
     "density_multiplier": null,
     "parent_id": null,
@@ -8151,8 +8151,8 @@
   },
   {
     "region_id": "AREA000327",
-    "region_type": "ocean",
-    "color": "#2c1e89",
+    "region_type": "land",
+    "color": "#da88ad",
     "pixel_count": 106,
     "density_multiplier": null,
     "parent_id": null,
@@ -8176,8 +8176,8 @@
   },
   {
     "region_id": "AREA000328",
-    "region_type": "ocean",
-    "color": "#1d0e8e",
+    "region_type": "land",
+    "color": "#5c6ae1",
     "pixel_count": 50,
     "density_multiplier": null,
     "parent_id": null,
@@ -8202,7 +8202,7 @@
   {
     "region_id": "AREA000329",
     "region_type": "land",
-    "color": "#d6dcb5",
+    "color": "#92351b",
     "pixel_count": 268,
     "density_multiplier": null,
     "parent_id": null,
@@ -8227,7 +8227,7 @@
   {
     "region_id": "AREA000330",
     "region_type": "land",
-    "color": "#bc5882",
+    "color": "#8fd2c7",
     "pixel_count": 446,
     "density_multiplier": null,
     "parent_id": null,
@@ -8252,7 +8252,7 @@
   {
     "region_id": "AREA000331",
     "region_type": "land",
-    "color": "#8d4719",
+    "color": "#0dedb3",
     "pixel_count": 455,
     "density_multiplier": null,
     "parent_id": null,
@@ -8276,8 +8276,8 @@
   },
   {
     "region_id": "AREA000332",
-    "region_type": "land",
-    "color": "#e21296",
+    "region_type": "ocean",
+    "color": "#344e6e",
     "pixel_count": 61,
     "density_multiplier": null,
     "parent_id": null,
@@ -8302,7 +8302,7 @@
   {
     "region_id": "AREA000333",
     "region_type": "land",
-    "color": "#76c106",
+    "color": "#0ccaf8",
     "pixel_count": 480,
     "density_multiplier": null,
     "parent_id": null,
