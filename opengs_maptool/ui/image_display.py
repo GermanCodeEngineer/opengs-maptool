@@ -238,6 +238,13 @@ class ImageDisplay(QWidget):
         )
         pixmap = QPixmap.fromImage(qimage)
         self._image_label.setPixmap(pixmap, auto_fit=True)
+        # Center scrollbars to middle after image is set
+        hbar = self._scroll_area.horizontalScrollBar()
+        vbar = self._scroll_area.verticalScrollBar()
+        if hbar.maximum() > 0:
+            hbar.setValue(hbar.maximum() // 2)
+        if vbar.maximum() > 0:
+            vbar.setValue(vbar.maximum() // 2)
     
     def set_image_buffer(self, image: NDArray[np.uint8]):
         self.set_image(Image.fromarray(image))

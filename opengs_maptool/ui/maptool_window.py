@@ -1,7 +1,7 @@
 import logging
 from pathlib import Path
 from PIL import Image
-from PyQt6.QtCore import QThread, pyqtSignal
+from PyQt6.QtCore import Qt, QThread, pyqtSignal
 from PyQt6.QtGui import QCloseEvent
 from PyQt6.QtWidgets import (
     QWidget, QVBoxLayout, QHBoxLayout, QTabWidget, QLabel,
@@ -106,6 +106,10 @@ class MapToolWindow(QWidget):
         self.button_readme.clicked.connect(self.on_button_open_readme)
         bottom_layout.addWidget(self.button_readme)
 
+        self.button_info = QPushButton("Info/Help")
+        self.button_info.clicked.connect(self.on_button_open_info)
+        bottom_layout.addWidget(self.button_info)
+
         bottom_layout.addStretch()
         self.label_version = QLabel("Version "+config.VERSION)
         bottom_layout.addWidget(self.label_version)
@@ -121,6 +125,46 @@ class MapToolWindow(QWidget):
         self.tabs.addTab(self.territory_tab, "Generate Territories")
         self.create_province_tab()
         self.tabs.addTab(self.province_tab, "Generate Provinces")
+
+        # Add Info/Help tab
+        self.create_info_tab()
+        self.tabs.addTab(self.info_tab, "Info/Help")
+
+    def create_info_tab(self) -> None:
+        content_widget = QWidget()
+        layout = QVBoxLayout(content_widget)
+        info_text = (
+            "<h2>OpenGS Map Tool - Info & Help</h2>"
+            "<b>Terms:</b><br>"
+            "<ul>"
+            "<li><b>Area</b>: Country or separate island (largest continuous region).</li>"
+            "<li><b>Density Sample</b>: Subdivision of area, controls region density.</li>"
+            "<li><b>Territory</b>: Subdivision of density sample, larger than province.</li>"
+            "<li><b>Province</b>: Subdivision of territory, smallest region.</li>"
+            "</ul>"
+            "<b>Local vs. Global Fields:</b><br>"
+            "Global fields (e.g., global_bbox) are in full map coordinates. Local fields are relative to the parent region.<br>"
+            "Use global_bbox to crop from the full image. local_bbox is for operations within a parent region.<br>"
+            "<b>Performance Tips:</b><br>"
+            "Split large/complex regions (like world oceans) for better performance.<br>"
+            "Use density multipliers to control region sizes.<br>"
+            "<b>How to Create Classification and Boundary/Density Images:</b><br>"
+            "1. <b>Boundary Image</b>: Should have pure black lines (RGB 0,0,0) for boundaries. The greyscale value can be used to encode density multipliers (0 = 4x fewer regions, 255 = 4x more regions).<br>Hint: Avoid creating islands or regions that are only borders (completely surrounded by black pixels), as these may not be processed correctly.<br>"
+            "2. <b>Classification Image</b>: Should use RGB (5, 20, 18) for ocean, (150, 68, 192) for land, and (0, 255, 0) for lakes.<br>"
+            "3. Always use the same resolution for boundary/density and classification images to avoid errors and misalignment.<br>"
+        )
+        label = QLabel()
+        label.setTextFormat(Qt.TextFormat.RichText)
+        label.setWordWrap(True)
+        label.setText(info_text)
+        layout.addWidget(label)
+        scroll = QScrollArea()
+        scroll.setWidgetResizable(True)
+        scroll.setWidget(content_widget)
+        self.info_tab = scroll
+
+    def on_button_open_info(self) -> None:
+        self.tabs.setCurrentWidget(self.info_tab)
 
     # Bottom Section buttons
     def on_button_open_readme(self) -> None:
@@ -211,6 +255,16 @@ class MapToolWindow(QWidget):
     def create_areas_tab(self) -> None:
         content_widget = QWidget()
         areas_tab_layout = QVBoxLayout(content_widget)
+
+        self.min_area_pixels_slider = create_slider(
+            areas_tab_layout,
+            "Minimum area pixels (filter tiny regions/small islands):",
+            config.MIN_AREA_PIXELS_MIN,
+            config.MIN_AREA_PIXELS_MAX,
+            config.MIN_AREA_PIXELS_DEFAULT,
+            config.MIN_AREA_PIXELS_TICK,
+            config.MIN_AREA_PIXELS_STEP,
+        )
 
         self.button_generate_areas = ProgressButton("Generate Continuous Areas")
         self.button_generate_areas.clicked.connect(self.on_button_generate_areas)
@@ -401,6 +455,7 @@ class MapToolWindow(QWidget):
                 class_image=self.class_image_display.get_image_buffer(),
                 boundary_image=self.final_boundary_image_display.get_image_buffer(),
                 rng_seed=config.DEFAULT_CONT_AREAS_RNG_SEED,
+                min_area_pixels=self.min_area_pixels_slider.value(),
             )
         )
 

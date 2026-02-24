@@ -134,23 +134,11 @@ def parse_args() -> argparse.Namespace:
 
 
 if __name__ == "__main__":
-    import cProfile
-    import pstats
-
     args = parse_args()
 
-    def run_and_profile(func, *func_args, **func_kwargs):
-        profiler = cProfile.Profile()
-        profiler.enable()
-        func(*func_args, **func_kwargs)
-        profiler.disable()
-        stats = pstats.Stats(profiler).sort_stats('cumtime')
-        print("\n--- cProfile: Top 30 functions by cumulative time ---")
-        stats.print_stats(30)
-
     if args.gui:
-        run_and_profile(main_gui)
+        main_gui()
     elif hasattr(args, "stepwise_export") and args.stepwise_export:
-        run_and_profile(main_stepwise_export)
+        main_stepwise_export()
     else:
-        run_and_profile(main_automatic)
+        main_automatic()

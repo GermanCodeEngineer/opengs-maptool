@@ -21,16 +21,17 @@ CORE FUNCTIONALITY & BUGS
 [DONE] ensure bbox visualization is perfect still
 [DONE] remove +1 offset for xmax and ymax of bboxes
 [DONE] fix false bounding boxes of dens samps
- test what happens to border-only islands
- use multiprocessing for area generation?
+[DONE] test what happens to border-only islands
+[DONE] remove cProfile stats and stuff
+[DONE] scaled classification image to match the boundary image more closely
 
 ====================
 IMAGE & DATA GENERATION
 ====================
 [DONE] re-add default images
-[CURRENT] optimize generation (including bbox calculation) => include bbox updating into assign_borders
- create slider for & adapt & fix MIN_AREA_PIXELS (e.g. Taiwan was sunk)
- => fix land area/sample being detected as ocean (e.g. Eastern Philipines Island)
+[DONE] optimize generation (including bbox calculation) => include bbox updating into assign_borders
+[DONE] create slider for & adapt & fix MIN_AREA_PIXELS (e.g. Taiwan was sunk)
+[DONE] => fix land area/sample being detected as ocean (e.g. Eastern Philipines Island)
 [DONE] use same default seeds & lloyd_iterations everywhere
 [DONE] use sea colors for areas + forbid land colors to be sea colors
 
@@ -38,13 +39,12 @@ IMAGE & DATA GENERATION
 DOCUMENTATION & UI
 ====================
 [DONE] clean up confusing MapToolWindow code
- explain local vs. global fields and how to crop with global and local bbox
- explain how to create classification and boundary/density image
- keep hint that splitting complex and weird-shaped areas is good for performance(especially the world oceans when working with earth)
- add image display zooming & scrolling
+[DONE] explain local vs. global fields and how to crop with global and local bbox
+[DONE] explain how to create classification and boundary/density image
+[DONE] keep hint that splitting complex and weird-shaped areas is good for performance(especially the world oceans when working with earth)
  rewrite and update README
- add terms definition to README
- improve flappy bird and run in separate process to avoid lags
+[DONE] add terms definition to README
+[DONE] improve flappy bird and run in separate process to avoid lags
  move GUI docs into GUI itself
 
 ====================
@@ -53,13 +53,15 @@ FUTURE FEATURES
 [DONE] support for different regional densities within bigger countries
 [DONE] renewed guarantee of region continuity
 [DONE] seed coords
+ add image display zooming & scrolling
  allow importing area/region images
 
 ====================
 MANUAL/POSTPROCESSING (LATER PR)
 ====================
  explain why density image should not be a seperate image from boundary image
- optimize border image manually (e.g. Greece, Israel, especially Chile too)
+ explain that classification mismatches can happen because the example class image doesnt use the exact same map projection and original resolution
+ optimize border image manually (e.g. Greece, Israel, especially Chile too, Denmark, Norway)
 
 ====================
 Sources

@@ -83,7 +83,7 @@ def calculate_density_multiplier(
     mask: NDArray[np.bool_],
     region_id: Any | None = None,
     fallback: float = 128.0,
-    use_rgb_average: bool = False,
+    use_rgb_average: bool = True,
     warn_on_empty: bool = True,
 ) -> float:
     """

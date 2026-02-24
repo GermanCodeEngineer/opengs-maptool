@@ -64,8 +64,11 @@ class StepMapTool:
 
     @staticmethod
     def generate_cont_areas(
-        class_image: NDArray[np.uint8], boundary_image: NDArray[np.uint8],
-        rng_seed: int = config.DEFAULT_CONT_AREAS_RNG_SEED, progress_callback: PROGRESS_CALLBACK = None,
+        class_image: NDArray[np.uint8],
+        boundary_image: NDArray[np.uint8],
+        rng_seed: int = config.DEFAULT_CONT_AREAS_RNG_SEED,
+        min_area_pixels: int = config.MIN_AREA_PIXELS_DEFAULT,
+        progress_callback: PROGRESS_CALLBACK = None,
     ) -> tuple[NDArray[np.uint8], list[RegionMetadata]]:
         """
         Convert boundary and classification images into continuous areas.
@@ -74,6 +77,7 @@ class StepMapTool:
             class_image: Numpy array of the classification image (land/ocean/lake).
             boundary_image: Numpy array of the boundary image.
             rng_seed: Random seed for reproducibility.
+            min_area_pixels: Minimum pixel area for a region.
             progress_callback: Optional callback for progress updates.
         """
         if progress_callback:
@@ -88,7 +92,7 @@ class StepMapTool:
             class_image,
             boundary_image,
             rng_seed,
-            min_area_pixels=config.MIN_AREA_PIXELS,  # Filter out tiny areas & islands
+            min_area_pixels=min_area_pixels,  # Filter out tiny areas & islands
             progress_callback=boundaries_progress
         )
 
@@ -155,7 +159,7 @@ class StepMapTool:
             lloyd_iterations=lloyd_iterations,
             override_density_multiplier=True,
             tqdm_description="Generating density samples from areas",
-            tqdm_unit=" areas",
+            tqdm_unit="areas",
             progress_callback=dens_samp_progress,
         )
 
@@ -212,7 +216,7 @@ class StepMapTool:
             lloyd_iterations=lloyd_iterations,
             override_density_multiplier=False,
             tqdm_description="Generating territories from density samples",
-            tqdm_unit=" density samples",
+            tqdm_unit="density samples",
             progress_callback=territory_progress,
         )
 
@@ -270,7 +274,7 @@ class StepMapTool:
             lloyd_iterations=lloyd_iterations,
             override_density_multiplier=False,
             tqdm_description="Generating provinces from territories",
-            tqdm_unit=" territories",
+            tqdm_unit="territories",
             progress_callback=province_progress,
         )
         

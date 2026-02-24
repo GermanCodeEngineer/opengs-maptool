@@ -139,7 +139,7 @@ def convert_boundaries_to_cont_areas(
     land_color = np.array(config.LAND_COLOR, dtype=np.uint8)
 
     # Vectorized color assignment
-    for idx, area_id in enumerate(tqdm(range(1, num_features + 1), desc="Processing boundaries into areas", unit=" areas"), start=1):
+    for idx, area_id in enumerate(tqdm(range(1, num_features + 1), desc="Processing boundaries into areas", unit="areas"), start=1):
         if progress_callback and idx % max(1, num_features // 20) == 0:  # Report every 5%
             progress_callback(20 + int((idx / num_features) * 80), 100)
 
@@ -231,9 +231,17 @@ def classify_continuous_areas(
             updated_metadata.append(region)
             continue
         
-        # Find all pixels of this continuous area
-        rgb_match = np.all(cont_area_image[:, :, :3] == target_color, axis=2)
-        
+        # Use bounding box to crop for efficiency
+        if region.global_bbox is not None:
+            x_min, y_min, x_max, y_max = region.global_bbox
+            cropped_area = cont_area_image[y_min:y_max+1, x_min:x_max+1, :3]
+            cropped_class = class_image[y_min:y_max+1, x_min:x_max+1, :3]
+            rgb_match = np.all(cropped_area == target_color, axis=2)
+        else:
+            # Fallback to full image if bbox missing
+            rgb_match = np.all(cont_area_image[:, :, :3] == target_color, axis=2)
+            cropped_class = class_image[:, :, :3]
+
         if not np.any(rgb_match):
             logging.warning(
                 f"No pixels found for region_id {region.region_id} (color={color_hex}) while classifying continuous areas.",
@@ -241,10 +249,10 @@ def classify_continuous_areas(
             region.region_type = "unknown"
             updated_metadata.append(region)
             continue
-        
+
         # Get classification of pixels in this area
-        class_pixels = class_image[rgb_match, :3]
-        
+        class_pixels = cropped_class[rgb_match]
+
         # Count pixel types
         ocean_pixels = np.sum(np.all(class_pixels == ocean_color, axis=1))
         lake_pixels = np.sum(np.all(class_pixels == lake_color, axis=1))
@@ -318,7 +326,17 @@ def assign_borders_to_areas(
         for area in area_data
     }
 
-    for iteration in tqdm(range(max_iters), desc="Border assignment", unit=" round"):
+    # Initialize bbox tracking for each area
+    area_bbox = {}
+    for area in area_data:
+        if area.global_bbox is not None:
+            min_x, min_y, max_x, max_y = area.global_bbox
+            area_bbox[area.region_id] = [min_x, min_y, max_x, max_y]
+        else:
+            area_bbox[area.region_id] = [None, None, None, None]
+
+    border_tqdm = tqdm(range(max_iters), desc="Border assignment", unit="rounds")
+    for iteration in border_tqdm:
         if progress_callback:
             progress_callback(iteration, max_iters)
         if not np.any(black_mask):
@@ -368,21 +386,25 @@ def assign_borders_to_areas(
 
         color_code[update_mask] = best[update_mask]
         # Update bbox for each area as new pixels are assigned
-        for idx in np.flatnonzero(update_mask):
+        update_indices = np.flatnonzero(update_mask)
+        for idx in update_indices:
             y, x = np.unravel_index(idx, update_mask.shape)
             assigned_code = color_code[y, x]
             area = color_code_to_area.get(assigned_code)
             if area is not None:
-                area.global_bbox = area.global_bbox
-                if area.global_bbox is not None:
-                    min_x, min_y, max_x, max_y = area.global_bbox
-                    area.global_bbox = (
-                        min(min_x, x),
-                        min(min_y, y),
-                        max(max_x, x),
-                        max(max_y, y),
-                    )
+                bbox = area_bbox[area.region_id]
+                if bbox[0] is None:
+                    bbox[0] = x
+                    bbox[1] = y
+                    bbox[2] = x
+                    bbox[3] = y
+                else:
+                    bbox[0] = min(bbox[0], x)
+                    bbox[1] = min(bbox[1], y)
+                    bbox[2] = max(bbox[2], x)
+                    bbox[3] = max(bbox[3], y)
         black_mask = color_code == 0
+    border_tqdm.close()
     
     if progress_callback:
         progress_callback(max_iters, max_iters)
@@ -392,20 +414,10 @@ def assign_borders_to_areas(
     result[:, :, 3] = 255
 
     # --- BBOX UPDATING LOGIC ---
-    # Update global_bbox for each region in metadata
+    # Set global_bbox for each region in metadata from tracked bboxes
     for area in area_data:
-        color_rgb = hex_to_rgb(area.color)
-        target_color = np.array(color_rgb, dtype=np.uint8)
-        
-        rgb_match = np.all(result[:, :, :3] == target_color, axis=2)
-        if not np.any(rgb_match):
-            continue
-        rows, cols = np.where(rgb_match)
-        area.global_bbox = (
-            int(cols.min()),
-            int(rows.min()),
-            int(cols.max()),
-            int(rows.max()),
-        )
-        area.global_bbox = area.global_bbox
+        bbox = area_bbox.get(area.region_id)
+        if bbox is not None and None not in bbox:
+            area.global_bbox = tuple(int(v) for v in bbox)
+        # else leave as is (None)
     return result
