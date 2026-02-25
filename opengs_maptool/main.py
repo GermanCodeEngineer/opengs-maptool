@@ -1,3 +1,11 @@
+
+"""
+OpenGS MapTool Entrypoint
+------------------------
+This module provides command-line and GUI entrypoints for the OpenGS MapTool.
+Use -h or --help for usage instructions.
+"""
+
 import argparse
 import numpy as np
 from pathlib import Path
@@ -9,12 +17,13 @@ from . import StepMapTool, ProcessMapTool, MapToolWindow, config, export_to_json
 
 
 def main_automatic() -> None:
-    # Default paths
+    """
+    Run the full automatic pipeline and export all outputs to the examples/output directory.
+    """
     input_directory = Path(__file__).parent / "examples" / "input"
     output_directory = Path(__file__).parent / "examples" / "output"
     output_directory.mkdir(parents=True, exist_ok=True)
 
-    # Use ProcessMapTool for full pipeline
     maptool = ProcessMapTool(
         class_image=Image.open(input_directory / "class2_clean.png"),
         boundary_image=Image.open(input_directory / "bound2_edited.png"),
@@ -32,8 +41,10 @@ def main_automatic() -> None:
     ), output_directory / "data.json")
 
 def main_gui() -> None:
+    """
+    Launch the OpenGS MapTool GUI.
+    """
     app = QApplication(sys.argv)
-    # Use MapToolWindow for GUI
     window = MapToolWindow()
     window.show()
     sys.exit(app.exec())
@@ -42,10 +53,10 @@ def main_gui() -> None:
 
 def main_stepwise_export():
     """
-    New entry point: runs the full StepMapTool pipeline, exporting after each step to separate files.
+    Run the full StepMapTool pipeline, exporting after each step to separate files.
     """
     input_directory = Path(__file__).parent / "examples" / "input"
-    class_image_file = input_directory    / "class2_clean.png"
+    class_image_file = input_directory / "class2_clean.png"
     boundary_image_file = input_directory / "bound2_edited.png"
     output_directory = Path(__file__).parent / "examples" / "output"
     output_directory.mkdir(parents=True, exist_ok=True)
@@ -54,14 +65,14 @@ def main_stepwise_export():
         export_to_json(data, path)
         export_to_csv(data, str(path).removesuffix(".json") + ".csv")
 
-    
     class_image_buffer = np.array(StepMapTool.clean_class_image(Image.open(class_image_file)))
     boundary_image_buffer = np.array(Image.open(boundary_image_file).convert("RGBA"))
 
+    # Check if we should regenerate outputs
     regenerate = getattr(sys.modules["__main__"], "args", None)
     regenerate = getattr(regenerate, "regenerate", False)
 
-    # Step 1: cont_areas
+    # Step 1: Contiguous Areas
     cont_area_img_path = output_directory / "cont_area_image.png"
     cont_area_data_path = output_directory / "cont_area_data.json"
     if regenerate or not (cont_area_img_path.exists() and cont_area_data_path.exists()):
@@ -74,7 +85,7 @@ def main_stepwise_export():
         cont_area_image_buffer = np.array(Image.open(cont_area_img_path).convert("RGBA"))
         cont_area_data = import_from_json(cont_area_data_path)
 
-    # Step 2: dens_samps
+    # Step 2: Density Samples
     dens_samp_img_path = output_directory / "dens_samp_image.png"
     dens_samp_data_path = output_directory / "dens_samp_data.json"
     if regenerate or not (dens_samp_img_path.exists() and dens_samp_data_path.exists()):
@@ -91,7 +102,7 @@ def main_stepwise_export():
         dens_samp_image_buffer = np.array(Image.open(dens_samp_img_path).convert("RGBA"))
         dens_samp_data = import_from_json(dens_samp_data_path)
 
-    # Step 3: territories
+    # Step 3: Territories
     territory_img_path = output_directory / "territory_image.png"
     territory_data_path = output_directory / "territory_data.json"
     if regenerate or not (territory_img_path.exists() and territory_data_path.exists()):
@@ -108,7 +119,7 @@ def main_stepwise_export():
         territory_image_buffer = np.array(Image.open(territory_img_path).convert("RGBA"))
         territory_data = import_from_json(territory_data_path)
 
-    # Step 4: provinces
+    # Step 4: Provinces
     province_img_path = output_directory / "province_image.png"
     province_data_path = output_directory / "province_data.json"
     if regenerate or not (province_img_path.exists() and province_data_path.exists()):
@@ -125,11 +136,37 @@ def main_stepwise_export():
         province_image_buffer = np.array(Image.open(province_img_path).convert("RGBA"))
         province_data = import_from_json(province_data_path)
 
+
 def parse_args() -> argparse.Namespace:
-    parser = argparse.ArgumentParser(description="OpenGS MapTool entrypoints")
-    parser.add_argument("-process", action="store_true", help="Run the automatic all-in-one process")
-    parser.add_argument("-stepwise-export", action="store_true", help="Run the full stepwise pipeline and export after each step")
-    parser.add_argument("-regenerate", action="store_true", help="Regenerate all outputs for the stepwise pipeline even if files exist")
+    """
+    Parse command-line arguments for OpenGS MapTool.
+    Returns:
+        argparse.Namespace: Parsed arguments.
+    """
+    parser = argparse.ArgumentParser(
+        description="OpenGS MapTool: Generate and visualize map regions from classification and boundary images.\n\n"
+                    "Choose one of the following modes:\n"
+                    "  - --process: Run the full automatic pipeline.\n"
+                    "  - --stepwise-export: Run the stepwise pipeline and export after each step.\n"
+                    "  - (no arguments): Launch the GUI.",
+        formatter_class=argparse.RawTextHelpFormatter
+    )
+    group = parser.add_mutually_exclusive_group()
+    group.add_argument(
+        "--process",
+        action="store_true",
+        help="Run the automatic all-in-one process (outputs all results at once)"
+    )
+    group.add_argument(
+        "--stepwise-export",
+        action="store_true",
+        help="Run the full stepwise pipeline and export after each step"
+    )
+    parser.add_argument(
+        "--regenerate",
+        action="store_true",
+        help="Regenerate all outputs for the stepwise pipeline even if files exist"
+    )
     return parser.parse_args()
 
 
@@ -138,7 +175,7 @@ if __name__ == "__main__":
 
     if args.process:
         main_automatic()
-    elif hasattr(args, "stepwise_export") and args.stepwise_export:
+    elif getattr(args, "stepwise_export", False):
         main_stepwise_export()
     else:
         main_gui()

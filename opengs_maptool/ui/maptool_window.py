@@ -103,13 +103,13 @@ class MapToolWindow(QWidget):
         bottom_layout.addWidget(self.button_flappy_bird)
 
         self.button_readme1 = QPushButton("Terms and Tips")
-        self.button_readme1.clicked.connect(lambda: webbrowser.open("https://github.com/GermanCodeEngineer/opengs-maptool/blob/post-pr/README.md#terms-definition"))
+        self.button_readme1.clicked.connect(lambda: webbrowser.open("https://github.com/Thomas-Holtvedt/opengs-maptool/blob/main/README.md#terms-definition"))
         bottom_layout.addWidget(self.button_readme1)
         self.button_readme2 = QPushButton("Result Examples")
-        self.button_readme2.clicked.connect(lambda: webbrowser.open("https://github.com/GermanCodeEngineer/opengs-maptool/blob/post-pr/README.md#result-examples"))
+        self.button_readme2.clicked.connect(lambda: webbrowser.open("https://github.com/Thomas-Holtvedt/opengs-maptool/blob/main/README.md#result-examples"))
         bottom_layout.addWidget(self.button_readme2)
         self.button_readme3 = QPushButton("Result Data Explained")
-        self.button_readme3.clicked.connect(lambda: webbrowser.open("https://github.com/GermanCodeEngineer/opengs-maptool/blob/post-pr/README.md#result-data-explained"))
+        self.button_readme3.clicked.connect(lambda: webbrowser.open("https://github.com/Thomas-Holtvedt/opengs-maptool/blob/main/README.md#result-data-explained"))
         bottom_layout.addWidget(self.button_readme3)
 
         bottom_layout.addStretch()
