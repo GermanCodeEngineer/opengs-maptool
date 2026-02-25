@@ -12,7 +12,7 @@ from typing import Callable
 import webbrowser
 
 from opengs_maptool.logic import StepMapTool
-from opengs_maptool.ui.buttons import create_slider, create_button, ProgressButton
+from opengs_maptool.ui.widgets import create_slider, create_button, create_text, ProgressButton
 from opengs_maptool.ui.image_display import ImageDisplay, EMPTY_IMAGE
 from opengs_maptool.ui.flappy_bird_game import start_flappy_bird_process
 from opengs_maptool import config
@@ -102,13 +102,15 @@ class MapToolWindow(QWidget):
         self.button_flappy_bird.clicked.connect(self.on_button_play_flappy_bird)
         bottom_layout.addWidget(self.button_flappy_bird)
 
-        self.button_readme = QPushButton("README")
-        self.button_readme.clicked.connect(self.on_button_open_readme)
-        bottom_layout.addWidget(self.button_readme)
-
-        self.button_info = QPushButton("Info/Help")
-        self.button_info.clicked.connect(self.on_button_open_info)
-        bottom_layout.addWidget(self.button_info)
+        self.button_readme1 = QPushButton("Terms and Tips")
+        self.button_readme1.clicked.connect(lambda: webbrowser.open("https://github.com/GermanCodeEngineer/opengs-maptool/blob/post-pr/README.md#terms-definition"))
+        bottom_layout.addWidget(self.button_readme1)
+        self.button_readme2 = QPushButton("Result Examples")
+        self.button_readme2.clicked.connect(lambda: webbrowser.open("https://github.com/GermanCodeEngineer/opengs-maptool/blob/post-pr/README.md#result-examples"))
+        bottom_layout.addWidget(self.button_readme2)
+        self.button_readme3 = QPushButton("Result Data Explained")
+        self.button_readme3.clicked.connect(lambda: webbrowser.open("https://github.com/GermanCodeEngineer/opengs-maptool/blob/post-pr/README.md#result-data-explained"))
+        bottom_layout.addWidget(self.button_readme3)
 
         bottom_layout.addStretch()
         self.label_version = QLabel("Version "+config.VERSION)
@@ -126,51 +128,7 @@ class MapToolWindow(QWidget):
         self.create_province_tab()
         self.tabs.addTab(self.province_tab, "Generate Provinces")
 
-        # Add Info/Help tab
-        self.create_info_tab()
-        self.tabs.addTab(self.info_tab, "Info/Help")
-
-    def create_info_tab(self) -> None:
-        content_widget = QWidget()
-        layout = QVBoxLayout(content_widget)
-        info_text = (
-            "<h2>OpenGS Map Tool - Info & Help</h2>"
-            "<b>Terms:</b><br>"
-            "<ul>"
-            "<li><b>Area</b>: A country or a separate island. The largest continuous region, not split by boundaries. Each area can contain multiple density samples.</li>"
-            "<li><b>Density Sample</b>: A subdivision of an area, where density is averaged. Used to control the number of regions in different parts of the map. Children of areas.</li>"
-            "<li><b>Territory</b>: A subdivision of a density sample. Larger than a province, used for regional division (Example with default parameters: Germany has 4 Territories, Austria has 1, the US has dozens).</li>"
-            "<li><b>Province</b>: A subdivision of a territory. The smallest region, used for fine-grained control.</li>"
-            "</ul>"
-            "<b>Local vs. Global Fields:</b><br>"
-            "Global fields (e.g., global_bbox, global_center): Coordinates or bounding boxes in the context of the entire map image.<br>"
-            "Local fields (e.g., local_bbox, local_center): Coordinates or bounding boxes relative to the parent region (area, density sample, or territory).<br>"
-            "When cropping or processing a region, use the global bounding box to crop from the full image. Local bounding boxes are useful for operations within a parent region.<br>"
-            "<b>Performance Tips:</b><br>"
-            "Splitting complex or weird-shaped areas (especially large oceans) into smaller regions improves performance and accuracy.<br>"
-            "Use density/border image to control region sizes: higher density = more, smaller regions; lower density = fewer, larger regions.<br>"
-            "<b>How to Create Classification and Boundary/Density Images:</b><br>"
-            "1. <b>Boundary Image</b>: Should have pure black lines (RGB 0,0,0) for boundaries. The greyscale of all other values can be used to encode density multipliers (0 = 4x fewer regions, 255 = 4x more regions).<br>Hint: Avoid creating islands or regions that are only borders (i.e., surrounded entirely by black pixels), as these may not be processed correctly.<br>"
-            "2. <b>Classification Image</b>: Should use RGB (5, 20, 18) for ocean, (150, 68, 192) for land and (0, 255, 0) for lakes.<br>"
-            "3. Always use the same resolution for boundary/density and classification images to avoid errors and misalignment.<br>"
-        )
-        label = QLabel()
-        label.setTextFormat(Qt.TextFormat.RichText)
-        label.setWordWrap(True)
-        label.setText(info_text)
-        layout.addWidget(label)
-        scroll = QScrollArea()
-        scroll.setWidgetResizable(True)
-        scroll.setWidget(content_widget)
-        self.info_tab = scroll
-
-    def on_button_open_info(self) -> None:
-        self.tabs.setCurrentWidget(self.info_tab)
-
     # Bottom Section buttons
-    def on_button_open_readme(self) -> None:
-        webbrowser.open("https://github.com/Thomas-Holtvedt/opengs-maptool/blob/main/README.md")
-    
     def on_button_play_flappy_bird(self) -> None:
         """Open Flappy Bird game in a separate process."""
         if self.flappy_bird_process is not None:
@@ -198,7 +156,13 @@ class MapToolWindow(QWidget):
     def create_density_tab(self) -> None:
         content_widget = QWidget()
         density_tab_layout = QVBoxLayout(content_widget)
-        
+
+            
+        create_text(
+            density_tab_layout,
+            "<p>Import your boundary image or try an example</p>"
+        )
+
         boundary_button_row = QHBoxLayout()
         density_tab_layout.addLayout(boundary_button_row)
         create_button(boundary_button_row, f"Import and Clean {config.BOUNDARY_IMAGE_FILENAME}", self.on_button_import_boundary)
@@ -208,8 +172,8 @@ class MapToolWindow(QWidget):
         self.adapt_boundary_image_display.setMinimumHeight(int(self.height() * 0.7) if self.height() > 0 else 200)
         density_tab_layout.addWidget(self.adapt_boundary_image_display, stretch=1)
 
-        instruction_label = QLabel(
-            "<h3>Instructions:</h3>"
+        create_text(
+            density_tab_layout,
             "<p>1. Save the above boundary image</p>"
             "<p>2. Edit the image in an image editor (e.g., Paint.NET, Photoshop, GIMP)</p>"
             "<p>3. Change the greyscale values for different territory and province density (1-255)</p>"
@@ -217,8 +181,6 @@ class MapToolWindow(QWidget):
             "<p><b>Important:</b> Greyscale value <b>0 (black)</b> is reserved for boundaries and will be removed</p>"
             "<p>5. Upload the edited image in the next tab</p>"
         )
-        instruction_label.setWordWrap(True)
-        density_tab_layout.addWidget(instruction_label)
         scroll = QScrollArea()
         scroll.setWidgetResizable(True)
         scroll.setWidget(content_widget)
@@ -229,6 +191,10 @@ class MapToolWindow(QWidget):
         content_widget = QWidget()
         input_tab_layout = QVBoxLayout(content_widget)
 
+        create_text(
+            input_tab_layout,
+            "<p>Either import your edited boundary image or keep the normalized image</p>"
+        )
         boundary_button_row = QHBoxLayout()
         input_tab_layout.addLayout(boundary_button_row)
         create_button(boundary_button_row, f"Import {config.FINAL_BOUNDARY_IMAGE_FILENAME}", self.on_button_import_final_boundary)
@@ -239,6 +205,12 @@ class MapToolWindow(QWidget):
         self.final_boundary_image_display.setMinimumHeight(int(self.height() * 0.7) if self.height() > 0 else 200)
         input_tab_layout.addWidget(self.final_boundary_image_display, stretch=1)
 
+        create_text(
+            input_tab_layout,
+            "<p><b>Classification Image:</b> Should use RGB (5, 20, 18) for ocean, (150, 68, 192) for land and (0, 255, 0) for lakes.</p>"
+            "<p>Always use the same resolution for boundary/density and classification images to avoid errors and misalignment.</p>"
+            "<p>Import your classification image or try an example</p>"
+        )
         class_button_row = QHBoxLayout()
         input_tab_layout.addLayout(class_button_row)
         create_button(class_button_row, f"Import and Clean {config.CLASS_IMAGE_FILENAME}", self.on_button_import_class)
@@ -257,6 +229,11 @@ class MapToolWindow(QWidget):
         content_widget = QWidget()
         areas_tab_layout = QVBoxLayout(content_widget)
 
+        create_text(
+            areas_tab_layout,
+            "<p>1. Now you can generate and export Continuous Areas</p>"
+            "<p>2. After that, process the Density Samples, as <b>they are necessary for territory generation</b></p>"
+        )
         self.min_area_pixels_slider = create_slider(
             areas_tab_layout,
             "Minimum area pixels (filter tiny regions/small islands):",
@@ -306,6 +283,10 @@ class MapToolWindow(QWidget):
         content_widget = QWidget()
         territory_tab_layout = QVBoxLayout(content_widget)
 
+        create_text(
+            territory_tab_layout,
+            "<p>Now you can generate and export Territories</p>"
+        )
         self.territories_rng_seed_input = self._create_seed_input(
             territory_tab_layout,
             "Territories RNG Seed:",
@@ -348,6 +329,10 @@ class MapToolWindow(QWidget):
         content_widget = QWidget()
         province_tab_layout = QVBoxLayout(content_widget)
 
+        create_text(
+            province_tab_layout,
+            "<p>Now you can generate and export Provinces</p>"
+        )
         self.provinces_rng_seed_input = self._create_seed_input(
             province_tab_layout,
             "Provinces RNG Seed:",

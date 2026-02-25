@@ -26,7 +26,7 @@ Province and territory maps form the backbone of these games, defining the geogr
 	```sh
 	pip install .
 	```
-3. Start project by running "python main.py -gui"
+3. Start project by running "python main.py"
 
 ## Terms Definition
 
@@ -48,7 +48,7 @@ Province and territory maps form the backbone of these games, defining the geogr
 
 ## GUI Usage
 
-Read the instructions in all tabs and the help tab within the GUI window.
+Read the instructions in all tabs and this README.
 
 ## Python Usage
 

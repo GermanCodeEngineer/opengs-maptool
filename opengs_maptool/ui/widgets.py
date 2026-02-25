@@ -1,6 +1,13 @@
 from PyQt6.QtCore import Qt
 from PyQt6.QtGui import QPainter, QColor
-from PyQt6.QtWidgets import QHBoxLayout, QLabel, QSlider, QPushButton, QCheckBox
+from PyQt6.QtWidgets import QHBoxLayout, QLabel, QSlider, QPushButton, QLabel
+
+
+def create_text(parent_layout, text: str, font_size: int = 14) -> QLabel:
+    label = QLabel(f'<div style="font-size:{font_size}px;">{text}</div>')
+    label.setWordWrap(True)
+    parent_layout.addWidget(label)
+    return label
 
 
 def create_slider(
@@ -89,12 +96,3 @@ class ProgressButton(QPushButton):
         # Let the default button paint on top
         painter.end()
         super().paintEvent(event)
-
-
-def create_checkbox(
-    parent_layout,
-    label_text: str
-):
-    button = QCheckBox(label_text)
-    parent_layout.addWidget(button)
-    return button

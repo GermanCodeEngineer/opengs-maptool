@@ -46,7 +46,7 @@ DOCUMENTATION & UI
 [DONE] rewrite and update README
 [DONE] add terms definition to README
 [DONE] improve flappy bird and run in separate process to avoid lags
- move GUI docs into GUI itself
+[DONE] add help links to README sections
 
 ====================
 FUTURE FEATURES

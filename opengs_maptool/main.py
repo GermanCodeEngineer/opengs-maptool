@@ -127,18 +127,18 @@ def main_stepwise_export():
 
 def parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser(description="OpenGS MapTool entrypoints")
-    parser.add_argument("-gui", action="store_true", help="Launch the GUI")
+    parser.add_argument("-process", action="store_true", help="Run the automatic all-in-one process")
     parser.add_argument("-stepwise-export", action="store_true", help="Run the full stepwise pipeline and export after each step")
-    parser.add_argument("-regenerate", action="store_true", help="Regenerate all outputs even if files exist")
+    parser.add_argument("-regenerate", action="store_true", help="Regenerate all outputs for the stepwise pipeline even if files exist")
     return parser.parse_args()
 
 
 if __name__ == "__main__":
     args = parse_args()
 
-    if args.gui:
-        main_gui()
+    if args.process:
+        main_automatic()
     elif hasattr(args, "stepwise_export") and args.stepwise_export:
         main_stepwise_export()
     else:
-        main_automatic()
+        main_gui()
