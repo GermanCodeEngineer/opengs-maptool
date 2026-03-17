@@ -36,95 +36,83 @@ class MainWindow(QWidget):
         self.label_version = QLabel("Version "+config.VERSION)
         main_layout.addWidget(self.label_version)
 
-        # TAB1 LAND IMAGE
+        self.create_land_tab()
+        self.create_boundary_tab()
+        self.create_density_tab()
+        self.create_terrain_tab()
+        self.create_territory_tab()
+        self.create_province_tab()
+
+    def create_land_tab(self):
         self.land_tab = QWidget()
         self.land_image_display = ImageDisplay()
         land_tab_layout = QVBoxLayout(self.land_tab)
         land_tab_layout.addWidget(self.land_image_display)
         self.tabs.addTab(self.land_tab, "Land Image")
-
-        # Buttons
         create_button(land_tab_layout,
                       "Import Land Image",
                       lambda: import_image(self,
                                            "Import Land Image",
                                            self.land_image_display))
-
-        # State
         self.density_image = None
 
-        # TAB2 BOUNDARY IMAGE
+    def create_boundary_tab(self):
         self.boundary_tab = QWidget()
         self.boundary_image_display = ImageDisplay()
         boundary_tab_layout = QVBoxLayout(self.boundary_tab)
         boundary_tab_layout.addWidget(self.boundary_image_display)
         self.tabs.addTab(self.boundary_tab, "Boundary Image")
-
-        # Buttons
         create_button(boundary_tab_layout,
                       "Import Boundary Image",
                       lambda: import_image(self,
                                            "Import Boundary Image",
                                            self.boundary_image_display))
 
-        # TAB3 DENSITY IMAGE
+    def create_density_tab(self):
         self.density_tab = QWidget()
         self.density_image_display = ImageDisplay()
         density_tab_layout = QVBoxLayout(self.density_tab)
         density_tab_layout.addWidget(self.density_image_display)
         self.tabs.addTab(self.density_tab, "Density Image")
-
-        # Buttons
         density_preset_row = QHBoxLayout()
         density_tab_layout.addLayout(density_preset_row)
-
         self.button_normalize_density = create_button(
             density_preset_row,
             "Normalize Density",
             lambda: normalize_density(self))
         self.button_normalize_density.setEnabled(False)
-
         self.button_equator_density = create_button(
             density_preset_row,
             "Equator Distribution",
             lambda: equator_density(self))
         self.button_equator_density.setEnabled(False)
-
         create_button(density_tab_layout,
                       "Import Density Image",
                       lambda: import_density_image(self))
-
         self.territory_exclude_ocean_density = create_checkbox(
             density_tab_layout, "Territory Exclude Ocean")
-
         self.province_exclude_ocean_density = create_checkbox(
             density_tab_layout, "Province Exclude Ocean")
 
-        # TAB4 TERRAIN IMAGE
+    def create_terrain_tab(self):
         self.terrain_tab = QWidget()
         self.terrain_image_display = ImageDisplay()
         terrain_tab_layout = QVBoxLayout(self.terrain_tab)
         terrain_tab_layout.addWidget(self.terrain_image_display)
         self.tabs.addTab(self.terrain_tab, "Terrain Image")
-
         create_button(terrain_tab_layout,
                       "Import Terrain Image",
                       lambda: import_terrain_image(self))
-
-        # State
         self.terrain_image = None
 
-        # TAB5 TERRITORY IMAGE
+    def create_territory_tab(self):
         self.territory_tab = QWidget()
         self.territory_image_display = ImageDisplay()
         territory_tab_layout = QVBoxLayout(self.territory_tab)
         territory_tab_layout.addWidget(self.territory_image_display)
         self.tabs.addTab(self.territory_tab, "Territory Image")
-
         button_territory_row = QHBoxLayout()
         territory_tab_layout.addLayout(button_territory_row)
-
-        # Buttons
         self.territory_land_slider = create_slider(territory_tab_layout,
                                                    "Territory Land Density:",
                                                    config.LAND_TERRITORIES_MIN,
@@ -132,7 +120,6 @@ class MainWindow(QWidget):
                                                    config.LAND_TERRITORIES_DEFAULT,
                                                    config.LAND_TERRITORIES_TICK,
                                                    config.LAND_TERRITORIES_STEP)
-
         self.territory_ocean_slider = create_slider(territory_tab_layout,
                                                     "Territory Ocean Density:",
                                                     config.OCEAN_TERRITORIES_MIN,
@@ -187,6 +174,7 @@ class MainWindow(QWidget):
                                                   lambda: export_territory_history(self))
         self.button_exp_terr_hist.setEnabled(False)
 
+    def create_province_tab(self):
         # TAB5 PROVINCE IMAGE
         self.province_tab = QWidget()
         self.province_image_display = ImageDisplay()

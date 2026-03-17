@@ -1,9 +1,14 @@
+from __future__ import annotations
+from typing import TYPE_CHECKING
+if TYPE_CHECKING:
+    from opengs_maptool.ui.main_window import MainWindow
+
 import opengs_maptool.config as config
 import numpy as np
 from PIL import Image
 
 
-def normalize_density(layout):
+def normalize_density(layout: MainWindow) -> None:
     land_image = layout.land_image_display.get_image()
     if land_image is None:
         return
@@ -16,7 +21,7 @@ def normalize_density(layout):
     layout.check_territory_ready()
 
 
-def equator_density(layout):
+def equator_density(layout: MainWindow) -> None:
     land_image = layout.land_image_display.get_image()
     if land_image is None:
         return

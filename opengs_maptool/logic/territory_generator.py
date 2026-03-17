@@ -1,13 +1,18 @@
+from __future__ import annotations
+from typing import TYPE_CHECKING
+if TYPE_CHECKING:
+    from opengs_maptool.ui.main_window import MainWindow
+
 import opengs_maptool.config as config
 import numpy as np
 from opengs_maptool.logic.numb_gen import NumberSeries
 from opengs_maptool.logic.utils import (
     clear_used_colors, extract_masks, create_region_map, combine_maps,
-    make_progress_updater, STEPS_PER_REGION_MAP
+    make_progress_updater, STEPS_PER_REGION_MAP, step
 )
 
 
-def generate_territory_map(main_layout):
+def generate_territory_map(main_layout: MainWindow) -> None:
     clear_used_colors()
     main_layout.progress.setVisible(True)
     main_layout.progress.setValue(0)

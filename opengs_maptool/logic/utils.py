@@ -1,3 +1,8 @@
+from __future__ import annotations
+from typing import TYPE_CHECKING, Callable
+if TYPE_CHECKING:
+    from opengs_maptool.ui.main_window import MainWindow
+
 import opengs_maptool.config as config
 import numpy as np
 from PIL import Image
@@ -8,16 +13,16 @@ from PyQt6.QtWidgets import QApplication
 MAX_LLOYD_SAMPLE = 100_000
 
 # Steps per create_region_map: sampling=1, lloyd=LLOYD_ITERATIONS, assign=1, meta+borders=1
-STEPS_PER_REGION_MAP = 1 + config.LLOYD_ITERATIONS + 1 + 1
+STEPS_PER_REGION_MAP: int = 1 + config.LLOYD_ITERATIONS + 1 + 1
 
 used_colors = set()
 
 
-def clear_used_colors():
+def clear_used_colors() -> None:
     used_colors.clear()
 
 
-def color_from_id(index, ptype):
+def color_from_id(index, ptype) -> tuple[int, int, int]:
     rng = np.random.default_rng(index + 1)
     while True:
         if ptype == "ocean":
@@ -154,7 +159,7 @@ def _jitter_coords(coords_xy, coords_yx, jitter_x, jitter_y):
     return out
 
 
-def _remove_enclaves(pmap, mask):
+def _remove_enclaves(pmap, mask) -> None: # TODO: param types
     """Reassign disconnected region fragments to surrounding regions.
 
     For each region, keeps only the largest connected component.
@@ -184,7 +189,7 @@ def _remove_enclaves(pmap, mask):
         pmap[cleared] = pmap[ny[cleared], nx[cleared]]
 
 
-def assign_regions(mask, seeds, start_index, jagged=False):
+def assign_regions(mask, seeds, start_index, jagged=False) -> np.ndarray[tuple[int, int], np.dtype[np.signedinteger[np._32Bit]]]:
     """
     Assign each pixel in mask to the nearest seed, respecting boundaries.
 
@@ -281,7 +286,7 @@ def is_lake_color(arr):
     return (arr[..., 0] == r) & (arr[..., 1] == g) & (arr[..., 2] == b)
 
 
-def assign_borders(pmap, border_mask):
+def assign_borders(pmap, border_mask) -> None: # TODO: param types
     valid = pmap >= 0
     if not valid.any() or not border_mask.any():
         return
@@ -291,7 +296,7 @@ def assign_borders(pmap, border_mask):
     pmap[bm] = pmap[ny[bm], nx[bm]]
 
 
-def combine_maps(land_map, sea_map, metadata, land_mask, sea_mask):
+def combine_maps(land_map, sea_map, metadata, land_mask, sea_mask) -> tuple[Image.Image, np.ndarray]:
     """Merge land/sea maps into RGB image. Returns (image, combined_pmap)."""
     if land_map is not None and land_map.size > 0:
         h, w = land_map.shape
@@ -330,10 +335,10 @@ def combine_maps(land_map, sea_map, metadata, land_mask, sea_mask):
     return Image.fromarray(out), combined
 
 
-def make_progress_updater(main_layout, total_steps):
+def make_progress_updater(main_layout: MainWindow, total_steps) -> Callable[..., None]:
     done = [0]
 
-    def step(n=1):
+    def step(n=1) -> None:
         done[0] = min(done[0] + n, total_steps)
         main_layout.progress.setValue(int(done[0] * 100 / total_steps))
         QApplication.processEvents()

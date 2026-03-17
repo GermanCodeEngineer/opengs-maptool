@@ -1,9 +1,15 @@
+from __future__ import annotations
+from typing import TYPE_CHECKING, Literal
+if TYPE_CHECKING:
+    from opengs_maptool.ui.main_window import MainWindow
+
 import json
+from PIL import Image
 from PyQt6.QtWidgets import QFileDialog
 import csv
 
 
-def export_image(parent_layout, image, text):
+def export_image(parent_layout, image: Image.Image, text: str) -> None:
     if image:
         try:
             path, _ = QFileDialog.getSaveFileName(
@@ -18,7 +24,7 @@ def export_image(parent_layout, image, text):
             print(f"Error saving image: {error}")
 
 
-def export_territory_definitions(main_layout):
+def export_territory_definitions(main_layout: MainWindow) -> None:
     territory_data = getattr(main_layout, "territory_data", None)
     if not territory_data:
         print("No territory data to export.")
@@ -47,33 +53,33 @@ def export_territory_definitions(main_layout):
                             round(d["x"], 2), round(d["y"], 2)])
 
 
-def export_territory_history(main_layout):
+def export_territory_history(main_layout: MainWindow) -> None:
     territory_data = getattr(main_layout, "territory_data", None)
     if not territory_data:
         print("No territory data to export.")
         return
-
+    
     path, fmt = _pick_file(main_layout, "Export Territory History")
     if not path:
         return
-
+    
     if fmt == "json":
         data = {}
         for d in territory_data:
             data[d["territory_id"]] = {
                 "provinces": d.get("province_ids", []),
-            }
+        }
         _write_json(path, data)
     else:
         with open(path, "w", newline="", encoding="utf-8") as f:
-            w = csv.writer(f, delimiter=';')
+            w: csv.Writer = csv.writer(f, delimiter=';')
             w.writerow(["id", "provinces"])
             for d in territory_data:
-                provinces = ",".join(d.get("province_ids", []))
+                provinces: str = ",".join(d.get("province_ids", []))
                 w.writerow([d["territory_id"], provinces])
 
 
-def export_province_definitions(main_layout):
+def export_province_definitions(main_layout: MainWindow) -> None:
     province_data = getattr(main_layout, "province_data", None)
     if not province_data:
         print("No province data to export.")
@@ -114,7 +120,7 @@ def export_province_definitions(main_layout):
 
 
 
-def _pick_file(parent, title):
+def _pick_file(parent, title: str) -> tuple[None, None] | tuple[str, Literal["json", "csv"]]:
     """Open save dialog with JSON/CSV filter. Returns (path, format) or (None, None)."""
     path, selected_filter = QFileDialog.getSaveFileName(
         parent, title, "", "JSON Files (*.json);;CSV Files (*.csv)")
@@ -136,6 +142,6 @@ def _pick_file(parent, title):
     return path, fmt
 
 
-def _write_json(path, data):
+def _write_json(path, data) -> None:
     with open(path, "w", encoding="utf-8") as f:
         json.dump(data, f, indent=4)

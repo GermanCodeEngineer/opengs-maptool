@@ -1,9 +1,15 @@
+from __future__ import annotations
+from typing import TYPE_CHECKING
+if TYPE_CHECKING:
+    from opengs_maptool.ui.main_window import MainWindow
+    from opengs_maptool.ui.image_display import ImageDisplay
+
 import opengs_maptool.config as config
 from PIL import Image
 from PyQt6.QtWidgets import QFileDialog
 
 
-def import_image(layout, text, image_display):
+def import_image(layout: MainWindow, text: str, image_display: ImageDisplay) -> None:
     Image.MAX_IMAGE_PIXELS = config.MAX_IMAGE_PIXELS
     path, _ = QFileDialog.getOpenFileName(
         layout,
@@ -27,7 +33,7 @@ def import_image(layout, text, image_display):
     layout.check_territory_ready()
 
 
-def import_terrain_image(layout):
+def import_terrain_image(layout: MainWindow) -> None:
     Image.MAX_IMAGE_PIXELS = config.MAX_IMAGE_PIXELS
     path, _ = QFileDialog.getOpenFileName(
         layout,
@@ -43,7 +49,7 @@ def import_terrain_image(layout):
     layout.terrain_image_display.set_image(terrain.convert("RGBA"))
 
 
-def import_density_image(layout):
+def import_density_image(layout: MainWindow) -> None:
     Image.MAX_IMAGE_PIXELS = config.MAX_IMAGE_PIXELS
     path, _ = QFileDialog.getOpenFileName(
         layout,

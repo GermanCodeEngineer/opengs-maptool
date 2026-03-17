@@ -1,3 +1,8 @@
+from __future__ import annotations
+from typing import TYPE_CHECKING
+if TYPE_CHECKING:
+    from opengs_maptool.ui.main_window import MainWindow
+
 import opengs_maptool.config as config
 import numpy as np
 from PIL import Image
@@ -5,11 +10,11 @@ from scipy.ndimage import label as ndlabel
 from opengs_maptool.logic.numb_gen import NumberSeries
 from opengs_maptool.logic.utils import (
     clear_used_colors, color_from_id, create_region_map, make_progress_updater,
-    STEPS_PER_REGION_MAP
+    STEPS_PER_REGION_MAP, step
 )
 
 
-def generate_province_map(main_layout):
+def generate_province_map(main_layout: MainWindow) -> None:
     clear_used_colors()
     main_layout.progress.setVisible(True)
     main_layout.progress.setValue(0)
@@ -197,7 +202,7 @@ def generate_province_map(main_layout):
 
 
 def _distribute(territories, total_provinces, pixel_counts,
-                density_weights=None):
+                density_weights=None) -> list[int]:
     """Distribute total_provinces proportionally across territories.
 
     When density_weights is provided, each territory's pixel count is scaled
@@ -242,7 +247,7 @@ def _distribute(territories, total_provinces, pixel_counts,
     return alloc
 
 
-def _assign_terrain(metadata, terrain_arr):
+def _assign_terrain(metadata, terrain_arr) -> None:
     """Look up terrain color at each province center and assign province_terrain.
 
     Enforces category constraints: land provinces only get land terrains,
