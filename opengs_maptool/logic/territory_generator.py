@@ -8,17 +8,16 @@ import numpy as np
 from opengs_maptool.logic.numb_gen import NumberSeries
 from opengs_maptool.logic.utils import (
     clear_used_colors, extract_masks, create_region_map, combine_maps,
-    make_progress_updater, STEPS_PER_REGION_MAP, step
+    make_progress_updater, STEPS_PER_REGION_MAP
 )
 
 
 def generate_territory_map(main_layout: MainWindow) -> None:
     clear_used_colors()
-    main_layout.progress.setVisible(True)
-    main_layout.progress.setValue(0)
+    main_layout.start_progress()
 
-    boundary_image = main_layout.boundary_image_display.get_image()
-    land_image = main_layout.land_image_display.get_image()
+    boundary_image = main_layout.get_boundary_image()
+    land_image = main_layout.get_land_image()
 
     masks = extract_masks(boundary_image, land_image)
 
@@ -28,19 +27,19 @@ def generate_territory_map(main_layout: MainWindow) -> None:
         config.TERRITORY_ID_END
     )
 
-    density_arr = np.array(main_layout.density_image)
-    density_strength = main_layout.territory_density_strength.value() / 10.0
-    exclude_ocean_density = main_layout.territory_exclude_ocean_density.isChecked()
-    jagged_land = main_layout.territory_jagged_land.isChecked()
-    jagged_ocean = main_layout.territory_jagged_ocean.isChecked()
+    density_arr = np.array(main_layout.get_density_image().convert("L"))
+    density_strength = main_layout.get_territory_density_strength()
+    exclude_ocean_density = main_layout.get_territory_exclude_ocean_density()
+    jagged_land = main_layout.get_territory_jagged_land()
+    jagged_ocean = main_layout.get_territory_jagged_ocean()
 
-    land_points = main_layout.territory_land_slider.value()
-    sea_points = main_layout.territory_ocean_slider.value()
+    land_points = main_layout.get_territory_land_density()
+    sea_points = main_layout.get_territory_ocean_density()
     has_sea = sea_points > 0 and land_image is not None
 
     sea_step_budget = STEPS_PER_REGION_MAP if has_sea else 2
     total_steps = 2 + STEPS_PER_REGION_MAP + sea_step_budget + 2
-    step = make_progress_updater(main_layout, total_steps)
+    step = make_progress_updater(main_layout.set_progress, total_steps)
     step(2)  # setup complete
 
     land_map, land_meta, next_index = create_region_map(
@@ -72,23 +71,20 @@ def generate_territory_map(main_layout: MainWindow) -> None:
     )
     step(1)
 
-    main_layout.territory_image_display.set_image(territory_image)
-    main_layout.territory_data = metadata
-    main_layout.territory_pmap = combined_pmap
-    main_layout.cached_masks = masks
+    main_layout.set_territory_image(territory_image)
+    main_layout.set_territory_pmap_and_data(combined_pmap, metadata)
+    main_layout.set_cached_masks(masks)
     step(1)
 
-    main_layout.progress.setValue(100)
+    main_layout.set_progress(100)
 
     # Enable province generation and territory image export
-    main_layout.button_gen_prov.setEnabled(True)
-    main_layout.button_exp_terr_img.setEnabled(True)
-    main_layout.button_exp_terr_def.setEnabled(True)
+    main_layout.set_province_gen_available(True)
+    main_layout.set_territory_export_available(True)
 
     # Reset province state if re-generating territories
-    main_layout.province_data = None
-    main_layout.button_exp_prov_img.setEnabled(False)
-    main_layout.button_exp_prov_def.setEnabled(False)
-    main_layout.button_exp_terr_hist.setEnabled(False)
+    main_layout.set_province_data(None)
+    main_layout.set_province_export_available(False)
+    main_layout.set_territory_history_export_available(False)
 
     return territory_image, metadata

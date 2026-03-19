@@ -8,21 +8,19 @@ import numpy as np
 from PIL import Image
 
 
-def normalize_density(layout: MainWindow) -> None:
-    land_image = layout.land_image_display.get_image()
+def normalize_density(main_layout: MainWindow) -> None:
+    land_image = main_layout.get_land_image()
     if land_image is None:
         return
 
     w, h = land_image.size
     density = Image.new("L", (w, h), config.DEFAULT_DENSITY_GREY)
-    layout.density_image = density
-
-    layout.density_image_display.set_image(density.convert("RGBA"))
-    layout.check_territory_ready()
+    main_layout.set_density_image(density)
+    main_layout.check_territory_ready()
 
 
-def equator_density(layout: MainWindow) -> None:
-    land_image = layout.land_image_display.get_image()
+def equator_density(main_layout: MainWindow) -> None:
+    land_image = main_layout.get_land_image()
     if land_image is None:
         return
 
@@ -34,6 +32,5 @@ def equator_density(layout: MainWindow) -> None:
     arr = np.tile(pixel_values[:, np.newaxis], (1, w))
 
     density = Image.fromarray(arr, mode="L")
-    layout.density_image = density
-    layout.density_image_display.set_image(density.convert("RGBA"))
-    layout.check_territory_ready()
+    main_layout.set_density_image(density)
+    main_layout.check_territory_ready()

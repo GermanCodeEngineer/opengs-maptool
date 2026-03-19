@@ -3,34 +3,31 @@ from typing import TYPE_CHECKING
 if TYPE_CHECKING:
     from opengs_maptool.ui.main_window import MainWindow
 
-import opengs_maptool.config as config
 import numpy as np
 from PIL import Image
 from scipy.ndimage import label as ndlabel
+import opengs_maptool.config as config
 from opengs_maptool.logic.numb_gen import NumberSeries
 from opengs_maptool.logic.utils import (
     clear_used_colors, color_from_id, create_region_map, make_progress_updater,
-    STEPS_PER_REGION_MAP, step
 )
 
 
 def generate_province_map(main_layout: MainWindow) -> None:
     clear_used_colors()
-    main_layout.progress.setVisible(True)
-    main_layout.progress.setValue(0)
-
-    territory_pmap = main_layout.territory_pmap
-    territory_data = main_layout.territory_data
-    masks = main_layout.cached_masks
-    density_arr = np.array(main_layout.density_image)
-    density_strength = main_layout.province_density_strength.value() / 10.0
-    exclude_ocean_density = main_layout.province_exclude_ocean_density.isChecked()
-    jagged_land = main_layout.province_jagged_land.isChecked()
-    jagged_ocean = main_layout.province_jagged_ocean.isChecked()
+    main_layout.start_progress()
+    territory_pmap, territory_data = main_layout.get_territory_pmap_and_data()
+    masks = main_layout.get_cached_masks()
+    density_arr = np.array(main_layout.get_density_image().convert("L"))
+    
+    density_strength = main_layout.get_province_density_strength()
+    exclude_ocean_density = main_layout.get_province_exclude_ocean_density()
+    jagged_land = main_layout.get_province_jagged_land()
+    jagged_ocean = main_layout.get_province_jagged_ocean()
     map_h, map_w = masks["map_h"], masks["map_w"]
 
-    total_land_provs = main_layout.land_slider.value()
-    total_ocean_provs = main_layout.ocean_slider.value()
+    total_land_provs = main_layout.get_land_province_count()
+    total_ocean_provs = main_layout.get_ocean_province_count()
     lake_mask = masks.get("lake_mask")
 
     # Separate territories by type
@@ -69,7 +66,7 @@ def generate_province_map(main_layout: MainWindow) -> None:
 
     # Progress: one step per territory + setup/finalize
     total_steps = 2 + len(all_terrs) + 2
-    step = make_progress_updater(main_layout, total_steps)
+    step = make_progress_updater(main_layout.set_progress, total_steps)
     step(2)
 
     series = NumberSeries(
@@ -189,14 +186,13 @@ def generate_province_map(main_layout: MainWindow) -> None:
             else:
                 prov["province_terrain"] = config.DEFAULT_TERRAIN_LAND
 
-    main_layout.province_image_display.set_image(province_image)
-    main_layout.province_data = all_metadata
+    main_layout.set_province_image(province_image)
+    main_layout.set_province_data(all_metadata)
     step(1)
 
-    main_layout.progress.setValue(100)
-    main_layout.button_exp_prov_img.setEnabled(True)
-    main_layout.button_exp_prov_def.setEnabled(True)
-    main_layout.button_exp_terr_hist.setEnabled(True)
+    main_layout.set_progress(100)
+    main_layout.set_province_export_available(True)
+    main_layout.set_territory_history_export_available(True)
 
     return province_image, all_metadata
 

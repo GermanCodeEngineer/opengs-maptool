@@ -5,6 +5,7 @@ if TYPE_CHECKING:
 
 import opengs_maptool.config as config
 import numpy as np
+from numpy.typing import NDArray
 from PIL import Image
 from scipy.spatial import cKDTree
 from scipy.ndimage import distance_transform_edt, label as ndlabel
@@ -189,7 +190,7 @@ def _remove_enclaves(pmap, mask) -> None: # TODO: param types
         pmap[cleared] = pmap[ny[cleared], nx[cleared]]
 
 
-def assign_regions(mask, seeds, start_index, jagged=False) -> np.ndarray[tuple[int, int], np.dtype[np.signedinteger[np._32Bit]]]:
+def assign_regions(mask, seeds, start_index, jagged=False) -> NDArray[np.int32]:
     """
     Assign each pixel in mask to the nearest seed, respecting boundaries.
 
@@ -276,17 +277,17 @@ def assign_regions(mask, seeds, start_index, jagged=False) -> np.ndarray[tuple[i
     return pmap
 
 
-def is_sea_color(arr):
+def is_sea_color(arr: NDArray[np.uint8]) -> NDArray[np.uint8]:
     r, g, b = config.OCEAN_COLOR
     return (arr[..., 0] == r) & (arr[..., 1] == g) & (arr[..., 2] == b)
 
 
-def is_lake_color(arr):
+def is_lake_color(arr: NDArray[np.uint8]) -> NDArray[np.uint8]:
     r, g, b = config.LAKE_COLOR
     return (arr[..., 0] == r) & (arr[..., 1] == g) & (arr[..., 2] == b)
 
 
-def assign_borders(pmap, border_mask) -> None: # TODO: param types
+def assign_borders(pmap: NDArray[np.int32], border_mask) -> None: # TODO: param types
     valid = pmap >= 0
     if not valid.any() or not border_mask.any():
         return
@@ -296,7 +297,7 @@ def assign_borders(pmap, border_mask) -> None: # TODO: param types
     pmap[bm] = pmap[ny[bm], nx[bm]]
 
 
-def combine_maps(land_map, sea_map, metadata, land_mask, sea_mask) -> tuple[Image.Image, np.ndarray]:
+def combine_maps(land_map, sea_map, metadata, land_mask, sea_mask) -> tuple[Image.Image, NDArray[np.int32]]:
     """Merge land/sea maps into RGB image. Returns (image, combined_pmap)."""
     if land_map is not None and land_map.size > 0:
         h, w = land_map.shape
@@ -335,18 +336,18 @@ def combine_maps(land_map, sea_map, metadata, land_mask, sea_mask) -> tuple[Imag
     return Image.fromarray(out), combined
 
 
-def make_progress_updater(main_layout: MainWindow, total_steps) -> Callable[..., None]:
+def make_progress_updater(set_progress: Callable[[int], None], total_steps) -> Callable[..., None]:
     done = [0]
 
     def step(n=1) -> None:
         done[0] = min(done[0] + n, total_steps)
-        main_layout.progress.setValue(int(done[0] * 100 / total_steps))
+        set_progress(int(done[0] * 100 / total_steps))
         QApplication.processEvents()
 
     return step
 
 
-def extract_masks(boundary_image, land_image):
+def extract_masks(boundary_image, land_image) -> dict:
     """Extract all masks from boundary and land images.
 
     Returns dict with keys: boundary_mask, land_mask, sea_mask,
@@ -421,7 +422,8 @@ def extract_masks(boundary_image, land_image):
 
 def create_region_map(fill_mask, border_mask, num_points, start_index,
                       ptype, series, id_key, type_key, step_fn=None,
-                      density=None, density_strength=1.0, jagged=False):
+                      density=None, density_strength=1.0, jagged=False
+    ) -> tuple[NDArray[np.int32], list[dict], int]:
     """Unified region map creator for both provinces and territories.
 
     id_key/type_key control metadata key names (e.g. "province_id"/"province_type"
@@ -459,7 +461,7 @@ def create_region_map(fill_mask, border_mask, num_points, start_index,
 
 
 def _build_region_metadata(pmap, seeds, start_index, ptype, series,
-                           id_key, type_key):
+                           id_key, type_key) -> list[dict]:
     valid_mask = pmap >= 0
     ys, xs = np.where(valid_mask)
     flat = pmap[valid_mask]

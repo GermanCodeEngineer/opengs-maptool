@@ -1,8 +1,11 @@
-import opengs_maptool.config as config
+import numpy as np
+from numpy.typing import NDArray
+from PIL import Image
 from PyQt6.QtWidgets import QWidget, QVBoxLayout, QHBoxLayout, QProgressBar, QTabWidget, QLabel
+import opengs_maptool.config as config
 from opengs_maptool.logic.province_generator import generate_province_map
 from opengs_maptool.logic.territory_generator import generate_territory_map
-from opengs_maptool.logic.import_module import import_image, import_density_image, import_terrain_image
+from opengs_maptool.logic.import_module import import_land_image, import_boundary_image, import_density_image, import_terrain_image
 from opengs_maptool.logic.density_generator import normalize_density, equator_density
 from opengs_maptool.logic.export_module import (export_image, export_territory_definitions,
                                  export_territory_history,
@@ -12,7 +15,7 @@ from opengs_maptool.ui.image_display import ImageDisplay
 
 
 class MainWindow(QWidget):
-    def __init__(self):
+    def __init__(self) -> None:
         super().__init__()
 
         # MAIN LAYOUT
@@ -43,7 +46,7 @@ class MainWindow(QWidget):
         self.create_territory_tab()
         self.create_province_tab()
 
-    def create_land_tab(self):
+    def create_land_tab(self) -> None:
         self.land_tab = QWidget()
         self.land_image_display = ImageDisplay()
         land_tab_layout = QVBoxLayout(self.land_tab)
@@ -51,12 +54,9 @@ class MainWindow(QWidget):
         self.tabs.addTab(self.land_tab, "Land Image")
         create_button(land_tab_layout,
                       "Import Land Image",
-                      lambda: import_image(self,
-                                           "Import Land Image",
-                                           self.land_image_display))
-        self.density_image = None
+                      lambda: import_land_image(self))
 
-    def create_boundary_tab(self):
+    def create_boundary_tab(self) -> None:
         self.boundary_tab = QWidget()
         self.boundary_image_display = ImageDisplay()
         boundary_tab_layout = QVBoxLayout(self.boundary_tab)
@@ -64,28 +64,28 @@ class MainWindow(QWidget):
         self.tabs.addTab(self.boundary_tab, "Boundary Image")
         create_button(boundary_tab_layout,
                       "Import Boundary Image",
-                      lambda: import_image(self,
-                                           "Import Boundary Image",
-                                           self.boundary_image_display))
+                      lambda: import_boundary_image(self))
 
-    def create_density_tab(self):
+    def create_density_tab(self) -> None:
         self.density_tab = QWidget()
         self.density_image_display = ImageDisplay()
         density_tab_layout = QVBoxLayout(self.density_tab)
         density_tab_layout.addWidget(self.density_image_display)
         self.tabs.addTab(self.density_tab, "Density Image")
+        self.set_density_image(None)
+
         density_preset_row = QHBoxLayout()
         density_tab_layout.addLayout(density_preset_row)
         self.button_normalize_density = create_button(
             density_preset_row,
             "Normalize Density",
             lambda: normalize_density(self))
-        self.button_normalize_density.setEnabled(False)
         self.button_equator_density = create_button(
             density_preset_row,
             "Equator Distribution",
             lambda: equator_density(self))
-        self.button_equator_density.setEnabled(False)
+        self.set_edit_density_available(False)
+
         create_button(density_tab_layout,
                       "Import Density Image",
                       lambda: import_density_image(self))
@@ -94,7 +94,7 @@ class MainWindow(QWidget):
         self.province_exclude_ocean_density = create_checkbox(
             density_tab_layout, "Province Exclude Ocean")
 
-    def create_terrain_tab(self):
+    def create_terrain_tab(self) -> None:
         self.terrain_tab = QWidget()
         self.terrain_image_display = ImageDisplay()
         terrain_tab_layout = QVBoxLayout(self.terrain_tab)
@@ -103,9 +103,8 @@ class MainWindow(QWidget):
         create_button(terrain_tab_layout,
                       "Import Terrain Image",
                       lambda: import_terrain_image(self))
-        self.terrain_image = None
 
-    def create_territory_tab(self):
+    def create_territory_tab(self) -> None:
         self.territory_tab = QWidget()
         self.territory_image_display = ImageDisplay()
         territory_tab_layout = QVBoxLayout(self.territory_tab)
@@ -152,29 +151,26 @@ class MainWindow(QWidget):
         self.territory_jagged_ocean = create_checkbox(
             jagged_col, "Jagged Ocean Borders")
 
-        self.button_gen_territories = create_button(territory_tab_layout,
+        self.button_gen_terr = create_button(territory_tab_layout,
                                                     "Generate Territories",
                                                     lambda: generate_territory_map(self))
-        self.button_gen_territories.setEnabled(False)
 
         self.button_exp_terr_img = create_button(button_territory_row,
                                                  "Export Territory Image",
                                                  lambda: export_image(self,
-                                                                      self.territory_image_display.get_image(),
+                                                                      self.get_territory_image(),
                                                                       "Export Territory Image"))
-        self.button_exp_terr_img.setEnabled(False)
-
         self.button_exp_terr_def = create_button(button_territory_row,
                                                  "Export Territory Definitions",
                                                  lambda: export_territory_definitions(self))
-        self.button_exp_terr_def.setEnabled(False)
-
         self.button_exp_terr_hist = create_button(button_territory_row,
                                                   "Export Territory History",
                                                   lambda: export_territory_history(self))
-        self.button_exp_terr_hist.setEnabled(False)
+        self.set_territory_gen_available(False)
+        self.set_territory_export_available(False)
+        self.set_territory_history_export_available(False)
 
-    def create_province_tab(self):
+    def create_province_tab(self) -> None:
         # TAB5 PROVINCE IMAGE
         self.province_tab = QWidget()
         self.province_image_display = ImageDisplay()
@@ -228,22 +224,144 @@ class MainWindow(QWidget):
         self.button_gen_prov = create_button(province_tab_layout,
                                              "Generate Provinces",
                                              lambda: generate_province_map(self))
-        self.button_gen_prov.setEnabled(False)
 
         self.button_exp_prov_img = create_button(button_row,
                                                  "Export Province Image",
                                                  lambda: export_image(self,
                                                                       self.province_image_display.get_image(),
                                                                       "Export Province Image"))
-        self.button_exp_prov_img.setEnabled(False)
 
         self.button_exp_prov_def = create_button(button_row,
                                                   "Export Province Definitions",
                                                   lambda: export_province_definitions(self))
-        self.button_exp_prov_def.setEnabled(False)
+        
+        self.set_province_gen_available(False)
+        self.set_province_export_available(False)
 
-    def check_territory_ready(self):
+
+    def check_territory_ready(self) -> None:
         land_exists = self.land_image_display.get_image() is not None
-        density_exists = self.density_image is not None
-        self.button_gen_territories.setEnabled(land_exists and density_exists)
+        density_exists = self.get_density_image() is not None
+        self.set_territory_gen_available(land_exists and density_exists)
+    
+
+    # ACCESSES - TEMPORARY
+
+    def start_progress(self) -> None:
+        self.progress.setVisible(True)
+        self.set_progress(0)
+
+    def set_progress(self, value: int) -> None:
+        self.progress.setValue(0)
+    
+
+    def set_territory_pmap_and_data(self, pmap: NDArray[np.int32], data: list[dict]) -> None:
+        self.territory_pmap = pmap
+        self.territory_data = data
+    
+    def get_territory_pmap_and_data(self) -> tuple[NDArray[np.int32], list[dict]]:
+        return (self.territory_pmap, self.territory_data)
+    
+
+    def set_cached_masks(self, masks: dict) -> None:
+        self.cached_masks = masks
+    
+    def get_cached_masks(self) -> dict:
+        return self.cached_masks
+
+
+    def set_density_image(self, image: Image.Image | None) -> None:
+        self.density_image_display.set_image(image)
+    
+    def get_density_image(self) -> Image.Image | None:
+        return self.density_image_display.get_image()
+    
+
+    def get_boundary_image(self) -> Image.Image | None:
+        return self.boundary_image_display.get_image()
+    
+    def get_land_image(self) -> Image.Image | None:
+        return self.land_image_display.get_image()
+
+    def set_territory_image(self, image: Image.Image | None) -> None:
+        self.territory_image_display.set_image(image)
+    
+    def get_territory_image(self) -> Image.Image | None:
+        return self.territory_image_display.get_image()
+
+    def set_terrain_image(self, image: Image.Image | None) -> None:
+        self.terrain_image_display.set_image(image)
+
+    def set_province_image(self, image: Image.Image | None) -> None:
+        self.province_image_display.set_image(image)
+    
+    
+    def get_territory_density_strength(self) -> float:
+        return self.territory_density_strength.value() / 10.0
+    
+    def get_territory_exclude_ocean_density(self) -> bool:
+        return self.territory_exclude_ocean_density.isChecked()
+    
+    def get_territory_jagged_land(self) -> bool:
+        return self.territory_jagged_land.isChecked()
+
+    def get_territory_jagged_ocean(self) -> bool:
+        return self.territory_jagged_ocean.isChecked()
+    
+    def get_territory_land_density(self) -> int:
+        return self.territory_land_slider.value()
+    
+    def get_territory_ocean_density(self) -> int:
+        return self.territory_ocean_slider.value()
+    
+
+    def set_territory_gen_available(self, available: bool) -> None:
+        self.button_gen_terr.setEnabled(available)
+    
+    def set_territory_export_available(self, available: bool) -> None:
+        self.button_exp_terr_img.setEnabled(available)
+        self.button_exp_terr_def.setEnabled(available)
+    
+    def set_territory_history_export_available(self, available: bool) -> None:
+        self.button_exp_terr_hist.setEnabled(available)
+    
+
+    def set_province_gen_available(self, available: bool) -> None:
+        self.button_gen_prov.setEnabled(available)
+    
+    def set_province_export_available(self, available: bool) -> None:
+        self.button_exp_prov_img.setEnabled(available)
+        self.button_exp_prov_def.setEnabled(available)
+    
+
+    def set_province_data(self, data: list[dict] | None) -> None:
+        self.province_data = data
+    
+    def get_province_data(self) -> list[dict] | None:
+        return self.province_data
+    
+
+    def set_edit_density_available(self, available: bool) -> None:
+        self.button_normalize_density.setEnabled(available)
+        self.button_equator_density.setEnabled(available)
+
+    
+    def get_province_density_strength(self) -> float:
+        return self.province_density_strength.value() / 10.0
+
+    def get_province_exclude_ocean_density(self) -> bool:
+        return self.province_exclude_ocean_density.isChecked()
+
+    def get_province_jagged_land(self) -> bool:
+        return self.province_jagged_land.isChecked()
+
+    def get_province_jagged_ocean(self) -> bool:
+        return self.province_jagged_ocean.isChecked()
+
+    def get_land_province_count(self) -> int:
+        return self.land_slider.value()
+
+    def get_ocean_province_count(self) -> int:
+        return self.ocean_slider.value()
+
 

@@ -9,34 +9,43 @@ from PIL import Image
 from PyQt6.QtWidgets import QFileDialog
 
 
-def import_image(layout: MainWindow, text: str, image_display: ImageDisplay) -> None:
+def import_land_image(main_layout: MainWindow) -> None:
     Image.MAX_IMAGE_PIXELS = config.MAX_IMAGE_PIXELS
     path, _ = QFileDialog.getOpenFileName(
-        layout,
-        text,
+        main_layout,
+        "Import Land Image",
         "",
         "Images (*.png *.jpg *.jpeg *.bmp *.gif)"
     )
     if not path:
         return
+    imported_image = Image.open(path)
+    main_layout.land_image_display.set_image(imported_image)
 
-    imported_image = Image.open(path).convert("RGBA")
-    image_display.set_image(imported_image)
-
-    # When importing a new land image, reset density (dimensions may differ)
-    if image_display is layout.land_image_display:
-        layout.density_image = None
-        layout.density_image_display.set_image(None)
-        layout.button_normalize_density.setEnabled(True)
-        layout.button_equator_density.setEnabled(True)
-
-    layout.check_territory_ready()
+    # Reset density and enable density editing
+    main_layout.set_density_image(None)
+    main_layout.set_edit_density_available(True)
+    main_layout.check_territory_ready()
 
 
-def import_terrain_image(layout: MainWindow) -> None:
+def import_boundary_image(main_layout: MainWindow) -> None:
     Image.MAX_IMAGE_PIXELS = config.MAX_IMAGE_PIXELS
     path, _ = QFileDialog.getOpenFileName(
-        layout,
+        main_layout,
+        "Import Boundary Image",
+        "",
+        "Images (*.png *.jpg *.jpeg *.bmp *.gif)"
+    )
+    if not path:
+        return
+    imported_image = Image.open(path)
+    main_layout.boundary_image_display.set_image(imported_image.convert("RGBA"))
+
+
+def import_terrain_image(main_layout: MainWindow) -> None:
+    Image.MAX_IMAGE_PIXELS = config.MAX_IMAGE_PIXELS
+    path, _ = QFileDialog.getOpenFileName(
+        main_layout,
         "Import Terrain Image",
         "",
         "Images (*.png *.jpg *.jpeg *.bmp *.gif)"
@@ -44,15 +53,14 @@ def import_terrain_image(layout: MainWindow) -> None:
     if not path:
         return
 
-    terrain = Image.open(path).convert("RGB")
-    layout.terrain_image = terrain
-    layout.terrain_image_display.set_image(terrain.convert("RGBA"))
+    terrain = Image.open(path)
+    main_layout.set_terrain_image(terrain.convert("RGBA"))
 
 
-def import_density_image(layout: MainWindow) -> None:
+def import_density_image(main_layout: MainWindow) -> None:
     Image.MAX_IMAGE_PIXELS = config.MAX_IMAGE_PIXELS
     path, _ = QFileDialog.getOpenFileName(
-        layout,
+        main_layout,
         "Import Density Image",
         "",
         "Images (*.png *.jpg *.jpeg *.bmp *.gif)"
@@ -60,8 +68,6 @@ def import_density_image(layout: MainWindow) -> None:
     if not path:
         return
 
-    density = Image.open(path).convert("L")
-    layout.density_image = density
-
-    layout.density_image_display.set_image(density.convert("RGBA"))
-    layout.check_territory_ready()
+    density = Image.open(path)
+    main_layout.set_density_image(density)
+    main_layout.check_territory_ready()
