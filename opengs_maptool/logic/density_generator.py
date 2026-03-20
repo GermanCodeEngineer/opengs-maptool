@@ -1,14 +1,14 @@
 from __future__ import annotations
 from typing import TYPE_CHECKING
 if TYPE_CHECKING:
-    from opengs_maptool.ui.main_window import MainWindow
+    from opengs_maptool.logic.map_tool_protocol import MapToolProtocol
 
 import opengs_maptool.config as config
 import numpy as np
 from PIL import Image
 
 
-def normalize_density(main_layout: MainWindow) -> None:
+def normalize_density(main_layout: MapToolProtocol) -> None:
     land_image = main_layout.get_land_image()
     if land_image is None:
         return
@@ -19,7 +19,7 @@ def normalize_density(main_layout: MainWindow) -> None:
     main_layout.check_territory_ready()
 
 
-def equator_density(main_layout: MainWindow) -> None:
+def equator_density(main_layout: MapToolProtocol) -> None:
     land_image = main_layout.get_land_image()
     if land_image is None:
         return

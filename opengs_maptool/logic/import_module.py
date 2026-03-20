@@ -1,15 +1,14 @@
 from __future__ import annotations
 from typing import TYPE_CHECKING
 if TYPE_CHECKING:
-    from opengs_maptool.ui.main_window import MainWindow
-    from opengs_maptool.ui.image_display import ImageDisplay
+    from opengs_maptool.logic.map_tool_protocol import MapToolProtocol
 
 import opengs_maptool.config as config
 from PIL import Image
 from PyQt6.QtWidgets import QFileDialog
 
 
-def import_land_image(main_layout: MainWindow) -> None:
+def import_land_image(main_layout: MapToolProtocol) -> None:
     Image.MAX_IMAGE_PIXELS = config.MAX_IMAGE_PIXELS
     path, _ = QFileDialog.getOpenFileName(
         main_layout,
@@ -20,7 +19,7 @@ def import_land_image(main_layout: MainWindow) -> None:
     if not path:
         return
     imported_image = Image.open(path)
-    main_layout.land_image_display.set_image(imported_image)
+    main_layout.set_land_image(imported_image)
 
     # Reset density and enable density editing
     main_layout.set_density_image(None)
@@ -28,7 +27,7 @@ def import_land_image(main_layout: MainWindow) -> None:
     main_layout.check_territory_ready()
 
 
-def import_boundary_image(main_layout: MainWindow) -> None:
+def import_boundary_image(main_layout: MapToolProtocol) -> None:
     Image.MAX_IMAGE_PIXELS = config.MAX_IMAGE_PIXELS
     path, _ = QFileDialog.getOpenFileName(
         main_layout,
@@ -39,10 +38,10 @@ def import_boundary_image(main_layout: MainWindow) -> None:
     if not path:
         return
     imported_image = Image.open(path)
-    main_layout.boundary_image_display.set_image(imported_image.convert("RGBA"))
+    main_layout.set_boundary_image(imported_image.convert("RGBA"))
 
 
-def import_terrain_image(main_layout: MainWindow) -> None:
+def import_terrain_image(main_layout: MapToolProtocol) -> None:
     Image.MAX_IMAGE_PIXELS = config.MAX_IMAGE_PIXELS
     path, _ = QFileDialog.getOpenFileName(
         main_layout,
@@ -57,7 +56,7 @@ def import_terrain_image(main_layout: MainWindow) -> None:
     main_layout.set_terrain_image(terrain.convert("RGBA"))
 
 
-def import_density_image(main_layout: MainWindow) -> None:
+def import_density_image(main_layout: MapToolProtocol) -> None:
     Image.MAX_IMAGE_PIXELS = config.MAX_IMAGE_PIXELS
     path, _ = QFileDialog.getOpenFileName(
         main_layout,

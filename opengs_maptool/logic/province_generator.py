@@ -1,7 +1,7 @@
 from __future__ import annotations
 from typing import TYPE_CHECKING
 if TYPE_CHECKING:
-    from opengs_maptool.ui.main_window import MainWindow
+    from opengs_maptool.logic.map_tool_protocol import MapToolProtocol
 
 import numpy as np
 from PIL import Image
@@ -13,7 +13,7 @@ from opengs_maptool.logic.utils import (
 )
 
 
-def generate_province_map(main_layout: MainWindow) -> None:
+def generate_province_map(main_layout: MapToolProtocol) -> None:
     clear_used_colors()
     main_layout.start_progress()
     territory_pmap, territory_data = main_layout.get_territory_pmap_and_data()

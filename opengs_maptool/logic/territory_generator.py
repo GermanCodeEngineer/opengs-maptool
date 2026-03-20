@@ -1,7 +1,7 @@
 from __future__ import annotations
 from typing import TYPE_CHECKING
 if TYPE_CHECKING:
-    from opengs_maptool.ui.main_window import MainWindow
+    from opengs_maptool.logic.map_tool_protocol import MapToolProtocol
 
 import opengs_maptool.config as config
 import numpy as np
@@ -12,7 +12,7 @@ from opengs_maptool.logic.utils import (
 )
 
 
-def generate_territory_map(main_layout: MainWindow) -> None:
+def generate_territory_map(main_layout: MapToolProtocol) -> None:
     clear_used_colors()
     main_layout.start_progress()
 

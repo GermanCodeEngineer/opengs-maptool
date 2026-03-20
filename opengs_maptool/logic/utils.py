@@ -1,7 +1,5 @@
 from __future__ import annotations
-from typing import TYPE_CHECKING, Callable
-if TYPE_CHECKING:
-    from opengs_maptool.ui.main_window import MainWindow
+from typing import Callable
 
 import opengs_maptool.config as config
 import numpy as np

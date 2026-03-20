@@ -1,7 +1,7 @@
 from __future__ import annotations
 from typing import TYPE_CHECKING, Literal
 if TYPE_CHECKING:
-    from opengs_maptool.ui.main_window import MainWindow
+    from opengs_maptool.logic.map_tool_protocol import MapToolProtocol
 
 import json
 from PIL import Image
@@ -24,7 +24,7 @@ def export_image(parent_layout, image: Image.Image, text: str) -> None:
             print(f"Error saving image: {error}")
 
 
-def export_territory_definitions(main_layout: MainWindow) -> None:
+def export_territory_definitions(main_layout: MapToolProtocol) -> None:
     territory_data = getattr(main_layout, "territory_data", None)
     if not territory_data:
         print("No territory data to export.")
@@ -53,7 +53,7 @@ def export_territory_definitions(main_layout: MainWindow) -> None:
                             round(d["x"], 2), round(d["y"], 2)])
 
 
-def export_territory_history(main_layout: MainWindow) -> None:
+def export_territory_history(main_layout: MapToolProtocol) -> None:
     territory_data = getattr(main_layout, "territory_data", None)
     if not territory_data:
         print("No territory data to export.")
@@ -79,7 +79,7 @@ def export_territory_history(main_layout: MainWindow) -> None:
                 w.writerow([d["territory_id"], provinces])
 
 
-def export_province_definitions(main_layout: MainWindow) -> None:
+def export_province_definitions(main_layout: MapToolProtocol) -> None:
     province_data = getattr(main_layout, "province_data", None)
     if not province_data:
         print("No province data to export.")
