@@ -9,12 +9,14 @@ from PIL import Image
 from opengs_maptool.controllers.progress_controller import ProgressController
 from opengs_maptool.simple_types import TabName
 
+class DensityGenerationNotAvailableError(RuntimeError):
+    pass
 
-def normalize_density(task_ctx: LimitedTaskContext, progress_controller: ProgressController)-> None:
+def normalize_density(task_ctx: LimitedTaskContext, progress_controller: ProgressController) -> None:
     with progress_controller.execute_as_only_phase():
         project = task_ctx.project
         if not project.can_density_image_be_generated():
-            return
+            return False
 
         w, h = project.land_image.size
         density_image = Image.new("L", (w, h), config.DEFAULT_DENSITY_GREY)
@@ -22,8 +24,9 @@ def normalize_density(task_ctx: LimitedTaskContext, progress_controller: Progres
         project.density_image = density_image
         project.modified = True
         task_ctx.refresh_tab_view(TabName.DENSITY)
+        return True
 
-def equator_density(task_ctx: LimitedTaskContext, progress_controller: ProgressController) -> None:
+def equator_density(task_ctx: LimitedTaskContext, progress_controller: ProgressController) -> bool:
     phase1 = progress_controller.add_phase(step_weight=1, msg="Calculating density values")
     phase2 = progress_controller.add_phase(step_weight=1, msg="Assigning pixel values")
     phase3 = progress_controller.add_phase(step_weight=1, msg="Creating density image")
@@ -31,7 +34,7 @@ def equator_density(task_ctx: LimitedTaskContext, progress_controller: ProgressC
     with progress_controller.execute_phase(phase1):
         project = task_ctx.project
         if not project.can_density_image_be_generated():
-            return
+            return False
 
         w, h = project.land_image.size
 
@@ -48,15 +51,17 @@ def equator_density(task_ctx: LimitedTaskContext, progress_controller: ProgressC
         project.density_image = density_image
         project.modified = True
         task_ctx.refresh_tab_view(TabName.DENSITY)
+        return True
 
 # TODO: Move this function, it doesn't belong in this file
 # -> if done, remove progress_controller argument
-def remove_density_image(task_ctx: LimitedTaskContext, progress_controller: ProgressController) -> None:
+def remove_density_image(task_ctx: LimitedTaskContext, progress_controller: ProgressController) -> bool:
     # This is instant, no need for a progress bar
     project = task_ctx.project
     if not project.can_density_image_be_removed():
-        return
+        return False
 
     project.density_image = None
     project.modified = True
     task_ctx.refresh_tab_view(TabName.DENSITY)
+    return True

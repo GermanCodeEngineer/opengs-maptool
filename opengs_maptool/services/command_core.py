@@ -28,7 +28,7 @@ from opengs_maptool.services.parser_service import (
 # command.this.format.id -> implementation function
 _commands: dict[str, tuple[Callable[[ApplicationContext, list[str|int|float|bool]], CommandResponse], str, list[CommandArgSpec]]] = {}
 _command_aliases = (dict[str, str])() # alias -> real command
-_SORT_PRIORITY_PREFIXES = ["link", "console", "project"]
+_SORT_PRIORITY_PREFIXES = ["link", "console", "project", "land", "boundary", "density", "terrain", "territory", "province"]
 
 def register_command(
     command_id: str,
