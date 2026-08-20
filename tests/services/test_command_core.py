@@ -103,6 +103,7 @@ def test_serialize_command():
 # =====================================================================
 # Command Execution Tests
 # =====================================================================
+# GCE-TODO: update tests according to implementation changes
 
 def test_execute_command_success():
     mock_ctx = MagicMock()
