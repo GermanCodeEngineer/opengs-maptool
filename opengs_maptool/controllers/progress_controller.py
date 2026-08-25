@@ -3,7 +3,7 @@ from contextlib import contextmanager
 import copy
 from dataclasses import dataclass
 import time
-from typing import Iterator, Generator, Protocol
+from typing import Iterator, Generator, Protocol, TypeVar
 from PyQt6.QtCore import QObject, pyqtSignal, QMutex, QMutexLocker
 from opengs_maptool.models.progress_status import ProgressStatus
 from opengs_maptool.services.logging_service import LOGGING_SERVICE
@@ -28,7 +28,8 @@ class ProgressPhaseRef:
     _target_completed_steps: int
     _description: str
 
-class _SizedIterable[T](Protocol[T]):
+T = TypeVar("T")  # Generic type variable for track_iteration
+class _SizedIterable(Protocol[T]):
     def __len__(self) -> int: ...
     def __iter__(self) -> Iterator[T]: ...
 
@@ -202,7 +203,7 @@ class ProgressController(QObject):
         """
         self._retire_progress()
 
-    def track_iteration[T](self, sequence: _SizedIterable[T]) -> Iterator[T]:
+    def track_iteration(self, sequence: _SizedIterable[T]) -> Iterator[T]:
         """
         Wraps a sized iterable (list, tuple, array, etc.) to update progress automatically item-by-item.
         Usage: see docstring of class.
