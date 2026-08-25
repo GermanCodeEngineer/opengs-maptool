@@ -1,10 +1,12 @@
+from __future__ import annotations
 import opengs_maptool.config as config
+import opengs_maptool.logic.datastructure as ds
 
 class Project:
     """In-memory project state for map inputs, outputs, options, and metadata."""
 
     def __init__(
-            self, 
+            self,
             name: str = "Untitled Project",
             editor_version: str = config.VERSION,
             description: str | None = None,
@@ -16,17 +18,18 @@ class Project:
         self.description: str | None = description
         self.author: str | None = author
 
+        # GCE-TODO: go through all fields and ensure they are used correctly everywhere
         # Images of the maps
-        self.land_image = None
-        self.boundary_image = None
-        self.density_image = None
-        self.terrain_image = None
-        self.territory_image = None
-        self.province_image = None
+        self.land_image: ds.LandImage | None = None
+        self.boundary_image: ds.BoundaryImage | None = None
+        self.density_image: ds.DensityImage | None = None
+        self.terrain_image: ds.TerrainImage | None = None
+        self.territory_image: ds.TerritoryImage | None = None
+        self.province_image: ds.ProvinceImage | None = None
 
         # Data of the maps
-        self.territory_data = None
-        self.province_data = None
+        self.territory_data: list[ds.RegionMetadata] | None = None
+        self.province_data: list[ds.RegionMetadata] | None = None
 
         # Metadata of the maps
         self.territory_pmap = None

@@ -12,10 +12,13 @@ from opengs_maptool.logic.numb_gen import NumberSeries
 from opengs_maptool.logic.utils import (
     clear_used_colors, color_from_id, create_region_map,
 )
+import opengs_maptool.logic.datastructure as ds
 from opengs_maptool.simple_types import TabName
 
 
-def generate_province_map(task_ctx: LimitedTaskContext, progress_controller: ProgressController) -> tuple[Image.Image, list[dict]] | tuple[None, None]:
+def generate_province_map(
+        task_ctx: LimitedTaskContext, progress_controller: ProgressController
+    ) -> tuple[Image.Image, ds.RegionMetadata] | tuple[None, None]:
     # Safety check matching the button setEnabled condition
     if not task_ctx.project.can_province_image_be_generated():
         return None, None
@@ -48,17 +51,17 @@ def generate_province_map(task_ctx: LimitedTaskContext, progress_controller: Pro
 
         # Reset province_ids from any previous generation
         for d in territory_data:
-            d["province_ids"] = []
+            d.province_ids = []
 
         # Separate territories by type
-        land_terrs = [d for d in territory_data if d["territory_type"] == "land"]
-        ocean_terrs = [d for d in territory_data if d["territory_type"] == "ocean"]
+        land_terrs = [d for d in territory_data if d.territory_type == ds.RegionType.LAND]
+        ocean_terrs = [d for d in territory_data if d.territory_type == ds.RegionType.OCEAN]
 
         # Build set of ocean territory indices for density exclusion
         ocean_terr_indices = set()
         if exclude_ocean_density:
             for d in ocean_terrs:
-                ocean_terr_indices.add(d["_pmap_index"])
+                ocean_terr_indices.add(d._pmap_index)
 
         series = NumberSeries(
             config.PROVINCE_ID_PREFIX,
@@ -67,14 +70,14 @@ def generate_province_map(task_ctx: LimitedTaskContext, progress_controller: Pro
         )
 
         province_pmap = np.full((map_h, map_w), -1, np.int32)
-        all_metadata = []
+        all_metadata: list[ds.RegionMetadata] = []
         start_index = 0
         boundary_mask = masks.get("boundary_mask")
         if boundary_mask is None:
             boundary_mask = np.zeros((map_h, map_w), dtype=bool)
 
         # Build territory lookup by _pmap_index
-        terr_by_index = {d["_pmap_index"]: d for d in territory_data}
+        terr_by_index = {d._pmap_index: d for d in territory_data}
 
     with progress_controller.execute_phase(phase2) as sub_progress2:
         count_phase = sub_progress2.add_phase(step_weight=100)
@@ -124,33 +127,36 @@ def generate_province_map(task_ctx: LimitedTaskContext, progress_controller: Pro
                 rid = series.get_id()
                 if rid is None:
                     continue
-                r, g, b = color_from_id(start_index, "lake")
+                r, g, b = color_from_id(start_index, ds.RegionType.LAKE)
                 ys, xs = np.where(comp_mask)
                 cx, cy = int(round(xs.mean())), int(round(ys.mean()))
                 terr_idx = int(territory_pmap[cy, cx])
                 terr = terr_by_index.get(terr_idx)
-                tid = terr["territory_id"] if terr else ""
-                lake_entry = {
-                    "province_id": rid,
-                    "province_type": "lake",
-                    "R": r, "G": g, "B": b,
-                    "x": xs.mean(),
-                    "y": ys.mean(),
-                    "territory_id": tid,
-                    "_pmap_index": start_index,
-                }
+                tid = terr.territory_id if terr else ""
+                lake_entry = ds.RegionMetadata(
+                    region_level=ds.RegionLevel.PROVINCE,
+                    territory_id=tid,
+                    province_id=rid,
+                    territory_type=None,
+                    province_type=ds.RegionType.LAKE,
+                    R=r, G=g, B=b,
+                    x=xs.mean(),
+                    y=ys.mean(),
+                    _pmap_index=start_index
+                )
                 province_pmap[comp_mask] = start_index
                 all_metadata.append(lake_entry)
                 if terr is not None:
-                    terr.setdefault("province_ids", []).append(rid)
+                    terr.province_ids = terr.province_ids or []
+                    terr.province_ids.append(rid)
                 start_index += 1
 
     with progress_controller.execute_phase(phase4) as sub_progress4:
         # Loop through all territories using iteration tracking
         for terr, prov_count in sub_progress4.track_iteration(all_terrs):
-            terr_mask = territory_pmap == terr["_pmap_index"]
-            ptype = terr["territory_type"]
-            tid = terr["territory_id"]
+            terr_mask = territory_pmap == terr._pmap_index
+            region_type = terr.territory_type
+            tid = terr.territory_id
 
             # Subdivide non-lake pixels in this territory
             if lake_mask is not None:
@@ -160,38 +166,38 @@ def generate_province_map(task_ctx: LimitedTaskContext, progress_controller: Pro
                 terr_fill = terr_mask & ~boundary_mask
                 terr_border = terr_mask & boundary_mask
 
-            if exclude_ocean_density and ptype == "ocean":
+            if exclude_ocean_density and region_type == ds.RegionType.OCEAN:
                 terr_density = None
                 terr_density_strength = 1.0
             else:
                 terr_density = density_arr
                 terr_density_strength = density_strength
 
-            jagged = jagged_land if ptype == "land" else jagged_ocean
+            jagged = jagged_land if region_type == ds.RegionType.LAND else jagged_ocean
 
             # Pass None for inner progress controller to create_region_map here
             # to keep granular updates balanced across territory iterations
-            pmap, meta, next_index = create_region_map(
+            pmap, metadata, next_index = create_region_map(
                 terr_fill, terr_border, prov_count, start_index,
-                ptype, series, "province_id", "province_type",
+                series, region_type, ds.RegionLevel.PROVINCE,
                 ProgressController(), # ignore sub progress as we already track loop progress
                 density=terr_density, density_strength=terr_density_strength,
                 jagged=jagged
             )
 
             # Tag each province with its parent territory
-            for m in meta:
-                m["territory_id"] = tid
+            for m in metadata:
+                m.territory_id = tid
 
             # Merge into global province pmap (don't overwrite lake provinces)
             valid = (pmap >= 0) & (province_pmap < 0)
             province_pmap[valid] = pmap[valid]
 
             # Collect province_ids for territory (append to any existing lake ids)
-            existing = terr.get("province_ids", [])
-            terr["province_ids"] = existing + [m["province_id"] for m in meta]
+            existing = terr.province_ids or []
+            terr.province_ids = existing + [m.province_id for m in metadata]
 
-            all_metadata.extend(meta)
+            all_metadata.extend(metadata)
             start_index = next_index
 
     with progress_controller.execute_phase(phase5) as sub_progress5:
@@ -204,8 +210,8 @@ def generate_province_map(task_ctx: LimitedTaskContext, progress_controller: Pro
             if all_metadata and start_index > 0:
                 color_lut = np.zeros((start_index, 3), np.uint8)
                 for d in all_metadata:
-                    idx = d["_pmap_index"]
-                    color_lut[idx] = (d["R"], d["G"], d["B"])
+                    idx = d._pmap_index
+                    color_lut[idx] = (d.R, d.G, d.B)
                 valid = province_pmap >= 0
                 out[valid] = color_lut[province_pmap[valid]]
             province_image = Image.fromarray(out)
@@ -218,13 +224,13 @@ def generate_province_map(task_ctx: LimitedTaskContext, progress_controller: Pro
                 _assign_terrain(all_metadata, terrain_arr, terrain_progress)
             else:
                 for prov in terrain_progress.track_iteration(all_metadata):
-                    ptype = prov["province_type"]
-                    if ptype == "lake":
-                        prov["province_terrain"] = config.DEFAULT_TERRAIN_LAKE
-                    elif ptype == "ocean":
-                        prov["province_terrain"] = config.DEFAULT_TERRAIN_OCEAN
+                    region_type = prov.province_type
+                    if region_type == ds.RegionType.LAKE:
+                        prov.province_terrain = config.DEFAULT_TERRAIN_LAKE
+                    elif region_type == ds.RegionType.OCEAN:
+                        prov.province_terrain = config.DEFAULT_TERRAIN_OCEAN
                     else:
-                        prov["province_terrain"] = config.DEFAULT_TERRAIN_LAND
+                        prov.province_terrain = config.DEFAULT_TERRAIN_LAND
 
     with progress_controller.execute_phase(phase6):
         project.province_image = province_image
@@ -236,7 +242,7 @@ def generate_province_map(task_ctx: LimitedTaskContext, progress_controller: Pro
 
 
 def _distribute(
-        territories, total_provinces, pixel_counts,
+        territories: list[ds.RegionMetadata], total_provinces, pixel_counts,
         progress_controller: ProgressController, density_weights=None
     ):
     """Distribute total_provinces proportionally across territories.
@@ -311,10 +317,10 @@ def _assign_terrain(metadata, terrain_arr, progress_controller: ProgressControll
                     int(terrain_arr[py, px, 1]),
                     int(terrain_arr[py, px, 2]))
 
-            ptype = prov["province_type"]
-            if ptype == "lake":
+            region_type = prov["province_type"]
+            if region_type == ds.RegionType.LAKE:
                 prov["province_terrain"] = lake_lookup.get(pixel, config.DEFAULT_TERRAIN_LAKE)
-            elif ptype == "ocean":
+            elif region_type == ds.RegionType.OCEAN:
                 prov["province_terrain"] = naval_lookup.get(pixel, config.DEFAULT_TERRAIN_OCEAN)
             else:
                 prov["province_terrain"] = land_lookup.get(pixel, config.DEFAULT_TERRAIN_LAND)

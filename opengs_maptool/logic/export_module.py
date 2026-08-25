@@ -11,7 +11,7 @@ def export_image(path, image):
     """Export an image to the specified file path."""
     if not image or not path:
         return
-    
+
     try:
         # Remove the alpha channel for JPEG image export
         ext = path.lower().rsplit('.', 1)[-1]
@@ -25,8 +25,9 @@ def export_image(path, image):
         print(f"Error saving image: {error}")
 
 
-def export_territory_definitions(project: Project, path: str, fmt: str):
+def export_territory_definitions(project: Project, path: str, fmt: str) -> None:
     """Export territory definitions to the specified path in the given format."""
+    # GCE-TODO: use serialization
     territory_data = project.territory_data
     if not territory_data:
         print("No territory data to export.")
@@ -52,14 +53,14 @@ def export_territory_definitions(project: Project, path: str, fmt: str):
             for territory_id, info in data.items():
                 territory_element = ET.SubElement(root, "territory")
                 territory_element.set("id", str(territory_id))
-                
+
                 for key, value in info.items():
                     element = ET.SubElement(territory_element, key)
                     element.text = str(value)
 
             rough_xml = ET.tostring(root, encoding="unicode")
             pretty_xml = minidom.parseString(rough_xml).toprettyxml(indent="    ")
-            
+
             with open(path, "w", encoding="utf-8") as f:
                 f.write(pretty_xml)
 
@@ -73,8 +74,9 @@ def export_territory_definitions(project: Project, path: str, fmt: str):
                             round(d["x"], 2), round(d["y"], 2)])
 
 
-def export_territory_history(project: Project, path: str, fmt: str):
+def export_territory_history(project: Project, path: str, fmt: str) -> None:
     """Export territory history to the specified path in the given format."""
+    # GCE-TODO: use serialization
     territory_data = project.territory_data
     if not territory_data:
         print("No territory data to export.")
@@ -96,7 +98,7 @@ def export_territory_history(project: Project, path: str, fmt: str):
             for territory_id, info in data.items():
                 territory_element = ET.SubElement(root, "territory")
                 territory_element.set("id", str(territory_id))
-                
+
                 provinces_element = ET.SubElement(territory_element, "provinces")
 
                 for province_id in info.get("provinces", []):
@@ -105,7 +107,7 @@ def export_territory_history(project: Project, path: str, fmt: str):
 
             rough_xml = ET.tostring(root, encoding="unicode")
             pretty_xml = minidom.parseString(rough_xml).toprettyxml(indent="    ")
-            
+
             with open(path, "w", encoding="utf-8") as f:
                 f.write(pretty_xml)
 
@@ -118,8 +120,9 @@ def export_territory_history(project: Project, path: str, fmt: str):
                 w.writerow([d["territory_id"], provinces])
 
 
-def export_province_definitions(project: Project, path: str, fmt: str):
+def export_province_definitions(project: Project, path: str, fmt: str) -> None:
     """Export province definitions to the specified path in the given format."""
+    # GCE-TODO: use serialization
     province_data = project.province_data
     if not province_data:
         print("No province data to export.")
@@ -176,11 +179,11 @@ def export_province_definitions(project: Project, path: str, fmt: str):
                 w.writerow(row)
 
 
-def _write_json(path, data):
+def _write_json(path, data) -> None:
     with open(path, "w", encoding="utf-8") as f:
         json.dump(data, f, indent=4)
 
 
-def _write_yaml(path, data):
+def _write_yaml(path, data) -> None:
     with open(path, "w", encoding="utf-8") as f:
         yaml.dump(data, f, sort_keys=False)

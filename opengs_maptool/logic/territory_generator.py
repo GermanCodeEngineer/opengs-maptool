@@ -11,9 +11,12 @@ from opengs_maptool.logic.numb_gen import NumberSeries
 from opengs_maptool.logic.utils import (
     clear_used_colors, extract_masks, create_region_map, combine_maps,
 )
+import opengs_maptool.logic.datastructure as ds
 from opengs_maptool.simple_types import TabName
 
-def generate_territory_map(task_ctx: LimitedTaskContext, progress_controller: ProgressController) -> tuple[Image.Image, list[dict]] | tuple[None, None]:
+def generate_territory_map(
+        task_ctx: LimitedTaskContext, progress_controller: ProgressController
+    ) -> tuple[ds.TerritoryImage, list[ds.RegionMetadata]] | tuple[None, None]:
     """
     Generate a territory map for the given project, updating the progress with "virtually calculated step numbers" as it goes.
     """
@@ -66,7 +69,7 @@ def generate_territory_map(task_ctx: LimitedTaskContext, progress_controller: Pr
     with progress_controller.execute_phase(phase3) as sub_progress3:
         land_map, land_meta, next_index = create_region_map(
             masks["land_fill"], masks["land_border"], land_points, 0,
-            "land", series, "territory_id", "territory_type",
+            series, ds.RegionType.LAND, ds.RegionLevel.TERRITORY,
             sub_progress3,
             density=density_arr, density_strength=density_strength,
             jagged=jagged_land
@@ -80,7 +83,7 @@ def generate_territory_map(task_ctx: LimitedTaskContext, progress_controller: Pr
 
             sea_map, sea_meta, next_index = create_region_map(
                 masks["sea_fill"], masks["sea_border"], sea_points, next_index,
-                "ocean", series, "territory_id", "territory_type",
+                series, ds.RegionType.OCEAN, ds.RegionLevel.TERRITORY,
                 sub_progress4,
                 density=sea_density, density_strength=sea_density_strength,
                 jagged=jagged_ocean

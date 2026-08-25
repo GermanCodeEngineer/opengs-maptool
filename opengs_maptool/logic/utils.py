@@ -7,24 +7,26 @@ from scipy.ndimage import distance_transform_edt, label as ndlabel
 from typing import Any
 import opengs_maptool.config as config
 from opengs_maptool.controllers.progress_controller import ProgressController
+import opengs_maptool.logic.datastructure as ds
+from opengs_maptool.logic.numb_gen import NumberSeries
 
 MAX_LLOYD_SAMPLE = 100_000
 
 used_colors = set()
 
 
-def clear_used_colors():
+def clear_used_colors() -> None:
     used_colors.clear()
 
 
-def color_from_id(index, ptype):
+def color_from_id(index: int, region_type: ds.RegionType) -> ds.ColorTuple:
     rng = np.random.default_rng(index + 1)
     while True:
-        if ptype == "ocean":
+        if region_type == ds.RegionType.OCEAN:
             r = rng.integers(0, 60)
             g = rng.integers(0, 80)
             b = rng.integers(100, 180)
-        elif ptype == "lake":
+        elif region_type == ds.RegionType.LAKE:
             r = rng.integers(0, 80)
             g = rng.integers(80, 180)
             b = rng.integers(100, 200)
@@ -310,7 +312,7 @@ def is_lake_color(arr):
     return (arr[..., 0] == r) & (arr[..., 1] == g) & (arr[..., 2] == b)
 
 
-def assign_borders(pmap, border_mask):
+def assign_borders(pmap, border_mask) -> None:
     valid = pmap >= 0
     if not valid.any() or not border_mask.any():
         return
@@ -321,7 +323,7 @@ def assign_borders(pmap, border_mask):
 
 
 def combine_maps(
-        land_map, sea_map, metadata, land_mask, sea_mask,
+        land_map, sea_map, metadata: list[ds.RegionMetadata], land_mask, sea_mask,
         progress_controller: ProgressController,
         ) -> tuple[Image.Image, NDArray[np.int32]]:
     """Merge land/sea maps into RGB image. Returns (image, combined_pmap)."""
@@ -376,7 +378,7 @@ def combine_maps(
     return image, combined
 
 
-def extract_masks(boundary_image, land_image):
+def extract_masks(boundary_image: ds.BoundaryImage | None, land_image: ds.LandImage | None):
     """Extract all masks from boundary and land images.
 
     Returns dict with keys: boundary_mask, land_mask, sea_mask,
@@ -451,14 +453,12 @@ def extract_masks(boundary_image, land_image):
 
 def create_region_map(
         fill_mask, border_mask, num_points, start_index,
-        ptype, series, id_key, type_key,
+        series, region_type: ds.RegionType, region_level: ds.RegionLevel,
         progress_controller: ProgressController,
         density=None, density_strength=1.0, jagged=False
-    ) -> tuple[NDArray[np.int32], list[dict[str, Any]], int]:
-    """Unified region map creator for both provinces and territories.
-
-    id_key/type_key control metadata key names (e.g. "province_id"/"province_type"
-    or "territory_id"/"territory_type").
+    ) -> tuple[NDArray[np.int32], list[ds.RegionMetadata], int]:
+    """
+    Unified region map creator for both provinces and territories.
     """
 
     """
@@ -510,8 +510,9 @@ def create_region_map(
 
         with borders_progress.execute_phase(build_phase):
             # Should be very fast, probably no substeps needed
-            metadata = _build_region_metadata(pmap, seeds, start_index, ptype,
-                                            series, id_key, type_key)
+            metadata = _build_region_metadata(
+                pmap, seeds, start_index, series, region_type, region_level,
+            )
 
         with borders_progress.execute_phase(assign_phase):
             # assign_borders is not able to create sub progress (based mostly on external functions)
@@ -521,8 +522,10 @@ def create_region_map(
     return pmap, metadata, next_index
 
 
-def _build_region_metadata(pmap, seeds, start_index, ptype, series,
-                           id_key, type_key):
+def _build_region_metadata(
+        pmap, seeds, start_index,
+        series: NumberSeries, region_type: ds.RegionType, region_level: ds.RegionLevel,
+    ) -> list[ds.RegionMetadata]:
     valid_mask = pmap >= 0
     ys, xs = np.where(valid_mask)
     flat = pmap[valid_mask]
@@ -541,13 +544,19 @@ def _build_region_metadata(pmap, seeds, start_index, ptype, series,
         rid = series.get_id()
         if rid is None:
             continue
-        r, g, b = color_from_id(index, ptype)
-        metadata.append({
-            id_key: rid,
-            type_key: ptype,
-            "R": r, "G": g, "B": b,
-            "x": sum_x[i] / counts[i],
-            "y": sum_y[i] / counts[i],
-            "_pmap_index": index,
-        })
+        r, g, b = color_from_id(index, region_type)
+        metadata.append(ds.RegionMetadata(
+            region_level=region_level,
+
+            territory_id=rid if region_level == ds.RegionLevel.TERRITORY else None,
+            province_id=rid if region_level == ds.RegionLevel.PROVINCE else None,
+
+            territory_type=region_type if region_level == ds.RegionLevel.TERRITORY else None,
+            province_type=region_type if region_level == ds.RegionLevel.PROVINCE else None,
+
+            R=r, G=g, B=b,
+            x=sum_x[i] / counts[i],
+            y=sum_y[i] / counts[i],
+            _pmap_index=index
+        ))
     return metadata

@@ -12,7 +12,7 @@ class ProjectService:
         """
         Create a new empty project.
         """
-        project = Project()        
+        project = Project()
         return project
 
 
@@ -34,6 +34,7 @@ class ProjectService:
             )
             project.file_path = path
 
+            # GCE-TODO: implement deserialization
             # Load map images
             project.land_image = self._load_image_from_zip(zip, "land.png")
             project.boundary_image = self._load_image_from_zip(zip, "boundary.png")
@@ -72,6 +73,7 @@ class ProjectService:
 
             zip.writestr("project.json", json.dumps(details, indent=4))
 
+            # TODO: implement serialization
             # Save map images
             self._save_image_in_zip(zip, project.land_image, "land.png")
             self._save_image_in_zip(zip, project.boundary_image, "boundary.png")
@@ -96,7 +98,7 @@ class ProjectService:
 
                 np.savez(buffer, **project.cached_masks)
                 zip.writestr("metadata/cached_masks.npz", buffer.getvalue())
-            
+
             # Update dirty indicator
             project.modified = False
 
@@ -131,7 +133,7 @@ class ProjectService:
 
         except KeyError:
             return None
-        
+
         return json.load(
             BytesIO(json_data)
         )
@@ -145,7 +147,7 @@ class ProjectService:
         """
         try:
             territory_pmap_data = zip.read("metadata/territory_pmap.npy")
-        
+
         except KeyError:
             return None
 
@@ -161,7 +163,7 @@ class ProjectService:
         try:
             cached_masks_data = zip.read("metadata/cached_masks.npz")
             extracted_cached_masks = np.load(BytesIO(cached_masks_data))
-            
+
         except KeyError:
             return None
 
@@ -178,7 +180,7 @@ class ProjectService:
         """
         if image == None:
             return
-        
+
         buffer = BytesIO()
 
         image.save(buffer, format="PNG")
@@ -195,5 +197,5 @@ class ProjectService:
         """
         if data == None:
             return
-        
+
         zip.writestr("data/" + filename, json.dumps(data, indent=4))
