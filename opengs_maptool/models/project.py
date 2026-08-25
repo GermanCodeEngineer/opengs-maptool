@@ -1,6 +1,8 @@
 from __future__ import annotations
 import opengs_maptool.config as config
 import opengs_maptool.logic.datastructure as ds
+import numpy as np
+from numpy.typing import NDArray
 
 class Project:
     """In-memory project state for map inputs, outputs, options, and metadata."""
@@ -18,7 +20,6 @@ class Project:
         self.description: str | None = description
         self.author: str | None = author
 
-        # GCE-TODO: go through all fields and ensure they are used correctly everywhere
         # Images of the maps
         self.land_image: ds.LandImage | None = None
         self.boundary_image: ds.BoundaryImage | None = None
@@ -32,8 +33,8 @@ class Project:
         self.province_data: list[ds.RegionMetadata] | None = None
 
         # Metadata of the maps
-        self.territory_pmap = None
-        self.cached_masks = None
+        self.territory_pmap: ds.RegionPixelMap | None = None
+        self.cached_masks: ds.Masks | None = None
 
         # Generation options
         self.land_territory_density = config.LAND_TERRITORIES_DEFAULT

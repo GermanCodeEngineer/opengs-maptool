@@ -14,18 +14,7 @@ _write_yaml
 ## utils.py
 clear_used_colors
 color_from_id
-
-
-# TODO
-## export_module.py
-export_image
-## province_generator.py
-generate_province_map
-_distribute
-_assign_terrain
-## territory_generator.py
-generate_territory_map
-## utils.py
+extract_masks
 random_seeds
 lloyd_relaxation
 _build_jitter_maps
@@ -36,9 +25,21 @@ is_sea_color
 is_lake_color
 assign_borders
 combine_maps
-extract_masks
 create_region_map
 _build_region_metadata
+## export_module.py
+export_image
+## province_generator.py
+generate_province_map
+_distribute
+_assign_terrain
+## territory_generator.py
+generate_territory_map
 ## models/project.py
 Project.__init__
 
+
+# Futher
+GCE-TODO: generally search all strings and [""] accesses
+GCE-TODO: look for common ndarray's and create TypeAlias for them
+GCE-TODO: make a list of all function def's in a file and look for common argument types etc.

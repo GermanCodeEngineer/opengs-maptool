@@ -1,7 +1,10 @@
 from io import BytesIO
 import json
+from typing import Any
 import numpy as np
+from numpy.typing import NDArray
 from opengs_maptool.models.project import Project
+import opengs_maptool.logic.datastructure as ds
 from PIL import Image
 import zipfile
 
@@ -34,7 +37,6 @@ class ProjectService:
             )
             project.file_path = path
 
-            # GCE-TODO: implement deserialization
             # Load map images
             project.land_image = self._load_image_from_zip(zip, "land.png")
             project.boundary_image = self._load_image_from_zip(zip, "boundary.png")
@@ -44,8 +46,18 @@ class ProjectService:
             project.province_image = self._load_image_from_zip(zip, "province.png")
 
             # Load data
-            project.territory_data = self._load_data_from_zip(zip, "territory_data.json")
-            project.province_data = self._load_data_from_zip(zip, "province_data.json")
+            territory_data_json = self._load_data_from_zip(zip, "territory_data.json")
+            province_data_json = self._load_data_from_zip(zip, "province_data.json")
+            
+            if territory_data_json is not None:
+                project.territory_data = [ds.RegionMetadata.deserialize_from_full_json(m) for m in territory_data_json]
+            else:
+                project.territory_data = None
+            
+            if province_data_json is not None:
+                project.province_data = [ds.RegionMetadata.deserialize_from_full_json(m) for m in province_data_json]
+            else:
+                project.province_data = None
 
             # Load metadata
             project.territory_pmap = self._load_territory_pmap_from_zip(zip)
@@ -54,7 +66,7 @@ class ProjectService:
             return project
 
 
-    def save(self, project: Project, path: str):
+    def save(self, project: Project, path: str) -> None:
         """
         Save a project to disk (GSMAP file or ZIP)
 
@@ -73,7 +85,6 @@ class ProjectService:
 
             zip.writestr("project.json", json.dumps(details, indent=4))
 
-            # TODO: implement serialization
             # Save map images
             self._save_image_in_zip(zip, project.land_image, "land.png")
             self._save_image_in_zip(zip, project.boundary_image, "boundary.png")
@@ -83,27 +94,24 @@ class ProjectService:
             self._save_image_in_zip(zip, project.province_image, "province.png")
 
             # Save map data
-            self._save_data_in_zip(zip, project.territory_data, "territory_data.json")
-            self._save_data_in_zip(zip, project.province_data, "province_data.json")
+            if project.territory_data is not None:
+                territory_data_json = [m.serialize_full_json() for m in project.territory_data]
+                self._save_data_in_zip(zip, territory_data_json, "territory_data.json")          
+
+            
+            if project.province_data is not None:
+                province_data_json = [m.serialize_full_json() for m in project.province_data]
+                self._save_data_in_zip(zip, province_data_json, "province_data.json")
 
             # Save metadata
-            if project.territory_pmap is not None:
-                buffer = BytesIO()
-
-                np.save(buffer, project.territory_pmap)
-                zip.writestr("metadata/territory_pmap.npy", buffer.getvalue())
-
-            if project.cached_masks is not None:
-                buffer = BytesIO()
-
-                np.savez(buffer, **project.cached_masks)
-                zip.writestr("metadata/cached_masks.npz", buffer.getvalue())
+            self._save_territory_pmap_in_zip(zip, project.territory_pmap)
+            self._save_cached_masks_in_zip(zip, project.cached_masks.serialize_to_json())
 
             # Update dirty indicator
             project.modified = False
 
 
-    def _load_image_from_zip(self, zip, filename) -> Image:
+    def _load_image_from_zip(self, zip: zipfile.ZipFile, filename: str) -> Image:
         """
         Private method for loading an image contained in a GSMAP or ZIP file
 
@@ -121,7 +129,7 @@ class ProjectService:
         ).copy()
 
 
-    def _load_data_from_zip(self, zip, filename) -> dict:
+    def _load_data_from_zip(self, zip: zipfile.ZipFile, filename: str) -> list[dict[str, Any]] | None:
         """
         Private method for loading a JSON file contained in a GSMAP or ZIP file
 
@@ -139,7 +147,7 @@ class ProjectService:
         )
 
 
-    def _load_territory_pmap_from_zip(self, zip) -> np.ndarray:
+    def _load_territory_pmap_from_zip(self, zip: zipfile.ZipFile) -> ds.RegionPixelMap | None:
         """
         Private method to load 'territory_pmap.npy' file contained in a GSMAP or ZIP file
 
@@ -154,7 +162,7 @@ class ProjectService:
         return np.load(BytesIO(territory_pmap_data))
 
 
-    def _load_cached_masks_from_zip(self, zip) -> dict:
+    def _load_cached_masks_from_zip(self, zip: zipfile.ZipFile) -> ds.Masks | None:
         """
         Private method to load 'cached_masks.npz' file contained in a GSMAP or ZIP file
 
@@ -167,10 +175,12 @@ class ProjectService:
         except KeyError:
             return None
 
-        return {key: extracted_cached_masks[key] for key in extracted_cached_masks.files}
+        return ds.Masks.deserialize_from_json(
+            {key: extracted_cached_masks[key] for key in extracted_cached_masks.files}
+        )
 
 
-    def _save_image_in_zip(self, zip, image, filename):
+    def _save_image_in_zip(self, zip: zipfile.ZipFile, image: Image.Image, filename: str) -> None:
         """
         Private method for saving an image to a GSMAP or ZIP file.
 
@@ -187,15 +197,40 @@ class ProjectService:
         zip.writestr("images/" + filename, buffer.getvalue())
 
 
-    def _save_data_in_zip(self, zip, data, filename):
+    def _save_data_in_zip(self, zip: zipfile.ZipFile, data: list[dict[str, Any]], filename: str) -> None:
         """
-        Private method for saving data (dictionary) in JSON format to a GSMAP or ZIP file.
+        Private method for saving data (list of dictionary) in JSON format to a GSMAP or ZIP file.
 
         @param zip: The GSMAP or ZIP file
         @param image: The data
         @param filename: The file name (example: province_data.json)
         """
-        if data == None:
-            return
-
         zip.writestr("data/" + filename, json.dumps(data, indent=4))
+
+
+    def _save_territory_pmap_in_zip(self, zip: zipfile.ZipFile, territory_pmap: ds.RegionPixelMap | None) -> None:
+        """
+        Private method for saving 'territory_pmap.npy' file to a GSMAP or ZIP file.
+
+        @param zip: The GSMAP or ZIP file
+        @param territory_pmap: The territory pmap
+        """
+        if territory_pmap is not None:
+            buffer = BytesIO()
+
+            np.save(buffer, territory_pmap)
+            zip.writestr("metadata/territory_pmap.npy", buffer.getvalue())
+
+
+    def _save_cached_masks_in_zip(self, zip: zipfile.ZipFile, cached_masks: ds.Masks | None) -> None:
+        """
+        Private method for saving 'cached_masks.npz' file to a GSMAP or ZIP file.
+
+        @param zip: The GSMAP or ZIP file
+        @param cached_masks: The cached masks
+        """
+        if cached_masks is not None:
+            buffer = BytesIO()
+
+            np.savez(buffer, **cached_masks.serialize_to_json())
+            zip.writestr("metadata/cached_masks.npz", buffer.getvalue())

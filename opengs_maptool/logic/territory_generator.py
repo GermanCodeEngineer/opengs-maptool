@@ -1,10 +1,10 @@
 from __future__ import annotations
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, Any
 if TYPE_CHECKING:
     from opengs_maptool.context import LimitedTaskContext
 
 import numpy as np
-from PIL import Image
+from numpy.typing import NDArray
 import opengs_maptool.config as config
 from opengs_maptool.controllers.progress_controller import ProgressController
 from opengs_maptool.logic.numb_gen import NumberSeries
@@ -55,7 +55,7 @@ def generate_territory_map(
         )
 
     with progress_controller.execute_phase(phase2):
-        density_arr = np.array(project.density_image)
+        density_arr: NDArray[Any] = np.array(project.density_image)
         density_strength = project.territory_density_strength / 10.0
         exclude_ocean_density = project.territory_exclude_ocean
         jagged_land = project.territory_jagged_land
@@ -68,11 +68,11 @@ def generate_territory_map(
 
     with progress_controller.execute_phase(phase3) as sub_progress3:
         land_map, land_meta, next_index = create_region_map(
-            masks["land_fill"], masks["land_border"], land_points, 0,
+            masks.land_fill, masks.land_border, land_points, 0,
             series, ds.RegionType.LAND, ds.RegionLevel.TERRITORY,
             sub_progress3,
             density=density_arr, density_strength=density_strength,
-            jagged=jagged_land
+            jagged=jagged_land,
         )
 
     with progress_controller.execute_phase(phase4) as sub_progress4:
@@ -82,22 +82,22 @@ def generate_territory_map(
             sea_density_strength = 1.0 if exclude_ocean_density else density_strength
 
             sea_map, sea_meta, next_index = create_region_map(
-                masks["sea_fill"], masks["sea_border"], sea_points, next_index,
+                masks.sea_fill, masks.sea_border, sea_points, next_index,
                 series, ds.RegionType.OCEAN, ds.RegionLevel.TERRITORY,
                 sub_progress4,
                 density=sea_density, density_strength=sea_density_strength,
-                jagged=jagged_ocean
+                jagged=jagged_ocean,
             )
         else:
             # Consume sub_progress4 (which surprisingly isn't nededed) to keep the progress bar moving
-            sea_map = np.full((masks["map_h"], masks["map_w"]), -1, np.int32)
+            sea_map: ds.RegionPixelMap = np.full((masks.map_h, masks.map_w), -1, np.int32)
             sea_meta = []
 
     with progress_controller.execute_phase(phase5) as sub_progress5:
         metadata = land_meta + sea_meta
 
         territory_image, combined_pmap = combine_maps(
-            land_map, sea_map, metadata, masks["land_mask"], masks["sea_mask"],
+            land_map, sea_map, metadata, masks.land_mask, masks.sea_mask,
             sub_progress5,
         )
 

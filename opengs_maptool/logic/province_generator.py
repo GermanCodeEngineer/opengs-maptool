@@ -5,6 +5,8 @@ if TYPE_CHECKING:
 
 import opengs_maptool.config as config
 import numpy as np
+from numpy.typing import NDArray
+from typing import Any
 from PIL import Image
 from scipy.ndimage import label as ndlabel
 from opengs_maptool.controllers.progress_controller import ProgressController
@@ -35,19 +37,21 @@ def generate_province_map(
         project = task_ctx.project
         clear_used_colors()
 
-        territory_pmap = project.territory_pmap
-        territory_data = project.territory_data
-        masks = project.cached_masks
-        density_arr = np.array(project.density_image)
+        # See can check above for type hints
+        territory_pmap: ds.RegionPixelMap = project.territory_pmap
+        territory_data: list[ds.RegionMetadata] = project.territory_data
+        masks: ds.Masks = project.cached_masks
+        density_arr: NDArray[Any] = np.array(project.density_image)
+        
         density_strength = project.province_density_strength / 10.0
         exclude_ocean_density = project.province_exclude_ocean
         jagged_land = project.province_jagged_land
         jagged_ocean = project.province_jagged_ocean
-        map_h, map_w = masks["map_h"], masks["map_w"]
+        map_h, map_w = masks.map_h, masks.map_w
 
         total_land_provs = project.land_province_density
         total_ocean_provs = project.oceanic_province_density
-        lake_mask = masks.get("lake_mask")
+        lake_mask = masks.lake_mask
 
         # Reset province_ids from any previous generation
         for d in territory_data:
@@ -72,7 +76,7 @@ def generate_province_map(
         province_pmap = np.full((map_h, map_w), -1, np.int32)
         all_metadata: list[ds.RegionMetadata] = []
         start_index = 0
-        boundary_mask = masks.get("boundary_mask")
+        boundary_mask = masks.boundary_mask
         if boundary_mask is None:
             boundary_mask = np.zeros((map_h, map_w), dtype=bool)
 
@@ -89,12 +93,13 @@ def generate_province_map(
         with sub_progress2.execute_phase(count_phase):
             # Count pixels per territory for proportional distribution
             unique, counts = np.unique(
-                territory_pmap[territory_pmap >= 0], return_counts=True)
-            pixel_counts = dict(zip(unique.tolist(), counts.tolist()))
+                territory_pmap[territory_pmap >= 0], return_counts=True
+            )
+            pixel_counts: ds.RegionIdToPixelCounts = dict(zip(unique.tolist(), counts.tolist()))
 
         with sub_progress2.execute_phase(compute_phase) as compute_progress:
             # Compute average density weight per territory (darker = higher weight)
-            density_weights = {}
+            density_weights = dict[int, float]()
             for idx in compute_progress.track_iteration(unique):
                 if int(idx) in ocean_terr_indices:
                     density_weights[int(idx)] = 1.0
@@ -242,8 +247,8 @@ def generate_province_map(
 
 
 def _distribute(
-        territories: list[ds.RegionMetadata], total_provinces, pixel_counts,
-        progress_controller: ProgressController, density_weights=None
+        territories: list[ds.RegionMetadata], total_provinces: int, pixel_counts: ds.RegionIdToPixelCounts,
+        progress_controller: ProgressController, density_weights: dict[int, float] | None = None,
     ):
     """Distribute total_provinces proportionally across territories.
 
@@ -258,8 +263,10 @@ def _distribute(
     terr_pixels = [pixel_counts.get(d["_pmap_index"], 0) for d in territories]
 
     if density_weights is not None:
-        terr_pixels = [px * density_weights.get(d["_pmap_index"], 1.0)
-                       for px, d in zip(terr_pixels, territories)]
+        terr_pixels = [
+            px * density_weights.get(d["_pmap_index"], 1.0)
+            for px, d in zip(terr_pixels, territories)
+        ]
 
     total_pixels = sum(terr_pixels)
 
@@ -289,7 +296,7 @@ def _distribute(
     return alloc
 
 
-def _assign_terrain(metadata, terrain_arr, progress_controller: ProgressController):
+def _assign_terrain(metadata: list[ds.RegionMetadata], terrain_arr: NDArray[Any], progress_controller: ProgressController):
     """Look up terrain color at each province center and assign province_terrain.
 
     Enforces category constraints: land provinces only get land terrains,
@@ -314,13 +321,13 @@ def _assign_terrain(metadata, terrain_arr, progress_controller: ProgressControll
             px = max(0, min(px, w - 1))
             py = max(0, min(py, h - 1))
             pixel = (int(terrain_arr[py, px, 0]),
-                    int(terrain_arr[py, px, 1]),
-                    int(terrain_arr[py, px, 2]))
+                     int(terrain_arr[py, px, 1]),
+                     int(terrain_arr[py, px, 2]))
 
             region_type = prov["province_type"]
             if region_type == ds.RegionType.LAKE:
-                prov["province_terrain"] = lake_lookup.get(pixel, config.DEFAULT_TERRAIN_LAKE)
+                prov.province_terrain = lake_lookup.get(pixel, config.DEFAULT_TERRAIN_LAKE)
             elif region_type == ds.RegionType.OCEAN:
-                prov["province_terrain"] = naval_lookup.get(pixel, config.DEFAULT_TERRAIN_OCEAN)
+                prov.province_terrain = naval_lookup.get(pixel, config.DEFAULT_TERRAIN_OCEAN)
             else:
-                prov["province_terrain"] = land_lookup.get(pixel, config.DEFAULT_TERRAIN_LAND)
+                prov.province_terrain = land_lookup.get(pixel, config.DEFAULT_TERRAIN_LAND)

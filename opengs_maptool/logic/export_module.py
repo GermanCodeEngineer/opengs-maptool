@@ -4,10 +4,12 @@ import csv
 import yaml
 import xml.etree.ElementTree as ET
 from xml.dom import minidom
+from typing import Any
 from opengs_maptool.models.project import Project
+import opengs_maptool.logic.datastructure as ds
 
 
-def export_image(path, image):
+def export_image(path: str, image: Image.Image) -> None:
     """Export an image to the specified file path."""
     if not image or not path:
         return
@@ -27,22 +29,16 @@ def export_image(path, image):
 
 def export_territory_definitions(project: Project, path: str, fmt: str) -> None:
     """Export territory definitions to the specified path in the given format."""
-    # GCE-TODO: use serialization
     territory_data = project.territory_data
     if not territory_data:
         print("No territory data to export.")
         return
 
+    data: dict[str, dict[str, Any]] = {}
+    for d in territory_data:
+        data[d.territory_id] = d.serialize_territory_json()
+    
     if fmt in ("json", "yaml", "xml"):
-        data = {}
-        for d in territory_data:
-            data[d["territory_id"]] = {
-                "territory_type": d["territory_type"],
-                "R": d["R"], "G": d["G"], "B": d["B"],
-                "x": round(float(d["x"]), 2),
-                "y": round(float(d["y"]), 2),
-            }
-
         if fmt == "json":
             _write_json(path, data)
         elif fmt == "yaml":
@@ -67,26 +63,32 @@ def export_territory_definitions(project: Project, path: str, fmt: str) -> None:
     else:
         with open(path, "w", newline="", encoding="utf-8") as f:
             w = csv.writer(f, delimiter=';')
-            w.writerow(["id", "territory_type", "R", "G", "B", "x", "y"])
-            for d in territory_data:
-                w.writerow([d["territory_id"], d["territory_type"],
-                            d["R"], d["G"], d["B"],
-                            round(d["x"], 2), round(d["y"], 2)])
+            keys = ds.RegionMetadata.TERRITORY_JSON_KEYS
+            keys = ("id", *keys)
+
+            w.writerow(keys)
+            for territory_id, info in data.items():
+                values = []
+                for key in keys:
+                    if key == "id":
+                        values.append(territory_id)
+                    else:
+                        values.append(info.get(key))
+                w.writerow(values)
 
 
 def export_territory_history(project: Project, path: str, fmt: str) -> None:
     """Export territory history to the specified path in the given format."""
-    # GCE-TODO: use serialization
     territory_data = project.territory_data
     if not territory_data:
         print("No territory data to export.")
         return
 
     if fmt in ("json", "yaml", "xml"):
-        data = {}
+        data: dict[str, dict[str, list[str]]] = {}
         for d in territory_data:
-            data[d["territory_id"]] = {
-                "provinces": d.get("province_ids", []),
+            data[d.territory_id] = {
+                "provinces": d.province_ids or [],
             }
         if fmt == "json":
             _write_json(path, data)
@@ -116,32 +118,24 @@ def export_territory_history(project: Project, path: str, fmt: str) -> None:
             w = csv.writer(f, delimiter=';')
             w.writerow(["id", "provinces"])
             for d in territory_data:
-                provinces = ",".join(d.get("province_ids", []))
-                w.writerow([d["territory_id"], provinces])
+                provinces = ",".join(d.province_ids or [])
+                w.writerow([d.territory_id, provinces])
 
 
 def export_province_definitions(project: Project, path: str, fmt: str) -> None:
     """Export province definitions to the specified path in the given format."""
-    # GCE-TODO: use serialization
     province_data = project.province_data
     if not province_data:
         print("No province data to export.")
         return
 
-    has_terrain = any("province_terrain" in d for d in province_data)
+    has_terrain = any((d.province_terrain is not None) for d in province_data)
+
+    data: dict[str, dict[str, Any]] = {}
+    for d in province_data:
+        data[d.province_id] = d.serialize_province_json(include_terrain=has_terrain)
 
     if fmt in ("json", "yaml", "xml"):
-        data = {}
-        for d in province_data:
-            entry = {
-                "province_type": d["province_type"],
-                "R": d["R"], "G": d["G"], "B": d["B"],
-                "x": round(float(d["x"]), 2),
-                "y": round(float(d["y"]), 2),
-            }
-            if has_terrain:
-                entry["province_terrain"] = d.get("province_terrain", "unknown")
-            data[d["province_id"]] = entry
         if fmt == "json":
             _write_json(path, data)
         elif fmt == "yaml":
@@ -166,24 +160,25 @@ def export_province_definitions(project: Project, path: str, fmt: str) -> None:
     else:
         with open(path, "w", newline="", encoding="utf-8") as f:
             w = csv.writer(f, delimiter=';')
-            header = ["id", "province_type", "R", "G", "B", "x", "y"]
-            if has_terrain:
-                header.append("province_terrain")
-            w.writerow(header)
-            for d in province_data:
-                row = [d["province_id"], d["province_type"],
-                       d["R"], d["G"], d["B"],
-                       round(d["x"], 2), round(d["y"], 2)]
-                if has_terrain:
-                    row.append(d.get("province_terrain", "unknown"))
-                w.writerow(row)
+            keys = ds.RegionMetadata.PROVINCE_JSON_KEYS_WITH_TERRAIN if has_terrain else ds.RegionMetadata.PROVINCE_JSON_KEYS_WITHOUT_TERRAIN
+            keys = ("id", *keys)
+            w.writerow(keys)
+
+            for province_id, info in data.items():
+                values = []
+                for key in keys:
+                    if key == "id":
+                        values.append(province_id)
+                    else:
+                        values.append(info.get(key))
+                w.writerow(values)
 
 
-def _write_json(path, data) -> None:
+def _write_json(path: str, data: Any) -> None:
     with open(path, "w", encoding="utf-8") as f:
         json.dump(data, f, indent=4)
 
 
-def _write_yaml(path, data) -> None:
+def _write_yaml(path: str, data: Any) -> None:
     with open(path, "w", encoding="utf-8") as f:
         yaml.dump(data, f, sort_keys=False)

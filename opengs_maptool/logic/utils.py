@@ -39,8 +39,10 @@ def color_from_id(index: int, region_type: ds.RegionType) -> ds.ColorTuple:
             return color
 
 
-def random_seeds(mask, num_points, rng_seed=None, density=None,
-                 density_strength=1.0):
+def random_seeds(
+        mask: ds.BooleanMaskArray, num_points: int, rng_seed: int | None = None,
+        density=None, density_strength: float = 1.0,
+    ) -> list[ds.IntCoordinate]:
     """Pick num_points random pixels from mask.
 
     When density is provided (2D uint8 array, same shape as mask),
@@ -68,7 +70,11 @@ def random_seeds(mask, num_points, rng_seed=None, density=None,
     return [(int(x), int(y)) for y, x in coords_yx[indices]]
 
 
-def lloyd_relaxation(mask, point_seeds, progress_controller: ProgressController, rng_seed=None, iterations=4) -> list[tuple[int, int]]:
+def lloyd_relaxation(
+        mask: ds.BooleanMaskArray, point_seeds: list[ds.IntCoordinate],
+        progress_controller: ProgressController, rng_seed: int | None = None,
+        iterations: int = 4,
+    ) -> list[ds.IntCoordinate]:
     """
     Improve seed placement by iteratively moving each seed to the centroid
     of its Voronoi cell.
@@ -127,7 +133,7 @@ def lloyd_relaxation(mask, point_seeds, progress_controller: ProgressController,
     return point_seeds
 
 
-def _build_jitter_maps(h, w, seeds_arr):
+def _build_jitter_maps(h: int, w: int, seeds_arr: NDArray[np.float32]) -> tuple[NDArray[np.float32], NDArray[np.float32]]:
     """Build spatially-correlated noise maps for jagged border effect.
 
     Returns (jitter_x, jitter_y) arrays of shape (h, w), or (None, None)
@@ -155,7 +161,9 @@ def _build_jitter_maps(h, w, seeds_arr):
     return jx, jy
 
 
-def _jitter_coords(coords_xy, coords_yx, jitter_x, jitter_y):
+def _jitter_coords(
+        coords_xy: NDArray[np.float32], coords_yx: NDArray[np.intp], jitter_x: NDArray[np.float32], jitter_y: NDArray[np.float32]
+    ) -> NDArray[np.float32]:
     """Return a copy of coords_xy with spatially-correlated noise added."""
     out = coords_xy.copy()
     out[:, 0] += jitter_x[coords_yx[:, 0], coords_yx[:, 1]]
@@ -163,7 +171,7 @@ def _jitter_coords(coords_xy, coords_yx, jitter_x, jitter_y):
     return out
 
 
-def _remove_enclaves(pmap, mask, progress_controller: ProgressController):
+def _remove_enclaves(pmap: ds.RegionPixelMap, mask: ds.BooleanMaskArray, progress_controller: ProgressController) -> None:
     """Reassign disconnected region fragments to surrounding regions.
 
     For each region, keeps only the largest connected component.
@@ -195,7 +203,10 @@ def _remove_enclaves(pmap, mask, progress_controller: ProgressController):
         pmap[cleared] = pmap[ny[cleared], nx[cleared]]
 
 
-def assign_regions(mask, seeds, start_index, progress_controller: ProgressController, jagged=False):
+def assign_regions(
+        mask: ds.BooleanMaskArray, seeds: list[ds.IntCoordinate], start_index: int,
+        progress_controller: ProgressController, jagged: bool = False
+    ) -> ds.RegionPixelMap:
     """
     Assign each pixel in mask to the nearest seed, respecting boundaries.
 
@@ -227,7 +238,7 @@ def assign_regions(mask, seeds, start_index, progress_controller: ProgressContro
 
     with progress_controller.execute_phase(jitter_phase):
         h, w = mask.shape
-        pmap = np.full((h, w), -1, np.int32)
+        pmap: ds.RegionPixelMap = np.full((h, w), -1, np.int32)
 
         if not seeds or not mask.any():
             return pmap
@@ -245,7 +256,7 @@ def assign_regions(mask, seeds, start_index, progress_controller: ProgressContro
     with progress_controller.execute_phase(assign_phase) as assign_progress:
         if num_components <= 1:
             # Single component - direct KDTree query
-            coords_yx = np.column_stack(np.where(mask))
+            coords_yx: NDArray[np.intp] = np.column_stack(np.where(mask))
             coords_xy = np.flip(coords_yx, axis=1).astype(np.float32)
             query_xy = coords_xy
             if jitter_x is not None:
@@ -302,17 +313,17 @@ def assign_regions(mask, seeds, start_index, progress_controller: ProgressContro
     return pmap
 
 
-def is_sea_color(arr):
+def is_sea_color(arr: NDArray[np.uint8]) -> ds.BooleanMaskArray:
     r, g, b = config.OCEAN_COLOR
     return (arr[..., 0] == r) & (arr[..., 1] == g) & (arr[..., 2] == b)
 
 
-def is_lake_color(arr):
+def is_lake_color(arr: NDArray[np.uint8]) -> ds.BooleanMaskArray:
     r, g, b = config.LAKE_COLOR
     return (arr[..., 0] == r) & (arr[..., 1] == g) & (arr[..., 2] == b)
 
 
-def assign_borders(pmap, border_mask) -> None:
+def assign_borders(pmap: ds.RegionPixelMap, border_mask: ds.BooleanMaskArray) -> None:
     valid = pmap >= 0
     if not valid.any() or not border_mask.any():
         return
@@ -323,9 +334,11 @@ def assign_borders(pmap, border_mask) -> None:
 
 
 def combine_maps(
-        land_map, sea_map, metadata: list[ds.RegionMetadata], land_mask, sea_mask,
+        land_map: ds.RegionPixelMap, sea_map: ds.RegionPixelMap,
+        metadata: list[ds.RegionMetadata],
+        land_mask: ds.BooleanMaskArray, sea_mask: ds.BooleanMaskArray,
         progress_controller: ProgressController,
-        ) -> tuple[Image.Image, NDArray[np.int32]]:
+    ) -> tuple[Image.Image, ds.RegionPixelMap]:
     """Merge land/sea maps into RGB image. Returns (image, combined_pmap)."""
 
     """
@@ -344,7 +357,7 @@ def combine_maps(
         else:
             h, w = sea_map.shape
 
-        combined = np.full((h, w), -1, np.int32)
+        combined: ds.RegionPixelMap = np.full((h, w), -1, np.int32)
 
         if land_map is not None:
             lm = (land_map >= 0) & land_mask
@@ -378,7 +391,7 @@ def combine_maps(
     return image, combined
 
 
-def extract_masks(boundary_image: ds.BoundaryImage | None, land_image: ds.LandImage | None):
+def extract_masks(boundary_image: ds.BoundaryImage | None, land_image: ds.LandImage | None) -> ds.Masks:
     """Extract all masks from boundary and land images.
 
     Returns dict with keys: boundary_mask, land_mask, sea_mask,
@@ -437,26 +450,29 @@ def extract_masks(boundary_image: ds.BoundaryImage | None, land_image: ds.LandIm
         sea_fill = sea_mask & ~boundary_mask
         sea_border = boundary_mask | land_mask
 
-    return {
-        "boundary_mask": boundary_mask,
-        "land_mask": land_mask,
-        "sea_mask": sea_mask,
-        "lake_mask": lake_mask,
-        "land_fill": land_fill,
-        "land_border": land_border,
-        "sea_fill": sea_fill,
-        "sea_border": sea_border,
-        "map_h": map_h,
-        "map_w": map_w,
-    }
+    return ds.Masks(
+        boundary_mask=boundary_mask,
+        land_mask=land_mask,
+        sea_mask=sea_mask,
+        lake_mask=lake_mask,
+        land_fill=land_fill,
+        land_border=land_border,
+        sea_fill=sea_fill,
+        sea_border=sea_border,
+        map_h=map_h,
+        map_w=map_w,
+    )
 
 
 def create_region_map(
-        fill_mask, border_mask, num_points, start_index,
-        series, region_type: ds.RegionType, region_level: ds.RegionLevel,
+        fill_mask: ds.BooleanMaskArray, border_mask: ds.BooleanMaskArray,
+        num_points: int, start_index: int,
+        series: NumberSeries,
+        region_type: ds.RegionType, region_level: ds.RegionLevel,
         progress_controller: ProgressController,
-        density=None, density_strength=1.0, jagged=False
-    ) -> tuple[NDArray[np.int32], list[ds.RegionMetadata], int]:
+        density: NDArray[Any] | None = None, density_strength: float = 1.0,
+        jagged: bool = False,
+    ) -> tuple[ds.RegionPixelMap, list[ds.RegionMetadata], int]:
     """
     Unified region map creator for both provinces and territories.
     """
@@ -487,15 +503,16 @@ def create_region_map(
             empty = np.full(fill_mask.shape, -1, np.int32)
             return empty, [], start_index
 
-        seeds = random_seeds(fill_mask, num_points, density=density,
-                            density_strength=density_strength)
+        seeds = random_seeds(
+            fill_mask, num_points, density=density, density_strength=density_strength
+        )
 
     with progress_controller.execute_phase(lloyd_phase) as lloyd_progress:
         if not seeds:
             empty = np.full(fill_mask.shape, -1, np.int32)
             return empty, [], start_index
         else:
-            seeds = lloyd_relaxation(
+            seeds = lloyd_relaxation( # TODO: provide an rng seed for reproducibility
                 mask=fill_mask, point_seeds=seeds,
                 progress_controller=lloyd_progress,
                 iterations=config.LLOYD_ITERATIONS,
@@ -523,7 +540,7 @@ def create_region_map(
 
 
 def _build_region_metadata(
-        pmap, seeds, start_index,
+        pmap: ds.RegionPixelMap, seeds: list[ds.IntCoordinate], start_index: int,
         series: NumberSeries, region_type: ds.RegionType, region_level: ds.RegionLevel,
     ) -> list[ds.RegionMetadata]:
     valid_mask = pmap >= 0
