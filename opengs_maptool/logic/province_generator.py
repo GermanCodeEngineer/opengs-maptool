@@ -249,7 +249,7 @@ def generate_province_map(
 def _distribute(
         territories: list[ds.RegionMetadata], total_provinces: int, pixel_counts: ds.RegionIdToPixelCounts,
         progress_controller: ProgressController, density_weights: dict[int, float] | None = None,
-    ):
+    ) -> list[int]:
     """Distribute total_provinces proportionally across territories.
 
     When density_weights is provided, each territory's pixel count is scaled
@@ -260,11 +260,11 @@ def _distribute(
     if n == 0 or total_provinces <= 0:
         return [0] * n
 
-    terr_pixels = [pixel_counts.get(d["_pmap_index"], 0) for d in territories]
+    terr_pixels = [pixel_counts.get(d._pmap_index, 0) for d in territories]
 
     if density_weights is not None:
         terr_pixels = [
-            px * density_weights.get(d["_pmap_index"], 1.0)
+            px * density_weights.get(d._pmap_index, 1.0)
             for px, d in zip(terr_pixels, territories)
         ]
 
@@ -296,7 +296,7 @@ def _distribute(
     return alloc
 
 
-def _assign_terrain(metadata: list[ds.RegionMetadata], terrain_arr: NDArray[Any], progress_controller: ProgressController):
+def _assign_terrain(metadata: list[ds.RegionMetadata], terrain_arr: NDArray[Any], progress_controller: ProgressController) -> None:
     """Look up terrain color at each province center and assign province_terrain.
 
     Enforces category constraints: land provinces only get land terrains,
@@ -316,15 +316,15 @@ def _assign_terrain(metadata: list[ds.RegionMetadata], terrain_arr: NDArray[Any]
 
     with progress_controller.execute_phase(province_phase) as province_progress:
         for prov in province_progress.track_iteration(metadata):
-            px = int(round(prov["x"]))
-            py = int(round(prov["y"]))
+            px = int(round(prov.x))
+            py = int(round(prov.y))
             px = max(0, min(px, w - 1))
             py = max(0, min(py, h - 1))
             pixel = (int(terrain_arr[py, px, 0]),
                      int(terrain_arr[py, px, 1]),
                      int(terrain_arr[py, px, 2]))
 
-            region_type = prov["province_type"]
+            region_type = prov.province_type
             if region_type == ds.RegionType.LAKE:
                 prov.province_terrain = lake_lookup.get(pixel, config.DEFAULT_TERRAIN_LAKE)
             elif region_type == ds.RegionType.OCEAN:

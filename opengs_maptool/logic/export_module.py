@@ -68,13 +68,7 @@ def export_territory_definitions(project: Project, path: str, fmt: str) -> None:
 
             w.writerow(keys)
             for territory_id, info in data.items():
-                values = []
-                for key in keys:
-                    if key == "id":
-                        values.append(territory_id)
-                    else:
-                        values.append(info.get(key))
-                w.writerow(values)
+                w.writerow(_get_csv_row_values(keys, info, id_value=territory_id, id_key="id"))
 
 
 def export_territory_history(project: Project, path: str, fmt: str) -> None:
@@ -84,12 +78,14 @@ def export_territory_history(project: Project, path: str, fmt: str) -> None:
         print("No territory data to export.")
         return
 
+    HISTORY_FORMAT_KEYS = ("provinces",)
+    data: dict[str, dict[str, list[str]]] = {}
+    for d in territory_data:
+        data[d.territory_id] = {
+            "provinces": d.province_ids or [],
+        }
+
     if fmt in ("json", "yaml", "xml"):
-        data: dict[str, dict[str, list[str]]] = {}
-        for d in territory_data:
-            data[d.territory_id] = {
-                "provinces": d.province_ids or [],
-            }
         if fmt == "json":
             _write_json(path, data)
         elif fmt == "yaml":
@@ -116,10 +112,11 @@ def export_territory_history(project: Project, path: str, fmt: str) -> None:
     else:
         with open(path, "w", newline="", encoding="utf-8") as f:
             w = csv.writer(f, delimiter=';')
-            w.writerow(["id", "provinces"])
-            for d in territory_data:
-                provinces = ",".join(d.province_ids or [])
-                w.writerow([d.territory_id, provinces])
+            keys = ("id", *HISTORY_FORMAT_KEYS)
+            w.writerow(keys)
+
+            for province_id, info in data.items():
+                w.writerow(_get_csv_row_values(keys, info, id_value=province_id, id_key="id"))
 
 
 def export_province_definitions(project: Project, path: str, fmt: str) -> None:
@@ -165,14 +162,16 @@ def export_province_definitions(project: Project, path: str, fmt: str) -> None:
             w.writerow(keys)
 
             for province_id, info in data.items():
-                values = []
-                for key in keys:
-                    if key == "id":
-                        values.append(province_id)
-                    else:
-                        values.append(info.get(key))
-                w.writerow(values)
+                w.writerow(_get_csv_row_values(keys, info, id_value=province_id, id_key="id"))
 
+def _get_csv_row_values(keys: tuple[str, ...], data: dict[str, Any], id_value: Any, id_key: str = "id") -> list[Any]:
+    values = []
+    for key in keys:
+        if key == id_key:
+            values.append(id_value)
+        else:
+            values.append(data.get(key))
+    return values
 
 def _write_json(path: str, data: Any) -> None:
     with open(path, "w", encoding="utf-8") as f:

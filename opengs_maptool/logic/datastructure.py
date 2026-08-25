@@ -16,9 +16,11 @@ TerritoryImage: TypeAlias = Image.Image
 ProvinceImage: TypeAlias = Image.Image
 
 # Intermediate data structures
-BooleanMaskArray: TypeAlias = NDArray[np.bool_]
+BooleanMaskMap: TypeAlias = NDArray[np.bool_]
 RegionIdToPixelCounts: TypeAlias = dict[int, int]
 RegionPixelMap: TypeAlias = NDArray[np.int32]
+ColorPixelMap: TypeAlias = NDArray[np.uint8]
+JitterSeedsArray: TypeAlias = NDArray[np.float32] # not a map, but an array actually
 
 ColorTuple: TypeAlias = tuple[int, int, int]
 IntCoordinate: TypeAlias = tuple[int, int]
@@ -150,14 +152,14 @@ class RegionMetadata:
 
 @dataclass
 class Masks:
-    boundary_mask: BooleanMaskArray
-    land_mask: BooleanMaskArray
-    sea_mask: BooleanMaskArray
-    lake_mask: BooleanMaskArray
-    land_fill: BooleanMaskArray
-    land_border: BooleanMaskArray
-    sea_fill: BooleanMaskArray
-    sea_border: BooleanMaskArray
+    boundary_mask: BooleanMaskMap
+    land_mask: BooleanMaskMap
+    sea_mask: BooleanMaskMap
+    lake_mask: BooleanMaskMap
+    land_fill: BooleanMaskMap
+    land_border: BooleanMaskMap
+    sea_fill: BooleanMaskMap
+    sea_border: BooleanMaskMap
     map_h: int
     map_w: int
 

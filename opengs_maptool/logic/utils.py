@@ -40,7 +40,7 @@ def color_from_id(index: int, region_type: ds.RegionType) -> ds.ColorTuple:
 
 
 def random_seeds(
-        mask: ds.BooleanMaskArray, num_points: int, rng_seed: int | None = None,
+        mask: ds.BooleanMaskMap, num_points: int, rng_seed: int | None = None,
         density=None, density_strength: float = 1.0,
     ) -> list[ds.IntCoordinate]:
     """Pick num_points random pixels from mask.
@@ -71,7 +71,7 @@ def random_seeds(
 
 
 def lloyd_relaxation(
-        mask: ds.BooleanMaskArray, point_seeds: list[ds.IntCoordinate],
+        mask: ds.BooleanMaskMap, point_seeds: list[ds.IntCoordinate],
         progress_controller: ProgressController, rng_seed: int | None = None,
         iterations: int = 4,
     ) -> list[ds.IntCoordinate]:
@@ -133,7 +133,7 @@ def lloyd_relaxation(
     return point_seeds
 
 
-def _build_jitter_maps(h: int, w: int, seeds_arr: NDArray[np.float32]) -> tuple[NDArray[np.float32], NDArray[np.float32]]:
+def _build_jitter_maps(h: int, w: int, seeds_arr: ds.JitterSeedsArray) -> tuple[ds.JitterSeedsArray, ds.JitterSeedsArray] | tuple[None, None]:
     """Build spatially-correlated noise maps for jagged border effect.
 
     Returns (jitter_x, jitter_y) arrays of shape (h, w), or (None, None)
@@ -162,8 +162,8 @@ def _build_jitter_maps(h: int, w: int, seeds_arr: NDArray[np.float32]) -> tuple[
 
 
 def _jitter_coords(
-        coords_xy: NDArray[np.float32], coords_yx: NDArray[np.intp], jitter_x: NDArray[np.float32], jitter_y: NDArray[np.float32]
-    ) -> NDArray[np.float32]:
+        coords_xy: ds.JitterSeedsArray, coords_yx: ds.JitterSeedsArray, jitter_x: ds.JitterSeedsArray, jitter_y: ds.JitterSeedsArray
+    ) -> ds.JitterSeedsArray:
     """Return a copy of coords_xy with spatially-correlated noise added."""
     out = coords_xy.copy()
     out[:, 0] += jitter_x[coords_yx[:, 0], coords_yx[:, 1]]
@@ -171,7 +171,7 @@ def _jitter_coords(
     return out
 
 
-def _remove_enclaves(pmap: ds.RegionPixelMap, mask: ds.BooleanMaskArray, progress_controller: ProgressController) -> None:
+def _remove_enclaves(pmap: ds.RegionPixelMap, mask: ds.BooleanMaskMap, progress_controller: ProgressController) -> None:
     """Reassign disconnected region fragments to surrounding regions.
 
     For each region, keeps only the largest connected component.
@@ -204,7 +204,7 @@ def _remove_enclaves(pmap: ds.RegionPixelMap, mask: ds.BooleanMaskArray, progres
 
 
 def assign_regions(
-        mask: ds.BooleanMaskArray, seeds: list[ds.IntCoordinate], start_index: int,
+        mask: ds.BooleanMaskMap, seeds: list[ds.IntCoordinate], start_index: int,
         progress_controller: ProgressController, jagged: bool = False
     ) -> ds.RegionPixelMap:
     """
@@ -243,7 +243,7 @@ def assign_regions(
         if not seeds or not mask.any():
             return pmap
 
-        seeds_arr = np.array(seeds, dtype=np.float32)
+        seeds_arr: ds.JitterSeedsArray = np.array(seeds, dtype=np.float32)
 
         jitter_x = jitter_y = None
         if jagged:
@@ -313,17 +313,17 @@ def assign_regions(
     return pmap
 
 
-def is_sea_color(arr: NDArray[np.uint8]) -> ds.BooleanMaskArray:
+def is_sea_color(arr: ds.ColorPixelMap) -> ds.BooleanMaskMap:
     r, g, b = config.OCEAN_COLOR
     return (arr[..., 0] == r) & (arr[..., 1] == g) & (arr[..., 2] == b)
 
 
-def is_lake_color(arr: NDArray[np.uint8]) -> ds.BooleanMaskArray:
+def is_lake_color(arr: ds.ColorPixelMap) -> ds.BooleanMaskMap:
     r, g, b = config.LAKE_COLOR
     return (arr[..., 0] == r) & (arr[..., 1] == g) & (arr[..., 2] == b)
 
 
-def assign_borders(pmap: ds.RegionPixelMap, border_mask: ds.BooleanMaskArray) -> None:
+def assign_borders(pmap: ds.RegionPixelMap, border_mask: ds.BooleanMaskMap) -> None:
     valid = pmap >= 0
     if not valid.any() or not border_mask.any():
         return
@@ -336,7 +336,7 @@ def assign_borders(pmap: ds.RegionPixelMap, border_mask: ds.BooleanMaskArray) ->
 def combine_maps(
         land_map: ds.RegionPixelMap, sea_map: ds.RegionPixelMap,
         metadata: list[ds.RegionMetadata],
-        land_mask: ds.BooleanMaskArray, sea_mask: ds.BooleanMaskArray,
+        land_mask: ds.BooleanMaskMap, sea_mask: ds.BooleanMaskMap,
         progress_controller: ProgressController,
     ) -> tuple[Image.Image, ds.RegionPixelMap]:
     """Merge land/sea maps into RGB image. Returns (image, combined_pmap)."""
@@ -382,7 +382,7 @@ def combine_maps(
             color_lut = np.zeros((len(metadata), 3), np.uint8)
 
             for index, d in enumerate(metadata):
-                color_lut[index] = (d["R"], d["G"], d["B"])
+                color_lut[index] = (d.R, d.G, d.B)
 
             valid = combined >= 0
             out[valid] = color_lut[combined[valid]]
@@ -465,7 +465,7 @@ def extract_masks(boundary_image: ds.BoundaryImage | None, land_image: ds.LandIm
 
 
 def create_region_map(
-        fill_mask: ds.BooleanMaskArray, border_mask: ds.BooleanMaskArray,
+        fill_mask: ds.BooleanMaskMap, border_mask: ds.BooleanMaskMap,
         num_points: int, start_index: int,
         series: NumberSeries,
         region_type: ds.RegionType, region_level: ds.RegionLevel,
