@@ -10,6 +10,25 @@ from opengs_maptool.services.command_core import register_command
 from opengs_maptool.models.command_response import CommandResponse
 from opengs_maptool.models.message import MessageType
 
+    def _execute_function_in_thread(
+        self,
+        function: Callable[[LimitedTaskContext, ProgressController], Any],
+        title: str, slot: ThreadTaskSlot,
+    ) -> None:
+
+        task = self._context.task_controller.start_task(
+            function,
+            title,
+            slot,
+            provide_progress_controller=True,
+            pos_args=[],
+            kw_args={
+                "task_ctx": LimitedTaskContext(self._context),
+            },
+            # "progress_controller" is automatically added as a keyword argument
+            before_start_callback=None,  # No additional setup needed before starting the task
+        )
+
 @register_command("density.image.remove", args=[])
 def cmd_density_image_remove(context: ApplicationContext) -> CommandResponse:
     """Removes the current density image."""

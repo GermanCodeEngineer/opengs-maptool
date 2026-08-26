@@ -174,6 +174,9 @@ class TaskController(QObject):
         # notifications) connect to the terminal signals inside this emit, and a
         # fast task can otherwise finish and emit task_successful before anyone
         # is listening, leaving the UI stuck on its last intermediate state.
+        if before_start_callback is not None:
+            before_start_callback(task)
+
         self.new_task_started.emit(task)
         self._thread_pool.start(task)
         return task
