@@ -1,7 +1,7 @@
 from html import escape
 import opengs_maptool.config as config
 from opengs_maptool.context import ApplicationContext
-from opengs_maptool.services.command_service import execute_command_string, execute_command_list, serialize_command
+from opengs_maptool.services.command_service import execute_command_string, serialize_command
 from opengs_maptool.models.command_response import CommandResponse
 from opengs_maptool.models.message import Message, MessageAuthor, MessageType
 from opengs_maptool.ui.modals.error_modal import ErrorModal
@@ -95,43 +95,32 @@ class ConsoleWidget(QWidget):
         self._output.verticalScrollBar().setValue(self._output.verticalScrollBar().maximum())
 
 
-    def _submit_user_command(self) -> None:
+    def _submit_user_command(self, manual_command: str | None = None) -> None:
         """
         Sends and displays a user command in the console
         """
-        user_message_text = self._input.text().strip()
+        if manual_command is None:
+            user_message_text = self._input.text().strip()
+            self._input.clear()
+        else:
+            user_message_text = manual_command.strip()
 
         if len(user_message_text) == 0:
             return
 
-
         command_message = self._context.console_controller.add_command_message(user_message_text, MessageAuthor.USER)
         self.print_message(command_message) # Show message in widget
 
-        # Process command
-        system_response = execute_command_string(self._context, command_message.text)
-        self._process_command_response(system_response)
-
-        # Update GUI
-        self._input.clear()
+        promise = execute_command_string(self._context, command_message.text)
+        promise.then(self._process_command_response)
 
     def submit_system_command(self, command_segments: list[str]) -> CommandResponse:
         """
         Only used for testing purposes.
         Sends and displays a GUI command in the console.
         """
-        if len(command_segments) == 0:
-            # Generate error response for empty command
-            return execute_command_list(self._context, command_segments)
-
-        # Print joined command
         command_text = serialize_command(command_segments)
-        gui_message = self._context.console_controller.add_command_message(command_text, MessageAuthor.SYSTEM)
-        self.print_message(gui_message) # Show message in widget
-
-        # Process non-joined command
-        system_response = execute_command_list(self._context, command_segments)
-        self._process_command_response(system_response)
+        return self._submit_user_command(command_text)
 
     def _process_command_response(self, response: CommandResponse) -> None:
         message = response.as_message()

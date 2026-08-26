@@ -97,11 +97,11 @@ Here is a list of the commands available in the editor console.
 | `[x]` | `density.image.import` | `<path>` | Imports the density image from a file |
 | `[x]` | `terrain.image.import` | `<path>` | Imports the terrain image from a file |
 ||||
-| `[]` | `density.image.remove` | None | Removes the current density image |
-| `[]` | `density.map.normalize` | None | Normalizes density values |
-| `[]` | `density.map.equator_distribute` | None | Generates equator-based density distribution |
+| `[.]` | `density.image.remove` | None | Removes the current density image |
+| `[.]` | `density.image.normalize` | None | Normalizes density values |
+| `[.]` | `density.image.equator_distribute` | None | Generates equator-based density distribution |
 ||||
-| `[]` | `territory.map.generate` | None | Generates the territory map |
+| `[]` | `territory.image.generate` | None | Generates the territory map |
 | `[]` | `territory.image.export` | `<path>` | Exports the territory image |
 | `[]` | `territory.definitions.export` | `<path> <format>` | Exports territory definitions |
 | `[]` | `territory.history.export` | `<path> <format>` | Exports territory history |
@@ -112,7 +112,7 @@ Here is a list of the commands available in the editor console.
 | `[]` | `territory.jagged_land` | `<true\|false>` | Sets jagged land border behavior for territories |
 | `[]` | `territory.jagged_ocean` | `<true\|false>` | Sets jagged ocean border behavior for territories |
 ||||
-| `[]` | `province.map.generate` | None | Generates the province map |
+| `[]` | `province.image.generate` | None | Generates the province map |
 | `[]` | `province.image.export` | `<path>` | Exports the province image |
 | `[]` | `province.definitions.export` | `<path> <format>` | Exports province definitions |
 | `[]` | `province.exclude_ocean` | `<true\|false>` | Sets whether province generation excludes ocean |

@@ -599,11 +599,13 @@ class LeftPanel(QWidget):
             function,
             title,
             slot,
+            provide_progress_controller=True,
             pos_args=[],
             kw_args={
                 "task_ctx": LimitedTaskContext(self._context),
             },
             # "progress_controller" is automatically added as a keyword argument
+            before_start_callback=None,  # No additional setup needed before starting the task
         )
 
     def _refresh_tab_view(self, tab_name: TabName):

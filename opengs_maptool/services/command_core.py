@@ -1,6 +1,7 @@
 from __future__ import annotations
 from difflib import get_close_matches
 import mslex
+from promise import Promise
 import re
 import traceback
 from typing import Callable, TYPE_CHECKING
@@ -8,6 +9,7 @@ from typing import Callable, TYPE_CHECKING
 if TYPE_CHECKING:
     from opengs_maptool.context import ApplicationContext
 
+from opengs_maptool.controllers.task_controller import ThreadTaskSlot, ThreadTask
 from opengs_maptool.models.command_response import CommandResponse
 from opengs_maptool.models.message import MessageType
 from opengs_maptool.services.parser_service import (
@@ -26,7 +28,7 @@ from opengs_maptool.services.parser_service import (
 # command.this.format.id -> implementation function
 _commands: dict[str, tuple[Callable[[ApplicationContext, list[str|int|float|bool]], CommandResponse], str, list[CommandArgSpec]]] = {}
 _command_aliases = (dict[str, str])() # alias -> real command
-_SORT_PRIORITY_PREFIXES = ["link", "console", "project"]
+_SORT_PRIORITY_PREFIXES = ["link", "console", "project", "land", "boundary", "density", "terrain", "territory", "province"]
 
 def register_command(
     command_id: str,
@@ -70,42 +72,74 @@ def get_all_command_ids() -> list[str]:
 def get_all_command_aliases() -> list[str]:
     return list(_command_aliases.keys())
 
-def execute_command_list(context: ApplicationContext, command: list[str]) -> CommandResponse:
-    """
-    Only used for testing purposes.
-    Process an already parsed console command and return a system response message."""
-    return execute_command_string(context, serialize_command(command))
+def _error_res_promise(message: str) -> Promise[CommandResponse]:
+    return Promise.resolve(CommandResponse(message, MessageType.ERROR))
 
-def execute_command_string(context: ApplicationContext, command_id: str) -> CommandResponse:
-    """Process a console command from a string and return a system response message."""
+def execute_command_string(context: ApplicationContext, command_str: str) -> Promise[CommandResponse]:
+    """Process a console command from a string and return a promise to a system response message."""
     try:
-        command_id, arguments = split_command(command_id)
+        command_id, arguments = split_command(command_str)
     except ValueError as err:
-        return CommandResponse(f"Invalid command syntax: {err}", MessageType.ERROR)
-    if command_id:
-        if command_exists(command_id):
-            try:
-                parsed_arguments = deserialize_command(command_id, arguments)
-            except CommandArgumentParseError as err:
-                return CommandResponse(f"Invalid arguments: {err}", MessageType.ERROR)
-            except CommandParserConfigurationError as err:
-                return CommandResponse(f"Internal command configuration error: {err}", MessageType.ERROR)
+        return _error_res_promise(f"Invalid command syntax: {err}")
 
-            command_func = get_command_implementation(command_id)
-            response = _run_command_func_with_args(context, command_id, command_func, parsed_arguments)
+    if not command_id:
+        return _error_res_promise("No command provided.")
 
-        else:
-            return _handle_unknown_command(command_id)
+    if not command_exists(command_id):
+        return _handle_unknown_command(command_id)
 
-    else:
-        response = CommandResponse("No command provided.", MessageType.ERROR)
-    return response
+    try:
+        parsed_arguments = deserialize_command(command_id, arguments)
+    except CommandArgumentParseError as err:
+        return _error_res_promise(f"Invalid arguments: {err}")
+    except CommandParserConfigurationError as err:
+        return _error_res_promise(f"Internal command configuration error: {err}")
+
+    if context.task_controller.is_thread_slot_occupied(ThreadTaskSlot.execute_command):
+        # Handle the case where the thread slot is already occupied
+        return _error_res_promise("A command is already being executed.")
+
+    promise = _create_command_execution_promise(context, command_id, parsed_arguments)
+    return promise
+
+def _create_command_execution_promise(context: ApplicationContext, command_id: str, parsed_arguments: list[str|int|float|bool]) -> Promise[CommandResponse]:
+    def promise_executor(resolve: Callable[[CommandResponse], None], reject: Callable[[Exception], None]):
+        # In callbacks: Set the result on the future to unblock the await
+        def on_error(error):
+            # This should actually never happen as
+            # _run_command_func_with_args handles exceptions and returns a CommandResponse.
+            resolve(CommandResponse(f"Command execution failed: {error}", MessageType.ERROR))
+
+        def on_success(result):
+            resolve(result)
+
+        def on_cancelled():
+            # This can only happen on application close as this task won't show as a task notification.
+            resolve(CommandResponse("Command execution was cancelled.", MessageType.ERROR))
+
+        def connect_signals(task: ThreadTask):
+            task.signals.task_error.connect(on_error)
+            task.signals.task_successful.connect(on_success)
+            task.signals.task_cancelled.connect(on_cancelled)
+
+        command_func = get_command_implementation(command_id)
+        task = context.task_controller.start_task( # Can not raise as slot is checked above
+            function=_run_command_func_with_args,
+            title=f"Executing command: {command_id}",
+            slot=ThreadTaskSlot.execute_command,
+            provide_progress_controller=False,
+            pos_args=[context, command_id, command_func, parsed_arguments],
+            kw_args={},
+            before_start_callback=connect_signals,
+        )
+
+    return Promise(promise_executor)
 
 def _run_command_func_with_args(
         context: ApplicationContext,
         command_id: str,
         command_func: Callable[[ApplicationContext, list[str|int|float|bool]], CommandResponse],
-        parsed_arguments: list[str|int|float|bool]
+        parsed_arguments: list[str|int|float|bool],
     ) -> CommandResponse:
     try:
         response = command_func(context, *parsed_arguments)
@@ -137,29 +171,26 @@ def _is_wrong_argument_count_error(error: TypeError) -> bool:
     match = pattern.search(str(error))
     return bool(match)
 
-def _handle_unknown_command(command_id: str) -> CommandResponse:
+def _handle_unknown_command(command_id: str) -> Promise[CommandResponse]:
     # When input is close to a known command or alias, show a hint
     # instead of a plain "unknown command" message.
     closest_command = _get_closest_command_name(command_id)
     if closest_command:
         if closest_command in _command_aliases:
             target_command = _command_aliases[closest_command]
-            response = CommandResponse(
+            return _error_res_promise(
                 (
                     f"Unknown command {_single_quotes(command_id)}. "
                     f"Did you mean {_single_quotes(closest_command)} "
                     f"(alias of {_single_quotes(target_command)})?"
-                ),
-                MessageType.ERROR,
+                )
             )
         else:
-            response = CommandResponse(
+            return _error_res_promise(
                 f"Unknown command {_single_quotes(command_id)}. Did you mean {_single_quotes(closest_command)}?",
-                MessageType.ERROR,
             )
     else:
-        response = CommandResponse(f"Unknown command {_single_quotes(command_id)} (run 'link.help' for more info).", MessageType.ERROR)
-    return response
+        return _error_res_promise(f"Unknown command {_single_quotes(command_id)} (run 'link.help' for more info).")
 
 def serialize_command(command_list: list[str|int|float|bool]) -> str:
     """Convert a list of command segments into a single string, quoting properly as necessary."""
