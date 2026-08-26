@@ -2,7 +2,7 @@
 TITLE = "OpenGS - Map Tool"
 WINDOW_SIZE_WIDTH = 1100
 WINDOW_SIZE_HEIGHT = 950
-VERSION = "0.3.5"
+VERSION = "0.4"
 
 # Land Province slider
 LAND_PROVINCES_MIN = 100
@@ -100,10 +100,17 @@ CONSOLE_SUCCESS_COLOR = "#7cb305"
 CONSOLE_WARNING_COLOR = "#fadb14"
 CONSOLE_ERROR_COLOR = "#cf1322"
 
+# Guardrails
+# While a territory or province map is generating, disable the image import
+# buttons and both generate buttons, so the inputs cannot change underneath a
+# running job and produce a map that disagrees with its own source images.
+# Re-enabled as soon as the job finishes, fails or is cancelled.
+GUARDRAILS = True
+
 # Others
 GITHUB_URL = "https://github.com/Thomas-Holtvedt/opengs-maptool"
-CONSOLE_HELP_URL = f"{GITHUB_URL}/blob/dev/docs/console_guide.md" # IMPORTANT: Change to main when merged into main
-DISCORD_URL = "https://discord.gg/TuXMJAdQg"
+CONSOLE_HELP_URL = f"{GITHUB_URL}/blob/main/docs/console_guide.md"
+DISCORD_URL = "https://discord.gg/6pRc9f6g6S"
 
 # Logging Configuration
 from opengs_maptool.simple_types import LoggingLevel, LoggerCategoryConfiguration

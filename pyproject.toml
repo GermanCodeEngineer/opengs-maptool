@@ -1,6 +1,6 @@
 [project]
 name = "opengs-maptool"
-version = "3.0" # Syncronize with config.py
+version = "0.4" # Syncronize with config.py
 description = "A tool for creating province maps and related files"
 readme = { file = "README.md", content-type = "text/markdown" }
 requires-python = ">=3.12"

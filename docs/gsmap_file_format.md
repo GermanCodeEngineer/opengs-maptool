@@ -39,7 +39,7 @@ The following table lists the available properties:
 ```json
 {
     "name": "My Awesome Project",
-    "editor_version": "0.3.5",
+    "editor_version": "0.4",
     "description": null,
     "author": "John Doe"
 }

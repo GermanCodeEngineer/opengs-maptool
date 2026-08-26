@@ -181,3 +181,86 @@ def test_cancel_all_and_wait_with_occupied_slot_times_out(monkeypatch):
 
     # With a short timeout, the waiting should time out and return False
     assert controller.cancel_all_and_wait(max_wait_ms=20) is False
+
+
+def test_new_task_started_is_emitted_before_the_task_runs(monkeypatch):
+    """Listeners must be able to connect to the terminal signals before the worker runs.
+
+    A fast task can otherwise finish and emit task_successful while nobody is
+    listening yet, which left the progress toast stuck on its last intermediate
+    state. _SyncThreadPool runs the task inside start(), making that race
+    deterministic.
+    """
+    monkeypatch.setattr(
+        'opengs_maptool.controllers.task_controller.QThreadPool.globalInstance',
+        lambda: _SyncThreadPool(),
+    )
+
+    controller = TaskController()
+    received = []
+
+    # Mimic NotificationManager: connect to the task's signals on new_task_started
+    controller.new_task_started.connect(
+        lambda task: task.signals.task_successful.connect(lambda result: received.append(result))
+    )
+
+    def worker(progress_controller):
+        return "ok"
+
+    controller.start_task(worker, title="fast", slot=ThreadTaskSlot.change_density_image, pos_args=[], kw_args={})
+
+    assert received == ["ok"], "task_successful was emitted before listeners could connect"
+
+
+def test_task_function_returning_early_still_retires_progress(monkeypatch):
+    """A guard clause may return before the remaining phases run.
+
+    @contextmanager resumes the generator normally on an early 'return', so
+    execute_phase cannot tell that case apart from a completed block. Without
+    the owner retiring, the progress bar would never be closed out.
+    """
+    monkeypatch.setattr(
+        'opengs_maptool.controllers.task_controller.QThreadPool.globalInstance',
+        lambda: _SyncThreadPool(),
+    )
+
+    controller = TaskController()
+    retired = MagicMock()
+
+    def worker(progress_controller):
+        first = progress_controller.add_phase(1, "first")
+        progress_controller.add_phase(1, "never reached")
+        progress_controller.task_retired.connect(retired)
+        with progress_controller.execute_phase(first):
+            return  # guard clause: nothing to do
+
+    task = controller.start_task(
+        worker, title="early", slot=ThreadTaskSlot.change_density_image, pos_args=[], kw_args={}
+    )
+
+    retired.assert_called_once()
+    assert task.progress_controller._is_retired
+
+
+def test_progress_controller_is_retired_exactly_once_on_normal_completion(monkeypatch):
+    """The owner's retire() must not emit a second task_retired after the last phase."""
+    monkeypatch.setattr(
+        'opengs_maptool.controllers.task_controller.QThreadPool.globalInstance',
+        lambda: _SyncThreadPool(),
+    )
+
+    controller = TaskController()
+    retired = MagicMock()
+
+    def worker(progress_controller):
+        phases = [progress_controller.add_phase(1, f"p{i}") for i in range(3)]
+        progress_controller.task_retired.connect(retired)
+        for phase in phases:
+            with progress_controller.execute_phase(phase):
+                pass
+
+    controller.start_task(
+        worker, title="normal", slot=ThreadTaskSlot.change_density_image, pos_args=[], kw_args={}
+    )
+
+    retired.assert_called_once()

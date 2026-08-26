@@ -69,7 +69,13 @@ class ThreadTask(QRunnable):
     @pyqtSlot()
     def run(self) -> None:
         try:
-            result = self._function(*self._args, **self._kwargs)
+            try:
+                result = self._function(*self._args, **self._kwargs)
+            finally:
+                # The task function may return without executing every phase it
+                # configured (e.g. a guard clause). Retire here so the progress
+                # bar is always closed out, before the terminal signal goes out.
+                self.progress_controller.retire()
         except TaskCancelledInterrupt:
             # Worker was cancelled; emit a dedicated cancelled signal so the UI
             # can treat this case separately from errors.
@@ -164,13 +170,12 @@ class TaskController(QObject):
         # Occupy the slot
         self._set_slot(slot, task)
 
-        # Call the before_start_callback if provided
-        if callable(before_start_callback):
-            before_start_callback(task)
-
-        # Actually start the task and emit the signal
-        self._thread_pool.start(task)
+        # Announce the task *before* starting it. Listeners (e.g. the toast
+        # notifications) connect to the terminal signals inside this emit, and a
+        # fast task can otherwise finish and emit task_successful before anyone
+        # is listening, leaving the UI stuck on its last intermediate state.
         self.new_task_started.emit(task)
+        self._thread_pool.start(task)
         return task
 
     def _set_slot(self, slot: ThreadTaskSlot, task: ThreadTask) -> None:

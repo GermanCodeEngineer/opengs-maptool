@@ -23,6 +23,7 @@ class FakeTaskSignals:
         self.task_progress_updated = FakeSignal()
         self.task_progress_retired = FakeSignal()
         self.task_cancelled = FakeSignal()
+        self.task_cancel_requested = FakeSignal()
         self.task_successful = FakeSignal()
         self.task_error = FakeSignal()
 
@@ -46,7 +47,8 @@ def make_toast_mock():
     # Provide the methods NotificationManager expects
     for name in (
         'set_task_signals', 'on_progress_started', 'on_phase_started',
-        'on_progress_updated', 'on_retired', 'on_cancelled', 'on_success', 'on_error',
+        'on_progress_updated', 'on_retired', 'on_cancelled', 'on_cancel_requested',
+        'on_success', 'on_error',
     ):
         setattr(m, name, MagicMock())
     return m
@@ -104,3 +106,36 @@ def test_first_progress_start_adds_widget_and_removes_pending(monkeypatch):
     # The pending list should no longer contain the task
     assert all(t is not task for (t, w) in nm._tasks_without_progress)
 
+
+
+def test_retire_without_cancel_request_does_not_show_cancelling(monkeypatch):
+    """A ProgressController retires on normal completion too, not only on cancel."""
+    from opengs_maptool.ui.notifications.task_toast_widget import TaskToastWidget
+
+    toast = TaskToastWidget.__new__(TaskToastWidget)  # skip Qt widget construction
+    toast._is_active = True
+    toast._cancel_requested = False
+    toast.status_label = MagicMock()
+    toast.close_btn = MagicMock()
+    toast._set_status_tone = MagicMock()
+
+    toast.on_retired()
+
+    toast.status_label.setText.assert_not_called()
+    toast.close_btn.setEnabled.assert_not_called()
+
+
+def test_retire_after_cancel_request_shows_cancelling():
+    from opengs_maptool.ui.notifications.task_toast_widget import TaskToastWidget
+
+    toast = TaskToastWidget.__new__(TaskToastWidget)
+    toast._is_active = True
+    toast._cancel_requested = True
+    toast.status_label = MagicMock()
+    toast.close_btn = MagicMock()
+    toast._set_status_tone = MagicMock()
+
+    toast.on_retired()
+
+    toast.status_label.setText.assert_called_once_with("Cancelling...")
+    toast.close_btn.setEnabled.assert_called_once_with(False)

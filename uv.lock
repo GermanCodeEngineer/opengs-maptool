@@ -94,7 +94,7 @@ wheels = [
 
 [[package]]
 name = "opengs-maptool"
-version = "3.0"
+version = "0.4"
 source = { editable = "." }
 dependencies = [
     { name = "mslex" },

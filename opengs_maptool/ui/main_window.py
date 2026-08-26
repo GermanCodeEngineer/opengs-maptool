@@ -12,13 +12,14 @@ from opengs_maptool.ui.components.bars.tool_bar import ToolBar
 from opengs_maptool.ui.components.panels.left_panel import LeftPanel
 from opengs_maptool.ui.components.panels.right_panel import RightPanel
 from opengs_maptool.ui.components.tab import Tab
+from opengs_maptool.ui.file_dialogs import pick_open_project, pick_save_project
 from opengs_maptool.ui.modals.error_modal import ErrorModal
 from opengs_maptool.ui.modals.project_details_modal import ProjectDetailsModal
 from opengs_maptool.ui.modals.save_modal import SaveModal
 from opengs_maptool.ui.modals.stopping_tasks_modal import StoppingTasksModal
 from PyQt6.QtCore import Qt
 from PyQt6.QtGui import QAction, QKeySequence
-from PyQt6.QtWidgets import (QFileDialog, QMainWindow, QWidget,
+from PyQt6.QtWidgets import (QMainWindow, QWidget,
                              QHBoxLayout, QTabWidget, QVBoxLayout,
                              QSplitter)
 import qtawesome as qta
@@ -28,11 +29,6 @@ class MainWindow(QMainWindow):
         super().__init__()
         self._app = app
         self._context = app.context
-        self._project_format_filters = (
-            "OpenGS Map Files (*.gsmap);;"
-            "ZIP Files (*.zip);;"
-            "All Files (*)"
-        )
 
         self.setWindowTitle(self._context.project.name + " - " + config.TITLE)
         self.setMinimumSize(800, 600)
@@ -75,6 +71,9 @@ class MainWindow(QMainWindow):
             self._tab_names_by_index.append(tab_name_enum)
 
         self._tabs.currentChanged.connect(self._update_left_panel)
+        # addTab() already selected the first tab above, emitting currentChanged
+        # before the connect existed, so populate the left panel for it here.
+        self.update_current_left_panel()
         splitter.addWidget(self._tabs)
 
         # Right panel
@@ -190,9 +189,7 @@ class MainWindow(QMainWindow):
         if not self._confirm_discarded_changes():
             return
 
-        filename, _ = QFileDialog.getOpenFileName(
-            None, "Open project", "", self._project_format_filters
-        )
+        filename = pick_open_project(self, "Open project")
 
         if not filename:
             return
@@ -214,9 +211,7 @@ class MainWindow(QMainWindow):
 
 
     def _save_project_as(self) -> bool:
-        filename, _ = QFileDialog.getSaveFileName(
-            None, "Save project", "", self._project_format_filters
-        )
+        filename = pick_save_project(self, "Save project")
 
         if not filename:
             return False

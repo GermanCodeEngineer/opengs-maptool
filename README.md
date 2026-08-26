@@ -23,10 +23,17 @@ Output Province Map:
 
 
 ## How to install
-### Option 1 (Windows only):
+### Option 1 (Windows, macOS or Linux):
 1. "Releases" section in Github
-2. Download and unpack "ogs_maptool.zip"
+2. Download and unpack the file for your system
 3. Run the Executable
+
+The download includes the example input images in an `examples` folder, so you have something to generate a map from straight away.
+
+The macOS build is for Apple Silicon. On an Intel Mac, use Option 2.
+
+These builds aren't code signed, so Windows and macOS will warn you the first time you open one.
+On Windows pick "More info" then "Run anyway", on macOS right-click the app and choose "Open".
 
 ### Option 2:
 1. [Download Python](https://www.python.org/downloads/) if not installed (Version 3.12 and up)

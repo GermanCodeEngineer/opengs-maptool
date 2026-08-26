@@ -1,5 +1,6 @@
 import traceback
 from PyQt6.QtCore import QTimer, QPropertyAnimation, QEasingCurve, QEvent
+from PyQt6.QtGui import QColor, QPalette
 from PyQt6.QtWidgets import (
     QFrame, QHBoxLayout, QLabel, QProgressBar, QPushButton,
     QVBoxLayout, QGraphicsOpacityEffect, QWidget
@@ -72,52 +73,64 @@ class TaskToastWidget(QFrame):
         # Internal state
         self._task_signals = None
         self._is_active = False
+        self._cancel_requested = False
         self._current_phase_description = "Working"
         self._set_status_tone("muted", bold=False)
 
     def _is_dark_palette(self) -> bool:
         return self.palette().window().color().lightness() < 128
 
+    @staticmethod
+    def _blend(base: QColor, other: QColor, ratio: float) -> QColor:
+        """Mix `other` into `base`. ratio 0.0 -> base, 1.0 -> other."""
+        return QColor(
+            round(base.red() * (1 - ratio) + other.red() * ratio),
+            round(base.green() * (1 - ratio) + other.green() * ratio),
+            round(base.blue() * (1 - ratio) + other.blue() * ratio),
+        )
+
     def _build_theme(self, is_dark: bool) -> dict[str, str]:
-        # Use the window brush directly for compatibility across PyQt6 builds.
+        """Derive the toast colours from the active palette.
+
+        The rest of the app is unstyled Fusion, so anything hardcoded here would
+        read as a foreign element. Only the status tones are fixed hues, because
+        they carry meaning that a neutral palette cannot express.
+        """
+        palette = self.palette()
+        window = palette.color(QPalette.ColorRole.Window)
+        text = palette.color(QPalette.ColorRole.WindowText)
+
         if is_dark:
-            return {
-                "bg_top": "#2c3858",
-                "bg_bottom": "#24304d",
-                "border": "#5168a0",
-                "text": "#f6f8ff",
-                "muted": "#d6e3ff",
-                "progress_bg": "#1f2a43",
-                "progress_chunk_start": "#67e8f9",
-                "progress_chunk_end": "#3b82f6",
-                "close_fg": "#edf4ff",
-                "close_hover": "#435987",
-                "details_bg": "#ff8f3f",
-                "details_hover": "#ff9d57",
-                "success": "#7af0b0",
-                "warning": "#ffd86b",
-                "error": "#ff8e9e",
-                "cancelled": "#cad7f5",
+            # Lift the card off the panel it sits on.
+            card = window.lighter(118)
+            hover = window.lighter(145)
+            tones = {
+                "success": "#66bb6a",
+                "warning": "#ffb74d",
+                "error": "#ef5350",
+            }
+        else:
+            card = palette.color(QPalette.ColorRole.Base)
+            hover = window.darker(108)
+            tones = {
+                "success": "#2e7d32",
+                "warning": "#b26a00",
+                "error": "#c62828",
             }
 
-        return {
-            "bg_top": "#ffffff",
-            "bg_bottom": "#eef8ff",
-            "border": "#bdd8f3",
-            "text": "#13253a",
-            "muted": "#24527a",
-            "progress_bg": "#d9edff",
-            "progress_chunk_start": "#22d3ee",
-            "progress_chunk_end": "#0a84ff",
-            "close_fg": "#1f4467",
-            "close_hover": "#d7ebff",
-            "details_bg": "#ff8a3d",
-            "details_hover": "#ff9a56",
-            "success": "#1b9154",
-            "warning": "#a96800",
-            "error": "#cc2f3e",
-            "cancelled": "#36536f",
+        muted = self._blend(text, card, 0.45)
+        theme = {
+            "card": card.name(),
+            "border": palette.color(QPalette.ColorRole.Mid).name(),
+            "text": text.name(),
+            "muted": muted.name(),
+            "disabled": self._blend(text, card, 0.65).name(),
+            "hover": hover.name(),
+            # A cancelled task is a neutral outcome, not a coloured one.
+            "cancelled": muted.name(),
         }
+        theme.update(tones)
+        return theme
 
     def _apply_theme(self, force: bool = False) -> None:
         if self._applying_theme:
@@ -132,59 +145,37 @@ class TaskToastWidget(QFrame):
         self._theme = self._build_theme(is_dark)
         t = self._theme
         try:
+            # The progress bar and the details button are deliberately left
+            # unstyled so they render exactly like every other Fusion widget.
             self.setStyleSheet(
                 f"""
                 QFrame#taskToast {{
-                    background: qlineargradient(x1:0, y1:0, x2:0, y2:1, stop:0 {t['bg_top']}, stop:1 {t['bg_bottom']});
-                    border-radius: 10px;
+                    background: {t['card']};
                     border: 1px solid {t['border']};
+                    border-radius: 4px;
                 }}
                 QLabel {{
                     color: {t['text']};
-                    font-size: 11px;
                 }}
                 QLabel#titleLabel {{
-                    font-weight: 700;
-                    font-size: 12px;
-                    color: {t['text']};
+                    font-weight: 600;
                 }}
                 QLabel#statusLabel {{
                     color: {t['muted']};
                 }}
-                QProgressBar {{
-                    border: 1px solid {t['border']};
-                    border-radius: 4px;
-                    background: {t['progress_bg']};
-                }}
-                QProgressBar::chunk {{
-                    border-radius: 3px;
-                    background: qlineargradient(x1:0, y1:0, x2:1, y2:0, stop:0 {t['progress_chunk_start']}, stop:1 {t['progress_chunk_end']});
-                }}
                 QPushButton#closeBtn {{
                     border: none;
-                    border-radius: 11px;
-                    color: {t['close_fg']};
-                    font-size: 12px;
-                    font-weight: 700;
+                    border-radius: 3px;
                     background: transparent;
+                    color: {t['muted']};
+                    font-weight: 700;
                 }}
                 QPushButton#closeBtn:hover {{
-                    background: {t['close_hover']};
+                    background: {t['hover']};
+                    color: {t['text']};
                 }}
                 QPushButton#closeBtn:disabled {{
-                    color: {t['muted']};
-                }}
-                QPushButton#detailsBtn {{
-                    border: none;
-                    border-radius: 4px;
-                    padding: 3px 9px;
-                    font-size: 10px;
-                    font-weight: 700;
-                    color: #ffffff;
-                    background: {t['details_bg']};
-                }}
-                QPushButton#detailsBtn:hover {{
-                    background: {t['details_hover']};
+                    color: {t['disabled']};
                 }}
                 """
             )
@@ -284,14 +275,24 @@ class TaskToastWidget(QFrame):
         self.show_error_modal()
         traceback.print_exception(type(error), error, error.__traceback__)
 
+    def on_cancel_requested(self) -> None:
+        """Called when cancellation is requested, by this toast's 'x' or elsewhere."""
+        if not self._is_active:
+            return
+        self._cancel_requested = True
+        self.status_label.setText("Cancelling...")
+        self._set_status_tone("warning")
+        # Keep the cancel button visible but disabled to indicate request sent
+        self.close_btn.setEnabled(False)
+
     def on_retired(self) -> None:
-        """Called when the ProgressController is retired (owner requested cancel or normal retire)."""
-        if self._is_active:
-            # Owner requested cancel — show cancelling state immediately
-            self.status_label.setText("Cancelling...")
-            self._set_status_tone("warning")
-            # Keep the cancel button visible but disabled to indicate request sent
-            self.close_btn.setEnabled(False)
+        """Called when the ProgressController is retired.
+
+        Retirement also happens on normal completion, so it only means
+        "cancelling" when a cancellation was actually requested.
+        """
+        if self._is_active and self._cancel_requested:
+            self.on_cancel_requested()
 
     def _on_close_clicked(self) -> None:
         """Handle clicks on the top-right 'x'. Acts as cancel when active, otherwise closes."""
@@ -300,14 +301,13 @@ class TaskToastWidget(QFrame):
             if self._task_signals is not None:
                 self._task_signals.task_cancel_requested.emit()
             # Update UI immediately
-            self.status_label.setText("Cancelling...")
-            self._set_status_tone("warning")
-            self.close_btn.setEnabled(False)
+            self.on_cancel_requested()
         else:
             self.fade_out_and_close()
 
     def on_cancelled(self) -> None:
         """Called when the worker thread reports it has exited due to cancellation."""
+        self._is_active = False
         self.progress_bar.hide()
         self.status_label.setText("Cancelled")
         self._set_status_tone("cancelled")

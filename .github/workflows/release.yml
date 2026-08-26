@@ -1,0 +1,218 @@
+name: Release
+
+# Releases follow the version in config.py: whenever main lands with a VERSION
+# that has no tag yet, that version is built, tagged and published. Merges that
+# do not change the version do nothing.
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+env:
+  PYTHON_VERSION: "3.13"
+  APP_NAME: OpenGS-MapTool
+
+jobs:
+  check-version:
+    name: Check version
+    runs-on: ubuntu-latest
+    outputs:
+      version: ${{ steps.check.outputs.version }}
+      tag: ${{ steps.check.outputs.tag }}
+      release-needed: ${{ steps.check.outputs.release-needed }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0  # tags are needed to tell whether this version shipped
+
+      - name: Read version and compare against existing tags
+        id: check
+        run: |
+          version=$(python - <<'PY'
+          import pathlib, re, sys
+
+          def find(path, pattern):
+              text = pathlib.Path(path).read_text(encoding="utf-8")
+              match = re.search(pattern, text, re.M)
+              if not match:
+                  sys.exit(f"Could not find a version in {path}")
+              return match.group(1)
+
+          config = find("opengs_maptool/config.py", r'^VERSION\s*=\s*"([^"]+)"')
+          project = find("pyproject.toml", r'^version\s*=\s*"([^"]+)"')
+          if config != project:
+              sys.exit(
+                  f"Version mismatch: config.py says {config!r}, "
+                  f"pyproject.toml says {project!r}. Sync them before releasing."
+              )
+          print(config)
+          PY
+          )
+          tag="v${version}"
+          echo "version=${version}" >> "$GITHUB_OUTPUT"
+          echo "tag=${tag}" >> "$GITHUB_OUTPUT"
+
+          if git rev-parse "refs/tags/${tag}" >/dev/null 2>&1; then
+            echo "release-needed=false" >> "$GITHUB_OUTPUT"
+            echo "::notice::${tag} already exists - nothing to release."
+          else
+            echo "release-needed=true" >> "$GITHUB_OUTPUT"
+            echo "::notice::${tag} is new - building a release."
+          fi
+
+  build:
+    name: Build ${{ matrix.label }}
+    needs: check-version
+    if: needs.check-version.outputs.release-needed == 'true'
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false  # one platform failing should not hide the others
+      matrix:
+        include:
+          - os: windows-latest
+            label: Windows
+            asset: OpenGS-MapTool-windows-x86_64.zip
+          - os: ubuntu-22.04
+            label: Linux
+            asset: OpenGS-MapTool-linux-x86_64.tar.gz
+          # Apple Silicon only. The macos-13 Intel runners are being retired
+          # and jobs sent to them sit queued forever, which blocks the release.
+          # Intel Mac users can still run from source.
+          - os: macos-14
+            label: macOS (Apple Silicon)
+            asset: OpenGS-MapTool-macos-arm64.zip
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: ${{ env.PYTHON_VERSION }}
+          cache: pip
+
+      - name: Install Qt system libraries
+        if: runner.os == 'Linux'
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y --no-install-recommends \
+            libegl1 libgl1 libdbus-1-3 libxkbcommon-x11-0 \
+            libxcb-cursor0 libxcb-icccm4 libxcb-image0 libxcb-keysyms1 \
+            libxcb-randr0 libxcb-render-util0 libxcb-shape0 libxcb-xinerama0
+
+      - name: Install
+        run: |
+          python -m pip install --upgrade pip
+          pip install . pyinstaller pytest
+
+      - name: Run tests
+        env:
+          QT_QPA_PLATFORM: offscreen
+        run: pytest -q
+
+      # --icon needs a .ico on Windows and a .icns on macOS. Linux has no
+      # equivalent, so it is left off there.
+      - name: Build (Windows)
+        if: runner.os == 'Windows'
+        run: >
+          pyinstaller --noconfirm --clean --onefile --windowed
+          --name "${{ env.APP_NAME }}"
+          --icon ogs-mt-icon-master.ico
+          --collect-all qtawesome
+          --exclude-module tkinter --exclude-module tkinterdnd2 --exclude-module pytest
+          opengs_maptool/main.py
+
+      - name: Build (macOS)
+        if: runner.os == 'macOS'
+        run: >
+          pyinstaller --noconfirm --clean --onefile --windowed
+          --name "${{ env.APP_NAME }}"
+          --icon ogs-mt-icon-master.icns
+          --collect-all qtawesome
+          --exclude-module tkinter --exclude-module tkinterdnd2 --exclude-module pytest
+          opengs_maptool/main.py
+
+      - name: Build (Linux)
+        if: runner.os == 'Linux'
+        run: >
+          pyinstaller --noconfirm --clean --onefile --windowed
+          --name "${{ env.APP_NAME }}"
+          --collect-all qtawesome
+          --exclude-module tkinter --exclude-module tkinterdnd2 --exclude-module pytest
+          opengs_maptool/main.py
+
+      # Every platform ships a folder, not a bare executable, so the example
+      # input images travel with the app. They are what a new user needs to
+      # generate their first map.
+      - name: Stage release files
+        shell: bash
+        run: |
+          stage="staging/${{ env.APP_NAME }}"
+          mkdir -p "$stage"
+
+          case "${{ runner.os }}" in
+            Windows) cp "dist/${{ env.APP_NAME }}.exe" "$stage/" ;;
+            Linux)   cp "dist/${{ env.APP_NAME }}" "$stage/" ;;
+            # ditto rather than cp, to keep the .app bundle intact.
+            macOS)   ditto "dist/${{ env.APP_NAME }}.app" "$stage/${{ env.APP_NAME }}.app" ;;
+          esac
+
+          cp -R examples/input "$stage/examples"
+          cp README.md LICENSE "$stage/"
+          ls -laR "$stage" | head -30
+
+      - name: Package (Windows)
+        if: runner.os == 'Windows'
+        shell: pwsh
+        run: Compress-Archive -Path "staging/${{ env.APP_NAME }}" -DestinationPath "${{ matrix.asset }}"
+
+      - name: Package (Linux)
+        if: runner.os == 'Linux'
+        # tar keeps the executable bit, which a bare release download loses.
+        run: tar -czf "${{ matrix.asset }}" -C staging "${{ env.APP_NAME }}"
+
+      - name: Package (macOS)
+        if: runner.os == 'macOS'
+        # ditto preserves the .app bundle structure that plain zip mangles.
+        run: ditto -c -k --sequesterRsrc --keepParent "staging/${{ env.APP_NAME }}" "${{ matrix.asset }}"
+
+      - name: Check the asset was produced
+        shell: bash
+        run: |
+          test -f "${{ matrix.asset }}" || { echo "::error::${{ matrix.asset }} was not built"; exit 1; }
+          echo "Built ${{ matrix.asset }} ($(du -h "${{ matrix.asset }}" | cut -f1))"
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: build-${{ matrix.os }}
+          path: ${{ matrix.asset }}
+          if-no-files-found: error
+
+  release:
+    name: Publish release
+    needs: [check-version, build]
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - uses: actions/download-artifact@v4
+        with:
+          pattern: build-*
+          path: assets
+          merge-multiple: true
+
+      - name: Create the release
+        env:
+          GH_TOKEN: ${{ github.token }}
+          TAG: ${{ needs.check-version.outputs.tag }}
+        run: |
+          ls -lh assets
+          # gh creates the tag on this commit as part of the release.
+          gh release create "$TAG" \
+            --title "$TAG" \
+            --target "$GITHUB_SHA" \
+            --generate-notes \
+            assets/*

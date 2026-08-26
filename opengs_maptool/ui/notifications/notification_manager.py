@@ -35,6 +35,8 @@ class NotificationManager(QObject):
         signals.task_progress_retired.connect(toast.on_retired)
         # Notify toast when worker thread reports cancellation (final outcome)
         signals.task_cancelled.connect(toast.on_cancelled)
+        # Notify toast as soon as a cancellation is requested, from anywhere
+        signals.task_cancel_requested.connect(toast.on_cancel_requested)
 
         # Success & Error handlers
         signals.task_successful.connect(toast.on_success)

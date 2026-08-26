@@ -165,9 +165,13 @@ class ProgressController(QObject):
                 if phase_ref is self._phases[-1]:
                     self._retire_progress()
             else:
-                # Execution exited via early 'return' (or break/continue)
-                # Retire immediately so the UI doesn't hang waiting for remaining phases
-                self._log("Phase '%s' exited early or raised an exception", phase_ref._description)
+                # The block raised. Retire immediately so the UI doesn't hang
+                # waiting for the remaining phases.
+                # NOTE: an early 'return' in the block does NOT land here --
+                # @contextmanager resumes the generator normally in that case,
+                # so completed_normally is True. ProgressController.retire(),
+                # called by the task owner, is what closes out that path.
+                self._log("Phase '%s' raised an exception", phase_ref._description)
                 self._retire_progress()
 
     @contextmanager
@@ -187,6 +191,16 @@ class ProgressController(QObject):
         with self.execute_phase(only_phase):
             yield None # => Let with-clause run
 
+
+    def retire(self) -> None:
+        """Close out the progress bar. Idempotent, safe to call more than once.
+
+        Normally happens automatically when the last configured phase finishes.
+        The task owner also calls this when the task function returns, because a
+        function may exit early -- e.g. a guard clause returning before its
+        remaining phases run -- and would otherwise leave the bar never retired.
+        """
+        self._retire_progress()
 
     def track_iteration[T](self, sequence: _SizedIterable[T]) -> Iterator[T]:
         """
