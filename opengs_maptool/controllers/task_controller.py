@@ -70,20 +70,27 @@ class ThreadTask(QRunnable):
     def run(self) -> None:
         try:
             try:
+                print("ThreadTask.run", self._function)
                 result = self._function(*self._args, **self._kwargs)
+                print("ThreadTask.run function result:", result)
             finally:
                 # The task function may return without executing every phase it
                 # configured (e.g. a guard clause). Retire here so the progress
                 # bar is always closed out, before the terminal signal goes out.
-                self.progress_controller.retire()
+                if self.progress_controller:
+                    self.progress_controller.retire()
+                print("ThreadTask.run finally block executed")
         except TaskCancelledInterrupt:
             # Worker was cancelled; emit a dedicated cancelled signal so the UI
             # can treat this case separately from errors.
             self.signals.task_cancelled.emit()
         except Exception as error:
+            print("ThreadTask.run encountered an error:", error)
             self.signals.task_error.emit(error)
         else:
+            print("ThreadTask.run successful, emitting success signal", self.signals.task_successful, id(self.signals.task_successful))
             self.signals.task_successful.emit(result)
+        print("finished: ThreadTask.run")
 
 class TaskController(QObject):
     new_task_started = pyqtSignal(ThreadTask)
@@ -94,6 +101,8 @@ class TaskController(QObject):
         super().__init__()
         self._thread_pool = QThreadPool.globalInstance()
         self._slot_tasks: dict[ThreadTaskSlot, ThreadTask] = {}
+        # Track active task references to prevent Python Garbage Collector from dropping TaskSignals prematurely
+        self._active_tasks: set[ThreadTask] = set()
 
     def cancel_all_and_wait(self, max_wait_ms: int | None = None) -> bool:
         """Request cancellation for all running tasks and wait until all slots are freed.
@@ -147,7 +156,7 @@ class TaskController(QObject):
             before_start_callback: Callable[[ThreadTask], None] | None,
         ) -> ThreadTask:
         """
-        Start a task in a background thread and get a variously useful ThreadTask object back.
+        Start a task in a background thread and get a ThreadTask object back.
         Raises:
             ThreadSlotOccupiedError: If a task is already running in the specified slot.
         """
@@ -167,6 +176,18 @@ class TaskController(QObject):
             pos_args=pos_args,
             kw_args=kw_args,
         )
+        
+        # Keep a strong reference in TaskController to prevent premature garbage collection
+        self._active_tasks.add(task)
+
+        # Connect cleanup to task completion signals
+        def _release_active_ref(*_args):
+            self._active_tasks.discard(task)
+
+        task.signals.task_successful.connect(_release_active_ref)
+        task.signals.task_error.connect(_release_active_ref)
+        task.signals.task_cancelled.connect(_release_active_ref)
+
         # Occupy the slot
         self._set_slot(slot, task)
 

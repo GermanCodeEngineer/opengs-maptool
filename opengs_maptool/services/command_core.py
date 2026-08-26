@@ -4,7 +4,8 @@ import mslex
 from promise import Promise
 import re
 import traceback
-from typing import Callable, TYPE_CHECKING
+from typing import Callable, TypeAlias, TYPE_CHECKING
+from PyQt6.QtCore import QEventLoop, QObject, pyqtSignal
 
 if TYPE_CHECKING:
     from opengs_maptool.context import ApplicationContext
@@ -26,9 +27,11 @@ from opengs_maptool.services.parser_service import (
 # Principle: The @decorator registers a command and the function docstring is used as the command description.
 
 # command.this.format.id -> implementation function
-_commands: dict[str, tuple[Callable[[ApplicationContext, list[str|int|float|bool]], CommandResponse], str, list[CommandArgSpec]]] = {}
+CommandImplementation: TypeAlias = Callable[..., CommandResponse | Promise[CommandResponse]]
+_commands: dict[str, tuple[CommandImplementation, str, list[CommandArgSpec]]] = {}
 _command_aliases = (dict[str, str])() # alias -> real command
 _SORT_PRIORITY_PREFIXES = ["link", "console", "project", "land", "boundary", "density", "terrain", "territory", "province"]
+# /\ above: imported by other module
 
 def register_command(
     command_id: str,
@@ -36,7 +39,7 @@ def register_command(
     aliases: list[str] | None = None,
 ):
     """Decorator to register a command function with a given command ID."""
-    def decorator(func: Callable):
+    def decorator[T: CommandImplementation](func: T) -> T:
         if command_exists(command_id):
             raise ValueError(f"Please report this. Command {command_id} is already registered.")
 
@@ -54,7 +57,7 @@ def register_command(
 def command_exists(command_id: str) -> bool:
     return command_id in _commands or command_id in _command_aliases
 
-def get_command_implementation(command_id: str) -> Callable[[ApplicationContext, list[str|int|float|bool]], CommandResponse]:
+def get_command_implementation(command_id: str) -> CommandImplementation:
     command_id = _command_aliases.get(command_id, command_id)
     return _commands[command_id][0]
 
@@ -138,11 +141,16 @@ def _create_command_execution_promise(context: ApplicationContext, command_id: s
 def _run_command_func_with_args(
         context: ApplicationContext,
         command_id: str,
-        command_func: Callable[[ApplicationContext, list[str|int|float|bool]], CommandResponse],
+        command_func: CommandImplementation,
         parsed_arguments: list[str|int|float|bool],
     ) -> CommandResponse:
     try:
-        response = command_func(context, *parsed_arguments)
+        result = command_func(context, *parsed_arguments)
+        if isinstance(result, Promise):
+            # We are already running in a background thread, so we can safely block here.
+            response = _wait_for_promise(result)
+        else:
+            response = result
 
     except TypeError as error:
         print(">>> UNEXPECTED ERROR IN COMMAND FUNCTION <<<")
@@ -160,6 +168,29 @@ def _run_command_func_with_args(
         traceback.print_exc()
         response = CommandResponse(f"Unexpected error executing command {_single_quotes(command_id)}: {error}", MessageType.ERROR)
     return response
+
+class _PromiseResolver(QObject):
+    done = pyqtSignal()
+    
+def _wait_for_promise(promise: Promise[CommandResponse]) -> CommandResponse:
+    """Waits for a promise to settle while safely unblocking the PyQt event loop across threads."""
+    if promise.is_fulfilled or promise.is_rejected:
+        return promise.get()
+
+    loop = QEventLoop()
+    resolver = _PromiseResolver()
+    
+    # Thread-safe connection: done signal forces loop.quit on Thread A
+    resolver.done.connect(loop.quit)
+
+    # When promise resolves, emit signal back to Thread A's loop
+    promise.then(
+        lambda _: resolver.done.emit(), 
+        lambda _: resolver.done.emit()
+    )
+
+    loop.exec()
+    return promise.get()
 
 def _is_wrong_argument_count_error(error: TypeError) -> bool:
     if ("expected at most" in str(error)) or ("expected at least" in str(error)):
