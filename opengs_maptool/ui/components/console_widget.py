@@ -1,3 +1,4 @@
+import asyncio
 from html import escape
 import opengs_maptool.config as config
 from opengs_maptool.context import ApplicationContext
@@ -95,9 +96,11 @@ class ConsoleWidget(QWidget):
         self._output.verticalScrollBar().setValue(self._output.verticalScrollBar().maximum())
 
 
-    def _submit_user_command(self, manual_command: str | None = None) -> None:
+    def _submit_user_command(
+            self, manual_command: str | None = None, author: MessageAuthor = MessageAuthor.USER
+        ) -> asyncio.Task[CommandResponse]:
         """
-        Sends and displays a user command in the console
+        Sends and displays a command in the console.
         """
         if manual_command is None:
             user_message_text = self._input.text().strip()
@@ -108,21 +111,24 @@ class ConsoleWidget(QWidget):
         if len(user_message_text) == 0:
             return
 
-        command_message = self._context.console_controller.add_command_message(user_message_text, MessageAuthor.USER)
+        command_message = self._context.console_controller.add_command_message(user_message_text, author)
         self.print_message(command_message) # Show message in widget
 
-        promise = execute_command_string(self._context, command_message.text)
-        promise.then(self._process_command_response)
+        loop = asyncio.get_event_loop()
+        task = loop.create_task(execute_command_string(self._context, command_message.text))
+        task.add_done_callback(self._process_command_response)
+        return task
 
-    def submit_system_command(self, command_segments: list[str]) -> CommandResponse:
+    def submit_system_command(self, command_segments: list[str]) -> asyncio.Task[CommandResponse]:
         """
         Only used for testing purposes.
-        Sends and displays a GUI command in the console.
+        Sends and displays a command in the console.
         """
         command_text = serialize_command(command_segments)
-        return self._submit_user_command(command_text)
+        return self._submit_user_command(manual_command=command_text, author=MessageAuthor.SYSTEM)
 
-    def _process_command_response(self, response: CommandResponse) -> None:
+    def _process_command_response(self, task: asyncio.Task[CommandResponse]) -> None:
+        response = task.result()
         message = response.as_message()
         self._context.console_controller.add_response_message(
             message.text,

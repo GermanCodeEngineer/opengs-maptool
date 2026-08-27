@@ -80,7 +80,7 @@ class MainWindow(QMainWindow):
         right_panel = RightPanel(self._context, self)
         splitter.addWidget(right_panel)
 
-        splitter.setSizes([300, 900, 300])
+        splitter.setSizes([300, 600, 600]) # GCE-TODO: undo temp change
         splitter.setChildrenCollapsible(False)
 
         content_layout.addWidget(splitter)
@@ -159,6 +159,7 @@ class MainWindow(QMainWindow):
         self.action_fullscreen = QAction("Fullscreen", self)
         self.action_fullscreen.setShortcut(QKeySequence.StandardKey.FullScreen)
         self.action_fullscreen.triggered.connect(self._fullscreen)
+        self._fullscreen() # GCE-TODO: undo temp change
 
         self.action_open_github = QAction("GitHub", self)
         self.action_open_github.triggered.connect(editor_actions.open_github)

@@ -7,7 +7,7 @@ if TYPE_CHECKING:
 from opengs_maptool.controllers.progress_controller import ProgressController
 from opengs_maptool.controllers.task_controller import ThreadTaskSlot, ThreadTask, ThreadSlotOccupiedError
 from opengs_maptool.logic.density_generator import normalize_density, equator_density, remove_density_image
-from opengs_maptool.services.command_core import register_command, create_sync_task_waiter, FinalTaskStatus, CommandArgSpec
+from opengs_maptool.services.command_core import register_command, create_async_task_waiter, FinalTaskStatus, CommandArgSpec
 from opengs_maptool.models.command_response import CommandResponse
 from opengs_maptool.models.message import MessageType
 
@@ -17,29 +17,34 @@ from opengs_maptool.models.message import MessageType
         description="Whether to wait for the task to complete before allowing to run another command.",
     ),
 ])
-def cmd_density_image_remove(context: ApplicationContext, wait_for_completion: bool) -> CommandResponse:
+async def cmd_density_image_remove(context: ApplicationContext, wait_for_completion: bool) -> CommandResponse:
     """Removes the current density image."""
     from opengs_maptool.context import LimitedTaskContext
     print("started: cmd_density_image_remove")
 
     def temp_do(*args, **kwargs):
-        print("started: temp_do")
         import time # GCE-TODO: remove temp
+        start = time.time()
+        print("started: temp_do")
         print("first sleep")
         time.sleep(1)
         print("after first sleep")
         remove_density_image(*args, **kwargs)
         print("second sleep")
         time.sleep(1)
-        print("finished: temp_do")
+        print("finished: temp_do in", time.time() - start)
 
+    # Pre-register signals before starting the thread to avoid race conditions
     if wait_for_completion:
-        connect_signals, execute_wait = create_sync_task_waiter()
+        connect_signals, execute_wait = create_async_task_waiter()
     else:
         def connect_signals(task: ThreadTask):
             pass
-
+        async def execute_wait(): # never actually ran
+            return FinalTaskStatus.SUCCESS, None, None
+    
     try:
+        print("before start_task")
         context.task_controller.start_task(
             function=temp_do,
             title="Removing density image",
@@ -51,17 +56,22 @@ def cmd_density_image_remove(context: ApplicationContext, wait_for_completion: b
         )
     except ThreadSlotOccupiedError: # GCE-TODO: instead use if occupied slot check
         return CommandResponse("A task to remove the density image is already running.", MessageType.ERROR)
-    if not wait_for_completion:
+    print("after start_task")
+
+    if not wait_for_completion: # skip waiting
         return CommandResponse("Started removing density image.", MessageType.NORMAL)
-    else:
-        status, result, error = execute_wait()
-        match status:
-            case FinalTaskStatus.ERROR:
-                return CommandResponse(f"Failed to remove density image: {str(error)}", MessageType.ERROR)
-            case FinalTaskStatus.SUCCESS:
-                return CommandResponse("Removed density image.", MessageType.NORMAL)
-            case FinalTaskStatus.CANCELLED:
-                return CommandResponse("Task was cancelled.", MessageType.ERROR)
+
+    # Wait until done
+    print("before execute_wait")
+    status, result, error = await execute_wait()
+    print("after execute_wait")
+    match status:
+        case FinalTaskStatus.ERROR:
+            return CommandResponse(f"Failed to remove density image: {str(error)}", MessageType.ERROR)
+        case FinalTaskStatus.SUCCESS:
+            return CommandResponse("Removed density image.", MessageType.NORMAL)
+        case FinalTaskStatus.CANCELLED:
+            return CommandResponse("Task was cancelled.", MessageType.ERROR)
 
 @register_command("density.image.normalize", args=[
     CommandArgSpec(
@@ -74,9 +84,8 @@ def cmd_density_image_normalize(context: ApplicationContext, wait_for_completion
     from opengs_maptool.context import LimitedTaskContext
     try:
         normalize_density(LimitedTaskContext(context), ProgressController())
-        return CommandResponse(f"Normalized density values.", MessageType.NORMAL)
+        return CommandResponse("Normalized density values.", MessageType.NORMAL)
     except Exception as error:
-        # There is no known possible error.
         return CommandResponse(f"Failed to normalize density values: {str(error)}", MessageType.ERROR)
 
 @register_command("density.image.equator_distribute", args=[
@@ -90,7 +99,6 @@ def cmd_density_image_equator_distribute(context: ApplicationContext, wait_for_c
     from opengs_maptool.context import LimitedTaskContext
     try:
         equator_density(LimitedTaskContext(context), ProgressController())
-        return CommandResponse(f"Generated equator-based density values.", MessageType.NORMAL)
+        return CommandResponse("Generated equator-based density values.", MessageType.NORMAL)
     except Exception as error:
-        # There is no known possible error.
         return CommandResponse(f"Failed to generate equator-based density values: {str(error)}", MessageType.ERROR)

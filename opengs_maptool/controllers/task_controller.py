@@ -50,6 +50,8 @@ class ThreadTask(QRunnable):
         self.slot = slot
         self.progress_controller = progress_controller
         self.signals = TaskSignals()
+        self.setAutoDelete(False)
+
         # Forward progress signals from ProgressController to TaskSignals
         if self.progress_controller:
             self.progress_controller.task_started.connect(self.signals.task_progress_started)
@@ -70,25 +72,20 @@ class ThreadTask(QRunnable):
     def run(self) -> None:
         try:
             try:
-                print("ThreadTask.run", self._function)
                 result = self._function(*self._args, **self._kwargs)
-                print("ThreadTask.run function result:", result)
             finally:
                 # The task function may return without executing every phase it
                 # configured (e.g. a guard clause). Retire here so the progress
                 # bar is always closed out, before the terminal signal goes out.
                 if self.progress_controller:
                     self.progress_controller.retire()
-                print("ThreadTask.run finally block executed")
         except TaskCancelledInterrupt:
             # Worker was cancelled; emit a dedicated cancelled signal so the UI
             # can treat this case separately from errors.
             self.signals.task_cancelled.emit()
         except Exception as error:
-            print("ThreadTask.run encountered an error:", error)
             self.signals.task_error.emit(error)
         else:
-            print("ThreadTask.run successful, emitting success signal", self.signals.task_successful, id(self.signals.task_successful))
             self.signals.task_successful.emit(result)
         print("finished: ThreadTask.run")
 
@@ -182,8 +179,9 @@ class TaskController(QObject):
 
         # Connect cleanup to task completion signals
         def _release_active_ref(*_args):
-            self._active_tasks.discard(task)
-
+            # Defer GC removal to the next loop tick so signal handlers finish executing
+            QTimer.singleShot(0, lambda: self._active_tasks.discard(task))
+            self._free_slot(slot)
         task.signals.task_successful.connect(_release_active_ref)
         task.signals.task_error.connect(_release_active_ref)
         task.signals.task_cancelled.connect(_release_active_ref)
@@ -197,19 +195,24 @@ class TaskController(QObject):
         # is listening, leaving the UI stuck on its last intermediate state.
         if before_start_callback is not None:
             before_start_callback(task)
-
         self.new_task_started.emit(task)
+
         self._thread_pool.start(task)
         return task
+    
+    def _make_cleanup_handler(self, slot: ThreadTaskSlot, task: ThreadTask):
+        def handler(*args):
+            self._free_slot(slot)
+            self._active_tasks.discard(task)
+        return handler
 
     def _set_slot(self, slot: ThreadTaskSlot, task: ThreadTask) -> None:
+        print(f"Setting slot {slot.name} with task {task.title}")
         self._slot_tasks[slot] = task
-        task.signals.task_successful.connect(lambda result: self._free_slot(slot))
-        task.signals.task_error.connect(lambda error: self._free_slot(slot))
-        task.signals.task_cancelled.connect(lambda: self._free_slot(slot))
         self.thread_task_slot_occupied.emit(slot)
 
     def _free_slot(self, slot: ThreadTaskSlot) -> None:
+        print(f"Freeing slot {slot.name}")
         if self.is_thread_slot_occupied(slot):
             del self._slot_tasks[slot]
             self.thread_task_slot_freed.emit(slot)
