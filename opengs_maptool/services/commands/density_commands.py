@@ -7,7 +7,7 @@ if TYPE_CHECKING:
 from opengs_maptool.controllers.progress_controller import ProgressController
 from opengs_maptool.controllers.task_controller import ThreadTaskSlot, ThreadTask, ThreadSlotOccupiedError
 from opengs_maptool.logic.density_generator import normalize_density, equator_density, remove_density_image
-from opengs_maptool.services.command_core import register_command, CommandArgSpec, Promise
+from opengs_maptool.services.command_core import register_command, create_sync_task_waiter, FinalTaskStatus, CommandArgSpec
 from opengs_maptool.models.command_response import CommandResponse
 from opengs_maptool.models.message import MessageType
 
@@ -17,63 +17,51 @@ from opengs_maptool.models.message import MessageType
         description="Whether to wait for the task to complete before allowing to run another command.",
     ),
 ])
-def cmd_density_image_remove(context: ApplicationContext, wait_for_completion: bool) -> Promise[CommandResponse]:
+def cmd_density_image_remove(context: ApplicationContext, wait_for_completion: bool) -> CommandResponse:
     """Removes the current density image."""
     from opengs_maptool.context import LimitedTaskContext
     print("started: cmd_density_image_remove")
 
-    def promise_executor(resolve: Callable[[CommandResponse], None], reject: Callable[[Exception], None]):
-        print("started: promise_executor")
-        # In callbacks: Set the result on the future to unblock the await
-        def on_error(error):
-            print("signal: on_error")
-            resolve(CommandResponse(f"Failed to remove density image: {str(error)}", MessageType.ERROR))
+    def temp_do(*args, **kwargs):
+        print("started: temp_do")
+        import time # GCE-TODO: remove temp
+        print("first sleep")
+        time.sleep(1)
+        print("after first sleep")
+        remove_density_image(*args, **kwargs)
+        print("second sleep")
+        time.sleep(1)
+        print("finished: temp_do")
 
-        def on_success(result):
-            print("signal: on_success")
-            resolve(CommandResponse(f"Removed density image.", MessageType.NORMAL))
-
-        def on_cancelled():
-            print("signal: on_cancelled")
-            resolve(CommandResponse("Task was cancelled.", MessageType.ERROR))
-
+    if wait_for_completion:
+        connect_signals, execute_wait = create_sync_task_waiter()
+    else:
         def connect_signals(task: ThreadTask):
-            print("started: connect_signals")
-            if wait_for_completion:
-                task.signals.task_error.connect(on_error)
-                print("signal task_successful connected:", task.signals.task_successful, id(task.signals.task_successful))
-                task.signals.task_successful.connect(on_success)
-                task.signals.task_cancelled.connect(on_cancelled)
+            pass
 
-        def temp_do(*args, **kwargs):
-            print("started: temp_do")
-            import time # GCE-TODO: remove temp
-            print("first sleep")
-            time.sleep(1)
-            print("after first sleep")
-            remove_density_image(*args, **kwargs)
-            print("second sleep")
-            time.sleep(1)
-            print("finished: temp_do")
-        
-        try:
-            context.task_controller.start_task(
-                function=temp_do,
-                title="Removing density image",
-                slot=ThreadTaskSlot.change_density_image,
-                provide_progress_controller=True,
-                pos_args=[],
-                kw_args={
-                    "task_ctx": LimitedTaskContext(context),
-                },
-                before_start_callback=connect_signals,
-            )
-        except ThreadSlotOccupiedError: # GCE-TODO: don't rely on error, but at the top perform ability check
-            resolve(CommandResponse(f"A task to remove the density image is already running.", MessageType.ERROR))
-        if not wait_for_completion:
-            resolve(CommandResponse(f"Started removing density image.", MessageType.NORMAL))
-    
-    return Promise(promise_executor)
+    try:
+        context.task_controller.start_task(
+            function=temp_do,
+            title="Removing density image",
+            slot=ThreadTaskSlot.change_density_image,
+            provide_progress_controller=True,
+            pos_args=[],
+            kw_args={"task_ctx": LimitedTaskContext(context)},
+            before_start_callback=connect_signals,
+        )
+    except ThreadSlotOccupiedError: # GCE-TODO: instead use if occupied slot check
+        return CommandResponse("A task to remove the density image is already running.", MessageType.ERROR)
+    if not wait_for_completion:
+        return CommandResponse("Started removing density image.", MessageType.NORMAL)
+    else:
+        status, result, error = execute_wait()
+        match status:
+            case FinalTaskStatus.ERROR:
+                return CommandResponse(f"Failed to remove density image: {str(error)}", MessageType.ERROR)
+            case FinalTaskStatus.SUCCESS:
+                return CommandResponse("Removed density image.", MessageType.NORMAL)
+            case FinalTaskStatus.CANCELLED:
+                return CommandResponse("Task was cancelled.", MessageType.ERROR)
 
 @register_command("density.image.normalize", args=[
     CommandArgSpec(

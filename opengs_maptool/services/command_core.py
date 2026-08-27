@@ -1,10 +1,11 @@
 from __future__ import annotations
 from difflib import get_close_matches
 import mslex
+from enum import Enum
 from promise import Promise
 import re
 import traceback
-from typing import Callable, TypeAlias, TYPE_CHECKING
+from typing import Callable, TypeAlias, Any, TYPE_CHECKING
 from PyQt6.QtCore import QEventLoop, QObject, pyqtSignal
 
 if TYPE_CHECKING:
@@ -105,6 +106,50 @@ def execute_command_string(context: ApplicationContext, command_str: str) -> Pro
     promise = _create_command_execution_promise(context, command_id, parsed_arguments)
     return promise
 
+class FinalTaskStatus(Enum):
+    ERROR = 1
+    SUCCESS = 2
+    CANCELLED = 3
+
+# GCE-TODO: cleanup this mess in the whole file, that was made and this function too
+def create_sync_task_waiter():
+    loop = QEventLoop()
+    status: FinalTaskStatus | None = None
+    result = None
+    error = None
+
+    def on_error(err):
+        nonlocal status, result, error
+        status = FinalTaskStatus.ERROR
+        result = None
+        error = err
+        loop.quit()
+
+    def on_success(res: CommandResponse):
+        nonlocal status, result, error
+        status = FinalTaskStatus.SUCCESS
+        result = res
+        error = None
+        loop.quit()
+
+    def on_cancelled():
+        nonlocal status, result, error
+        status = FinalTaskStatus.CANCELLED
+        result = None
+        error = None
+        loop.quit()
+
+    def connect_signals(task: ThreadTask):
+        task.signals.task_error.connect(on_error)
+        task.signals.task_successful.connect(on_success)
+        task.signals.task_cancelled.connect(on_cancelled)
+
+    def execute_wait():
+        loop.exec()  # Block until loop.quit() is called via signal
+        return (status, result, error)
+
+    return connect_signals, execute_wait
+
 def _create_command_execution_promise(context: ApplicationContext, command_id: str, parsed_arguments: list[str|int|float|bool]) -> Promise[CommandResponse]:
     def promise_executor(resolve: Callable[[CommandResponse], None], reject: Callable[[Exception], None]):
         # In callbacks: Set the result on the future to unblock the await
@@ -171,7 +216,7 @@ def _run_command_func_with_args(
 
 class _PromiseResolver(QObject):
     done = pyqtSignal()
-    
+
 def _wait_for_promise(promise: Promise[CommandResponse]) -> CommandResponse:
     """Waits for a promise to settle while safely unblocking the PyQt event loop across threads."""
     if promise.is_fulfilled or promise.is_rejected:
@@ -179,13 +224,13 @@ def _wait_for_promise(promise: Promise[CommandResponse]) -> CommandResponse:
 
     loop = QEventLoop()
     resolver = _PromiseResolver()
-    
+
     # Thread-safe connection: done signal forces loop.quit on Thread A
     resolver.done.connect(loop.quit)
 
     # When promise resolves, emit signal back to Thread A's loop
     promise.then(
-        lambda _: resolver.done.emit(), 
+        lambda _: resolver.done.emit(),
         lambda _: resolver.done.emit()
     )
 
