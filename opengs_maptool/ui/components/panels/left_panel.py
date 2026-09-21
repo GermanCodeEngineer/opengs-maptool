@@ -12,11 +12,11 @@ from PyQt6.QtWidgets import (
 )
 
 import opengs_maptool.config as config
-from opengs_maptool.context import ApplicationContext, LimitedTaskContext
+from opengs_maptool.context import ApplicationContext
 from opengs_maptool.controllers.progress_controller import ProgressController
 from opengs_maptool.controllers.task_controller import ThreadTaskSlot
 from opengs_maptool.logic.density_generator import (
-    equator_density, normalize_density, remove_density_image
+    equator_density_image, normalize_density_image, remove_density_image
 )
 from opengs_maptool.logic.export_module import (
     export_image, export_territory_definitions, export_territory_history,
@@ -34,7 +34,6 @@ from opengs_maptool.ui.file_dialogs import (
 )
 from opengs_maptool.ui.modals.error_modal import ErrorModal
 from opengs_maptool.ui.notifications.notification_manager import NotificationManager
-
 
 class LeftPanel(QWidget):
     def __init__(self, context: ApplicationContext, main_window: MainWindow):
@@ -292,7 +291,7 @@ class LeftPanel(QWidget):
             actions_layout,
             "Normalize Density",
             lambda: self._execute_function_in_thread(
-                normalize_density,
+                normalize_density_image,
                 "Normalizing Density Image",
                 ThreadTaskSlot.change_density_image,
             ),
@@ -303,7 +302,7 @@ class LeftPanel(QWidget):
             actions_layout,
             "Equator Distribution",
             lambda: self._execute_function_in_thread(
-                equator_density,
+                equator_density_image,
                 "Setting Density Image to Equator Distribution",
                 ThreadTaskSlot.change_density_image,
             ),
@@ -654,20 +653,22 @@ class LeftPanel(QWidget):
             field.setText(f"{percentage:.2f}%")
 
     def _execute_function_in_thread(
-        self,
-        function: Callable[[LimitedTaskContext, ProgressController], Any],
-        title: str, slot: ThreadTaskSlot,
-    ) -> None:
+            self,
+            function: Callable[[ApplicationContext, ProgressController], Any],
+            title: str, slot: ThreadTaskSlot,
+        ) -> None:
 
         task = self._context.task_controller.start_task(
             function,
             title,
             slot,
+            provide_progress_controller=True,
             pos_args=[],
             kw_args={
-                "task_ctx": LimitedTaskContext(self._context),
+                "task_ctx": self._context,
             },
             # "progress_controller" is automatically added as a keyword argument
+            before_start_callback=None,  # No additional setup needed before starting the task
         )
 
     def _refresh_tab_view(self, tab_name: TabName):

@@ -54,12 +54,3 @@ class ApplicationContext:
 
     def refresh_after_project_change(self) -> None:
         self.events.refresh_after_project_change_requested.emit()
-
-class LimitedTaskContext:
-    """
-    A limited subset of ApplicationContext for background tasks.
-    May be expanded as necessary.
-    """
-    def __init__(self, application_context: ApplicationContext):
-        self.refresh_tab_view = application_context.refresh_tab_view
-        self.project = application_context.project
