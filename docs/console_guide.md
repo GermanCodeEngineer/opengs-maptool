@@ -90,9 +90,12 @@ Here is a list of the commands available in the editor console.
 | `[x]` | `project.new` | None | Creates a new project |
 | `[x]` | `project.open` | `<path>` | Opens an existing project file |
 | `[x]` | `project.save` | `[--path PATH]` | Saves the current project to the already set path if it is set |
-| `[]` | `project.details` | `[...]` | **With subcommands** to read or edit author, description, etc. |
+| `[x]` | `project.name.set` | `<name>` | Changes the name in the project details |
+| `[x]` | `project.description.set` | `<description>` | Changes the description in the project details |
+| `[x]` | `project.author.set` | `<author>` | Changes the author in the project details |
 ||||
 | `[x]` | `land.image.import` | `<path>` | Imports the land image from a file |
+| `[x]` | `land.color_settings.set` | `land\|ocean\|lake <color>` | Changes the colors expected in the land image for land, oceans and lakes |
 | `[x]` | `boundary.image.import` | `<path>` | Imports the boundary image from a file |
 | `[x]` | `density.image.import` | `<path>` | Imports the density image from a file |
 | `[x]` | `terrain.image.import` | `<path>` | Imports the terrain image from a file |

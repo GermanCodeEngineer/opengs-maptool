@@ -65,3 +65,33 @@ def cmd_project_save(context: ApplicationContext, path: str) -> CommandResponse:
         context.project_controller.save_project_as(path)
 
     return CommandResponse("Project was saved", MessageType.NORMAL)
+
+@register_command(
+    "project.name.set",
+    args=[CommandArgSpec("name", arg_type=str, description="The new name for the project.")],
+)
+def cmd_project_name_set(context: ApplicationContext, name: str) -> CommandResponse:
+    """Sets the name in metadata of the current project."""
+    from opengs_maptool.services.command_service import wrap_in_single_quotes
+    context.project_controller.set_project_name(name)
+    return CommandResponse(f"Project name set to {wrap_in_single_quotes(name)}", MessageType.NORMAL)
+
+@register_command(
+    "project.description.set",
+    args=[CommandArgSpec("description", arg_type=str, description="The new description for the project.")],
+)
+def cmd_project_description_set(context: ApplicationContext, description: str) -> CommandResponse:
+    """Sets the description in metadata of the current project."""
+    from opengs_maptool.services.command_service import wrap_in_single_quotes
+    context.project_controller.set_project_description(description)
+    return CommandResponse(f"Project description set to {wrap_in_single_quotes(description)}", MessageType.NORMAL)
+
+@register_command(
+    "project.author.set",
+    args=[CommandArgSpec("author", arg_type=str, description="The new author for the project.")],
+)
+def cmd_project_author_set(context: ApplicationContext, author: str) -> CommandResponse:
+    """Sets the author in metadata of the current project."""
+    from opengs_maptool.services.command_service import wrap_in_single_quotes
+    context.project_controller.set_project_author(author)
+    return CommandResponse(f"Project author set to {wrap_in_single_quotes(author)}", MessageType.NORMAL)

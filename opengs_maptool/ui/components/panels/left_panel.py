@@ -13,6 +13,7 @@ from PyQt6.QtWidgets import (
 
 import opengs_maptool.config as config
 from opengs_maptool.context import ApplicationContext
+from opengs_maptool.controllers.project_controller import ProjectAttribute
 from opengs_maptool.controllers.progress_controller import ProgressController
 from opengs_maptool.controllers.task_controller import ThreadTaskSlot
 from opengs_maptool.logic.density_generator import (
@@ -80,6 +81,7 @@ class LeftPanel(QWidget):
         # Prepare Context
         self._context.task_controller.thread_task_slot_occupied.connect(self._on_thread_slot_occupied)
         self._context.task_controller.thread_task_slot_freed.connect(self._on_thread_slot_freed)
+        self._context.project_controller.project_was_modified.connect(self._on_project_modification)
 
     def _on_thread_slot_occupied(self, slot: ThreadTaskSlot) -> None:
         self._on_thread_slot_updated(slot)
@@ -598,6 +600,14 @@ class LeftPanel(QWidget):
             return
 
         exporter_function(project, path, fmt)
+
+    def _on_project_modification(self, attribute: ProjectAttribute):
+        if attribute in {
+            ProjectAttribute.land_color,
+            ProjectAttribute.ocean_color,
+            ProjectAttribute.lake_color,
+        }:
+            self._refresh_tab_view(TabName.LAND) # update color pickers
 
     def _update_land_color(self, color):
         self._context.project_controller.set_land_color(color)
