@@ -12,6 +12,7 @@ from opengs_maptool.ui.components.bars.tool_bar import ToolBar
 from opengs_maptool.ui.components.panels.left_panel import LeftPanel
 from opengs_maptool.ui.components.panels.right_panel import RightPanel
 from opengs_maptool.ui.components.tab import Tab
+from opengs_maptool.controllers.project_controller import ProjectAttribute
 from opengs_maptool.ui.file_dialogs import pick_open_project, pick_save_project
 from opengs_maptool.ui.modals.error_modal import ErrorModal
 from opengs_maptool.ui.modals.project_details_modal import ProjectDetailsModal
@@ -30,7 +31,7 @@ class MainWindow(QMainWindow):
         self._app = app
         self._context = app.context
 
-        self.setWindowTitle(self._context.project.name + " - " + config.TITLE)
+        self._update_window_title(ProjectAttribute.name)
         self.setMinimumSize(800, 600)
         self.resize(config.WINDOW_SIZE_WIDTH, config.WINDOW_SIZE_HEIGHT)
 
@@ -39,6 +40,11 @@ class MainWindow(QMainWindow):
 
         # Refresh UI when context reports project-level changes.
         self._context.events.refresh_after_project_change_requested.connect(self._refresh_after_project_change)
+        self._context.project_controller.project_was_modified.connect(self._update_window_title)
+
+    def _update_window_title(self, attribute: ProjectAttribute):
+        if attribute == ProjectAttribute.name:
+            self.setWindowTitle(self._context.project.name + " - " + config.TITLE)
 
     def _init_layout(self):
         self._menu_bar = MenuBar(self)
@@ -221,7 +227,7 @@ class MainWindow(QMainWindow):
 
 
     def _open_project_details(self):
-        modal = ProjectDetailsModal(self, self._context.project)
+        modal = ProjectDetailsModal(self, self._context.project_controller)
         if modal.exec():
             self._refresh_after_project_change()
 
