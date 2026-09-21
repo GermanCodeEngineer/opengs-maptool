@@ -600,15 +600,15 @@ class LeftPanel(QWidget):
         exporter_function(project, path, fmt)
 
     def _update_land_color(self, color):
-        self._context.project.land_color = color
+        self._context.project_controller.set_land_color(color)
         self._on_land_color_changed()
 
     def _update_ocean_color(self, color):
-        self._context.project.ocean_color = color
+        self._context.project_controller.set_ocean_color(color)
         self._on_land_color_changed()
 
     def _update_lake_color(self, color):
-        self._context.project.lake_color = color
+        self._context.project_controller.set_lake_color(color)
         self._on_land_color_changed()
 
     def _on_land_color_changed(self):

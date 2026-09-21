@@ -245,9 +245,8 @@ def generate_province_map(
                         prov.province_terrain = config.DEFAULT_TERRAIN_LAND
 
     with progress_controller.execute_phase(phase6):
-        project.province_image = province_image
-        project.province_data = all_metadata
-        project.modified = True
+        task_ctx.project_controller.set_province_image(province_image)
+        task_ctx.project_controller.set_province_data(all_metadata)
         task_ctx.refresh_tab_view(TabName.PROVINCE)
 
     return province_image, all_metadata

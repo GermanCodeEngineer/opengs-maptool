@@ -19,8 +19,7 @@ def normalize_density_image(task_ctx: ApplicationContext, progress_controller: P
         w, h = project.land_image.size
         density_image = Image.new("L", (w, h), config.DEFAULT_DENSITY_GREY)
 
-        project.density_image = density_image
-        project.modified = True
+        task_ctx.project_controller.set_density_image(density_image)
         task_ctx.refresh_tab_view(TabName.DENSITY)
 
 def equator_density_image(task_ctx: ApplicationContext, progress_controller: ProgressController) -> None:
@@ -45,8 +44,7 @@ def equator_density_image(task_ctx: ApplicationContext, progress_controller: Pro
 
     with progress_controller.execute_phase(phase3):
         density_image = Image.fromarray(arr, mode="L")
-        project.density_image = density_image
-        project.modified = True
+        task_ctx.project_controller.set_density_image(density_image)
         task_ctx.refresh_tab_view(TabName.DENSITY)
 
 # TODO: Move this function, it doesn't belong in this file
@@ -57,6 +55,5 @@ def remove_density_image(task_ctx: ApplicationContext, progress_controller: Prog
     if not project.can_density_image_be_removed(task_ctx):
         return
 
-    project.density_image = None
-    project.modified = True
+    task_ctx.project_controller.set_density_image(None)
     task_ctx.refresh_tab_view(TabName.DENSITY)

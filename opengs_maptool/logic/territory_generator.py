@@ -103,11 +103,11 @@ def generate_territory_map(
 
     with progress_controller.execute_phase(phase6):
         # Is instant, sub-steps are not worth it
-        project.territory_image = territory_image
-        project.territory_data = metadata
-        project.territory_pmap = combined_pmap
-        project.cached_masks = masks
-        project.modified = True
+        controller = task_ctx.project_controller
+        controller.set_territory_image(territory_image)
+        controller.set_territory_data(metadata)
+        controller.set_territory_pmap(combined_pmap)
+        controller.set_cached_masks(masks)
         task_ctx.refresh_tab_view(TabName.TERRITORY)
 
     return territory_image, metadata
