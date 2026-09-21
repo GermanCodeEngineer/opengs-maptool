@@ -36,6 +36,11 @@ class ProjectAttribute(Enum):
     territory_pmap = auto()
     cached_masks = auto()
 
+    # Project settings
+    land_color = auto()
+    ocean_color = auto()
+    lake_color = auto()
+
     # Generation options
     land_territory_density = auto()
     oceanic_territory_density = auto()
@@ -180,6 +185,23 @@ class ProjectController(QObject):
     def set_cached_masks(self, masks: ds.Masks | None) -> None:
         self._context.project.cached_masks = masks
         self._notify_project_modified(ProjectAttribute.cached_masks)
+
+    # --- Project settings -----------------------------------------------
+
+    def set_land_color(self, color: ds.ColorTuple) -> None:
+        if color != self._context.project.land_color:
+            self._context.project.land_color = color
+            self._notify_project_modified(ProjectAttribute.land_color)
+
+    def set_ocean_color(self, color: ds.ColorTuple) -> None:
+        if color != self._context.project.ocean_color:
+            self._context.project.ocean_color = color
+            self._notify_project_modified(ProjectAttribute.ocean_color)
+
+    def set_lake_color(self, color: ds.ColorTuple) -> None:
+        if color != self._context.project.lake_color:
+            self._context.project.lake_color = color
+            self._notify_project_modified(ProjectAttribute.lake_color)
 
 
     # --- Color setters --------------------------------------------------
