@@ -1,7 +1,7 @@
 from __future__ import annotations
 from typing import TYPE_CHECKING
 if TYPE_CHECKING:
-    from opengs_maptool.context import LimitedTaskContext
+    from opengs_maptool.context import ApplicationContext
 
 import opengs_maptool.config as config
 import numpy as np
@@ -19,10 +19,10 @@ from opengs_maptool.simple_types import TabName
 
 
 def generate_province_map(
-        task_ctx: LimitedTaskContext, progress_controller: ProgressController
+        task_ctx: ApplicationContext, progress_controller: ProgressController
     ) -> tuple[ds.ProvinceImage, list[ds.RegionMetadata]] | tuple[None, None]:
     # Safety check matching the button setEnabled condition
-    if not task_ctx.project.can_province_image_be_generated():
+    if not task_ctx.project.can_province_image_be_generated(task_ctx, ignore_locked=True):
         return None, None
 
     # Define phases weighted according to expected workload relative distribution
@@ -42,7 +42,7 @@ def generate_province_map(
         territory_data: list[ds.RegionMetadata] = project.territory_data
         masks: ds.Masks = project.cached_masks
         density_arr: NDArray[Any] = np.array(project.density_image)
-        
+
         density_strength = project.province_density_strength / 10.0
         exclude_ocean_density = project.province_exclude_ocean
         jagged_land_strength = project.province_jagged_land_amplitude / 100.0
@@ -146,7 +146,7 @@ def generate_province_map(
                     y=ys.mean(),
                     _pmap_index=start_index,
                     territory_id=tid,
-                    
+
                     # Only for provinces
                     province_id=rid,
                     province_type=ds.RegionType.LAKE,
@@ -193,7 +193,7 @@ def generate_province_map(
                 terr_fill, terr_border, prov_count, start_index,
                 series, region_type, ds.RegionLevel.PROVINCE,
                 ProgressController(), # ignore sub progress as we already track loop progress
-                density=terr_density, density_strength=terr_density_strength, 
+                density=terr_density, density_strength=terr_density_strength,
                 amplitude_factor=amplitude_factor
             )
 

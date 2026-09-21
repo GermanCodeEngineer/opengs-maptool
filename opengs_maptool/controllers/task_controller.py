@@ -1,16 +1,16 @@
 from __future__ import annotations
-from enum import Enum
+from enum import Enum, auto
 from typing import Any, Callable
-from PyQt6.QtCore import QObject, QRunnable, QThreadPool, pyqtSignal, pyqtSlot, QEventLoop, QTimer
+from PyQt6.QtCore import QObject, QRunnable, QThreadPool, Qt, pyqtSignal, pyqtSlot, QEventLoop, QTimer
 
-from opengs_maptool import config
 from opengs_maptool.controllers.progress_controller import ProgressController, TaskCancelledInterrupt
 from opengs_maptool.models.progress_status import ProgressStatus
 
 class ThreadTaskSlot(Enum):
-    change_density_image = 1
-    generate_territory_map = 2
-    generate_province_map = 3
+    change_density_image = auto()
+    generate_territory_map = auto()
+    generate_province_map = auto()
+    execute_command = auto()
 
 class TaskSignals(QObject):
     task_error = pyqtSignal(BaseException)
@@ -38,7 +38,7 @@ class ThreadTask(QRunnable):
     def __init__(self,
         title: str,
         slot: ThreadTaskSlot,
-        progress_controller: ProgressController,
+        progress_controller: ProgressController | None,
 
         function: Callable[..., Any],
         pos_args: tuple[Any, ...] = (),
@@ -51,18 +51,20 @@ class ThreadTask(QRunnable):
         self.progress_controller = progress_controller
         self.signals = TaskSignals()
         # Forward progress signals from ProgressController to TaskSignals
-        self.progress_controller.task_started.connect(self.signals.task_progress_started)
-        self.progress_controller.task_phase_started.connect(self.signals.task_progress_phase_started)
-        self.progress_controller.task_progress_updated.connect(self.signals.task_progress_updated)
-        self.progress_controller.task_retired.connect(self.signals.task_progress_retired)
-        # Connect cancel request signal to the ProgressController.cancel method so
-        # the owner can request cancellation via the signal.
-        self.signals.task_cancel_requested.connect(self.progress_controller.cancel)
+        if self.progress_controller:
+            self.progress_controller.task_started.connect(self.signals.task_progress_started)
+            self.progress_controller.task_phase_started.connect(self.signals.task_progress_phase_started)
+            self.progress_controller.task_progress_updated.connect(self.signals.task_progress_updated)
+            self.progress_controller.task_retired.connect(self.signals.task_progress_retired)
+            # Connect cancel request signal to the ProgressController.cancel method so
+            # the owner can request cancellation via the signal.
+            self.signals.task_cancel_requested.connect(self.progress_controller.cancel)
 
         self._function = function
         self._args = pos_args
         self._kwargs = kw_args or {}
-        self._kwargs["progress_controller"] = self.progress_controller
+        if self.progress_controller:
+            self._kwargs["progress_controller"] = self.progress_controller
 
     @pyqtSlot()
     def run(self) -> None:
@@ -70,10 +72,11 @@ class ThreadTask(QRunnable):
             try:
                 result = self._function(*self._args, **self._kwargs)
             finally:
-                # The task function may return without executing every phase it
-                # configured (e.g. a guard clause). Retire here so the progress
-                # bar is always closed out, before the terminal signal goes out.
-                self.progress_controller.retire()
+                if self.progress_controller:
+                    # The task function may return without executing every phase it
+                    # configured (e.g. a guard clause). Retire here so the progress
+                    # bar is always closed out, before the terminal signal goes out.
+                    self.progress_controller.retire()
         except TaskCancelledInterrupt:
             # Worker was cancelled; emit a dedicated cancelled signal so the UI
             # can treat this case separately from errors.
@@ -88,10 +91,17 @@ class TaskController(QObject):
     thread_task_slot_occupied = pyqtSignal(ThreadTaskSlot)
     thread_task_slot_freed = pyqtSignal(ThreadTaskSlot)
 
-    def __init__(self):
+    def __init__(
+        self,
+        event_loop_factory: type[QEventLoop] | None = None,
+        timer_factory: type[QTimer] | None = None,
+    ):
         super().__init__()
         self._thread_pool = QThreadPool.globalInstance()
         self._slot_tasks: dict[ThreadTaskSlot, ThreadTask] = {}
+        self._dispatch = _TaskDispatch(self)
+        self._event_loop_factory = event_loop_factory or QEventLoop
+        self._timer_factory = timer_factory or QTimer
 
     def cancel_all_and_wait(self, max_wait_ms: int | None = None) -> bool:
         """Request cancellation for all running tasks and wait until all slots are freed.
@@ -109,7 +119,7 @@ class TaskController(QObject):
             task.signals.task_cancel_requested.emit()
 
         remaining = len(tasks)
-        loop = QEventLoop()
+        loop = self._event_loop_factory()
 
         def on_freed(slot: ThreadTaskSlot) -> None:
             nonlocal remaining
@@ -121,7 +131,7 @@ class TaskController(QObject):
 
         timer = None
         if max_wait_ms is not None:
-            timer = QTimer()
+            timer = self._timer_factory()
             timer.setSingleShot(True)
             timer.timeout.connect(loop.quit)
             timer.start(max_wait_ms)
@@ -139,37 +149,54 @@ class TaskController(QObject):
         occupying_task = self._slot_tasks.get(slot)
         return occupying_task is not None
 
-    def start_task(self, function: Callable[..., Any], title: str, slot: ThreadTaskSlot, pos_args: list[Any], kw_args: dict[str, Any]) -> ThreadTask:
+    def start_task(self,
+            function: Callable[..., Any], title: str, slot: ThreadTaskSlot,
+            provide_progress_controller: bool, pos_args: list[Any], kw_args: dict[str, Any],
+            before_start_callback: Callable[[ThreadTask], None] | None,
+        ) -> None:
         """
-        Start a task in a background thread and get a variously useful ThreadTask object back.
+        Start a task in a background thread. Even works from another background thread.
+        To connect signals use `before_start_callback`.
         Raises:
             ThreadSlotOccupiedError: If a task is already running in the specified slot.
         """
-        if (occupying_task := self._slot_tasks.get(slot)) is not None:
+        if self.is_thread_slot_occupied(slot):
+            occupying_task = self._slot_tasks[slot]
             raise ThreadSlotOccupiedError(f"Cannot start task in slot {slot.name}, because the task {occupying_task.title} is already running.")
+
+        pos_args = list(pos_args or [])
+        kw_args = dict(kw_args or {})
 
         # Create task
         task = ThreadTask(
             title=title,
             slot=slot,
-            progress_controller=ProgressController(
+            progress_controller=(ProgressController(
                 name=slot.name,
-            ),
+            ) if provide_progress_controller else None),
 
             function=function,
-            pos_args=pos_args,
+            pos_args=tuple(pos_args),
             kw_args=kw_args,
         )
         # Occupy the slot
         self._set_slot(slot, task)
 
-        # Announce the task *before* starting it. Listeners (e.g. the toast
-        # notifications) connect to the terminal signals inside this emit, and a
-        # fast task can otherwise finish and emit task_successful before anyone
-        # is listening, leaving the UI stuck on its last intermediate state.
+        # Call the before_start_callback if provided
+        if callable(before_start_callback):
+            before_start_callback(task)
+
+        # Emit before execution so UI listeners can attach immediately, then
+        # run the task on the controller's owning thread. If called from that
+        # thread, run synchronously; otherwise queue it there.
         self.new_task_started.emit(task)
+        # Delegate actually starting the task to the main thread (the one owning the controller),
+        # otherwise nested tasks will not work.
+        self._dispatch.task_start_requested.emit(task)
+    
+    @pyqtSlot(object)
+    def _start_thread_in_main(self, task: ThreadTask) -> None:
         self._thread_pool.start(task)
-        return task
 
     def _set_slot(self, slot: ThreadTaskSlot, task: ThreadTask) -> None:
         self._slot_tasks[slot] = task
@@ -179,9 +206,19 @@ class TaskController(QObject):
         self.thread_task_slot_occupied.emit(slot)
 
     def _free_slot(self, slot: ThreadTaskSlot) -> None:
-        if slot in self._slot_tasks:
+        if self.is_thread_slot_occupied(slot):
             del self._slot_tasks[slot]
             self.thread_task_slot_freed.emit(slot)
 
 class ThreadSlotOccupiedError(Exception):
     """Raised when attempting to start a task while another background task is active."""
+
+class _TaskDispatch(QObject):
+    """Queue starting a task onto the thread that owns the TaskController."""
+
+    task_start_requested = pyqtSignal(object)
+
+    def __init__(self, controller: TaskController) -> None:
+        super().__init__()
+        self._controller = controller
+        self.task_start_requested.connect(self._controller._start_thread_in_main, Qt.ConnectionType.QueuedConnection)
