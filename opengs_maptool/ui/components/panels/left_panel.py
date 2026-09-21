@@ -75,14 +75,11 @@ class LeftPanel(QWidget):
 
         # Listen to context refresh requests; emissions from worker threads are
         # queued to this UI-thread receiver by Qt.
-        self._context.events.refresh_tab_view_requested.connect(
-            self._refresh_tab_view)
+        self._context.events.refresh_tab_view_requested.connect(self._refresh_tab_view)
 
         # Prepare Context
-        self._context.task_controller.thread_task_slot_occupied.connect(
-            self._on_thread_slot_occupied)
-        self._context.task_controller.thread_task_slot_freed.connect(
-            self._on_thread_slot_freed)
+        self._context.task_controller.thread_task_slot_occupied.connect(self._on_thread_slot_occupied)
+        self._context.task_controller.thread_task_slot_freed.connect(self._on_thread_slot_freed)
 
     def _on_thread_slot_occupied(self, slot: ThreadTaskSlot) -> None:
         self._on_thread_slot_updated(slot)
@@ -95,20 +92,6 @@ class LeftPanel(QWidget):
         # owns the slot: guardrails reach across tabs.
         self._refresh_button_states()
 
-    def _is_generation_locked(self) -> bool:
-        """True while a territory or province map is being generated.
-
-        Both count for either map, because they share the same input images.
-        """
-        if not config.GUARDRAILS:
-            return False
-
-        task_controller = self._context.task_controller
-        return (
-            task_controller.is_thread_slot_occupied(ThreadTaskSlot.generate_territory_map)
-            or task_controller.is_thread_slot_occupied(ThreadTaskSlot.generate_province_map)
-        )
-
     def _refresh_button_states(self) -> None:
         """Re-apply the enabled state of every button on the current tab."""
         match self._current_tab_name:
@@ -119,44 +102,44 @@ class LeftPanel(QWidget):
             case TabName.PROVINCE:
                 self._update_province_buttons_state()
 
-        is_locked = self._is_generation_locked()
+        is_locked = self._context.project.is_generation_locked(self._context)
         for button in self._import_buttons:
             if not sip.isdeleted(button):
                 button.setEnabled(not is_locked)
 
     def _update_density_buttons_state(self) -> None:
-        if sip.isdeleted(self.btn_remove_density_image):  # one suffices
-            return  # only do this if the tab is still active and the button exists
+        if sip.isdeleted(self.btn_remove_density_image): # one suffices
+            return # only do this if the tab is still active and the button exists
 
         project = self._context.project
         # The density image is an input to both generators, so editing it is
         # locked while either one runs.
-        is_slot_free = not self._context.task_controller.is_thread_slot_occupied(
-            ThreadTaskSlot.change_density_image) and not self._is_generation_locked()
+        is_slot_free = (
+            not self._context.task_controller.is_thread_slot_occupied(ThreadTaskSlot.change_density_image)
+        )
 
-        self.btn_remove_density_image.setEnabled(
-            is_slot_free and project.can_density_image_be_removed())
-        self.btn_normalize_density.setEnabled(
-            is_slot_free and project.can_density_image_be_generated())
-        self.btn_equator_distribution.setEnabled(
-            is_slot_free and project.can_density_image_be_generated())
+        self.btn_remove_density_image.setEnabled(is_slot_free and project.can_density_image_be_removed(self._context))
+        self.btn_normalize_density.setEnabled(is_slot_free and project.can_density_image_be_generated(self._context))
+        self.btn_equator_distribution.setEnabled(is_slot_free and project.can_density_image_be_generated(self._context))
 
     def _update_territory_buttons_state(self) -> None:
         if sip.isdeleted(self.btn_generate_territories):
-            return  # only do this if the tab is still active and the button exists
-        is_free = not self._context.task_controller.is_thread_slot_occupied(
-            ThreadTaskSlot.generate_territory_map) and not self._is_generation_locked()
+            return # only do this if the tab is still active and the button exists
+        is_free = (
+            not self._context.task_controller.is_thread_slot_occupied(ThreadTaskSlot.generate_territory_map)
+        )
         self.btn_generate_territories.setEnabled(
-            is_free and self._context.project.can_territory_image_be_generated()
+            is_free and self._context.project.can_territory_image_be_generated(self._context, ignore_locked=False)
         )
 
     def _update_province_buttons_state(self) -> None:
         if sip.isdeleted(self.btn_generate_provinces):
-            return  # only do this if the tab is still active and the button exists
-        is_free = not self._context.task_controller.is_thread_slot_occupied(
-            ThreadTaskSlot.generate_province_map) and not self._is_generation_locked()
+            return # only do this if the tab is still active and the button exists
+        is_free = (
+            not self._context.task_controller.is_thread_slot_occupied(ThreadTaskSlot.generate_province_map)
+        )
         self.btn_generate_provinces.setEnabled(
-            is_free and self._context.project.can_province_image_be_generated()
+            is_free and self._context.project.can_province_image_be_generated(self._context, ignore_locked=False)
         )
 
     def display_content(self, tab_name: TabName):
@@ -312,20 +295,18 @@ class LeftPanel(QWidget):
         # Territory exclude ocean checkbox
         checkbox_territory_exclude_ocean = create_checkbox(
             actions_layout, "Exclude Ocean Territories",
-            lambda value: setattr(self._context.project,
-                                  'territory_exclude_ocean', bool(value))
+            lambda value: setattr(
+                self._context.project, 'territory_exclude_ocean', bool(value)
+            )
         )
-        checkbox_territory_exclude_ocean.setChecked(
-            self._context.project.territory_exclude_ocean)
+        checkbox_territory_exclude_ocean.setChecked(self._context.project.territory_exclude_ocean)
 
         # Province exclude ocean checkbox
         checkbox_province_exclude_ocean = create_checkbox(
             actions_layout, "Exclude Ocean Provinces",
-            lambda value: setattr(self._context.project,
-                                  'province_exclude_ocean', bool(value))
+            lambda value: setattr(self._context.project, 'province_exclude_ocean', bool(value))
         )
-        checkbox_province_exclude_ocean.setChecked(
-            self._context.project.province_exclude_ocean)
+        checkbox_province_exclude_ocean.setChecked(self._context.project.province_exclude_ocean)
 
         actions_group.setLayout(actions_layout)
         self._content_layout.addWidget(actions_group)
@@ -359,8 +340,7 @@ class LeftPanel(QWidget):
             self._context.project.land_territory_density,
             config.LAND_TERRITORIES_TICK,
             config.LAND_TERRITORIES_STEP,
-            lambda value: setattr(self._context.project,
-                                  'land_territory_density', value)
+            lambda value: setattr(self._context.project, 'land_territory_density', value)
         )
 
         # Set oceanic territory density slider
@@ -372,8 +352,7 @@ class LeftPanel(QWidget):
             self._context.project.oceanic_territory_density,
             config.OCEAN_TERRITORIES_TICK,
             config.OCEAN_TERRITORIES_STEP,
-            lambda value: setattr(self._context.project,
-                                  'oceanic_territory_density', value)
+            lambda value: setattr(self._context.project, 'oceanic_territory_density', value)
         )
 
         # Set territory density strength slider
@@ -385,8 +364,7 @@ class LeftPanel(QWidget):
             self._context.project.territory_density_strength,
             config.DENSITY_STRENGTH_TICK,
             config.DENSITY_STRENGTH_STEP,
-            lambda value: setattr(self._context.project,
-                                  'territory_density_strength', value),
+            lambda value: setattr(self._context.project, 'territory_density_strength', value),
             display_scale=0.1
         )
 
@@ -435,10 +413,10 @@ class LeftPanel(QWidget):
             actions_layout,
             "Export Territory Image",
             lambda: self._export_image(
-                self._context.project.territory_image, "Export Territory Image")
+                self._context.project.territory_image, "Export Territory Image"
+            )
         )
-        btn_export_territory_image.setEnabled(
-            self._context.project.territory_image != None)
+        btn_export_territory_image.setEnabled(self._context.project.territory_image != None)
 
         # Export territory definitions button
         btn_export_territory_definitions = create_button(
@@ -450,8 +428,7 @@ class LeftPanel(QWidget):
                 "Export Territory Definitions"
             )
         )
-        btn_export_territory_definitions.setEnabled(
-            self._context.project.territory_data != None)
+        btn_export_territory_definitions.setEnabled(self._context.project.territory_data != None)
 
         # Export territory history button
         btn_export_territory_history = create_button(
@@ -463,8 +440,7 @@ class LeftPanel(QWidget):
                 "Export Territory History"
             )
         )
-        btn_export_territory_history.setEnabled(
-            self._context.project.territory_data != None)
+        btn_export_territory_history.setEnabled(self._context.project.territory_data != None)
 
         actions_group.setLayout(actions_layout)
         self._content_layout.addWidget(actions_group)
@@ -483,8 +459,7 @@ class LeftPanel(QWidget):
             self._context.project.land_province_density,
             config.LAND_PROVINCES_TICK,
             config.LAND_PROVINCES_STEP,
-            lambda value: setattr(self._context.project,
-                                  'land_province_density', value)
+            lambda value: setattr(self._context.project, 'land_province_density', value)
         )
 
         # Set oceanic province density slider
@@ -496,8 +471,7 @@ class LeftPanel(QWidget):
             self._context.project.oceanic_province_density,
             config.OCEAN_PROVINCES_TICK,
             config.OCEAN_PROVINCES_STEP,
-            lambda value: setattr(self._context.project,
-                                  'oceanic_province_density', value)
+            lambda value: setattr(self._context.project, 'oceanic_province_density', value)
         )
 
         # Set province density strength slider
@@ -509,8 +483,7 @@ class LeftPanel(QWidget):
             self._context.project.province_density_strength,
             config.DENSITY_STRENGTH_TICK,
             config.DENSITY_STRENGTH_STEP,
-            lambda value: setattr(self._context.project,
-                                  'province_density_strength', value),
+            lambda value: setattr(self._context.project, 'province_density_strength', value),
             display_scale=0.1
         )
 
@@ -563,7 +536,8 @@ class LeftPanel(QWidget):
                 self._context.project.province_image, "Export Province Image")
         )
         btn_export_province_image.setEnabled(
-            self._context.project.province_image != None)
+            self._context.project.province_image != None
+        )
 
         # Export province definitions button
         btn_export_province_definitions = create_button(
@@ -576,7 +550,8 @@ class LeftPanel(QWidget):
             )
         )
         btn_export_province_definitions.setEnabled(
-            self._context.project.province_data != None)
+            self._context.project.province_data != None
+        )
 
         actions_group.setLayout(actions_layout)
         self._content_layout.addWidget(actions_group)
@@ -584,7 +559,7 @@ class LeftPanel(QWidget):
     def _show_error_modal_if_exception(self, exception: BaseException | None):
         if exception is not None:
             modal = ErrorModal(self, str(exception))
-            modal.exec()  # Force user to acknowledge the error before continuing
+            modal.exec() # Force user to acknowledge the error before continuing
 
     def _import_land_image(self) -> None:
         path = pick_open_image(self, "Import Land Image")

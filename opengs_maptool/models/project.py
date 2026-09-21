@@ -1,8 +1,10 @@
 from __future__ import annotations
+from typing import TYPE_CHECKING
 import opengs_maptool.config as config
 import opengs_maptool.logic.datastructure as ds
-import numpy as np
-from numpy.typing import NDArray
+
+if TYPE_CHECKING:
+    from opengs_maptool.context import ApplicationContext
 
 class Project:
     """In-memory project state for map inputs, outputs, options, and metadata."""
@@ -62,18 +64,65 @@ class Project:
         self.modified: bool = False
 
 
-    def can_density_image_be_removed(self) -> bool:
-        return self.density_image is not None
+    def is_generation_locked(self, context: ApplicationContext) -> bool:
+        """True while a territory or province map is being generated.
 
-    def can_density_image_be_generated(self) -> bool:
-        return (self.density_image is None) and (self.land_image is not None)
+        Both count for either map, because they share the same input images.
+        """
+        from opengs_maptool.controllers.task_controller import ThreadTaskSlot
+        if not config.GUARDRAILS:
+            return False
 
-    def can_territory_image_be_generated(self) -> bool:
+        task_controller = context.task_controller
         return (
-            (self.land_image is not None) and
-            (self.boundary_image is not None) and
-            (self.density_image is not None)
+            task_controller.is_thread_slot_occupied(ThreadTaskSlot.generate_territory_map)
+            or task_controller.is_thread_slot_occupied(ThreadTaskSlot.generate_province_map)
         )
 
-    def can_province_image_be_generated(self) -> bool:
-        return (self.terrain_image is not None) and (self.territory_data is not None)
+    def get_density_image_remove_status(self, context: ApplicationContext) -> tuple[bool, str]:
+        if self.is_generation_locked(context):
+            return False, "A generation task is currently in progress."
+        if self.density_image is None:
+            return False, "No density image to remove."
+        return True, "Density image can be removed."
+
+    def can_density_image_be_removed(self, context: ApplicationContext) -> bool:
+        return self.get_density_image_remove_status(context)[0]
+
+    def get_density_image_generate_status(self, context: ApplicationContext) -> tuple[bool, str]:
+        if self.is_generation_locked(context):
+            return False, "A generation task is currently in progress."
+        if self.density_image is not None:
+            return False, "Density image already exists."
+        if self.land_image is None:
+            return False, "Land image is required to generate density image."
+        return True, "Density image can be generated."
+
+    def can_density_image_be_generated(self, context: ApplicationContext) -> bool:
+        return self.get_density_image_generate_status(context)[0]
+
+    def get_territory_image_generate_status(self, context: ApplicationContext, ignore_locked: bool) -> tuple[bool, str]:
+        if (not ignore_locked) and self.is_generation_locked(context):
+            return False, "A generation task is currently in progress."
+        if self.land_image is None:
+            return False, "Land image is required to generate territory image."
+        if self.boundary_image is None:
+            return False, "Boundary image is required to generate territory image."
+        if self.density_image is None:
+            return False, "Density image is required to generate territory image."
+        return True, "Territory image can be generated."
+
+    def can_territory_image_be_generated(self, context: ApplicationContext, ignore_locked: bool) -> bool:
+        return self.get_territory_image_generate_status(context, ignore_locked)[0]
+
+    def get_province_image_generate_status(self, context: ApplicationContext, ignore_locked: bool) -> tuple[bool, str]:
+        if (not ignore_locked) and self.is_generation_locked(context):
+            return False, "A generation task is currently in progress."
+        if self.terrain_image is None:
+            return False, "Terrain image is required to generate province image."
+        if self.territory_data is None:
+            return False, "Territory data is required to generate province image."
+        return True, "Province image can be generated."
+
+    def can_province_image_be_generated(self, context: ApplicationContext, ignore_locked: bool) -> bool:
+        return self.get_province_image_generate_status(context, ignore_locked)[0]
