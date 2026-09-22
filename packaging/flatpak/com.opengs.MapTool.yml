@@ -1,9 +1,7 @@
 app-id: com.opengs.MapTool
-
 runtime: org.freedesktop.Platform
 runtime-version: '25.08'
 sdk: org.freedesktop.Sdk
-
 command: OpenGS-MapTool
 
 finish-args:
@@ -18,19 +16,13 @@ modules:
 
     build-commands:
       - install -Dm755 OpenGS-MapTool /app/bin/OpenGS-MapTool
-
-      - install -Dm644 com.opengs.MapTool.desktop \
-          /app/share/applications/com.opengs.MapTool.desktop
-
-      - install -Dm644 com.opengs.MapTool.png \
-          /app/share/icons/hicolor/scalable/apps/com.opengs.MapTool.png
-
-      - install -Dm644 com.opengs.MapTool.metainfo.xml \
-          /app/share/metainfo/com.opengs.MapTool.metainfo.xml
-
+      - install -Dm644 com.opengs.MapTool.desktop /app/share/applications/com.opengs.MapTool.desktop
+      - install -Dm644 com.opengs.MapTool.png /app/share/icons/hicolor/scalable/apps/com.opengs.MapTool.png
+      - install -Dm644 com.opengs.MapTool.metainfo.xml /app/share/metainfo/com.opengs.MapTool.metainfo.xml
       - mkdir -p /app/share/opengs-maptool/examples
-      - cp -a examples/input/. /app/share/opengs-maptool/examples/
+      - cp -a examples/. /app/share/opengs-maptool/examples/
 
     sources:
       - type: dir
-        path: .
+        path: source
+  
