@@ -162,6 +162,18 @@ jobs:
           cp README.md LICENSE "$stage/"
           ls -laR "$stage" | head -30
 
+      # The Flatpak job reuses the Linux PyInstaller executable and examples
+      # rather than rebuilding the application a second time.
+      - name: Upload Linux executable for later Flatpak
+        if: runner.os == 'Linux'
+        uses: actions/upload-artifact@v4
+        with:
+          name: flatpak-input
+          path: |
+            staging/${{ env.APP_NAME }}/${{ env.APP_NAME }}
+            staging/${{ env.APP_NAME }}/examples
+          if-no-files-found: error
+
       - name: Package (Windows)
         if: runner.os == 'Windows'
         shell: pwsh
@@ -189,9 +201,61 @@ jobs:
           path: ${{ matrix.asset }}
           if-no-files-found: error
 
+  build-flatpak:
+    name: Build Flatpak
+    needs: [check-version, build]
+    if: needs.check-version.outputs.release-needed == 'true'
+    runs-on: ubuntu-latest
+
+    container:
+      image: ghcr.io/flathub-infra/flatpak-github-actions:gnome-48
+      options: --privileged
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Download Linux executable
+        uses: actions/download-artifact@v4
+        with:
+          name: flatpak-input
+          path: packaging/flatpak/build-input
+
+      - name: Prepare Flatpak source directory
+        run: |
+          mkdir -p packaging/flatpak/source/examples
+
+          cp "packaging/flatpak/build-input/${{ env.APP_NAME }}" packaging/flatpak/source/
+
+          cp -a packaging/flatpak/build-input/examples/. packaging/flatpak/source/examples/
+
+          cp packaging/flatpak/com.opengs.MapTool.desktop packaging/flatpak/source/
+
+          cp packaging/flatpak/com.opengs.MapTool.svg packaging/flatpak/source/
+
+          cp packaging/flatpak/com.opengs.MapTool.metainfo.xml packaging/flatpak/source/
+
+          chmod +x "packaging/flatpak/source/${{ env.APP_NAME }}"
+
+          ls -laR packaging/flatpak/source
+
+      - name: Build Flatpak
+        uses: flatpak/flatpak-github-actions/flatpak-builder@v6.8
+        with:
+          bundle: OpenGS-MapTool-linux-x86_64.flatpak
+          manifest-path: packaging/flatpak/com.opengs.MapTool.yml
+          arch: x86_64
+          upload-artifact: false
+
+      - name: Upload Flatpak artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: build-flatpak
+          path: OpenGS-MapTool-linux-x86_64.flatpak
+          if-no-files-found: error
+
   release:
     name: Publish release
-    needs: [check-version, build]
+    needs: [check-version, build, build-flatpak]
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
