@@ -315,7 +315,7 @@ jobs:
           cp packaging/flatpak/com.opengs.MapTool.desktop \
             packaging/flatpak/source/
 
-          cp packaging/flatpak/com.opengs.MapTool.svg \
+          cp packaging/flatpak/com.opengs.MapTool.png \
             packaging/flatpak/source/
 
           cp packaging/flatpak/com.opengs.MapTool.metainfo.xml \

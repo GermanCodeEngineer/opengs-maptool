@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<component type="desktop-application">
+  <id>com.opengs.MapTool.desktop</id>
+
+  <name>OpenGS MapTool</name>
+  <summary>Create maps from OpenGameSupply data</summary>
+
+  <metadata_license>CC0-1.0</metadata_license>
+  <project_license>GPL-3.0-or-later</project_license>
+
+  <description>
+    <p>
+      OpenGS MapTool is a desktop application for creating maps from
+      OpenGameSupply data.
+    </p>
+  </description>
+
+  <launchable type="desktop-id">com.opengs.MapTool.desktop</launchable>
+
+  <url type="homepage">https://github.com/OpenGameSupply/opengs-maptool</url>
+  <url type="bugtracker">https://github.com/OpenGameSupply/opengs-maptool/issues</url>
+
+  <provides>
+    <binary>OpenGS-MapTool</binary>
+  </provides>
+
+  <content_rating type="oars-1.1"/>
+
+  <releases>
+    <release version="1.0.0" date="2026-09-22"/>
+  </releases>
+</component>
