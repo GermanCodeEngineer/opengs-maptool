@@ -5,7 +5,7 @@ name: Release
 # do not change the version do nothing.
 on:
   push:
-    branches: [main]
+    branches: [dev-release-packages]
   workflow_dispatch:
 
 permissions:
