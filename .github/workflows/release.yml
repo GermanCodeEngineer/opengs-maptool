@@ -301,21 +301,39 @@ jobs:
           path: packaging/flatpak/build-input
 
       - name: Prepare Flatpak source directory
+        shell: bash
         run: |
+          set -euo pipefail
+
+          echo "Downloaded Flatpak input:"
+          find packaging/flatpak/build-input -maxdepth 4 -type f -print
+
+          executable="$(find packaging/flatpak/build-input -type f -name "${{ env.APP_NAME }}" -print -quit)"
+
+          if [ -z "$executable" ]; then
+            echo "::error::Could not find ${{ env.APP_NAME }} in downloaded Flatpak input"
+            exit 1
+          fi
+
+          examples_dir="$(dirname "$executable")/examples"
+
+          if [ ! -d "$examples_dir" ]; then
+            echo "::error::Could not find examples directory: $examples_dir"
+            exit 1
+          fi
+
           mkdir -p packaging/flatpak/source/examples
 
-          cp \
-            "packaging/flatpak/build-input/${{ env.APP_NAME }}" \
-            packaging/flatpak/source/
+          cp "$executable" \
+            "packaging/flatpak/source/${{ env.APP_NAME }}"
 
-          cp -a \
-            "packaging/flatpak/build-input/examples/." \
+          cp -a "$examples_dir/." \
             packaging/flatpak/source/examples/
 
           cp packaging/flatpak/com.opengs.MapTool.desktop \
             packaging/flatpak/source/
 
-          cp packaging/flatpak/com.opengs.MapTool.png \
+          cp packaging/flatpak/com.opengs.MapTool.svg \
             packaging/flatpak/source/
 
           cp packaging/flatpak/com.opengs.MapTool.metainfo.xml \
@@ -324,6 +342,7 @@ jobs:
           chmod +x \
             "packaging/flatpak/source/${{ env.APP_NAME }}"
 
+          echo "Prepared Flatpak source:"
           ls -laR packaging/flatpak/source
 
       - name: Build Flatpak
