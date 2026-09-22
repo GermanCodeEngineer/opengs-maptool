@@ -22,8 +22,8 @@ modules:
       - install -Dm644 com.example.OpenGSMapTool.desktop \
           /app/share/applications/com.example.OpenGSMapTool.desktop
 
-      - install -Dm644 com.example.OpenGSMapTool.svg \
-          /app/share/icons/hicolor/scalable/apps/com.example.OpenGSMapTool.svg
+      - install -Dm644 com.example.OpenGSMapTool.png \
+          /app/share/icons/hicolor/scalable/apps/com.example.OpenGSMapTool.png
 
       - install -Dm644 com.example.OpenGSMapTool.metainfo.xml \
           /app/share/metainfo/com.example.OpenGSMapTool.metainfo.xml
