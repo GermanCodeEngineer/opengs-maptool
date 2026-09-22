@@ -2,7 +2,7 @@
 TITLE = "OpenGS - Map Tool"
 WINDOW_SIZE_WIDTH = 1100
 WINDOW_SIZE_HEIGHT = 950
-VERSION = "0.4.dev7"
+VERSION = "0.4.dev8"
 
 # Land Province slider
 LAND_PROVINCES_MIN = 100

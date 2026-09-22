@@ -345,6 +345,20 @@ jobs:
           echo "Prepared Flatpak source:"
           ls -laR packaging/flatpak/source
 
+      - name: Debug Flatpak source
+        shell: bash
+        run: |
+          echo "=== build-input ==="
+          find packaging/flatpak/build-input -maxdepth 5 -printf '%M %p\n' | sort
+
+          echo
+          echo "=== source ==="
+          find packaging/flatpak/source -maxdepth 5 -printf '%M %p\n' | sort
+
+          echo
+          echo "=== manifest ==="
+          cat packaging/flatpak/com.opengs.MapTool.yml
+
       - name: Build Flatpak
         uses: flatpak/flatpak-github-actions/flatpak-builder@v6.8
         with:
