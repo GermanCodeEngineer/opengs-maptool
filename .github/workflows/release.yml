@@ -26,7 +26,7 @@ jobs:
     steps:
       - uses: actions/checkout@v4
         with:
-          fetch-depth: 0  # tags are needed to tell whether this version shipped
+          fetch-depth: 0
 
       - name: Read version and compare against existing tags
         id: check
@@ -48,9 +48,11 @@ jobs:
                   f"Version mismatch: config.py says {config!r}, "
                   f"pyproject.toml says {project!r}. Sync them before releasing."
               )
+
           print(config)
           PY
           )
+
           tag="v${version}"
           echo "version=${version}" >> "$GITHUB_OUTPUT"
           echo "tag=${tag}" >> "$GITHUB_OUTPUT"
@@ -63,27 +65,12 @@ jobs:
             echo "::notice::${tag} is new - building a release."
           fi
 
-  build:
-    name: Build ${{ matrix.label }}
+  build-linux:
+    name: Build Linux
     needs: check-version
     if: needs.check-version.outputs.release-needed == 'true'
-    runs-on: ${{ matrix.os }}
-    strategy:
-      fail-fast: false  # one platform failing should not hide the others
-      matrix:
-        include:
-          - os: windows-latest
-            label: Windows
-            asset: OpenGS-MapTool-windows-x86_64.zip
-          - os: ubuntu-22.04
-            label: Linux
-            asset: OpenGS-MapTool-linux-x86_64.tar.gz
-          # Apple Silicon only. The macos-13 Intel runners are being retired
-          # and jobs sent to them sit queued forever, which blocks the release.
-          # Intel Mac users can still run from source.
-          - os: macos-14
-            label: macOS (Apple Silicon)
-            asset: OpenGS-MapTool-macos-arm64.zip
+    runs-on: ubuntu-22.04
+
     steps:
       - uses: actions/checkout@v4
 
@@ -93,7 +80,6 @@ jobs:
           cache: pip
 
       - name: Install Qt system libraries
-        if: runner.os == 'Linux'
         run: |
           sudo apt-get update
           sudo apt-get install -y --no-install-recommends \
@@ -111,10 +97,80 @@ jobs:
           QT_QPA_PLATFORM: offscreen
         run: pytest -q
 
-      # --icon needs a .ico on Windows and a .icns on macOS. Linux has no
-      # equivalent, so it is left off there.
+      - name: Build (Linux)
+        run: >
+          pyinstaller --noconfirm --clean --onefile --windowed
+          --name "${{ env.APP_NAME }}"
+          --collect-all qtawesome
+          --exclude-module tkinter --exclude-module tkinterdnd2 --exclude-module pytest
+          opengs_maptool/main.py
+
+      - name: Stage release files
+        shell: bash
+        run: |
+          stage="staging/${{ env.APP_NAME }}"
+          mkdir -p "$stage"
+
+          cp "dist/${{ env.APP_NAME }}" "$stage/"
+          cp -R examples/input "$stage/examples"
+          cp README.md LICENSE "$stage/"
+
+          ls -laR "$stage" | head -30
+
+      - name: Package (Linux)
+        run: |
+          tar -czf "OpenGS-MapTool-linux-x86_64.tar.gz" \
+            -C staging "${{ env.APP_NAME }}"
+
+      - name: Check the asset was produced
+        shell: bash
+        run: |
+          test -f "OpenGS-MapTool-linux-x86_64.tar.gz" || {
+            echo "::error::OpenGS-MapTool-linux-x86_64.tar.gz was not built"
+            exit 1
+          }
+
+          echo "Built OpenGS-MapTool-linux-x86_64.tar.gz ($(du -h "OpenGS-MapTool-linux-x86_64.tar.gz" | cut -f1))"
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: build-linux
+          path: OpenGS-MapTool-linux-x86_64.tar.gz
+          if-no-files-found: error
+
+      # The Flatpak job needs the PyInstaller executable and example files.
+      - name: Upload Linux executable for Flatpak
+        uses: actions/upload-artifact@v4
+        with:
+          name: flatpak-input
+          path: staging/${{ env.APP_NAME }}
+          if-no-files-found: error
+
+  build-windows:
+    name: Build Windows
+    needs: check-version
+    if: needs.check-version.outputs.release-needed == 'true'
+    runs-on: windows-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: ${{ env.PYTHON_VERSION }}
+          cache: pip
+
+      - name: Install
+        run: |
+          python -m pip install --upgrade pip
+          pip install . pyinstaller pytest
+
+      - name: Run tests
+        env:
+          QT_QPA_PLATFORM: offscreen
+        run: pytest -q
+
       - name: Build (Windows)
-        if: runner.os == 'Windows'
         run: >
           pyinstaller --noconfirm --clean --onefile --windowed
           --name "${{ env.APP_NAME }}"
@@ -123,8 +179,66 @@ jobs:
           --exclude-module tkinter --exclude-module tkinterdnd2 --exclude-module pytest
           opengs_maptool/main.py
 
+      - name: Stage release files
+        shell: bash
+        run: |
+          stage="staging/${{ env.APP_NAME }}"
+          mkdir -p "$stage"
+
+          cp "dist/${{ env.APP_NAME }}.exe" "$stage/"
+          cp -R examples/input "$stage/examples"
+          cp README.md LICENSE "$stage/"
+
+          ls -laR "$stage" | head -30
+
+      - name: Package (Windows)
+        shell: pwsh
+        run: |
+          Compress-Archive `
+            -Path "staging/${{ env.APP_NAME }}" `
+            -DestinationPath "OpenGS-MapTool-windows-x86_64.zip"
+
+      - name: Check the asset was produced
+        shell: bash
+        run: |
+          test -f "OpenGS-MapTool-windows-x86_64.zip" || {
+            echo "::error::OpenGS-MapTool-windows-x86_64.zip was not built"
+            exit 1
+          }
+
+          echo "Built OpenGS-MapTool-windows-x86_64.zip ($(du -h "OpenGS-MapTool-windows-x86_64.zip" | cut -f1))"
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: build-windows
+          path: OpenGS-MapTool-windows-x86_64.zip
+          if-no-files-found: error
+
+  build-macos:
+    name: Build macOS (Apple Silicon)
+    needs: check-version
+    if: needs.check-version.outputs.release-needed == 'true'
+    runs-on: macos-14
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: ${{ env.PYTHON_VERSION }}
+          cache: pip
+
+      - name: Install
+        run: |
+          python -m pip install --upgrade pip
+          pip install . pyinstaller pytest
+
+      - name: Run tests
+        env:
+          QT_QPA_PLATFORM: offscreen
+        run: pytest -q
+
       - name: Build (macOS)
-        if: runner.os == 'macOS'
         run: >
           pyinstaller --noconfirm --clean --onefile --windowed
           --name "${{ env.APP_NAME }}"
@@ -133,78 +247,44 @@ jobs:
           --exclude-module tkinter --exclude-module tkinterdnd2 --exclude-module pytest
           opengs_maptool/main.py
 
-      - name: Build (Linux)
-        if: runner.os == 'Linux'
-        run: >
-          pyinstaller --noconfirm --clean --onefile --windowed
-          --name "${{ env.APP_NAME }}"
-          --collect-all qtawesome
-          --exclude-module tkinter --exclude-module tkinterdnd2 --exclude-module pytest
-          opengs_maptool/main.py
-
-      # Every platform ships a folder, not a bare executable, so the example
-      # input images travel with the app. They are what a new user needs to
-      # generate their first map.
       - name: Stage release files
         shell: bash
         run: |
           stage="staging/${{ env.APP_NAME }}"
           mkdir -p "$stage"
 
-          case "${{ runner.os }}" in
-            Windows) cp "dist/${{ env.APP_NAME }}.exe" "$stage/" ;;
-            Linux)   cp "dist/${{ env.APP_NAME }}" "$stage/" ;;
-            # ditto rather than cp, to keep the .app bundle intact.
-            macOS)   ditto "dist/${{ env.APP_NAME }}.app" "$stage/${{ env.APP_NAME }}.app" ;;
-          esac
-
+          ditto "dist/${{ env.APP_NAME }}.app" "$stage/${{ env.APP_NAME }}.app"
           cp -R examples/input "$stage/examples"
           cp README.md LICENSE "$stage/"
+
           ls -laR "$stage" | head -30
 
-      # The Flatpak job reuses the Linux PyInstaller executable and examples
-      # rather than rebuilding the application a second time.
-      - name: Upload Linux executable for later Flatpak
-        if: runner.os == 'Linux'
-        uses: actions/upload-artifact@v4
-        with:
-          name: flatpak-input
-          path: |
-            staging/${{ env.APP_NAME }}/${{ env.APP_NAME }}
-            staging/${{ env.APP_NAME }}/examples
-          if-no-files-found: error
-
-      - name: Package (Windows)
-        if: runner.os == 'Windows'
-        shell: pwsh
-        run: Compress-Archive -Path "staging/${{ env.APP_NAME }}" -DestinationPath "${{ matrix.asset }}"
-
-      - name: Package (Linux)
-        if: runner.os == 'Linux'
-        # tar keeps the executable bit, which a bare release download loses.
-        run: tar -czf "${{ matrix.asset }}" -C staging "${{ env.APP_NAME }}"
-
       - name: Package (macOS)
-        if: runner.os == 'macOS'
-        # ditto preserves the .app bundle structure that plain zip mangles.
-        run: ditto -c -k --sequesterRsrc --keepParent "staging/${{ env.APP_NAME }}" "${{ matrix.asset }}"
+        run: |
+          ditto -c -k --sequesterRsrc --keepParent \
+            "staging/${{ env.APP_NAME }}" \
+            "OpenGS-MapTool-macos-arm64.zip"
 
       - name: Check the asset was produced
         shell: bash
         run: |
-          test -f "${{ matrix.asset }}" || { echo "::error::${{ matrix.asset }} was not built"; exit 1; }
-          echo "Built ${{ matrix.asset }} ($(du -h "${{ matrix.asset }}" | cut -f1))"
+          test -f "OpenGS-MapTool-macos-arm64.zip" || {
+            echo "::error::OpenGS-MapTool-macos-arm64.zip was not built"
+            exit 1
+          }
+
+          echo "Built OpenGS-MapTool-macos-arm64.zip ($(du -h "OpenGS-MapTool-macos-arm64.zip" | cut -f1))"
 
       - uses: actions/upload-artifact@v4
         with:
-          name: build-${{ matrix.os }}
-          path: ${{ matrix.asset }}
+          name: build-macos
+          path: OpenGS-MapTool-macos-arm64.zip
           if-no-files-found: error
 
   build-flatpak:
     name: Build Flatpak
-    needs: [check-version, build]
-    if: needs.check-version.outputs.release-needed == 'true'
+    needs: build-linux
+    if: needs.build-linux.result == 'success'
     runs-on: ubuntu-latest
 
     container:
@@ -224,17 +304,25 @@ jobs:
         run: |
           mkdir -p packaging/flatpak/source/examples
 
-          cp "packaging/flatpak/build-input/${{ env.APP_NAME }}" packaging/flatpak/source/
+          cp \
+            "packaging/flatpak/build-input/${{ env.APP_NAME }}" \
+            packaging/flatpak/source/
 
-          cp -a packaging/flatpak/build-input/examples/. packaging/flatpak/source/examples/
+          cp -a \
+            "packaging/flatpak/build-input/examples/." \
+            packaging/flatpak/source/examples/
 
-          cp packaging/flatpak/com.opengs.MapTool.desktop packaging/flatpak/source/
+          cp packaging/flatpak/com.opengs.MapTool.desktop \
+            packaging/flatpak/source/
 
-          cp packaging/flatpak/com.opengs.MapTool.svg packaging/flatpak/source/
+          cp packaging/flatpak/com.opengs.MapTool.svg \
+            packaging/flatpak/source/
 
-          cp packaging/flatpak/com.opengs.MapTool.metainfo.xml packaging/flatpak/source/
+          cp packaging/flatpak/com.opengs.MapTool.metainfo.xml \
+            packaging/flatpak/source/
 
-          chmod +x "packaging/flatpak/source/${{ env.APP_NAME }}"
+          chmod +x \
+            "packaging/flatpak/source/${{ env.APP_NAME }}"
 
           ls -laR packaging/flatpak/source
 
@@ -255,8 +343,15 @@ jobs:
 
   release:
     name: Publish release
-    needs: [check-version, build, build-flatpak]
+    needs:
+      - check-version
+      - build-windows
+      - build-linux
+      - build-macos
+      - build-flatpak
+
     runs-on: ubuntu-latest
+
     steps:
       - uses: actions/checkout@v4
         with:
@@ -274,7 +369,7 @@ jobs:
           TAG: ${{ needs.check-version.outputs.tag }}
         run: |
           ls -lh assets
-          # gh creates the tag on this commit as part of the release.
+
           gh release create "$TAG" \
             --title "$TAG" \
             --target "$GITHUB_SHA" \
