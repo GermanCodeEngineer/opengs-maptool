@@ -1,0 +1,9 @@
+[Desktop Entry]
+Name=OpenGS MapTool
+Comment=Create maps from OpenGameSupply data
+Exec=OpenGS-MapTool
+Icon=com.opengs.MapTool
+Terminal=false
+Type=Application
+Categories=Graphics;Utility;
+StartupNotify=true
