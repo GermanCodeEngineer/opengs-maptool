@@ -117,33 +117,126 @@ jobs:
 
           ls -laR "$stage" | head -30
 
-      - name: Package (Linux)
+      - name: Install AppImage build tools
         run: |
-          tar -czf "OpenGS-MapTool-linux-x86_64.tar.gz" \
-            -C staging "${{ env.APP_NAME }}"
+          sudo apt-get update
+          sudo apt-get install -y --no-install-recommends \
+            desktop-file-utils squashfs-tools file
 
-      - name: Check the asset was produced
+      - name: Download linuxdeploy
         shell: bash
         run: |
-          test -f "OpenGS-MapTool-linux-x86_64.tar.gz" || {
-            echo "::error::OpenGS-MapTool-linux-x86_64.tar.gz was not built"
-            exit 1
-          }
+          set -euo pipefail
+          curl -L --fail --retry 3 \
+            -o linuxdeploy-x86_64.AppImage \
+            https://github.com/linuxdeploy/linuxdeploy/releases/download/continuous/linuxdeploy-x86_64.AppImage
+          chmod +x linuxdeploy-x86_64.AppImage
+          ./linuxdeploy-x86_64.AppImage --version
 
-          echo "Built OpenGS-MapTool-linux-x86_64.tar.gz ($(du -h "OpenGS-MapTool-linux-x86_64.tar.gz" | cut -f1))"
+      - name: Prepare AppImage
+        shell: bash
+        run: |
+          set -euo pipefail
+
+          appdir="$PWD/AppDir"
+          rm -rf "$appdir"
+          mkdir -p "$appdir"
+
+          # The existing desktop file and icon are also used by the previous
+          # Flatpak packaging, so keep one source of truth for application
+          # metadata. # GCE-TODO: update comments
+          test -f packaging/flatpak/com.opengs.MapTool.desktop
+          test -f packaging/flatpak/com.opengs.MapTool.png
+
+          desktop-file-validate packaging/flatpak/com.opengs.MapTool.desktop
+
+          # Keep the examples next to the application payload. This preserves
+          # the same relative layout as the existing tarball/staging package.
+          mkdir -p "$appdir/usr/bin"
+          cp "staging/${{ env.APP_NAME }}/${{ env.APP_NAME }}" \
+             "$appdir/usr/bin/${{ env.APP_NAME }}"
+          cp -a "staging/${{ env.APP_NAME }}/examples" \
+             "$appdir/usr/bin/examples"
+
+          # AppImage requires a desktop file and icon in the AppDir.
+          cp packaging/flatpak/com.opengs.MapTool.desktop "$appdir/"
+          cp packaging/flatpak/com.opengs.MapTool.png "$appdir/"
+
+          chmod +x "$appdir/usr/bin/${{ env.APP_NAME }}"
+
+          echo "=== AppDir ==="
+          find "$appdir" -maxdepth 5 -type f -printf '%M %p\n' | sort
+
+      - name: Build AppImage
+        shell: bash
+        env:
+          NO_STRIP: "1"
+        run: |
+          set -euo pipefail
+
+          ./linuxdeploy-x86_64.AppImage \
+            --appdir AppDir \
+            --executable "AppDir/usr/bin/${{ env.APP_NAME }}" \
+            --desktop-file "AppDir/com.opengs.MapTool.desktop" \
+            --icon-file "AppDir/com.opengs.MapTool.png" \
+            --output appimage
+
+          generated="$(find . -maxdepth 1 -type f -name '*.AppImage' \
+            ! -name 'linuxdeploy-x86_64.AppImage' -print -quit)"
+
+          if [ -z "$generated" ]; then
+            echo "::error::linuxdeploy did not produce an AppImage"
+            exit 1
+          fi
+
+          mv "$generated" "OpenGS-MapTool-x86_64.AppImage"
+          chmod +x "OpenGS-MapTool-x86_64.AppImage"
+
+      - name: Validate AppImage
+        shell: bash
+        run: |
+          set -euo pipefail
+
+          image="OpenGS-MapTool-x86_64.AppImage"
+
+          test -s "$image"
+          file "$image"
+          ./"$image" --appimage-version
+
+          rm -rf appimage-check
+          ./"$image" --appimage-extract >/dev/null
+
+          test -x squashfs-root/AppRun
+          test -f squashfs-root/com.opengs.MapTool.desktop
+          test -f squashfs-root/com.opengs.MapTool.png
+          test -x "squashfs-root/usr/bin/${{ env.APP_NAME }}"
+
+          desktop-file-validate squashfs-root/com.opengs.MapTool.desktop
+
+          echo "=== Extracted AppImage contents ==="
+          find squashfs-root -maxdepth 5 -type f -printf '%M %p\n' | sort | head -100
+
+          # Smoke-test the packaged application without requiring a graphical
+          # desktop. A GUI application is expected to remain alive, so timeout
+          # code 124 is considered a successful launch.
+          set +e
+          QT_QPA_PLATFORM=offscreen timeout 10s \
+            "squashfs-root/AppRun" >/tmp/opengs-maptool.log 2>&1
+          status=$?
+          set -e
+
+          if [ "$status" -ne 0 ] && [ "$status" -ne 124 ]; then
+            echo "::error::Packaged application failed to launch (exit code $status)"
+            cat /tmp/opengs-maptool.log
+            exit "$status"
+          fi
+
+          echo "AppImage validation passed."
 
       - uses: actions/upload-artifact@v4
         with:
           name: build-linux
-          path: OpenGS-MapTool-linux-x86_64.tar.gz
-          if-no-files-found: error
-
-      # The Flatpak job needs the PyInstaller executable and example files.
-      - name: Upload Linux executable for Flatpak
-        uses: actions/upload-artifact@v4
-        with:
-          name: flatpak-input
-          path: staging/${{ env.APP_NAME }}
+          path: OpenGS-MapTool-x86_64.AppImage
           if-no-files-found: error
 
   build-windows:
@@ -281,99 +374,6 @@ jobs:
           path: OpenGS-MapTool-macos-arm64.zip
           if-no-files-found: error
 
-  build-flatpak:
-    name: Build Flatpak
-    needs: build-linux
-    if: needs.build-linux.result == 'success'
-    runs-on: ubuntu-latest
-
-    container:
-      image: ghcr.io/flathub-infra/flatpak-github-actions:gnome-48
-      options: --privileged
-
-    steps:
-      - uses: actions/checkout@v4
-
-      - name: Download Linux executable
-        uses: actions/download-artifact@v4
-        with:
-          name: flatpak-input
-          path: packaging/flatpak/build-input
-
-      - name: Prepare Flatpak source directory
-        shell: bash
-        run: |
-          set -euo pipefail
-
-          echo "Downloaded Flatpak input:"
-          find packaging/flatpak/build-input -maxdepth 4 -type f -print
-
-          executable="$(find packaging/flatpak/build-input -type f -name "${{ env.APP_NAME }}" -print -quit)"
-
-          if [ -z "$executable" ]; then
-            echo "::error::Could not find ${{ env.APP_NAME }} in downloaded Flatpak input"
-            exit 1
-          fi
-
-          examples_dir="$(dirname "$executable")/examples"
-
-          if [ ! -d "$examples_dir" ]; then
-            echo "::error::Could not find examples directory: $examples_dir"
-            exit 1
-          fi
-
-          mkdir -p packaging/flatpak/source/examples
-
-          cp "$executable" \
-            "packaging/flatpak/source/${{ env.APP_NAME }}"
-
-          cp -a "$examples_dir/." \
-            packaging/flatpak/source/examples/
-
-          cp packaging/flatpak/com.opengs.MapTool.desktop \
-            packaging/flatpak/source/
-
-          cp packaging/flatpak/com.opengs.MapTool.png \
-            packaging/flatpak/source/
-
-          cp packaging/flatpak/com.opengs.MapTool.metainfo.xml \
-            packaging/flatpak/source/
-
-          chmod +x \
-            "packaging/flatpak/source/${{ env.APP_NAME }}"
-
-          echo "Prepared Flatpak source:"
-          ls -laR packaging/flatpak/source
-
-      - name: Debug Flatpak source
-        shell: bash
-        run: |
-          echo "=== build-input ==="
-          find packaging/flatpak/build-input -maxdepth 5 -printf '%M %p\n' | sort
-
-          echo
-          echo "=== source ==="
-          find packaging/flatpak/source -maxdepth 5 -printf '%M %p\n' | sort
-
-          echo
-          echo "=== manifest ==="
-          cat packaging/flatpak/com.opengs.MapTool.yml
-
-      - name: Build Flatpak
-        uses: flatpak/flatpak-github-actions/flatpak-builder@v6.8
-        with:
-          bundle: OpenGS-MapTool-linux-x86_64.flatpak
-          manifest-path: packaging/flatpak/com.opengs.MapTool.yml
-          arch: x86_64
-          upload-artifact: false
-
-      - name: Upload Flatpak artifact
-        uses: actions/upload-artifact@v4
-        with:
-          name: build-flatpak
-          path: OpenGS-MapTool-linux-x86_64.flatpak
-          if-no-files-found: error
-
   release:
     name: Publish release
     needs:
@@ -381,7 +381,6 @@ jobs:
       - build-windows
       - build-linux
       - build-macos
-      - build-flatpak
 
     runs-on: ubuntu-latest
 
