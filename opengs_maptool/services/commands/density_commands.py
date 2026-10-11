@@ -19,7 +19,7 @@ def cmd_density_image_remove(context: ApplicationContext) -> CommandResponse:
     return run_density_task(
         context=context,
         task_function=remove_density_image,
-        task_title="Removing density image",
+        task_title="Removing Density Image",
         lowercase_title="removing density image",
     )
 
@@ -32,7 +32,7 @@ def cmd_density_image_normalize(context: ApplicationContext) -> CommandResponse:
     return run_density_task(
         context=context,
         task_function=normalize_density_image,
-        task_title="Normalizing density image",
+        task_title="Normalizing Density Image",
         lowercase_title="normalizing density image",
     )
 
@@ -45,7 +45,7 @@ def cmd_density_image_equator_distribute(context: ApplicationContext) -> Command
     return run_density_task(
         context=context,
         task_function=equator_density_image,
-        task_title="Generating equator-based density image",
+        task_title="Generating equator-based Density Image",
         lowercase_title="generating equator-based density image",
     )
 
