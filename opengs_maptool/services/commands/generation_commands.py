@@ -6,7 +6,11 @@ if TYPE_CHECKING:
 
 from opengs_maptool.controllers.task_controller import ThreadTaskSlot, ThreadSlotOccupiedError
 from opengs_maptool.services.command_core import register_command, CommandArgSpec
-from opengs_maptool.logic.export_module import export_image
+import opengs_maptool.logic.datastructure as ds
+from opengs_maptool.logic.export_module import (
+    export_image, export_territory_definitions, export_territory_history,
+    export_province_definitions, ExportFormat,
+)
 from opengs_maptool.logic.territory_generator import generate_territory_map
 from opengs_maptool.logic.province_generator import generate_province_map
 from opengs_maptool.models.command_response import CommandResponse
@@ -45,28 +49,47 @@ def cmd_province_image_generate(context: ApplicationContext) -> CommandResponse:
 ])
 def cmd_territory_image_export(context: ApplicationContext, path: str) -> CommandResponse:
     """Exports the territory image."""
-    try:
-        if not context.project.territory_image:
-            return CommandResponse("No territory image to export.", MessageType.ERROR)
-        export_image(path, context.project.territory_image, raise_on_error=True)
-        return CommandResponse(f"Exported territory image to {path}.", MessageType.NORMAL)
-    except Exception as error:
-        return CommandResponse(f"Failed exporting territory image: {str(error)}", MessageType.ERROR)
+    return export_generated_image(context.project.territory_image, path, "territory image")
 
 @register_command("province.image.export", args=[
     CommandArgSpec("path", arg_type=str, description="The path to export the province image to."),
 ])
 def cmd_province_image_export(context: ApplicationContext, path: str) -> CommandResponse:
     """Exports the province image."""
-    if not context.project.province_image:
-        return CommandResponse("No province image to export.", MessageType.ERROR)
+    return export_generated_image(context.project.province_image, path, "province image")
+
+@register_command("territory.definitions.export", args=[
+    CommandArgSpec("path", arg_type=str, description="The path to export the territory definitions to. Format is automatically detected"),
+])
+def cmd_territory_definitions_export(context: ApplicationContext, path: str) -> CommandResponse:
+    """Exports territory definitions. Accepted formats: JSON, CSV, YAML, XML."""
     try:
-        export_image(path, context.project.province_image, raise_on_error=True)
-        return CommandResponse(f"Exported province image to {path}.", MessageType.NORMAL)
-    except Exception as error:
-        if isinstance(error, ValueError) and "unknown file extension" in str(error):
-            return CommandResponse(f"Failed exporting province image: Invalid file extension", MessageType.ERROR)
-        return CommandResponse(f"Failed exporting province image: {str(error)}", MessageType.ERROR)
+        format = ExportFormat.get_by_path(path, raise_on_unknown=True)
+        export_territory_definitions(context.project, path, format)
+    except (ValueError, Exception) as error:
+        return CommandResponse(f"Failed exporting territory definitions: {str(error)}", MessageType.ERROR)
+
+@register_command("province.definitions.export", args=[
+    CommandArgSpec("path", arg_type=str, description="The path to export the province definitions to. Format is automatically detected"),
+])
+def cmd_province_definitions_export(context: ApplicationContext, path: str) -> CommandResponse:
+    """Exports province definitions. Accepted formats: JSON, CSV, YAML, XML."""
+    try:
+        format = ExportFormat.get_by_path(path, raise_on_unknown=True)
+        export_province_definitions(context.project, path, format)
+    except (ValueError, Exception) as error:
+        return CommandResponse(f"Failed exporting province definitions: {str(error)}", MessageType.ERROR)
+
+@register_command("territory.history.export", args=[
+    CommandArgSpec("path", arg_type=str, description="The path to export the territory history to. Format is automatically detected"),
+])
+def cmd_territory_history_export(context: ApplicationContext, path: str) -> CommandResponse:
+    """Exports territory history. Accepted formats: JSON, CSV, YAML, XML."""
+    try:
+        format = ExportFormat.get_by_path(path, raise_on_unknown=True)
+        export_territory_history(context.project, path, format)
+    except (ValueError, Exception) as error:
+        return CommandResponse(f"Failed exporting territory history: {str(error)}", MessageType.ERROR)
 
 def run_generation_task(context: ApplicationContext, task_function: Callable, task_slot: ThreadTaskSlot, task_title: str, lowercase_title: str):
     try:
@@ -89,3 +112,14 @@ def run_generation_task(context: ApplicationContext, task_function: Callable, ta
     except Exception as error:
         # There is no known possible error.
         return CommandResponse(f"Failed {lowercase_title}: {str(error)}", MessageType.ERROR)
+
+def export_generated_image(image: ds.TerritoryImage | ds.ProvinceImage | None, path: str, name: str) -> CommandResponse:
+    if not image:
+        return CommandResponse(f"No {name} to export.", MessageType.ERROR)
+    try:
+        export_image(path, image, raise_on_error=True)
+        return CommandResponse(f"Exported {name} to {path}.", MessageType.NORMAL)
+    except Exception as error:
+        if isinstance(error, ValueError) and "unknown file extension" in str(error):
+            return CommandResponse(f"Failed exporting {name}: Invalid file extension", MessageType.ERROR)
+        return CommandResponse(f"Failed exporting {name}: {str(error)}", MessageType.ERROR)

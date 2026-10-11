@@ -107,9 +107,9 @@ Here is a list of the commands available in the editor console.
 | `[x]` | `density.exclude_ocean_provinces` | `<activate: true\|false>` | Sets whether density applies to ocean provinces |
 ||||
 | `[x]` | `territory.image.generate` | None | Generates the territory map |
-| `[]` | `territory.image.export` | `<path>` | Exports the territory image |
-| `[]` | `territory.definitions.export` | `<path> <format>` | Exports territory definitions |
-| `[]` | `territory.history.export` | `<path> <format>` | Exports territory history |
+| `[x]` | `territory.image.export` | `<path>` | Exports the territory image |
+| `[x]` | `territory.definitions.export` | `<path>` | Exports territory definitions |
+| `[x]` | `territory.history.export` | `<path> <format>` | Exports territory history |
 | `[]` | `territory.land_density` | `<value>` | Sets land territory density |
 | `[]` | `territory.ocean_density` | `<value>` | Sets ocean territory density |
 | `[]` | `territory.density_strength` | `<value>` | Sets territory density strength |
@@ -117,8 +117,8 @@ Here is a list of the commands available in the editor console.
 | `[]` | `territory.jagged_ocean` | `<strength>` | Sets how strongly jagged the ocean borders of territories should be |
 ||||
 | `[x]` | `province.image.generate` | None | Generates the province map |
-| `[]` | `province.image.export` | `<path>` | Exports the province image |
-| `[]` | `province.definitions.export` | `<path> <format>` | Exports province definitions |
+| `[x]` | `province.image.export` | `<path>` | Exports the province image |
+| `[x]` | `province.definitions.export` | `<path> <format>` | Exports province definitions |
 | `[]` | `province.land_density` | `<value>` | Sets land province density |
 | `[]` | `province.ocean_density` | `<value>` | Sets ocean province density |
 | `[]` | `province.density_strength` | `<value>` | Sets province density strength |
