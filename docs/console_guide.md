@@ -110,29 +110,29 @@ Here is a list of the commands available in the editor console.
 | `[x]` | `territory.image.export` | `<path>` | Exports the territory image |
 | `[x]` | `territory.definitions.export` | `<path>` | Exports territory definitions |
 | `[x]` | `territory.history.export` | `<path> <format>` | Exports territory history |
-| `[]` | `territory.land_density` | `<value>` | Sets land territory density |
-| `[]` | `territory.ocean_density` | `<value>` | Sets ocean territory density |
-| `[]` | `territory.density_strength` | `<value>` | Sets territory density strength |
-| `[]` | `territory.jagged_land` | `<strength>` | Sets how strongly jagged the land borders of territories should be |
-| `[]` | `territory.jagged_ocean` | `<strength>` | Sets how strongly jagged the ocean borders of territories should be |
+| `[x]` | `territory.land_density.set` | `<value>` | Sets land territory density |
+| `[x]` | `territory.oceanic_density.set` | `<value>` | Sets oceanic territory density |
+| `[x]` | `territory.density_strength.set` | `<factor>` | Sets territory density strength |
+| `[x]` | `territory.jagged_land.set` | `<strength>` | Sets how strongly jagged the land borders of territories should be |
+| `[x]` | `territory.jagged_oceanic.set` | `<strength>` | Sets how strongly jagged the oceanic borders of territories should be |
 ||||
 | `[x]` | `province.image.generate` | None | Generates the province map |
 | `[x]` | `province.image.export` | `<path>` | Exports the province image |
 | `[x]` | `province.definitions.export` | `<path> <format>` | Exports province definitions |
-| `[]` | `province.land_density` | `<value>` | Sets land province density |
-| `[]` | `province.ocean_density` | `<value>` | Sets ocean province density |
-| `[]` | `province.density_strength` | `<value>` | Sets province density strength |
-| `[]` | `province.jagged_land` | `<strength>` | Sets how strongly jagged the land borders of provinces should be |
-| `[]` | `province.jagged_ocean` | `<strength>` | Sets how strongly jagged the ocean borders of provinces should be |
+| `[x]` | `province.land_density.set` | `<value>` | Sets land province density |
+| `[x]` | `province.oceanic_density.set` | `<value>` | Sets oceanic province density |
+| `[x]` | `province.density_strength.set` | `<factor>` | Sets province density strength |
+| `[x]` | `province.jagged_land.set` | `<strength>` | Sets how strongly jagged the land borders of provinces should be |
+| `[x]` | `province.jagged_oceanic.set` | `<strength>` | Sets how strongly jagged the oceanic borders of provinces should be |
 ||||
 | `[x]` | `wait.tasks.completed` | None | Waits until all background tasks are completed |
 
 ## Aliases
 | Done | Alias Name | Real Command |
 |----|---------|-----------|
-| `[]` | `?` | `link.help` |
-| `[]` | `h` | `link.help` |
-| `[]` | `help` | `link.help` |
+| `[x]` | `?` | `link.help` |
+| `[x]` | `h` | `link.help` |
+| `[x]` | `help` | `link.help` |
 
 ## More optional future commands
 - Commands to export input images (purpose: e.g. pull land image from maptool save file)

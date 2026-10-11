@@ -44,6 +44,7 @@ def cmd_province_image_generate(context: ApplicationContext) -> CommandResponse:
         lowercase_title="generating province map",
     )
 
+
 @register_command("territory.image.export", args=[
     CommandArgSpec("path", arg_type=str, description="The path to export the territory image to."),
 ])
@@ -58,14 +59,16 @@ def cmd_province_image_export(context: ApplicationContext, path: str) -> Command
     """Exports the province image."""
     return export_generated_image(context.project.province_image, path, "province image")
 
+
 @register_command("territory.definitions.export", args=[
     CommandArgSpec("path", arg_type=str, description="The path to export the territory definitions to. Format is automatically detected"),
 ])
 def cmd_territory_definitions_export(context: ApplicationContext, path: str) -> CommandResponse:
     """Exports territory definitions. Accepted formats: JSON, CSV, YAML, XML."""
     try:
-        format = ExportFormat.get_by_path(path, raise_on_unknown=True)
-        export_territory_definitions(context.project, path, format)
+        file_format = ExportFormat.get_by_path(path, raise_on_unknown=True)
+        export_territory_definitions(context.project, path, file_format)
+        return CommandResponse(f"Exported territory definitions to {path}.", MessageType.NORMAL)
     except (ValueError, Exception) as error:
         return CommandResponse(f"Failed exporting territory definitions: {str(error)}", MessageType.ERROR)
 
@@ -75,8 +78,9 @@ def cmd_territory_definitions_export(context: ApplicationContext, path: str) -> 
 def cmd_province_definitions_export(context: ApplicationContext, path: str) -> CommandResponse:
     """Exports province definitions. Accepted formats: JSON, CSV, YAML, XML."""
     try:
-        format = ExportFormat.get_by_path(path, raise_on_unknown=True)
-        export_province_definitions(context.project, path, format)
+        file_format = ExportFormat.get_by_path(path, raise_on_unknown=True)
+        export_province_definitions(context.project, path, file_format)
+        return CommandResponse(f"Exported province definitions to {path}.", MessageType.NORMAL)
     except (ValueError, Exception) as error:
         return CommandResponse(f"Failed exporting province definitions: {str(error)}", MessageType.ERROR)
 
@@ -86,10 +90,95 @@ def cmd_province_definitions_export(context: ApplicationContext, path: str) -> C
 def cmd_territory_history_export(context: ApplicationContext, path: str) -> CommandResponse:
     """Exports territory history. Accepted formats: JSON, CSV, YAML, XML."""
     try:
-        format = ExportFormat.get_by_path(path, raise_on_unknown=True)
-        export_territory_history(context.project, path, format)
+        file_format = ExportFormat.get_by_path(path, raise_on_unknown=True)
+        export_territory_history(context.project, path, file_format)
+        return CommandResponse(f"Exported territory history to {path}.", MessageType.NORMAL)
     except (ValueError, Exception) as error:
         return CommandResponse(f"Failed exporting territory history: {str(error)}", MessageType.ERROR)
+
+
+@register_command("territory.land_density.set", args=[
+    CommandArgSpec("value", arg_type=int, description="The land density to set for territories."),
+])
+def cmd_territory_land_density_set(context: ApplicationContext, value: int) -> CommandResponse:
+    """Sets land territory density."""
+    context.project_controller.set_land_territory_density(value)
+    return CommandResponse(f"Territory land density set to {value}.", MessageType.NORMAL)
+
+@register_command("province.land_density.set", args=[
+    CommandArgSpec("value", arg_type=int, description="The land density to set for territories."),
+])
+def cmd_province_land_density_set(context: ApplicationContext, value: int) -> CommandResponse:
+    """Sets land province density."""
+    context.project_controller.set_land_province_density(value)
+    return CommandResponse(f"Province land density set to {value}.", MessageType.NORMAL)
+
+@register_command("territory.oceanic_density.set", args=[
+    CommandArgSpec("value", arg_type=int, description="The oceanic density to set for territories."),
+])
+def cmd_territory_oceanic_density_set(context: ApplicationContext, value: int) -> CommandResponse:
+    """Sets oceanic territory density."""
+    context.project_controller.set_oceanic_territory_density(value)
+    return CommandResponse(f"Territory oceanic density set to {value}.", MessageType.NORMAL)
+
+@register_command("province.oceanic_density.set", args=[
+    CommandArgSpec("value", arg_type=int, description="The oceanic density to set for territories."),
+])
+def cmd_province_oceanic_density_set(context: ApplicationContext, value: int) -> CommandResponse:
+    """Sets oceanic province density."""
+    context.project_controller.set_oceanic_province_density(value)
+    return CommandResponse(f"Province oceanic density set to {value}.", MessageType.NORMAL)
+
+
+@register_command("territory.density_strength.set", args=[
+    CommandArgSpec("factor", arg_type=float, description="The density strength to set for territories."),
+])
+def cmd_territory_density_strength_set(context: ApplicationContext, factor: float) -> CommandResponse:
+    """Sets territory density strength."""
+    context.project_controller.set_territory_density_strength(factor)
+    return CommandResponse(f"Territory density strength set to {factor}.", MessageType.NORMAL)
+
+@register_command("province.density_strength.set", args=[
+    CommandArgSpec("factor", arg_type=float, description="The density strength to set for provinces."),
+])
+def cmd_province_density_strength_set(context: ApplicationContext, factor: float) -> CommandResponse:
+    """Sets province density strength."""
+    context.project_controller.set_province_density_strength(factor)
+    return CommandResponse(f"Province density strength set to {factor}.", MessageType.NORMAL)
+
+
+@register_command("territory.jagged_land.set", args=[
+    CommandArgSpec("strength", arg_type=float, description="The jaggedness amplitude to set for territories."),
+])
+def cmd_territory_jagged_land_set(context: ApplicationContext, strength: float) -> CommandResponse:
+    """Sets how strongly jagged the land borders of territories should be."""
+    context.project_controller.set_territory_jagged_land_amplitude(strength)
+    return CommandResponse(f"Territory jagged land amplitude set to {strength}.", MessageType.NORMAL)
+
+@register_command("province.jagged_land.set", args=[
+    CommandArgSpec("strength", arg_type=float, description="The jaggedness amplitude to set for provinces."),
+])
+def cmd_province_jagged_land_set(context: ApplicationContext, strength: float) -> CommandResponse:
+    """Sets how strongly jagged the land borders of provinces should be."""
+    context.project_controller.set_province_jagged_land_amplitude(strength)
+    return CommandResponse(f"Province jagged land amplitude set to {strength}.", MessageType.NORMAL)
+
+@register_command("territory.jagged_oceanic.set", args=[
+    CommandArgSpec("strength", arg_type=float, description="The jaggedness amplitude to set for territories."),
+])
+def cmd_territory_jagged_oceanic_set(context: ApplicationContext, strength: float) -> CommandResponse:
+    """Sets how strongly jagged the oceanic borders of territories should be."""
+    context.project_controller.set_territory_jagged_ocean_amplitude(strength)
+    return CommandResponse(f"Territory jagged oceanic amplitude set to {strength}.", MessageType.NORMAL)
+
+@register_command("province.jagged_oceanic.set", args=[
+    CommandArgSpec("strength", arg_type=float, description="The jaggedness amplitude to set for provinces."),
+])
+def cmd_province_jagged_oceanic_set(context: ApplicationContext, strength: float) -> CommandResponse:
+    """Sets how strongly jagged the oceanic borders of provinces should be."""
+    context.project_controller.set_province_jagged_ocean_amplitude(strength)
+    return CommandResponse(f"Province jagged oceanic amplitude set to {strength}.", MessageType.NORMAL)
+
 
 def run_generation_task(context: ApplicationContext, task_function: Callable, task_slot: ThreadTaskSlot, task_title: str, lowercase_title: str):
     try:
