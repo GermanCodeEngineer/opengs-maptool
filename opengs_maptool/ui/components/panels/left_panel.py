@@ -22,11 +22,12 @@ from opengs_maptool.logic.density_generator import (
 )
 from opengs_maptool.logic.export_module import (
     export_image, export_territory_definitions, export_territory_history,
-    export_province_definitions
+    export_province_definitions, ExportFormat
 )
 from opengs_maptool.logic.land_actions import get_land_informations
 from opengs_maptool.logic.territory_generator import generate_territory_map
 from opengs_maptool.logic.province_generator import generate_province_map
+from opengs_maptool.models.project import Project
 from opengs_maptool.simple_types import TabName
 from opengs_maptool.ui.buttons import (
     create_button, create_checkbox, create_slider, ColorPickerButton
@@ -591,9 +592,9 @@ class LeftPanel(QWidget):
 
         export_image(path, image, raise_on_error=False)
 
-    def _export_project_data(self, project, exporter_function, title):
+    def _export_project_data(self, project, exporter_function: Callable[[Project, str, ExportFormat], None], title):
         path, fmt = pick_save_data(self, title)
-        if not path:
+        if (not path) or (not fmt):
             return
 
         exporter_function(project, path, fmt)

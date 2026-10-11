@@ -1,10 +1,12 @@
+from __future__ import annotations
 from PIL import Image
 import json
 import csv
 import yaml
 import xml.etree.ElementTree as ET
 from xml.dom import minidom
-from typing import Any
+from typing import Any, ClassVar
+from enum import Enum
 from opengs_maptool.models.project import Project
 import opengs_maptool.logic.datastructure as ds
 from opengs_maptool.services.logging_service import LOGGING_SERVICE
@@ -20,7 +22,12 @@ def export_image(path: str, image: Image.Image, raise_on_error: bool) -> None:
         ext = path.lower().rsplit('.', 1)[-1]
         if ext in ("jpg", "jpeg"):
             background = Image.new('RGB', image.size, (255, 255, 255))
+            background.paste(image, mask=image.split()[3]) 
+            """ TODO: fix this error (jpg export of province image)
             background.paste(image, mask=image.split()[3])
+                                         ~~~~~~~~~~~~~^^^
+            IndexError: tuple index out of range
+            """
             image = background
 
         image.save(path)
@@ -30,7 +37,31 @@ def export_image(path: str, image: Image.Image, raise_on_error: bool) -> None:
             raise
 
 
-def export_territory_definitions(project: Project, path: str, fmt: str) -> None:
+
+FROMAT_ALIASES = {
+    "yml": "yaml"
+}
+
+class ExportFormat(Enum):
+    JSON = "json"
+    CSV = "csv"
+    YAML = "yaml"
+    XML = "xml"
+
+    @classmethod
+    def get_by_path(cls, path: str) -> ExportFormat:
+        """Return the export format corresponding to the file extension."""
+        suffix = path.rpartition(".")[2].lower()
+        if suffix in FROMAT_ALIASES:
+            suffix = FROMAT_ALIASES[suffix]
+
+        try:
+            return cls(suffix) # use the Enum constructor to get the corresponding enum
+        except ValueError:
+            return cls.JSON  # default to JSON if unknown extension
+
+
+def export_territory_definitions(project: Project, path: str, fmt: ExportFormat) -> None:
     """Export territory definitions to the specified path in the given format."""
     territory_data = project.territory_data
     if not territory_data:
@@ -41,12 +72,12 @@ def export_territory_definitions(project: Project, path: str, fmt: str) -> None:
     for d in territory_data:
         data[d.territory_id] = d.serialize_territory_json()
 
-    if fmt in ("json", "yaml", "xml"):
-        if fmt == "json":
+    if fmt in (ExportFormat.JSON, ExportFormat.YAML, ExportFormat.XML):
+        if fmt == ExportFormat.JSON:
             _write_json(path, data)
-        elif fmt == "yaml":
+        elif fmt == ExportFormat.YAML:
             _write_yaml(path, data)
-        elif fmt == "xml":
+        elif fmt == ExportFormat.XML:
             root = ET.Element("territories")
 
             for territory_id, info in data.items():
@@ -74,7 +105,7 @@ def export_territory_definitions(project: Project, path: str, fmt: str) -> None:
                 w.writerow(_get_csv_row_values(keys, info, id_value=territory_id, id_key="id"))
 
 
-def export_territory_history(project: Project, path: str, fmt: str) -> None:
+def export_territory_history(project: Project, path: str, fmt: ExportFormat) -> None:
     """Export territory history to the specified path in the given format."""
     territory_data = project.territory_data
     if not territory_data:
@@ -87,12 +118,12 @@ def export_territory_history(project: Project, path: str, fmt: str) -> None:
             "provinces": d.province_ids or [],
         }
 
-    if fmt in ("json", "yaml", "xml"):
-        if fmt == "json":
+    if fmt in (ExportFormat.JSON, ExportFormat.YAML, ExportFormat.XML):
+        if fmt == ExportFormat.JSON:
             _write_json(path, data)
-        elif fmt == "yaml":
+        elif fmt == ExportFormat.YAML:
             _write_yaml(path, data)
-        elif fmt == "xml":
+        elif fmt == ExportFormat.XML:
             root = ET.Element("territories")
 
             for territory_id, info in data.items():
@@ -120,7 +151,7 @@ def export_territory_history(project: Project, path: str, fmt: str) -> None:
                 w.writerow([territory_id, provinces])
 
 
-def export_province_definitions(project: Project, path: str, fmt: str) -> None:
+def export_province_definitions(project: Project, path: str, fmt: ExportFormat) -> None:
     """Export province definitions to the specified path in the given format."""
     province_data = project.province_data
     if not province_data:
@@ -133,12 +164,12 @@ def export_province_definitions(project: Project, path: str, fmt: str) -> None:
     for d in province_data:
         data[d.province_id] = d.serialize_province_json(include_terrain=has_terrain)
 
-    if fmt in ("json", "yaml", "xml"):
-        if fmt == "json":
+    if fmt in (ExportFormat.JSON, ExportFormat.YAML, ExportFormat.XML):
+        if fmt == ExportFormat.JSON:
             _write_json(path, data)
-        elif fmt == "yaml":
+        elif fmt == ExportFormat.YAML:
             _write_yaml(path, data)
-        elif fmt == "xml":
+        elif fmt == ExportFormat.XML:
             root = ET.Element("provinces")
 
             for province_id, info in data.items():
