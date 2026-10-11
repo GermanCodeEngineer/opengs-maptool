@@ -603,22 +603,20 @@ class LeftPanel(QWidget):
         }:
             self._refresh_tab_view(TabName.LAND) # update color pickers
 
+        if attribute in {
+            ProjectAttribute.territory_exclude_ocean,
+            ProjectAttribute.province_exclude_ocean,
+        }:
+            self._refresh_tab_view(TabName.DENSITY) # update checkboxes
+
     def _update_land_color(self, color):
-        self._context.project_controller.set_land_color(color)
-        self._on_land_color_changed()
+        self._context.project_controller.set_land_color(color) # Causes the above listener
 
     def _update_ocean_color(self, color):
         self._context.project_controller.set_ocean_color(color)
-        self._on_land_color_changed()
 
     def _update_lake_color(self, color):
         self._context.project_controller.set_lake_color(color)
-        self._on_land_color_changed()
-
-    def _on_land_color_changed(self):
-        """Flag the project dirty and refresh the densities derived from it."""
-        self._context.project.modified = True
-        self._refresh_land_informations()
 
     def _refresh_land_informations(self):
         """Recompute the land/ocean/lake densities shown on the land tab."""

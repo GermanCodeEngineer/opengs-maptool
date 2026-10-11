@@ -103,8 +103,8 @@ Here is a list of the commands available in the editor console.
 | `[x]` | `density.image.remove` | None | Removes the current density image |
 | `[x]` | `density.image.normalize` | None | Normalizes density values |
 | `[x]` | `density.image.equator_distribute` | None | Generates equator-based density distribution |
-| `[]` | `density.exclude_ocean_territories` | `<activate: true\|false>` | Sets whether density applies to ocean territories |
-| `[]` | `density.exclude_ocean_provinces` | `<activate: true\|false>` | Sets whether density applies to ocean provinces |
+| `[x]` | `density.exclude_ocean_territories` | `<activate: true\|false>` | Sets whether density applies to ocean territories |
+| `[x]` | `density.exclude_ocean_provinces` | `<activate: true\|false>` | Sets whether density applies to ocean provinces |
 ||||
 | `[]` | `territory.image.generate` | None | Generates the territory map |
 | `[]` | `territory.image.export` | `<path>` | Exports the territory image |
