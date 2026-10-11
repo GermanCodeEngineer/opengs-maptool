@@ -44,7 +44,7 @@ def cmd_project_open(context: ApplicationContext, path: str, force: bool = False
         context.project_controller.load_project(path)
         context.refresh_after_project_change()
     except Exception as error:
-        return CommandResponse(f"Cannot open this file, incompatible format: {error}", MessageType.ERROR)
+        return CommandResponse(f"Failed to open project file, possibly because of an incompatible format: {error}", MessageType.ERROR)
 
     return CommandResponse("Project was opened", MessageType.NORMAL)
 
@@ -55,14 +55,20 @@ def cmd_project_open(context: ApplicationContext, path: str, force: bool = False
 def cmd_project_save(context: ApplicationContext, path: str) -> CommandResponse:
     """Saves the current project to a target path if supplied or the already set path."""
     if path == "":
-        successful = context.project_controller.save_project()
+        try:
+            successful = context.project_controller.save_project()
+        except Exception as error:
+            return CommandResponse(f"Failed to save project file: {error}", MessageType.ERROR)
         if not successful:
             return CommandResponse(
                 "The current project has never been saved. Please provide a file path argument [--path PATH] the first time.",
                 MessageType.ERROR
             )
-    else:
+
+    try:
         context.project_controller.save_project_as(path)
+    except Exception as error:
+        return CommandResponse(f"Failed to save project file: {error}", MessageType.ERROR)
 
     return CommandResponse("Project was saved", MessageType.NORMAL)
 
