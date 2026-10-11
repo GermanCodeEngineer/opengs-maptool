@@ -151,4 +151,9 @@ LOG_CATEGORIES: dict[str, LoggerCategoryConfiguration] = {
         level=LoggingLevel.ERROR,
         enabled=True,
     ),
+    "command": LoggerCategoryConfiguration(
+        prefix="[Command]",
+        level=LoggingLevel.ERROR,
+        enabled=True,
+    ),
 }

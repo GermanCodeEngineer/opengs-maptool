@@ -34,7 +34,7 @@ def export_territory_definitions(project: Project, path: str, fmt: str) -> None:
     """Export territory definitions to the specified path in the given format."""
     territory_data = project.territory_data
     if not territory_data:
-        print("No territory data to export.")
+        LOGGING_SERVICE.loggers.export.send("No territory data to export.")
         return
 
     data: dict[str, dict[str, Any]] = {}
@@ -78,7 +78,7 @@ def export_territory_history(project: Project, path: str, fmt: str) -> None:
     """Export territory history to the specified path in the given format."""
     territory_data = project.territory_data
     if not territory_data:
-        print("No territory data to export.")
+        LOGGING_SERVICE.loggers.export.send("No territory data to export.")
         return
 
     data: dict[str, dict[str, list[str]]] = {}
@@ -124,7 +124,7 @@ def export_province_definitions(project: Project, path: str, fmt: str) -> None:
     """Export province definitions to the specified path in the given format."""
     province_data = project.province_data
     if not province_data:
-        print("No province data to export.")
+        LOGGING_SERVICE.loggers.export.send("No province data to export.")
         return
 
     has_terrain = any((d.province_terrain is not None) for d in province_data)

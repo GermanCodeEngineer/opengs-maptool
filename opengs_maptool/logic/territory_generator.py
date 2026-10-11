@@ -19,6 +19,8 @@ def generate_territory_map(
     ) -> tuple[ds.TerritoryImage, list[ds.RegionMetadata]] | tuple[None, None]:
     """
     Generate a territory map for the given project, updating the progress with "virtually calculated step numbers" as it goes.
+    Raises:
+        NumberSeriesExhaustedError: Raised when the NumberSeries for region IDs is exhausted.
     """
     # Safety check matching the button setEnabled condition
     if not task_ctx.project.can_territory_image_be_generated(task_ctx, ignore_locked=True):

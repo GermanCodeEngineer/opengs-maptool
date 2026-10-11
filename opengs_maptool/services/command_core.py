@@ -19,6 +19,7 @@ from opengs_maptool.services.parser_service import (
     CommandParserConfigurationError,
     deserialize_command_arguments,
 )
+from opengs_maptool.services.logging_service import LOGGING_SERVICE
 
 #####################################################
 #                Base Infrastructure                #
@@ -149,12 +150,18 @@ def _run_command_func_with_args(
         command_func: CommandImplementation,
         parsed_arguments: list[str|int|float|bool],
     ) -> CommandResponse:
+
+    def log_error_msg() -> str:
+        header = ">>> UNEXPECTED ERROR IN COMMAND FUNCTION <<<\n"
+        exception_text = traceback.format_exc()
+        indented_text = "\n".join(">\t" + line for line in exception_text.splitlines())
+        LOGGING_SERVICE.loggers.command.send(header + indented_text)
+
     try:
         response = command_func(context, *parsed_arguments)
 
     except TypeError as error:
-        print(">>> UNEXPECTED ERROR IN COMMAND FUNCTION <<<")
-        traceback.print_exc()
+        log_error_msg()
         if _is_wrong_argument_count_error(error):
             response = CommandResponse(
                 f"Internal Error: registered and implemented arguments of command {_single_quotes(command_id)} do not match: {error}",
@@ -164,8 +171,7 @@ def _run_command_func_with_args(
             raise
 
     except Exception as error:
-        print(">>> UNEXPECTED ERROR IN COMMAND FUNCTION <<<")
-        traceback.print_exc()
+        log_error_msg()
         response = CommandResponse(f"Unexpected error executing command {_single_quotes(command_id)}: {error}", MessageType.ERROR)
     return response
 
