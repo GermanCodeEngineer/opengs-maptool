@@ -126,7 +126,7 @@ GUARDRAILS = True
 
 # Others
 GITHUB_URL = "https://github.com/Thomas-Holtvedt/opengs-maptool"
-CONSOLE_HELP_URL = f"{GITHUB_URL}/blob/main/docs/console_guide.md"
+CONSOLE_HELP_URL = f"{GITHUB_URL}/tree/v{VERSION}/docs/console_guide.md"
 DISCORD_URL = "https://discord.gg/6pRc9f6g6S"
 
 # Logging Configuration
