@@ -49,7 +49,7 @@ class ExportFormat(Enum):
     XML = "xml"
 
     @classmethod
-    def get_by_path(cls, path: str) -> ExportFormat:
+    def get_by_path(cls, path: str, raise_on_unknown: bool = False) -> ExportFormat:
         """Return the export format corresponding to the file extension."""
         suffix = path.rpartition(".")[2].lower()
         if suffix in FROMAT_ALIASES:
@@ -57,7 +57,9 @@ class ExportFormat(Enum):
 
         try:
             return cls(suffix) # use the Enum constructor to get the corresponding enum
-        except ValueError:
+        except ValueError as error:
+            if raise_on_unknown:
+                raise ValueError(f"Please specify a valid export format (JSON, CSV, YAML, XML), invalid file extension: {path}") from error
             return cls.JSON  # default to JSON if unknown extension
 
 
