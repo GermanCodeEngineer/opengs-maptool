@@ -95,7 +95,7 @@ Here is a list of the commands available in the editor console.
 | `[x]` | `project.author.set` | `<author>` | Changes the author in the project details |
 ||||
 | `[x]` | `land.image.import` | `<path>` | Imports the land image from a file |
-| `[x]` | `land.color_settings.set` | `land\|ocean\|lake <color>` | Changes the colors expected in the land image for land, oceans and lakes |
+| `[x]` | `land.color_settings.set` | `<land_type: land\|ocean\|lake> <color>` | Changes the colors expected in the land image for land, oceans and lakes |
 | `[x]` | `boundary.image.import` | `<path>` | Imports the boundary image from a file |
 | `[x]` | `density.image.import` | `<path>` | Imports the density image from a file |
 | `[x]` | `terrain.image.import` | `<path>` | Imports the terrain image from a file |
@@ -103,27 +103,27 @@ Here is a list of the commands available in the editor console.
 | `[x]` | `density.image.remove` | None | Removes the current density image |
 | `[x]` | `density.image.normalize` | None | Normalizes density values |
 | `[x]` | `density.image.equator_distribute` | None | Generates equator-based density distribution |
+| `[]` | `density.exclude_ocean_territories` | `<activate: true\|false>` | Sets whether density applies to ocean territories |
+| `[]` | `density.exclude_ocean_provinces` | `<activate: true\|false>` | Sets whether density applies to ocean provinces |
 ||||
 | `[]` | `territory.image.generate` | None | Generates the territory map |
 | `[]` | `territory.image.export` | `<path>` | Exports the territory image |
 | `[]` | `territory.definitions.export` | `<path> <format>` | Exports territory definitions |
 | `[]` | `territory.history.export` | `<path> <format>` | Exports territory history |
-| `[]` | `territory.exclude_ocean` | `<true\|false>` | Sets whether territory generation excludes ocean |
 | `[]` | `territory.land_density` | `<value>` | Sets land territory density |
 | `[]` | `territory.ocean_density` | `<value>` | Sets ocean territory density |
 | `[]` | `territory.density_strength` | `<value>` | Sets territory density strength |
-| `[]` | `territory.jagged_land` | `<true\|false>` | Sets jagged land border behavior for territories |
-| `[]` | `territory.jagged_ocean` | `<true\|false>` | Sets jagged ocean border behavior for territories |
+| `[]` | `territory.jagged_land` | `<strength>` | Sets how strongly jagged the land borders of territories should be |
+| `[]` | `territory.jagged_ocean` | `<strength>` | Sets how strongly jagged the ocean borders of territories should be |
 ||||
 | `[]` | `province.image.generate` | None | Generates the province map |
 | `[]` | `province.image.export` | `<path>` | Exports the province image |
 | `[]` | `province.definitions.export` | `<path> <format>` | Exports province definitions |
-| `[]` | `province.exclude_ocean` | `<true\|false>` | Sets whether province generation excludes ocean |
 | `[]` | `province.land_density` | `<value>` | Sets land province density |
 | `[]` | `province.ocean_density` | `<value>` | Sets ocean province density |
 | `[]` | `province.density_strength` | `<value>` | Sets province density strength |
-| `[]` | `province.jagged_land` | `<true\|false>` | Sets jagged land border behavior for provinces |
-| `[]` | `province.jagged_ocean` | `<true\|false>` | Sets jagged ocean border behavior for provinces |
+| `[]` | `province.jagged_land` | `<strength>` | Sets how strongly jagged the land borders of provinces should be |
+| `[]` | `province.jagged_ocean` | `<strength>` | Sets how strongly jagged the ocean borders of provinces should be |
 ||||
 | `[x]` | `wait.tasks.completed` | None | Waits until all background tasks are completed |
 
