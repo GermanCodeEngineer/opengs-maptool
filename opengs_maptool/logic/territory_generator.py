@@ -56,10 +56,10 @@ def generate_territory_map(
 
     with progress_controller.execute_phase(phase2):
         density_arr: NDArray[Any] = np.array(project.density_image)
-        density_strength = project.territory_density_strength / 10.0
+        density_strength = project.territory_density_strength / config.DENSITY_STRENGTH_DIVISOR
         exclude_ocean_density = project.territory_exclude_ocean
-        land_amplitude_factor = project.territory_jagged_land_amplitude / 100.0
-        ocean_amplitude_factor = project.territory_jagged_ocean_amplitude / 100.0
+        land_amplitude_factor = project.territory_jagged_land_amplitude / config.JAGGED_BORDER_LAND_AMPLITUDE_DIVISOR
+        ocean_amplitude_factor = project.territory_jagged_ocean_amplitude / config.JAGGED_BORDER_OCEAN_AMPLITUDE_DIVISOR
 
         land_points = project.land_territory_density
         sea_points = project.oceanic_territory_density

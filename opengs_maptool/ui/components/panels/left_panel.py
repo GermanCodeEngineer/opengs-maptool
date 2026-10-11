@@ -365,7 +365,7 @@ class LeftPanel(QWidget):
             config.DENSITY_STRENGTH_TICK,
             config.DENSITY_STRENGTH_STEP,
             lambda value: self._context.project_controller.set_territory_density_strength(value),
-            display_scale=0.1
+            display_scale=(1/config.DENSITY_STRENGTH_DIVISOR),
         )
 
         # Set territory jagged land Slider
@@ -378,7 +378,7 @@ class LeftPanel(QWidget):
             config.JAGGED_BORDER_LAND_AMPLITUDE_TICK,
             config.JAGGED_BORDER_LAND_AMPLITUDE_STEP,
             lambda value: self._context.project_controller.set_territory_jagged_land_amplitude(value),
-            display_scale=0.01
+            display_scale=(1/config.JAGGED_BORDER_LAND_AMPLITUDE_DIVISOR)
         )
 
         # Set territory jagged Ocean Slider
@@ -391,7 +391,7 @@ class LeftPanel(QWidget):
             config.JAGGED_BORDER_OCEAN_AMPLITUDE_TICK,
             config.JAGGED_BORDER_OCEAN_AMPLITUDE_STEP,
             lambda value: self._context.project_controller.set_territory_jagged_ocean_amplitude(value),
-            display_scale=0.01
+            display_scale=(1/config.JAGGED_BORDER_OCEAN_AMPLITUDE_DIVISOR)
         )
 
         # Generate territories button
@@ -482,7 +482,7 @@ class LeftPanel(QWidget):
             config.DENSITY_STRENGTH_TICK,
             config.DENSITY_STRENGTH_STEP,
             lambda value: self._context.project_controller.set_province_density_strength(value),
-            display_scale=0.1
+            display_scale=(1/config.DENSITY_STRENGTH_DIVISOR)
         )
 
         # Set province jagged land Slider
@@ -495,7 +495,7 @@ class LeftPanel(QWidget):
             config.JAGGED_BORDER_LAND_AMPLITUDE_TICK,
             config.JAGGED_BORDER_LAND_AMPLITUDE_STEP,
             lambda value: self._context.project_controller.set_province_jagged_land_amplitude(value),
-            display_scale=0.01
+            display_scale=(1/config.JAGGED_BORDER_LAND_AMPLITUDE_DIVISOR)
         )
 
         # Set province jagged Ocean Slider
@@ -508,7 +508,7 @@ class LeftPanel(QWidget):
             config.JAGGED_BORDER_OCEAN_AMPLITUDE_TICK,
             config.JAGGED_BORDER_OCEAN_AMPLITUDE_STEP,
             lambda value: self._context.project_controller.set_province_jagged_ocean_amplitude(value),
-            display_scale=0.01
+            display_scale=(1/config.JAGGED_BORDER_OCEAN_AMPLITUDE_DIVISOR)
         )
 
         # Generate provinces button
