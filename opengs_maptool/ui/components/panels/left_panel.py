@@ -16,6 +16,7 @@ from opengs_maptool.context import ApplicationContext
 from opengs_maptool.controllers.project_controller import ProjectAttribute
 from opengs_maptool.controllers.progress_controller import ProgressController
 from opengs_maptool.controllers.task_controller import ThreadTaskSlot
+import opengs_maptool.logic.datastructure as ds
 from opengs_maptool.logic.density_generator import (
     equator_density_image, normalize_density_image, remove_density_image
 )
@@ -581,12 +582,14 @@ class LeftPanel(QWidget):
             error = self._context.import_service.import_terrain_image(path)
             self._show_error_modal_if_exception(error)
 
-    def _export_image(self, image, title):
+    def _export_image(self, image: ds.TerritoryImage | ds.ProvinceImage | None, title: str):
+        if not image:
+            return
         path = pick_save_image(self, title)
         if not path:
             return
 
-        export_image(path, image)
+        export_image(path, image, raise_on_error=False)
 
     def _export_project_data(self, project, exporter_function, title):
         path, fmt = pick_save_data(self, title)

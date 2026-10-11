@@ -7,9 +7,10 @@ from xml.dom import minidom
 from typing import Any
 from opengs_maptool.models.project import Project
 import opengs_maptool.logic.datastructure as ds
+from opengs_maptool.services.logging_service import LOGGING_SERVICE
 
 
-def export_image(path: str, image: Image.Image) -> None:
+def export_image(path: str, image: Image.Image, raise_on_error: bool) -> None:
     """Export an image to the specified file path."""
     if not image or not path:
         return
@@ -24,7 +25,9 @@ def export_image(path: str, image: Image.Image) -> None:
 
         image.save(path)
     except Exception as error:
-        print(f"Error saving image: {error}")
+        LOGGING_SERVICE.loggers.export.send(f"Error saving image: {error}")
+        if raise_on_error:
+            raise
 
 
 def export_territory_definitions(project: Project, path: str, fmt: str) -> None:
@@ -37,7 +40,7 @@ def export_territory_definitions(project: Project, path: str, fmt: str) -> None:
     data: dict[str, dict[str, Any]] = {}
     for d in territory_data:
         data[d.territory_id] = d.serialize_territory_json()
-    
+
     if fmt in ("json", "yaml", "xml"):
         if fmt == "json":
             _write_json(path, data)
