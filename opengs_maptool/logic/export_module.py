@@ -2,35 +2,57 @@ from __future__ import annotations
 from PIL import Image
 import json
 import csv
+import cv2
+import svgwrite
+import numpy as np
 import yaml
 import xml.etree.ElementTree as ET
 from xml.dom import minidom
-from typing import Any, ClassVar
+from typing import Any
 from enum import Enum
 from opengs_maptool.models.project import Project
 import opengs_maptool.logic.datastructure as ds
 from opengs_maptool.services.logging_service import LOGGING_SERVICE
 
 
-def export_image(path: str, image: Image.Image, raise_on_error: bool) -> None:
+def export_image(
+        path: str, image: Image.Image,
+        data: list[ds.RegionMetadata] | None = None,
+        raise_on_error: bool = False,
+    ) -> None:
     """Export an image to the specified file path."""
     if not image or not path:
         return
 
     try:
-        # Remove the alpha channel for JPEG image export
         ext = path.lower().rsplit('.', 1)[-1]
-        if ext in ("jpg", "jpeg"):
-            background = Image.new('RGB', image.size, (255, 255, 255))
-            background.paste(image, mask=image.split()[3]) 
-            """ TODO: fix this error (jpg export of province image)
-            background.paste(image, mask=image.split()[3])
-                                         ~~~~~~~~~~~~~^^^
-            IndexError: tuple index out of range
-            """
-            image = background
-
-        image.save(path)
+        if ext == "svg":
+            if data is not None:
+                try:
+                    _export_svg(path, image, data)
+                except Exception as error:
+                    LOGGING_SERVICE.loggers.export.send(f"Error exporting SVG image: {error}")
+                    if raise_on_error:
+                        raise
+            else:
+                message = f"Data is required for SVG image export, but none is provided for {path}"
+                LOGGING_SERVICE.loggers.export.send(message)
+                if raise_on_error:
+                    raise ValueError(message)
+        else:
+            # Remove the alpha channel for JPEG image export
+            if ext in ("jpg", "jpeg"):
+                background = Image.new('RGB', image.size, (255, 255, 255))
+                background.paste(image, mask=image.split()[3]) 
+                """ TODO: fix this error (happens on jpg export of province image)
+                background.paste(image, mask=image.split()[3])
+                                                ~~~~~~~~~~~~~^^^
+                IndexError: tuple index out of range
+                """
+                image = background
+            
+            image.save(path)
+        
     except Exception as error:
         LOGGING_SERVICE.loggers.export.send(f"Error saving image: {error}")
         if raise_on_error:
@@ -38,7 +60,7 @@ def export_image(path: str, image: Image.Image, raise_on_error: bool) -> None:
 
 
 
-FROMAT_ALIASES = {
+FORMAT_ALIASES = {
     "yml": "yaml"
 }
 
@@ -52,8 +74,8 @@ class ExportFormat(Enum):
     def get_by_path(cls, path: str, raise_on_unknown: bool = False) -> ExportFormat:
         """Return the export format corresponding to the file extension."""
         suffix = path.rpartition(".")[2].lower()
-        if suffix in FROMAT_ALIASES:
-            suffix = FROMAT_ALIASES[suffix]
+        if suffix in FORMAT_ALIASES:
+            suffix = FORMAT_ALIASES[suffix]
 
         try:
             return cls(suffix) # use the Enum constructor to get the corresponding enum
@@ -215,3 +237,30 @@ def _write_json(path: str, data: Any) -> None:
 def _write_yaml(path: str, data: Any) -> None:
     with open(path, "w", encoding="utf-8") as f:
         yaml.dump(data, f, sort_keys=False)
+
+def _export_svg(path: str, source_image: Image.Image, data: list[ds.RegionMetadata]) -> None:
+    """Export an image as an SVG file. Possibly raises exceptions if the export fails."""
+    w, h = source_image.size
+    drawing = svgwrite.Drawing(path, size=(w, h))
+
+    for region in data:
+        # OpenCV uses BGR format
+        image = cv2.cvtColor(np.array(source_image), cv2.COLOR_RGB2BGR)
+        target_color = np.array([region.B, region.G, region.R], dtype=np.uint8)
+
+        mask = cv2.inRange(image, target_color, target_color)
+
+        contours, _ = cv2.findContours(mask, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
+
+        for contour in contours:
+            points = [(float(pt[0][0]), float(pt[0][1])) for pt in contour]
+
+            color_hex = f"#{region.R:02x}{region.G:02x}{region.B:02x}"
+            
+            region_id = region.territory_id
+            if region.region_level == ds.RegionLevel.PROVINCE:
+                region_id = region.province_id
+
+            drawing.add(drawing.polygon(points, fill=color_hex, stroke="none", id=region_id))
+
+    drawing.save()

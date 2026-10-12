@@ -413,7 +413,9 @@ class LeftPanel(QWidget):
             actions_layout,
             "Export Territory Image",
             lambda: self._export_image(
-                self._context.project.territory_image, "Export Territory Image"
+                "Export Territory Image",
+                self._context.project.territory_image,
+                self._context.project.territory_data,
             )
         )
         btn_export_territory_image.setEnabled(self._context.project.territory_image != None)
@@ -531,7 +533,10 @@ class LeftPanel(QWidget):
             actions_layout,
             "Export Province Image",
             lambda: self._export_image(
-                self._context.project.province_image, "Export Province Image")
+                "Export Province Image",
+                self._context.project.province_image,
+                self._context.project.province_data,
+            )
         )
         btn_export_province_image.setEnabled(
             self._context.project.province_image != None
@@ -583,14 +588,17 @@ class LeftPanel(QWidget):
             error = self._context.import_service.import_terrain_image(path)
             self._show_error_modal_if_exception(error)
 
-    def _export_image(self, image: ds.TerritoryImage | ds.ProvinceImage | None, title: str):
+    def _export_image(self,
+                title: str, image: ds.TerritoryImage|ds.ProvinceImage|None,
+                data: list[ds.RegionMetadata]|None=None
+            ) -> None:
         if not image:
             return
         path = pick_save_image(self, title)
         if not path:
             return
 
-        export_image(path, image, raise_on_error=False)
+        export_image(path, image, data, raise_on_error=False)
 
     def _export_project_data(self, project, exporter_function: Callable[[Project, str, ExportFormat], None], title):
         path, fmt = pick_save_data(self, title)

@@ -50,14 +50,14 @@ def cmd_province_image_generate(context: ApplicationContext) -> CommandResponse:
 ])
 def cmd_territory_image_export(context: ApplicationContext, path: str) -> CommandResponse:
     """Exports the territory image."""
-    return export_generated_image(context.project.territory_image, path, "territory image")
+    return export_generated_image(context.project.territory_image, context.project.territory_data, path, "territory image")
 
 @register_command("province.image.export", args=[
     CommandArgSpec("path", arg_type=str, description="The path to export the province image to."),
 ])
 def cmd_province_image_export(context: ApplicationContext, path: str) -> CommandResponse:
     """Exports the province image."""
-    return export_generated_image(context.project.province_image, path, "province image")
+    return export_generated_image(context.project.province_image, context.project.province_data, path, "province image")
 
 
 @register_command("territory.definitions.export", args=[
@@ -202,11 +202,14 @@ def run_generation_task(context: ApplicationContext, task_function: Callable, ta
         # There is no known possible error.
         return CommandResponse(f"Failed {lowercase_title}: {str(error)}", MessageType.ERROR)
 
-def export_generated_image(image: ds.TerritoryImage | ds.ProvinceImage | None, path: str, name: str) -> CommandResponse:
+def export_generated_image(
+        image: ds.TerritoryImage|ds.ProvinceImage|None, data: list[ds.RegionMetadata]|None,
+        path: str, name: str
+        ) -> CommandResponse:
     if not image:
         return CommandResponse(f"No {name} to export.", MessageType.ERROR)
     try:
-        export_image(path, image, raise_on_error=True)
+        export_image(path, image, data, raise_on_error=True)
         return CommandResponse(f"Exported {name} to {path}.", MessageType.NORMAL)
     except Exception as error:
         if isinstance(error, ValueError) and "unknown file extension" in str(error):

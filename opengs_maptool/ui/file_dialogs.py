@@ -10,10 +10,13 @@ IMAGE_FILTERS = (
     "JPEG Files (*.jpg *.jpeg);;"
     "BMP Files (*.bmp);;"
     "GIF Files (*.gif);;"
+    "SVG Files (*.svg);;"
     "TIFF Files (*.tiff *.tif);;"
     "WebP Files (*.webp);;"
     "All Files (*)"
 )
+
+IMAGE_IMPORT_FILTER = "Images (*.png *.jpg *.jpeg *.bmp *.gif)"
 
 DATA_FILTERS = (
     "JSON Files (*.json);;"
@@ -118,7 +121,7 @@ def _run_save_dialog(parent, title: str, filters: str) -> tuple[str | None, str 
 
 def pick_open_image(parent, title):
     path, _ = QFileDialog.getOpenFileName(
-        parent, title, "", "Images (*.png *.jpg *.jpeg *.bmp *.gif)"
+        parent, title, "", IMAGE_IMPORT_FILTER,
     )
     return path or None
 
