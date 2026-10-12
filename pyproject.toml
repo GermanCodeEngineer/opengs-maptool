@@ -22,6 +22,7 @@ dependencies = [
     "platformdirs>=4.0.0",
     "opencv-python>=4.13.0.92",
     "svgwrite>=1.4.3",
+    "promise>=2.3",
 ]
 
 classifiers = [

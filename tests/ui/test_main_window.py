@@ -3,6 +3,7 @@ import os
 # Must be set before any QApplication is constructed.
 os.environ.setdefault("QT_QPA_PLATFORM", "offscreen")
 
+from opengs_maptool.context import ApplicationContext
 import pytest
 from PyQt6.QtWidgets import QApplication, QGroupBox, QPushButton
 
@@ -74,10 +75,13 @@ def occupied_generation_slot(monkeypatch):
     occupied = []
 
     def occupy(window, slot):
-        occupied.append((window._context.task_controller, slot))
-        return window._context.task_controller.start_task(
+        context: ApplicationContext = window._context
+        occupied.append((context.task_controller, slot))
+        return context.task_controller.start_task(
             lambda progress_controller: None,
-            title="busy", slot=slot, pos_args=[], kw_args={},
+            title="busy", slot=slot, provide_progress_controller=True,
+            pos_args=[], kw_args={},
+            before_start_callback=None,
         )
 
     yield occupy

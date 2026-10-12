@@ -1,10 +1,12 @@
 from html import escape
 import opengs_maptool.config as config
+from opengs_maptool.controllers.task_controller import ThreadTaskSlot
 from opengs_maptool.context import ApplicationContext
-from opengs_maptool.services.command_service import execute_command_string, execute_command_list, serialize_command
+from opengs_maptool.services.command_service import execute_command_string, serialize_command
 from opengs_maptool.models.command_response import CommandResponse
 from opengs_maptool.models.message import Message, MessageAuthor, MessageType
 from opengs_maptool.ui.modals.error_modal import ErrorModal
+from PyQt6.QtCore import QEventLoop
 from PyQt6.QtGui import QFontDatabase, QTextCursor
 from PyQt6.QtWidgets import QFileDialog, QTextEdit, QVBoxLayout, QWidget, QLineEdit, QPushButton, QHBoxLayout, QSizePolicy
 
@@ -68,8 +70,8 @@ class ConsoleWidget(QWidget):
                 message_color = config.CONSOLE_COMMAND_COLOR
                 if message.author == MessageAuthor.USER:
                     message_text = f"USER COMMAND >> {message_text}"
-                elif message.author == MessageAuthor.SYSTEM: # Only used for testing purposes.
-                    message_text = f"GUI SYSTEM COMMAND >> {message_text}"
+                elif message.author == MessageAuthor.SYSTEM:
+                    message_text = f"AUTOMATED COMMAND >> {message_text}"
 
             case MessageType.NORMAL:
                 message_color = config.CONSOLE_NORMAL_COLOR
@@ -99,39 +101,41 @@ class ConsoleWidget(QWidget):
         """
         Sends and displays a user command in the console
         """
+        if self._context.task_controller.is_thread_slot_occupied(ThreadTaskSlot.execute_command):
+            return
+
         user_message_text = self._input.text().strip()
+        self._input.clear()
 
         if len(user_message_text) == 0:
             return
 
-
         command_message = self._context.console_controller.add_command_message(user_message_text, MessageAuthor.USER)
         self.print_message(command_message) # Show message in widget
 
-        # Process command
-        system_response = execute_command_string(self._context, command_message.text)
-        self._process_command_response(system_response)
-
-        # Update GUI
-        self._input.clear()
+        promise = execute_command_string(self._context, command_message.text)
+        promise.then(self._process_command_response)
 
     def submit_system_command(self, command_segments: list[str]) -> CommandResponse:
-        """
-        Only used for testing purposes.
-        Sends and displays a GUI command in the console.
-        """
-        if len(command_segments) == 0:
-            # Generate error response for empty command
-            return execute_command_list(self._context, command_segments)
-
-        # Print joined command
+        """Send a command and return response without blocking the UI."""
         command_text = serialize_command(command_segments)
-        gui_message = self._context.console_controller.add_command_message(command_text, MessageAuthor.SYSTEM)
-        self.print_message(gui_message) # Show message in widget
+        command_message = self._context.console_controller.add_command_message(command_text, MessageAuthor.SYSTEM)
+        self.print_message(command_message)
 
-        # Process non-joined command
-        system_response = execute_command_list(self._context, command_segments)
-        self._process_command_response(system_response)
+        promise = execute_command_string(self._context, command_text)
+
+        response = None
+        def callback(r):
+            nonlocal response
+            response = r
+            self._process_command_response(response)
+            loop.quit()
+        promise.then(callback)
+
+        loop = QEventLoop()
+        loop.exec()
+
+        return response
 
     def _process_command_response(self, response: CommandResponse) -> None:
         message = response.as_message()

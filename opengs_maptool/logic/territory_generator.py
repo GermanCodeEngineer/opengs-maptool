@@ -1,7 +1,7 @@
 from __future__ import annotations
 from typing import TYPE_CHECKING, Any
 if TYPE_CHECKING:
-    from opengs_maptool.context import LimitedTaskContext
+    from opengs_maptool.context import ApplicationContext
 
 import numpy as np
 from numpy.typing import NDArray
@@ -15,13 +15,13 @@ import opengs_maptool.logic.datastructure as ds
 from opengs_maptool.simple_types import TabName
 
 def generate_territory_map(
-        task_ctx: LimitedTaskContext, progress_controller: ProgressController
+        task_ctx: ApplicationContext, progress_controller: ProgressController
     ) -> tuple[ds.TerritoryImage, list[ds.RegionMetadata]] | tuple[None, None]:
     """
     Generate a territory map for the given project, updating the progress with "virtually calculated step numbers" as it goes.
     """
     # Safety check matching the button setEnabled condition
-    if not task_ctx.project.can_territory_image_be_generated():
+    if not task_ctx.project.can_territory_image_be_generated(task_ctx, ignore_locked=True):
         return None, None
 
     """
@@ -85,7 +85,7 @@ def generate_territory_map(
                 masks.sea_fill, masks.sea_border, sea_points, next_index,
                 series, ds.RegionType.OCEAN, ds.RegionLevel.TERRITORY,
                 sub_progress4,
-                density=sea_density, density_strength=sea_density_strength, 
+                density=sea_density, density_strength=sea_density_strength,
                 amplitude_factor=ocean_amplitude_factor
             )
         else:
