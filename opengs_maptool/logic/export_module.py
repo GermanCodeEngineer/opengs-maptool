@@ -1,6 +1,9 @@
 from PIL import Image
 import json
 import csv
+import cv2
+import svgwrite
+import numpy as np
 import yaml
 import xml.etree.ElementTree as ET
 from xml.dom import minidom
@@ -9,20 +12,28 @@ from opengs_maptool.models.project import Project
 import opengs_maptool.logic.datastructure as ds
 
 
-def export_image(path: str, image: Image.Image) -> None:
+def export_image(path: str, image: Image.Image, data: dict[str, dict[str, Any]] = None) -> None:
     """Export an image to the specified file path."""
     if not image or not path:
         return
 
     try:
-        # Remove the alpha channel for JPEG image export
         ext = path.lower().rsplit('.', 1)[-1]
-        if ext in ("jpg", "jpeg"):
-            background = Image.new('RGB', image.size, (255, 255, 255))
-            background.paste(image, mask=image.split()[3])
-            image = background
+        
+        if ext == "svg":
+            if data is not None:
+                _export_svg(path, image, data)
+            else:
+                raise ValueError(f"Data is required for SVG export, but not provided for {path}")
+        else:
+            # Remove the alpha channel for JPEG image export
+            if ext in ("jpg", "jpeg"):
+                background = Image.new('RGB', image.size, (255, 255, 255))
+                background.paste(image, mask=image.split()[3])
+                image = background
+            
+            image.save(path)
 
-        image.save(path)
     except Exception as error:
         print(f"Error saving image: {error}")
 
@@ -179,3 +190,34 @@ def _write_json(path: str, data: Any) -> None:
 def _write_yaml(path: str, data: Any) -> None:
     with open(path, "w", encoding="utf-8") as f:
         yaml.dump(data, f, sort_keys=False)
+
+def _export_svg(path: str, source_image: Image.Image, data: list[ds.RegionMetadata]) -> None:
+    """Export an image as an SVG file."""
+    try:
+        w, h = source_image.size
+        drawing = svgwrite.Drawing(path, size=(w, h))
+
+        for region in data:
+            # OpenCV uses BGR format
+            image = cv2.cvtColor(np.array(source_image), cv2.COLOR_RGB2BGR)
+            target_color = np.array([region.B, region.G, region.R], dtype=np.uint8)
+
+            mask = cv2.inRange(image, target_color, target_color)
+
+            contours, _ = cv2.findContours(mask, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
+
+            for contour in contours:
+                points = [(float(pt[0][0]), float(pt[0][1])) for pt in contour]
+
+                color_hex = f"#{region.R:02x}{region.G:02x}{region.B:02x}"
+                
+                region_id = region.territory_id
+                if region.region_level == ds.RegionLevel.PROVINCE:
+                    region_id = region.province_id
+
+                drawing.add(drawing.polygon(points, fill=color_hex, stroke="none", id=region_id))
+
+        drawing.save()
+
+    except Exception as error:
+        print(f"Error exporting SVG: {error}")

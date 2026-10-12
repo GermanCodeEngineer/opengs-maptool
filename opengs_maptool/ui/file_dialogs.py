@@ -9,6 +9,7 @@ IMAGE_FILTERS = (
     "JPEG Files (*.jpg *.jpeg);;"
     "BMP Files (*.bmp);;"
     "GIF Files (*.gif);;"
+    "SVG Files (*.svg);;"
     "TIFF Files (*.tiff *.tif);;"
     "WebP Files (*.webp);;"
     "All Files (*)"

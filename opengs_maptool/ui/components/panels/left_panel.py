@@ -436,7 +436,10 @@ class LeftPanel(QWidget):
             actions_layout,
             "Export Territory Image",
             lambda: self._export_image(
-                self._context.project.territory_image, "Export Territory Image")
+                "Export Territory Image",
+                self._context.project.territory_image,
+                self._context.project.territory_data
+            )
         )
         btn_export_territory_image.setEnabled(
             self._context.project.territory_image != None)
@@ -561,7 +564,10 @@ class LeftPanel(QWidget):
             actions_layout,
             "Export Province Image",
             lambda: self._export_image(
-                self._context.project.province_image, "Export Province Image")
+                "Export Province Image",
+                self._context.project.province_image,
+                self._context.project.province_data
+            )
         )
         btn_export_province_image.setEnabled(
             self._context.project.province_image != None)
@@ -611,12 +617,12 @@ class LeftPanel(QWidget):
             error = self._context.import_service.import_terrain_image(path)
             self._show_error_modal_if_exception(error)
 
-    def _export_image(self, image, title):
+    def _export_image(self, title, image, data=None):
         path = pick_save_image(self, title)
         if not path:
             return
 
-        export_image(path, image)
+        export_image(path, image, data)
 
     def _export_project_data(self, project, exporter_function, title):
         path, fmt = pick_save_data(self, title)
