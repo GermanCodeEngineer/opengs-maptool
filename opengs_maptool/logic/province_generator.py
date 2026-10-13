@@ -249,7 +249,6 @@ def generate_province_map(
     with progress_controller.execute_phase(phase6):
         task_ctx.project_controller.set_province_image(province_image)
         task_ctx.project_controller.set_province_data(all_metadata)
-        task_ctx.refresh_tab_view(TabName.PROVINCE)
 
     return province_image, all_metadata
 

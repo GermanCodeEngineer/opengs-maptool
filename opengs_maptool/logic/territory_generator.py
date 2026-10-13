@@ -110,6 +110,5 @@ def generate_territory_map(
         controller.set_territory_data(metadata)
         controller.set_territory_pmap(combined_pmap)
         controller.set_cached_masks(masks)
-        task_ctx.refresh_tab_view(TabName.TERRITORY)
 
     return territory_image, metadata

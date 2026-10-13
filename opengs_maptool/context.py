@@ -14,7 +14,6 @@ from opengs_maptool.simple_types import TabName
 
 
 class ApplicationEvents(QObject):
-    refresh_tab_view_requested = pyqtSignal(object)
     refresh_after_project_change_requested = pyqtSignal()
 
 
@@ -48,9 +47,6 @@ class ApplicationContext:
         # Only used for testing purposes.
         self.submit_system_command: Callable[[list[str|int|float|bool]], CommandResponse]
         self.submit_system_command = lambda _segments: CommandResponse("Internal error: No command handler assigned.", MessageType.ERROR)
-
-    def refresh_tab_view(self, tab_name: TabName) -> None:
-        self.events.refresh_tab_view_requested.emit(tab_name)
 
     def refresh_after_project_change(self) -> None:
         self.events.refresh_after_project_change_requested.emit()

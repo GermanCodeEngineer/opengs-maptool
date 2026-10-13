@@ -76,10 +76,6 @@ class LeftPanel(QWidget):
             toast_container_layout=self.toast_container_layout,
         )
 
-        # Listen to context refresh requests; emissions from worker threads are
-        # queued to this UI-thread receiver by Qt.
-        self._context.events.refresh_tab_view_requested.connect(self._refresh_tab_view)
-
         # Prepare Context
         self._context.task_controller.thread_task_slot_occupied.connect(self._on_thread_slot_occupied)
         self._context.task_controller.thread_task_slot_freed.connect(self._on_thread_slot_freed)
@@ -609,17 +605,58 @@ class LeftPanel(QWidget):
 
     def _on_project_modification(self, attribute: ProjectAttribute):
         if attribute in {
+            ProjectAttribute.land_image,
             ProjectAttribute.land_color,
             ProjectAttribute.ocean_color,
             ProjectAttribute.lake_color,
         }:
-            self._refresh_tab_view(TabName.LAND) # update color pickers
+            # update image displays
+            self._refresh_tab_view(TabName.LAND) # update color pickers and land informations
 
         if attribute in {
+            ProjectAttribute.boundary_image,
+        }:
+            # update image displays
+            self._refresh_tab_view(TabName.BOUNDARY)
+
+        if attribute in {
+            ProjectAttribute.density_image,
             ProjectAttribute.territory_exclude_ocean,
             ProjectAttribute.province_exclude_ocean,
+            # Density buttons are already updated on slot changes
         }:
+            # update image displays
             self._refresh_tab_view(TabName.DENSITY) # update checkboxes
+
+        if attribute in {
+            ProjectAttribute.terrain_image,
+        }:
+            self._refresh_tab_view(TabName.TERRAIN)
+
+        if attribute in {
+            ProjectAttribute.territory_image,
+            ProjectAttribute.territory_data,
+            ProjectAttribute.land_territory_density,
+            ProjectAttribute.oceanic_territory_density,
+            ProjectAttribute.territory_density_strength,
+            ProjectAttribute.territory_jagged_land_amplitude,
+            ProjectAttribute.territory_jagged_ocean_amplitude,
+            # Generate Territories button are already updated on slot changes
+        }:
+            # update image displays
+            self._refresh_tab_view(TabName.TERRITORY)
+
+        if attribute in {
+            ProjectAttribute.province_image,
+            ProjectAttribute.province_data,
+            ProjectAttribute.land_province_density,
+            ProjectAttribute.oceanic_province_density,
+            ProjectAttribute.province_density_strength,
+            ProjectAttribute.province_jagged_land_amplitude,
+            ProjectAttribute.province_jagged_ocean_amplitude,
+        }:
+            # update image displays
+            self._refresh_tab_view(TabName.PROVINCE)
 
     def _update_land_color(self, color):
         self._context.project_controller.set_land_color(color) # Causes the above listener

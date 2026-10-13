@@ -7,7 +7,6 @@ import opengs_maptool.config as config
 import numpy as np
 from PIL import Image
 from opengs_maptool.controllers.progress_controller import ProgressController
-from opengs_maptool.simple_types import TabName
 
 
 def normalize_density_image(task_ctx: ApplicationContext, progress_controller: ProgressController)-> None:
@@ -20,7 +19,6 @@ def normalize_density_image(task_ctx: ApplicationContext, progress_controller: P
         density_image = Image.new("L", (w, h), config.DEFAULT_DENSITY_GREY)
 
         task_ctx.project_controller.set_density_image(density_image)
-        task_ctx.refresh_tab_view(TabName.DENSITY)
 
 def equator_density_image(task_ctx: ApplicationContext, progress_controller: ProgressController) -> None:
     phase1 = progress_controller.add_phase(step_weight=1, msg="Calculating density values")
@@ -45,7 +43,6 @@ def equator_density_image(task_ctx: ApplicationContext, progress_controller: Pro
     with progress_controller.execute_phase(phase3):
         density_image = Image.fromarray(arr, mode="L")
         task_ctx.project_controller.set_density_image(density_image)
-        task_ctx.refresh_tab_view(TabName.DENSITY)
 
 # TODO: Move this function, it doesn't belong in this file
 # -> if done, remove progress_controller argument
@@ -56,4 +53,3 @@ def remove_density_image(task_ctx: ApplicationContext, progress_controller: Prog
         return
 
     task_ctx.project_controller.set_density_image(None)
-    task_ctx.refresh_tab_view(TabName.DENSITY)

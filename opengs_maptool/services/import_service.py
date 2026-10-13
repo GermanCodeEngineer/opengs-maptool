@@ -17,7 +17,6 @@ class ImportService:
             image = load_input_image(path, image_channel_mode="RGBA")
             self._context.project_controller.set_land_image(image)
             self._context.project_controller.set_density_image(None) # I didn't think of this, i only kept it.
-            self._context.refresh_tab_view(TabName.LAND) # We can't rely on current tab name
         except (ImageLoadingError, ImageLoadingConfigurationError) as error:
             return error
 
@@ -25,7 +24,6 @@ class ImportService:
         try:
             image = load_input_image(path, image_channel_mode="RGB")
             self._context.project_controller.set_boundary_image(image)
-            self._context.refresh_tab_view(TabName.BOUNDARY) # We can't rely on current tab name
         except (ImageLoadingError, ImageLoadingConfigurationError) as error:
             return error
 
@@ -33,7 +31,6 @@ class ImportService:
         try:
             image = load_input_image(path, image_channel_mode="L")
             self._context.project_controller.set_density_image(image)
-            self._context.refresh_tab_view(TabName.DENSITY) # We can't rely on current tab name
         except (ImageLoadingError, ImageLoadingConfigurationError) as error:
             return error
 
@@ -41,6 +38,5 @@ class ImportService:
         try:
             image = load_input_image(path, image_channel_mode="RGB")
             self._context.project_controller.set_terrain_image(image)
-            self._context.refresh_tab_view(TabName.TERRAIN) # We can't rely on current tab name
         except (ImageLoadingError, ImageLoadingConfigurationError) as error:
             return error
