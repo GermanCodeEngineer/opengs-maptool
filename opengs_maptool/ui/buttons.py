@@ -1,11 +1,11 @@
 from PyQt6.QtWidgets import (
-    QColorDialog, QHBoxLayout, QLabel, QSlider, QPushButton, QCheckBox
+    QColorDialog, QHBoxLayout, QLabel, QSlider, QPushButton, QCheckBox, QLayout,
 )
-from PyQt6.QtCore import Qt, pyqtSignal
+from PyQt6.QtCore import Qt, QTimer, pyqtSignal
 from PyQt6.QtGui import QColor
 
-def create_slider(
-    parent_layout,
+def create_timeout_slider(
+    parent_layout: QLayout,
     label_text: str,
     minimum: int,
     maximum: int,
@@ -13,7 +13,8 @@ def create_slider(
     tick_interval: int = 100,
     step: int = 100,
     onchange_callback_function = None,
-    display_scale: float = None
+    display_scale: float = None,
+    cooldown_ms: int = 1000,
 ):
 
     row = QHBoxLayout()
@@ -22,12 +23,10 @@ def create_slider(
     label = QLabel(label_text)
     row.addWidget(label)
 
-    slider = QSlider(Qt.Orientation.Horizontal)
-    slider.setMinimum(minimum)
-    slider.setMaximum(maximum)
-    slider.setValue(default)
-    slider.setTickInterval(tick_interval)
-    slider.setSingleStep(step)
+    slider = TimeoutSlider(
+        Qt.Orientation.Horizontal, minimum, maximum, default, tick_interval,
+        step, onchange_callback_function, cooldown_ms=cooldown_ms
+    )
     row.addWidget(slider, stretch=1)
 
     def format_value(v):
@@ -37,10 +36,48 @@ def create_slider(
 
     value_label = QLabel(format_value(default))
     row.addWidget(value_label)
+
     slider.valueChanged.connect(lambda v: value_label.setText(format_value(v)))
-    if onchange_callback_function:
-        slider.valueChanged.connect(onchange_callback_function)
+    
     return slider
+
+class TimeoutSlider(QSlider):
+    """
+    A slider, that only lets the callback run after a coolback after the slider stopped changing.
+    This prevents freezing possibly freezing the slider after a small change.
+    """
+    def __init__(
+        self,
+        orientation,
+        minimum: int,
+        maximum: int,
+        default: int,
+        tick_interval: int,
+        step: int,
+        onchange=None,
+        parent=None,
+        cooldown_ms: int = 1000,
+    ):
+        super().__init__(orientation, parent)
+        self.setMinimum(minimum)
+        self.setMaximum(maximum)
+        self.setValue(default)
+        self.setTickInterval(tick_interval)
+        self.setSingleStep(step)
+
+        if onchange:
+            self._onchange = onchange
+            self._cooldown_timer = QTimer(self)
+            self._cooldown_timer.setSingleShot(True)
+            self._cooldown_timer.setInterval(cooldown_ms)
+            self._cooldown_timer.timeout.connect(self._emit_onchange)
+            self.valueChanged.connect(self._restart_cooldown)
+
+    def _restart_cooldown(self, _value: int) -> None:
+        self._cooldown_timer.start()
+
+    def _emit_onchange(self) -> None:
+        self._onchange(self.value())
 
 
 def create_button(
