@@ -631,6 +631,7 @@ class LeftPanel(QWidget):
         if attribute in {
             ProjectAttribute.terrain_image,
         }:
+            # update image displays
             self._refresh_tab_view(TabName.TERRAIN)
 
         if attribute in {

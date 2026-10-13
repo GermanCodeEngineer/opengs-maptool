@@ -1,5 +1,4 @@
 from typing import Callable
-from PyQt6.QtCore import QObject, pyqtSignal
 from opengs_maptool.controllers.console_controller import ConsoleController
 from opengs_maptool.controllers.project_controller import ProjectController
 from opengs_maptool.controllers.task_controller import TaskController
@@ -10,11 +9,6 @@ from opengs_maptool.models.project import Project
 from opengs_maptool.services.console_service import ConsoleService
 from opengs_maptool.services.import_service import ImportService
 from opengs_maptool.services.project_service import ProjectService
-from opengs_maptool.simple_types import TabName
-
-
-class ApplicationEvents(QObject):
-    refresh_after_project_change_requested = pyqtSignal()
 
 
 class ApplicationContext:
@@ -27,7 +21,6 @@ class ApplicationContext:
     """
 
     def __init__(self):
-        self.events = ApplicationEvents()
         self.project = Project()
         self.console = Console()
 
@@ -44,9 +37,6 @@ class ApplicationContext:
         self.task_controller = TaskController()
 
         # UI callback assigned by RightPanel once ConsoleWidget is initialized.
-        # Only used for testing purposes.
+        # Only used for testing purposes for now.
         self.submit_system_command: Callable[[list[str|int|float|bool]], CommandResponse]
         self.submit_system_command = lambda _segments: CommandResponse("Internal error: No command handler assigned.", MessageType.ERROR)
-
-    def refresh_after_project_change(self) -> None:
-        self.events.refresh_after_project_change_requested.emit()

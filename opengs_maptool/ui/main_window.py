@@ -39,7 +39,6 @@ class MainWindow(QMainWindow):
         self._init_layout()
 
         # Refresh UI when context reports project-level changes.
-        self._context.events.refresh_after_project_change_requested.connect(self._refresh_after_project_change)
         self._context.project_controller.project_was_modified.connect(self._update_window_title)
 
     def _update_window_title(self, attribute: ProjectAttribute):
@@ -120,11 +119,6 @@ class MainWindow(QMainWindow):
                     tab.get_image_display().set_image(self._context.project.province_image)
 
 
-    def get_current_image_display(self):
-        current_tab = self._tabs.currentWidget()
-        return current_tab.get_image_display()
-
-
     # TODO: Perhaps create an actions file containing all the actions instead of storing them here
     def _create_actions(self):
         self.action_new = QAction(qta.icon('fa6s.file'), "New", self)
@@ -188,7 +182,6 @@ class MainWindow(QMainWindow):
             return
 
         self._context.project_controller.create_project()
-        self._refresh_after_project_change()
 
 
     def _open_project(self):
@@ -202,7 +195,6 @@ class MainWindow(QMainWindow):
 
         try:
             self._context.project_controller.load_project(filename)
-            self._refresh_after_project_change()
         except Exception:
             error_text = "Cannot open this file, incompatible format"
             error_modal = ErrorModal(self, error_text)
@@ -228,8 +220,7 @@ class MainWindow(QMainWindow):
 
     def _open_project_details(self):
         modal = ProjectDetailsModal(self, self._context.project_controller)
-        if modal.exec():
-            self._refresh_after_project_change()
+        modal.exec()
 
 
     def _confirm_discarded_changes(self) -> bool:
@@ -245,12 +236,6 @@ class MainWindow(QMainWindow):
             return True
         else:
             return False
-
-
-    def _refresh_after_project_change(self):
-        self.update_current_left_panel()
-        self.update_all_image_displays()
-        self.setWindowTitle(self._context.project.name + " - " + config.TITLE)
 
 
     def closeEvent(self, event):

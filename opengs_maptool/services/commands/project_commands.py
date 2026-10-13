@@ -22,7 +22,6 @@ def cmd_project_new(context: ApplicationContext, force: bool = False) -> Command
         )
 
     context.project_controller.create_project()
-    context.refresh_after_project_change()
     return CommandResponse("New project created", MessageType.NORMAL)
 
 @register_command(
@@ -42,7 +41,6 @@ def cmd_project_open(context: ApplicationContext, path: str, force: bool = False
 
     try:
         context.project_controller.load_project(path)
-        context.refresh_after_project_change()
     except Exception as error:
         return CommandResponse(f"Failed to open project file, possibly because of an incompatible format: {error}", MessageType.ERROR)
 
