@@ -295,14 +295,16 @@ class LeftPanel(QWidget):
         # Territory exclude ocean checkbox
         checkbox_territory_exclude_ocean = create_checkbox(
             actions_layout, "Exclude Ocean Territories",
-            lambda value: self._context.project_controller.set_territory_exclude_ocean(bool(value))
+            lambda value: setattr(
+                self._context.project, 'territory_exclude_ocean', bool(value)
+            )
         )
         checkbox_territory_exclude_ocean.setChecked(self._context.project.territory_exclude_ocean)
 
         # Province exclude ocean checkbox
         checkbox_province_exclude_ocean = create_checkbox(
             actions_layout, "Exclude Ocean Provinces",
-            lambda value: self._context.project_controller.set_province_exclude_ocean(bool(value))
+            lambda value: setattr(self._context.project, 'province_exclude_ocean', bool(value))
         )
         checkbox_province_exclude_ocean.setChecked(self._context.project.province_exclude_ocean)
 
@@ -338,7 +340,7 @@ class LeftPanel(QWidget):
             self._context.project.land_territory_density,
             config.LAND_TERRITORIES_TICK,
             config.LAND_TERRITORIES_STEP,
-            lambda value: self._context.project_controller.set_land_territory_density(value)
+            lambda value: setattr(self._context.project, 'land_territory_density', value)
         )
 
         # Set oceanic territory density slider
@@ -350,7 +352,7 @@ class LeftPanel(QWidget):
             self._context.project.oceanic_territory_density,
             config.OCEAN_TERRITORIES_TICK,
             config.OCEAN_TERRITORIES_STEP,
-            lambda value: self._context.project_controller.set_oceanic_territory_density(value)
+            lambda value: setattr(self._context.project, 'oceanic_territory_density', value)
         )
 
         # Set territory density strength slider
@@ -362,7 +364,7 @@ class LeftPanel(QWidget):
             self._context.project.territory_density_strength,
             config.DENSITY_STRENGTH_TICK,
             config.DENSITY_STRENGTH_STEP,
-            lambda value: self._context.project_controller.set_territory_density_strength(value),
+            lambda value: setattr(self._context.project, 'territory_density_strength', value),
             display_scale=(1/config.DENSITY_STRENGTH_DIVISOR),
         )
 
@@ -375,8 +377,9 @@ class LeftPanel(QWidget):
             self._context.project.territory_jagged_land_amplitude,
             config.JAGGED_BORDER_LAND_AMPLITUDE_TICK,
             config.JAGGED_BORDER_LAND_AMPLITUDE_STEP,
-            lambda value: self._context.project_controller.set_territory_jagged_land_amplitude(value),
-            display_scale=(1/config.JAGGED_BORDER_LAND_AMPLITUDE_DIVISOR)
+            lambda value: setattr(self._context.project,
+                                  'territory_jagged_land_amplitude', value),
+            display_scale=(1/config.JAGGED_BORDER_LAND_AMPLITUDE_DIVISOR),
         )
 
         # Set territory jagged Ocean Slider
@@ -388,8 +391,9 @@ class LeftPanel(QWidget):
             self._context.project.territory_jagged_ocean_amplitude,
             config.JAGGED_BORDER_OCEAN_AMPLITUDE_TICK,
             config.JAGGED_BORDER_OCEAN_AMPLITUDE_STEP,
-            lambda value: self._context.project_controller.set_territory_jagged_ocean_amplitude(value),
-            display_scale=(1/config.JAGGED_BORDER_OCEAN_AMPLITUDE_DIVISOR)
+            lambda value: setattr(self._context.project,
+                                  'territory_jagged_ocean_amplitude', value),
+            display_scale=(1/config.JAGGED_BORDER_OCEAN_AMPLITUDE_DIVISOR),
         )
 
         # Generate territories button
@@ -457,7 +461,7 @@ class LeftPanel(QWidget):
             self._context.project.land_province_density,
             config.LAND_PROVINCES_TICK,
             config.LAND_PROVINCES_STEP,
-            lambda value: self._context.project_controller.set_land_province_density(value)
+            lambda value: setattr(self._context.project, 'land_province_density', value)
         )
 
         # Set oceanic province density slider
@@ -469,7 +473,7 @@ class LeftPanel(QWidget):
             self._context.project.oceanic_province_density,
             config.OCEAN_PROVINCES_TICK,
             config.OCEAN_PROVINCES_STEP,
-            lambda value: self._context.project_controller.set_oceanic_province_density(value)
+            lambda value: setattr(self._context.project, 'oceanic_province_density', value)
         )
 
         # Set province density strength slider
@@ -481,8 +485,8 @@ class LeftPanel(QWidget):
             self._context.project.province_density_strength,
             config.DENSITY_STRENGTH_TICK,
             config.DENSITY_STRENGTH_STEP,
-            lambda value: self._context.project_controller.set_province_density_strength(value),
-            display_scale=(1/config.DENSITY_STRENGTH_DIVISOR)
+            lambda value: setattr(self._context.project, 'province_density_strength', value),
+            display_scale=(1/config.DENSITY_STRENGTH_DIVISOR),
         )
 
         # Set province jagged land Slider
@@ -494,8 +498,9 @@ class LeftPanel(QWidget):
             self._context.project.province_jagged_land_amplitude,
             config.JAGGED_BORDER_LAND_AMPLITUDE_TICK,
             config.JAGGED_BORDER_LAND_AMPLITUDE_STEP,
-            lambda value: self._context.project_controller.set_province_jagged_land_amplitude(value),
-            display_scale=(1/config.JAGGED_BORDER_LAND_AMPLITUDE_DIVISOR)
+            lambda value: setattr(self._context.project,
+                                  'province_jagged_land_amplitude', value),
+            display_scale=(1/config.JAGGED_BORDER_LAND_AMPLITUDE_DIVISOR),
         )
 
         # Set province jagged Ocean Slider
@@ -507,8 +512,9 @@ class LeftPanel(QWidget):
             self._context.project.province_jagged_ocean_amplitude,
             config.JAGGED_BORDER_OCEAN_AMPLITUDE_TICK,
             config.JAGGED_BORDER_OCEAN_AMPLITUDE_STEP,
-            lambda value: self._context.project_controller.set_province_jagged_ocean_amplitude(value),
-            display_scale=(1/config.JAGGED_BORDER_OCEAN_AMPLITUDE_DIVISOR)
+            lambda value: setattr(self._context.project,
+                                  'province_jagged_ocean_amplitude', value),
+            display_scale=(1/config.JAGGED_BORDER_OCEAN_AMPLITUDE_DIVISOR),
         )
 
         # Generate provinces button
