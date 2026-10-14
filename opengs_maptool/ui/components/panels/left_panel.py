@@ -30,7 +30,7 @@ from opengs_maptool.logic.province_generator import generate_province_map
 from opengs_maptool.models.project import Project
 from opengs_maptool.simple_types import TabName
 from opengs_maptool.ui.buttons import (
-    create_button, create_checkbox, create_timeout_slider, ColorPickerButton
+    create_button, create_checkbox, create_slider, ColorPickerButton
 )
 from opengs_maptool.ui.file_dialogs import (
     pick_open_image, pick_save_data, pick_save_image
@@ -216,7 +216,7 @@ class LeftPanel(QWidget):
             tab_name, attribute, label, minimum, maximum, tick_interval, step,
             setter, display_scale,
         ) in slider_specs:
-            slider = create_timeout_slider(
+            slider = create_slider(
                 self._generation_slider_widgets[tab_name].layout(),
                 label,
                 minimum,
