@@ -13,6 +13,7 @@ from opengs_maptool.logic import datastructure as ds
 class ProjectAttribute(Enum):
     """
     Enum representing the various attributes of a project.
+    The attribute names have to match the project attributes exactly.
     """
     # Project description
     name = auto()

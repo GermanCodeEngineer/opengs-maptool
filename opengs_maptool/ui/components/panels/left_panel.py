@@ -8,7 +8,7 @@ from PyQt6 import sip
 from PyQt6.QtCore import Qt
 from PyQt6.QtWidgets import (
     QFormLayout, QGroupBox, QLineEdit, QPushButton,
-    QScrollArea, QVBoxLayout, QWidget
+    QScrollArea, QStackedWidget, QVBoxLayout, QWidget
 )
 
 import opengs_maptool.config as config
@@ -47,8 +47,11 @@ class LeftPanel(QWidget):
         # Import buttons on the currently displayed tab, rebuilt on every tab
         # switch. Guardrails disable these while a map is generating.
         self._import_buttons: list[QPushButton] = []
-        # Density readouts on the land tab, rebuilt on every tab switch.
+        # Density readouts on the cached Land page, refreshed when it is shown.
         self._land_density_fields: list[QLineEdit] = []
+        self._land_color_buttons: dict[ProjectAttribute, ColorPickerButton] = {}
+        self._project_checkboxes: dict[ProjectAttribute, Any] = {}
+        self._export_buttons_by_attribute: dict[ProjectAttribute, list[QPushButton]] = {}
 
         self.setMinimumWidth(280)
         self._layout = QVBoxLayout(self)
@@ -58,6 +61,11 @@ class LeftPanel(QWidget):
 
         self._content_widget = QWidget()
         self._content_layout = QVBoxLayout(self._content_widget)
+        self._page_stack = QStackedWidget(self._content_widget)
+        self._content_layout.addWidget(self._page_stack)
+        self._tab_pages: dict[TabName, QWidget] = {}
+        self._tab_page_layouts: dict[TabName, QVBoxLayout] = {}
+        self._tab_import_buttons: dict[TabName, list[QPushButton]] = {}
         self._generation_slider_widgets: dict[TabName, QWidget] = {}
         self._generation_sliders = {}
 
@@ -199,7 +207,7 @@ class LeftPanel(QWidget):
         )
 
         for tab_name in (TabName.TERRITORY, TabName.PROVINCE):
-            slider_widget = QWidget(self._content_widget)
+            slider_widget = QWidget()
             slider_layout = QVBoxLayout(slider_widget)
             slider_layout.setContentsMargins(0, 0, 0, 0)
             self._generation_slider_widgets[tab_name] = slider_widget
@@ -293,40 +301,50 @@ class LeftPanel(QWidget):
 
     def display_content(self, tab_name: TabName):
         self._current_tab_name = tab_name
-        self._clear_content()
+        page = self._tab_pages.get(tab_name)
+        if page is None:
+            self._import_buttons = []
+            page = QWidget()
+            self._content_layout = QVBoxLayout(page)
+            match tab_name:
+                case TabName.LAND:
+                    self._display_land_content()
+                case TabName.BOUNDARY:
+                    self._display_boundary_content()
+                case TabName.DENSITY:
+                    self._display_density_content()
+                case TabName.TERRAIN:
+                    self._display_terrain_content()
+                case TabName.TERRITORY:
+                    self._display_territory_content()
+                case TabName.PROVINCE:
+                    self._display_province_content()
 
-        match tab_name:
-            case TabName.LAND:
-                self._display_land_content()
-            case TabName.BOUNDARY:
-                self._display_boundary_content()
-            case TabName.DENSITY:
-                self._display_density_content()
-            case TabName.TERRAIN:
-                self._display_terrain_content()
-            case TabName.TERRITORY:
-                self._display_territory_content()
-            case TabName.PROVINCE:
-                self._display_province_content()
+            self._content_layout.addStretch()
+            self._page_stack.addWidget(page)
+            self._tab_pages[tab_name] = page
+            self._tab_page_layouts[tab_name] = self._content_layout
+            self._tab_import_buttons[tab_name] = self._import_buttons
+        else:
+            self._content_layout = self._tab_page_layouts[tab_name]
+            self._import_buttons = self._tab_import_buttons[tab_name]
 
-        self._content_layout.addStretch()
+        self._page_stack.setCurrentWidget(page)
+        if tab_name == TabName.LAND:
+            self._refresh_land_informations()
         self._refresh_button_states()
-
-    def _clear_content(self):
-        self._import_buttons.clear()
-        self._land_density_fields.clear()
-        for slider_widget in self._generation_slider_widgets.values():
-            slider_widget.setParent(self._content_widget)
-        while self._content_layout.count():
-            item = self._content_layout.takeAt(0)
-            if item.widget():
-                item.widget().deleteLater()
 
     def _create_import_button(self, parent_layout, label_text: str, callback) -> QPushButton:
         """Create an image import button that guardrails can disable."""
         button = create_button(parent_layout, label_text, callback)
         self._import_buttons.append(button)
         return button
+
+    def _register_export_button(
+        self, attribute: ProjectAttribute, button: QPushButton
+    ) -> None:
+        self._export_buttons_by_attribute.setdefault(attribute, []).append(button)
+        button.setEnabled(getattr(self._context.project, attribute.name) is not None)
 
     def _display_land_content(self):
         # Land actions group
@@ -355,8 +373,6 @@ class LeftPanel(QWidget):
             infos_layout.addRow(label, field)
             self._land_density_fields.append(field)
 
-        self._refresh_land_informations()
-
         infos_group.setLayout(infos_layout)
         self._content_layout.addWidget(infos_group)
 
@@ -367,16 +383,19 @@ class LeftPanel(QWidget):
         land_color_btn = ColorPickerButton(
             self._context.project.land_color, self, "Land Color")
         land_color_btn.colorChanged.connect(self._update_land_color)
+        self._land_color_buttons[ProjectAttribute.land_color] = land_color_btn
         settings_layout.addRow("Land color:", land_color_btn)
 
         ocean_color_btn = ColorPickerButton(
             self._context.project.ocean_color, self, "Ocean Color")
         ocean_color_btn.colorChanged.connect(self._update_ocean_color)
+        self._land_color_buttons[ProjectAttribute.ocean_color] = ocean_color_btn
         settings_layout.addRow("Ocean color:", ocean_color_btn)
 
         lake_color_btn = ColorPickerButton(
             self._context.project.lake_color, self, "Lake Color")
         lake_color_btn.colorChanged.connect(self._update_lake_color)
+        self._land_color_buttons[ProjectAttribute.lake_color] = lake_color_btn
         settings_layout.addRow("Lake color:", lake_color_btn)
 
         settings_group.setLayout(settings_layout)
@@ -449,6 +468,7 @@ class LeftPanel(QWidget):
             lambda value: self._context.project_controller.set_territory_exclude_ocean(bool(value))
         )
         checkbox_territory_exclude_ocean.setChecked(self._context.project.territory_exclude_ocean)
+        self._project_checkboxes[ProjectAttribute.territory_exclude_ocean] = checkbox_territory_exclude_ocean
 
         # Province exclude ocean checkbox
         checkbox_province_exclude_ocean = create_checkbox(
@@ -456,6 +476,7 @@ class LeftPanel(QWidget):
             lambda value: self._context.project_controller.set_province_exclude_ocean(bool(value))
         )
         checkbox_province_exclude_ocean.setChecked(self._context.project.province_exclude_ocean)
+        self._project_checkboxes[ProjectAttribute.province_exclude_ocean] = checkbox_province_exclude_ocean
 
         actions_group.setLayout(actions_layout)
         self._content_layout.addWidget(actions_group)
@@ -504,7 +525,7 @@ class LeftPanel(QWidget):
                 self._context.project.territory_data,
             )
         )
-        btn_export_territory_image.setEnabled(self._context.project.territory_image != None)
+        self._register_export_button(ProjectAttribute.territory_image, btn_export_territory_image)
 
         # Export territory definitions button
         btn_export_territory_definitions = create_button(
@@ -516,7 +537,7 @@ class LeftPanel(QWidget):
                 "Export Territory Definitions"
             )
         )
-        btn_export_territory_definitions.setEnabled(self._context.project.territory_data != None)
+        self._register_export_button(ProjectAttribute.territory_data, btn_export_territory_definitions)
 
         # Export territory history button
         btn_export_territory_history = create_button(
@@ -528,7 +549,7 @@ class LeftPanel(QWidget):
                 "Export Territory History"
             )
         )
-        btn_export_territory_history.setEnabled(self._context.project.territory_data != None)
+        self._register_export_button(ProjectAttribute.territory_data, btn_export_territory_history)
 
         actions_group.setLayout(actions_layout)
         self._content_layout.addWidget(actions_group)
@@ -563,9 +584,7 @@ class LeftPanel(QWidget):
                 self._context.project.province_data,
             )
         )
-        btn_export_province_image.setEnabled(
-            self._context.project.province_image != None
-        )
+        self._register_export_button(ProjectAttribute.province_image, btn_export_province_image)
 
         # Export province definitions button
         btn_export_province_definitions = create_button(
@@ -577,9 +596,7 @@ class LeftPanel(QWidget):
                 "Export Province Definitions"
             )
         )
-        btn_export_province_definitions.setEnabled(
-            self._context.project.province_data != None
-        )
+        self._register_export_button(ProjectAttribute.province_data, btn_export_province_definitions)
 
         actions_group.setLayout(actions_layout)
         self._content_layout.addWidget(actions_group)
@@ -634,6 +651,22 @@ class LeftPanel(QWidget):
 
     def _on_project_modification(self, attribute: ProjectAttribute):
         self._update_generation_slider(attribute)
+
+        color_button = self._land_color_buttons.get(attribute)
+        if color_button is not None:
+            color_button.set_color(getattr(self._context.project, attribute.name))
+
+        checkbox = self._project_checkboxes.get(attribute)
+        if checkbox is not None:
+            was_blocked = checkbox.blockSignals(True)
+            try:
+                checkbox.setChecked(getattr(self._context.project, attribute.name))
+            finally:
+                checkbox.blockSignals(was_blocked)
+
+        for button in self._export_buttons_by_attribute.get(attribute, []):
+            # this only works if the attribute names match exactly
+            button.setEnabled(getattr(self._context.project, attribute.name) is not None)
 
         if attribute in {
             ProjectAttribute.land_image,
@@ -732,6 +765,4 @@ class LeftPanel(QWidget):
     def _refresh_tab_view(self, tab_name: TabName):
         self._main_window.update_all_image_displays()
         if self._current_tab_name == tab_name:
-            # Without this check, the current tab would be filled
-            # with the content of the tab that was asked to be refreshed
             self.display_content(tab_name)
