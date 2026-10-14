@@ -10,7 +10,7 @@ def create_timeout_slider(
     minimum: int,
     maximum: int,
     default: int,
-    tick_interval: int = 100,
+    tick_interval: int = 0, # GCE-TODO: either revert to 300 or remove TimeoutSlider again
     step: int = 100,
     onchange_callback_function = None,
     display_scale: float = None,

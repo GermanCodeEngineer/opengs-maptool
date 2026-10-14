@@ -8,6 +8,7 @@ import pytest
 from PyQt6.QtWidgets import QApplication, QGroupBox, QPushButton
 
 from opengs_maptool.app import App
+from opengs_maptool.controllers.project_controller import ProjectAttribute
 from opengs_maptool.simple_types import TabName
 
 
@@ -55,6 +56,29 @@ def test_switching_tabs_replaces_left_panel_content(window):
     assert left_panel._current_tab_name is TabName.LAND
     assert left_panel._content_layout.count() > 0
     assert any(g.title() == "Informations" for g in left_panel.findChildren(QGroupBox))
+
+
+def test_generation_sliders_survive_refresh_and_sync_only_changed_attribute(window):
+    left_panel = window._left_panel
+    window._tabs.setCurrentIndex(window._tab_names_by_index.index(TabName.TERRITORY))
+
+    attribute = ProjectAttribute.land_territory_density
+    slider = left_panel._generation_sliders[attribute]
+    value_before = slider.value()
+
+    window._context.project_controller.project_was_modified.emit(attribute)
+    assert left_panel._generation_sliders[attribute] is slider
+    assert slider.value() == value_before
+
+    changed_value = value_before + 1 if value_before < slider.maximum() else value_before - 1
+    controller = window._context.project_controller
+    try:
+        controller.set_land_territory_density(changed_value)
+
+        assert left_panel._generation_sliders[attribute] is slider
+        assert slider.value() == changed_value
+    finally:
+        controller.set_land_territory_density(value_before)
 
 
 class _StuckThreadPool:
