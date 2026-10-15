@@ -85,7 +85,7 @@ class MainWindow(QMainWindow):
         right_panel = RightPanel(self._context, self)
         splitter.addWidget(right_panel)
 
-        splitter.setSizes([300, 900, 300])
+        splitter.setSizes([400, 900, 300])
         splitter.setChildrenCollapsible(False)
 
         content_layout.addWidget(splitter)
