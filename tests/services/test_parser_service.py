@@ -173,3 +173,26 @@ def test_unrecognized_arguments_error_formatting():
     specs = [CommandArgSpec("path", str, "Path")]
     with pytest.raises(CommandArgumentParseError, match="Unknown argument\(s\) or optional flag\(s\): --unknown"):
         deserialize_command_arguments("test.cmd", "desc", ["file.txt", "--unknown"], specs)
+
+
+def test_validate_specs_choices_type_mismatch():
+    specs = [CommandArgSpec("fmt", int, "Format", choices=["png", "jpeg"]) ]  # choices are strings, type is int
+    with pytest.raises(CommandParserConfigurationError, match="has an invalid choice"):
+        deserialize_command_arguments("test.cmd", "desc", [], specs)
+
+
+def test_deserialize_with_choices_valid_and_invalid():
+    specs = [
+        CommandArgSpec("path", str, "Required path"),
+        CommandArgSpec("format", str, "Format setting", default="png", choices=["png", "jpeg"]),
+    ]
+
+    # valid choice
+    args = ["output.png", "--format", "jpeg"]
+    result = deserialize_command_arguments("test.cmd", "desc", args, specs)
+    assert result == ["output.png", "jpeg"]
+
+    # invalid choice
+    args = ["output.png", "--format", "gif"]
+    with pytest.raises(CommandArgumentParseError, match="Invalid value for argument 'format'"):
+        deserialize_command_arguments("test.cmd", "desc", args, specs)
