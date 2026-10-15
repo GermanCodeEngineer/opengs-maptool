@@ -8,6 +8,7 @@ import pytest
 from PyQt6.QtWidgets import QApplication, QGroupBox, QPushButton
 
 from opengs_maptool.app import App
+from opengs_maptool.controllers.project_controller import ProjectAttribute
 from opengs_maptool.simple_types import TabName
 
 
@@ -28,26 +29,27 @@ def window(app):
 
 
 def test_left_panel_is_populated_for_the_initial_tab(window):
-    """addTab() selects the first tab before currentChanged is connected.
-
-    Nothing repopulates the left panel afterwards, so without an explicit
-    initial refresh the panel stays blank until the user switches tabs.
-    """
+    """addTab() selects the first tab before currentChanged is connected."""
     left_panel = window._left_panel
 
     assert window._tabs.currentIndex() == 0
     assert left_panel._current_tab_name is TabName.LAND
     assert left_panel._content_layout.count() > 0, "left panel is blank on startup"
+    assert all(
+        slider_widget.parentWidget() is None
+        for slider_widget in left_panel._generation_slider_widgets.values()
+    )
 
     button_labels = [b.text() for b in left_panel.findChildren(QPushButton)]
     assert "Import Land Image" in button_labels
 
 
-def test_switching_tabs_replaces_left_panel_content(window):
+def test_switching_tabs_displays_cached_left_panel_content(window):
     left_panel = window._left_panel
 
     window._tabs.setCurrentIndex(window._tab_names_by_index.index(TabName.DENSITY))
     assert left_panel._current_tab_name is TabName.DENSITY
+    density_page = left_panel._tab_pages[TabName.DENSITY]
     labels = [b.text() for b in left_panel.findChildren(QPushButton)]
     assert "Equator Distribution" in labels
 
@@ -55,6 +57,69 @@ def test_switching_tabs_replaces_left_panel_content(window):
     assert left_panel._current_tab_name is TabName.LAND
     assert left_panel._content_layout.count() > 0
     assert any(g.title() == "Informations" for g in left_panel.findChildren(QGroupBox))
+
+    window._tabs.setCurrentIndex(window._tab_names_by_index.index(TabName.DENSITY))
+    assert left_panel._tab_pages[TabName.DENSITY] is density_page
+    assert left_panel._page_stack.currentWidget() is density_page
+
+
+def test_generation_sliders_survive_refresh_and_sync_only_changed_attribute(window):
+    left_panel = window._left_panel
+    window._tabs.setCurrentIndex(window._tab_names_by_index.index(TabName.TERRITORY))
+
+    attribute = ProjectAttribute.land_territory_density
+    slider = left_panel._generation_sliders[attribute]
+    value_before = slider.value()
+
+    window._context.project_controller.project_was_modified.emit(attribute)
+    assert left_panel._generation_sliders[attribute] is slider
+    assert slider.value() == value_before
+
+    changed_value = value_before + 1 if value_before < slider.maximum() else value_before - 1
+    controller = window._context.project_controller
+    try:
+        controller.set_land_territory_density(changed_value)
+
+        assert left_panel._generation_sliders[attribute] is slider
+        assert slider.value() == changed_value
+    finally:
+        controller.set_land_territory_density(value_before)
+
+
+def test_cached_controls_follow_project_attribute_changes(window):
+    left_panel = window._left_panel
+    controller = window._context.project_controller
+    project = window._context.project
+
+    color_attribute = ProjectAttribute.land_color
+    window._tabs.setCurrentIndex(window._tab_names_by_index.index(TabName.LAND))
+    color_button = left_panel._land_color_buttons[color_attribute]
+    original_color = project.land_color
+    changed_color = tuple((channel + 1) % 256 for channel in original_color)
+    try:
+        controller.set_land_color(changed_color)
+        assert color_button.color() == changed_color
+    finally:
+        controller.set_land_color(original_color)
+
+    checkbox_attribute = ProjectAttribute.territory_exclude_ocean
+    window._tabs.setCurrentIndex(window._tab_names_by_index.index(TabName.DENSITY))
+    checkbox = left_panel._project_checkboxes[checkbox_attribute]
+    original_checkbox_value = project.territory_exclude_ocean
+    try:
+        controller.set_territory_exclude_ocean(not original_checkbox_value)
+        assert checkbox.isChecked() is not original_checkbox_value
+    finally:
+        controller.set_territory_exclude_ocean(original_checkbox_value)
+
+    window._tabs.setCurrentIndex(window._tab_names_by_index.index(TabName.TERRITORY))
+    data_buttons = left_panel._export_buttons_by_attribute[ProjectAttribute.territory_data]
+    original_data = project.territory_data
+    try:
+        controller.set_territory_data([])
+        assert all(button.isEnabled() for button in data_buttons)
+    finally:
+        controller.set_territory_data(original_data)
 
 
 class _StuckThreadPool:
