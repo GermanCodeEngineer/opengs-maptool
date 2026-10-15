@@ -28,20 +28,28 @@ def window(app):
     return MainWindow(app)
 
 
+def _labels(left_panel):
+    current_page = left_panel._page_stack.currentWidget()
+    return {
+        button.text(): button.isEnabled()
+        for button in current_page.findChildren(QPushButton)
+    }
+
+
 def test_left_panel_is_populated_for_the_initial_tab(window):
     """addTab() selects the first tab before currentChanged is connected."""
     left_panel = window._left_panel
 
     assert window._tabs.currentIndex() == 0
     assert left_panel._current_tab_name is TabName.LAND
-    assert left_panel._content_layout.count() > 0, "left panel is blank on startup"
+    land_page = left_panel._tab_pages[TabName.LAND]
+    assert land_page.layout().count() > 0, "left panel is blank on startup"
     assert all(
         slider_widget.parentWidget() is None
         for slider_widget in left_panel._generation_slider_widgets.values()
     )
 
-    button_labels = [b.text() for b in left_panel.findChildren(QPushButton)]
-    assert "Import Land Image" in button_labels
+    assert "Import Land Image" in _labels(left_panel)
 
 
 def test_switching_tabs_displays_cached_left_panel_content(window):
@@ -50,13 +58,14 @@ def test_switching_tabs_displays_cached_left_panel_content(window):
     window._tabs.setCurrentIndex(window._tab_names_by_index.index(TabName.DENSITY))
     assert left_panel._current_tab_name is TabName.DENSITY
     density_page = left_panel._tab_pages[TabName.DENSITY]
-    labels = [b.text() for b in left_panel.findChildren(QPushButton)]
+    labels = _labels(left_panel)
     assert "Equator Distribution" in labels
 
     window._tabs.setCurrentIndex(window._tab_names_by_index.index(TabName.LAND))
     assert left_panel._current_tab_name is TabName.LAND
-    assert left_panel._content_layout.count() > 0
-    assert any(g.title() == "Informations" for g in left_panel.findChildren(QGroupBox))
+    land_page = left_panel._tab_pages[TabName.LAND]
+    assert land_page.layout().count() > 0
+    assert any(g.title() == "Informations" for g in land_page.findChildren(QGroupBox))
 
     window._tabs.setCurrentIndex(window._tab_names_by_index.index(TabName.DENSITY))
     assert left_panel._tab_pages[TabName.DENSITY] is density_page
@@ -157,11 +166,6 @@ def occupied_generation_slot(monkeypatch):
         controller._free_slot(slot)
 
 
-def _labels(left_panel):
-    return {b.text(): b.isEnabled() for b in left_panel.findChildren(QPushButton)
-            if not b.isHidden() or True}
-
-
 def test_guardrails_disable_inputs_while_a_map_generates(window, occupied_generation_slot, monkeypatch):
     from opengs_maptool.controllers.task_controller import ThreadTaskSlot
     import opengs_maptool.config as config
@@ -188,10 +192,17 @@ def test_generating_a_territory_map_blocks_generating_provinces(window, occupied
     import opengs_maptool.config as config
 
     monkeypatch.setattr(config, "GUARDRAILS", True)
-    occupied_generation_slot(window, ThreadTaskSlot.generate_territory_map)
+    project = window._context.project
+    monkeypatch.setattr(project, "terrain_image", object())
+    monkeypatch.setattr(project, "territory_data", [])
 
     window._tabs.setCurrentIndex(window._tab_names_by_index.index(TabName.PROVINCE))
-    assert _labels(window._left_panel)["Generate Provinces"] is False
+    generate_button = window._left_panel.btn_generate_provinces
+    assert generate_button.isEnabled()
+
+    occupied_generation_slot(window, ThreadTaskSlot.generate_territory_map)
+
+    assert not generate_button.isEnabled()
 
 
 def test_guardrails_disabled_leaves_inputs_alone(window, occupied_generation_slot, monkeypatch):
