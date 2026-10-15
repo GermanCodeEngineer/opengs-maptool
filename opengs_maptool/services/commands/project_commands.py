@@ -30,6 +30,7 @@ def cmd_project_new(context: ApplicationContext, force: bool = False) -> Command
         CommandArgSpec("path", arg_type=str, description="The path to the project file to open."),
         CommandArgSpec("force", arg_type=bool, default=False, description="Ignore unsaved changes if enabled and open the project file."),
     ],
+    examples=['project.open "my-project.gsmap"', 'project.open "my-project.gsmap" --force'],
 )
 def cmd_project_open(context: ApplicationContext, path: str, force: bool = False) -> CommandResponse:
     """ Opens an existing project file."""

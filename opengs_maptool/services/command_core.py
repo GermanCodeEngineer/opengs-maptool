@@ -1,5 +1,7 @@
 from __future__ import annotations
+from dataclasses import dataclass
 from difflib import get_close_matches
+from enum import Enum
 import mslex
 from promise import Promise
 import re
@@ -29,7 +31,27 @@ from opengs_maptool.services.logging_service import LOGGING_SERVICE
 
 # command.this.format.id -> implementation function
 CommandImplementation: TypeAlias = Callable[..., CommandResponse]
-_commands: dict[str, tuple[CommandImplementation, str, list[CommandArgSpec]]] = {}
+
+
+class CommandDevStatus(Enum):
+    PLANNED = "planned"
+    IN_PROGRESS = "in_progress"
+
+
+@dataclass(frozen=True)
+class CommandDocumentation:
+    command_id: str
+    description: str
+    arguments: tuple[CommandArgSpec, ...]
+    aliases: tuple[str, ...]
+    examples: tuple[str, ...]
+    status: CommandDevStatus | None = None
+
+
+_commands: dict[
+    str,
+    tuple[CommandImplementation, str, list[CommandArgSpec], list[str], CommandDevStatus | None],
+] = {}
 _command_aliases = (dict[str, str])() # alias -> real command
 _SORT_PRIORITY_PREFIXES = [
     "link", "console", "project",
@@ -43,6 +65,8 @@ def register_command(
     command_id: str,
     args: list[CommandArgSpec],
     aliases: list[str] | None = None,
+    examples: list[str] | None = None,
+    status: CommandDevStatus | None = None,
 ):
     """Decorator to register a command function with a given command ID."""
     def decorator[T: CommandImplementation](func: T) -> T:
@@ -50,7 +74,10 @@ def register_command(
             raise ValueError(f"Please report this. Command {command_id} is already registered.")
 
         doc = func.__doc__ or "No description provided"
-        _commands[command_id] = (func, doc, args)
+        if status is not None and not isinstance(status, CommandDevStatus):
+            raise ValueError("Command status must be a CommandDevStatus value or None.")
+
+        _commands[command_id] = (func, doc, args, examples or [], status)
 
         if aliases:
             for alias in aliases:
@@ -74,6 +101,23 @@ def get_command_description(command_id: str) -> str:
 def get_command_arg_specs(command_id: str) -> list[CommandArgSpec]:
     command_id = _command_aliases.get(command_id, command_id)
     return _commands[command_id][2]
+
+def get_command_examples(command_id: str) -> list[str]:
+    command_id = _command_aliases.get(command_id, command_id)
+    return _commands[command_id][3]
+
+def get_command_documentation() -> list[CommandDocumentation]:
+    return [
+        CommandDocumentation(
+            command_id=command_id,
+            description=description.strip(),
+            arguments=tuple(arguments),
+            aliases=tuple(alias for alias, target in _command_aliases.items() if target == command_id),
+            examples=tuple(examples),
+            status=status,
+        )
+        for command_id, (_, description, arguments, examples, status) in _commands.items()
+    ]
 
 def get_all_command_ids() -> list[str]:
     return list(_commands.keys())
