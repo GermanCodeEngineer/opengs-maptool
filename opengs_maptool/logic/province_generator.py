@@ -21,6 +21,10 @@ from opengs_maptool.simple_types import TabName
 def generate_province_map(
         task_ctx: ApplicationContext, progress_controller: ProgressController
     ) -> tuple[ds.ProvinceImage, list[ds.RegionMetadata]] | tuple[None, None]:
+    """
+    Raises:
+        NumberSeriesExhaustedError: Raised when the NumberSeries for province IDs is exhausted.
+    """
     # Safety check matching the button setEnabled condition
     if not task_ctx.project.can_province_image_be_generated(task_ctx, ignore_locked=True):
         return None, None
@@ -130,8 +134,6 @@ def generate_province_map(
             for comp_id in sub_progress3.track_iteration(range(1, num_lakes + 1)):
                 comp_mask = labeled == comp_id
                 rid = series.get_id()
-                if rid is None:
-                    continue
                 r, g, b = color_from_id(start_index, ds.RegionType.LAKE)
                 ys, xs = np.where(comp_mask)
                 cx, cy = int(round(xs.mean())), int(round(ys.mean()))

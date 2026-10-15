@@ -146,4 +146,14 @@ LOG_CATEGORIES: dict[str, LoggerCategoryConfiguration] = {
         level=LoggingLevel.DEBUG,
         enabled=True,
     ),
+    "export": LoggerCategoryConfiguration(
+        prefix="[Export]",
+        level=LoggingLevel.ERROR,
+        enabled=True,
+    ),
+    "command": LoggerCategoryConfiguration(
+        prefix="[Command]",
+        level=LoggingLevel.ERROR,
+        enabled=True,
+    ),
 }
