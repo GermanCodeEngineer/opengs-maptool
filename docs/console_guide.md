@@ -47,6 +47,9 @@ example.export "output/map.png" --scale=2 --format=png
 
 ## Interactive Console Features
 
+### Command History
+Use the up and down arrow keys to navigate or rerun previous commands.
+
 ### Dynamic Help Menus
 
 Every command has a built-in help manual. Appending `-h` or `--help` to any command will display its formal syntax and detailed argument descriptions directly in your console:
